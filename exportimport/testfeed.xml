@@ -1,0 +1,1387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contest>
+<info>
+ <length>05:00:00</length>
+ <penalty>20</penalty>
+ <started>False</started>
+ <starttime>0.0</starttime>
+ <title>The 2011 35th Annual World Finals of the ACM International Collegiate Programming Contest</title>
+</info>
+<language>
+ <id>0</id>
+ <name>Invalid Language</name>
+</language>
+<language>
+ <id>1</id>
+ <name>C++</name>
+</language>
+<language>
+ <id>2</id>
+ <name>C</name>
+</language>
+<language>
+ <id>3</id>
+ <name>Java</name>
+</language>
+<region>
+ <external-id>2750</external-id>
+ <name>Asia</name>
+</region>
+<region>
+ <external-id>2758</external-id>
+ <name>Africa and the Middle East</name>
+</region>
+<region>
+ <external-id>2757</external-id>
+ <name>South Pacific</name>
+</region>
+<region>
+ <external-id>2756</external-id>
+ <name>North America</name>
+</region>
+<region>
+ <external-id>2755</external-id>
+ <name>Europe</name>
+</region>
+<region>
+ <external-id>2754</external-id>
+ <name>Latin America</name>
+</region>
+<judgement>
+ <acronym>CE</acronym>
+ <id>8</id>
+ <name>Compile Error</name>
+</judgement>
+<judgement>
+ <acronym>RTE</acronym>
+ <id>9</id>
+ <name>Run Time Error</name>
+</judgement>
+<judgement>
+ <acronym>MLE</acronym>
+ <id>10</id>
+ <name>Memory Limit Exceeded</name>
+</judgement>
+<judgement>
+ <acronym>OLE</acronym>
+ <id>11</id>
+ <name>Output Limit Exceeded</name>
+</judgement>
+<judgement>
+ <acronym>TLE</acronym>
+ <id>12</id>
+ <name>Time Limit Exceeded</name>
+</judgement>
+<judgement>
+ <acronym>IF</acronym>
+ <id>13</id>
+ <name>Illegal Function</name>
+</judgement>
+<judgement>
+ <acronym>WA</acronym>
+ <id>14</id>
+ <name>Wrong Answer</name>
+</judgement>
+<judgement>
+ <acronym>PE</acronym>
+ <id>15</id>
+ <name>Presentation Error</name>
+</judgement>
+<judgement>
+ <acronym>AC</acronym>
+ <id>16</id>
+ <name>Accepted</name>
+</judgement>
+<problem>
+ <id>1</id>
+ <name>A - To Add or to Multiply</name>
+</problem>
+<problem>
+ <id>2</id>
+ <name>B - Affine Mess</name>
+</problem>
+<problem>
+ <id>3</id>
+ <name>C - Ancient Messages</name>
+</problem>
+<problem>
+ <id>4</id>
+ <name>D - Chips Challenge</name>
+</problem>
+<problem>
+ <id>5</id>
+ <name>E - Coffee Central</name>
+</problem>
+<problem>
+ <id>6</id>
+ <name>F - Machine Works</name>
+</problem>
+<problem>
+ <id>7</id>
+ <name>G - Magic Sticks</name>
+</problem>
+<problem>
+ <id>8</id>
+ <name>H - Mining Your Own Business</name>
+</problem>
+<problem>
+ <id>9</id>
+ <name>I - Mummy Madness</name>
+</problem>
+<problem>
+ <id>10</id>
+ <name>J - Pyramids</name>
+</problem>
+<problem>
+ <id>11</id>
+ <name>K - Trash Removal</name>
+</problem>
+<team>
+ <external-id>88682</external-id>
+ <id>52</id>
+ <name>Seoul National University</name>
+ <nationality>KOR</nationality>
+ <region>Asia</region>
+ <university>Seoul National University</university>
+</team>
+<team>
+ <external-id>88684</external-id>
+ <id>53</id>
+ <name>Shandong University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Shandong University</university>
+</team>
+<team>
+ <external-id>88683</external-id>
+ <id>5</id>
+ <name>Bangladesh University of Engineering and Technology</name>
+ <nationality>BGD</nationality>
+ <region>Asia</region>
+ <university>Bangladesh University of Engineering and Technology</university>
+</team>
+<team>
+ <external-id>88686</external-id>
+ <id>15</id>
+ <name>East China Normal University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>East China Normal University</university>
+</team>
+<team>
+ <external-id>88685</external-id>
+ <id>22</id>
+ <name>Harbin Institute of Technology</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Harbin Institute of Technology</university>
+</team>
+<team>
+ <external-id>88688</external-id>
+ <id>26</id>
+ <name>Huazhong University of Science &amp; Technology</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Huazhong University of Science &amp; Technology</university>
+</team>
+<team>
+ <external-id>88687</external-id>
+ <id>56</id>
+ <name>Sichuan University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Sichuan University</university>
+</team>
+<team>
+ <external-id>88678</external-id>
+ <id>28</id>
+ <name>Indian Institute of Technology - Delhi</name>
+ <nationality>IND</nationality>
+ <region>Asia</region>
+ <university>Indian Institute of Technology - Delhi</university>
+</team>
+<team>
+ <external-id>88680</external-id>
+ <id>102</id>
+ <name>Wuhan University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Wuhan University</university>
+</team>
+<team>
+ <external-id>88679</external-id>
+ <id>11</id>
+ <name>DJ Sanghvi College of Engineering</name>
+ <nationality>IND</nationality>
+ <region>Asia</region>
+ <university>DJ Sanghvi College of Engineering</university>
+</team>
+<team>
+ <external-id>88697</external-id>
+ <id>36</id>
+ <name>Kyoto University</name>
+ <nationality>JPN</nationality>
+ <region>Asia</region>
+ <university>Kyoto University</university>
+</team>
+<team>
+ <external-id>88698</external-id>
+ <id>29</id>
+ <name>Indian Institute of Technology - Kanpur</name>
+ <nationality>IND</nationality>
+ <region>Asia</region>
+ <university>Indian Institute of Technology - Kanpur</university>
+</team>
+<team>
+ <external-id>88699</external-id>
+ <id>95</id>
+ <name>University of Tokyo</name>
+ <nationality>JPN</nationality>
+ <region>Asia</region>
+ <university>University of Tokyo</university>
+</team>
+<team>
+ <external-id>88700</external-id>
+ <id>25</id>
+ <name>Hong Kong University of Science and Technology</name>
+ <nationality>HKG</nationality>
+ <region>Asia</region>
+ <university>Hong Kong University of Science and Technology</university>
+</team>
+<team>
+ <external-id>88702</external-id>
+ <id>24</id>
+ <name>Ho Chi Minh City University of Science</name>
+ <nationality>VNM</nationality>
+ <region>Asia</region>
+ <university>Ho Chi Minh City University of Science</university>
+</team>
+<team>
+ <external-id>88703</external-id>
+ <id>105</id>
+ <name>Zhongshan (Sun Yat-sen) University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Zhongshan (Sun Yat-sen) University</university>
+</team>
+<team>
+ <external-id>88704</external-id>
+ <id>54</id>
+ <name>Shanghai Jiao Tong University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Shanghai Jiao Tong University</university>
+</team>
+<team>
+ <external-id>88689</external-id>
+ <id>103</id>
+ <name>Zhejiang Normal University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Zhejiang Normal University</university>
+</team>
+<team>
+ <external-id>88690</external-id>
+ <id>66</id>
+ <name>Tianjin University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Tianjin University</university>
+</team>
+<team>
+ <external-id>88691</external-id>
+ <id>6</id>
+ <name>Beijing Jiaotong University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Beijing Jiaotong University</university>
+</team>
+<team>
+ <external-id>88692</external-id>
+ <id>4</id>
+ <name>Amirkabir University of Technology</name>
+ <nationality>IRN</nationality>
+ <region>Asia</region>
+ <university>Amirkabir University of Technology</university>
+</team>
+<team>
+ <external-id>88693</external-id>
+ <id>55</id>
+ <name>Sharif University of Technology</name>
+ <nationality>IRN</nationality>
+ <region>Asia</region>
+ <university>Sharif University of Technology</university>
+</team>
+<team>
+ <external-id>88694</external-id>
+ <id>18</id>
+ <name>Fuzhou University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Fuzhou University</university>
+</team>
+<team>
+ <external-id>88695</external-id>
+ <id>21</id>
+ <name>Harbin Engineering University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Harbin Engineering University</university>
+</team>
+<team>
+ <external-id>88696</external-id>
+ <id>20</id>
+ <name>Hangzhou Dianzi University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Hangzhou Dianzi University</university>
+</team>
+<team>
+ <external-id>88715</external-id>
+ <id>47</id>
+ <name>Peking University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Peking University</university>
+</team>
+<team>
+ <external-id>88714</external-id>
+ <id>65</id>
+ <name>The Chinese University of Hong Kong</name>
+ <nationality>HKG</nationality>
+ <region>Asia</region>
+ <university>The Chinese University of Hong Kong</university>
+</team>
+<team>
+ <external-id>88720</external-id>
+ <id>85</id>
+ <name>University of Electronic Science and Technology of China</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>University of Electronic Science and Technology of China</university>
+</team>
+<team>
+ <external-id>88719</external-id>
+ <id>31</id>
+ <name>International Institute of Information Technology - Hyderabad</name>
+ <nationality>IND</nationality>
+ <region>Asia</region>
+ <university>International Institute of Information Technology - Hyderabad</university>
+</team>
+<team>
+ <external-id>88707</external-id>
+ <id>104</id>
+ <name>Zhejiang University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Zhejiang University</university>
+</team>
+<team>
+ <external-id>88706</external-id>
+ <id>67</id>
+ <name>Tsinghua University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Tsinghua University</university>
+</team>
+<team>
+ <external-id>88705</external-id>
+ <id>17</id>
+ <name>Fudan University</name>
+ <nationality>CHN</nationality>
+ <region>Asia</region>
+ <university>Fudan University</university>
+</team>
+<team>
+ <external-id>88710</external-id>
+ <id>42</id>
+ <name>Nanyang Technological University</name>
+ <nationality>SGP</nationality>
+ <region>Asia</region>
+ <university>Nanyang Technological University</university>
+</team>
+<team>
+ <external-id>88709</external-id>
+ <id>43</id>
+ <name>National Taiwan University</name>
+ <nationality>TWN</nationality>
+ <region>Asia</region>
+ <university>National Taiwan University</university>
+</team>
+<team>
+ <external-id>88721</external-id>
+ <id>35</id>
+ <name>Korea Advanced Institute of Science and Technology</name>
+ <nationality>KOR</nationality>
+ <region>Asia</region>
+ <university>Korea Advanced Institute of Science and Technology</university>
+</team>
+<team>
+ <external-id>88545</external-id>
+ <id>19</id>
+ <name>German University in Cairo</name>
+ <nationality>EGY</nationality>
+ <region>Africa and the Middle East</region>
+ <university>German University in Cairo</university>
+</team>
+<team>
+ <external-id>88546</external-id>
+ <id>8</id>
+ <name>Cairo University - Faculty of Computers and Information</name>
+ <nationality>EGY</nationality>
+ <region>Africa and the Middle East</region>
+ <university>Cairo University - Faculty of Computers and Information</university>
+</team>
+<team>
+ <external-id>88547</external-id>
+ <id>2</id>
+ <name>Alexandria University - Faculty of Engineering</name>
+ <nationality>EGY</nationality>
+ <region>Africa and the Middle East</region>
+ <university>Alexandria University - Faculty of Engineering</university>
+</team>
+<team>
+ <external-id>88548</external-id>
+ <id>34</id>
+ <name>King Abdullah University of Science and Technology</name>
+ <nationality>SAU</nationality>
+ <region>Africa and the Middle East</region>
+ <university>King Abdullah University of Science and Technology</university>
+</team>
+<team>
+ <external-id>88549</external-id>
+ <id>1</id>
+ <name>Ain Shams University</name>
+ <nationality>EGY</nationality>
+ <region>Africa and the Middle East</region>
+ <university>Ain Shams University</university>
+</team>
+<team>
+ <external-id>88092</external-id>
+ <id>94</id>
+ <name>University of Stellenbosch</name>
+ <nationality>ZAF</nationality>
+ <region>Africa and the Middle East</region>
+ <university>University of Stellenbosch</university>
+</team>
+<team>
+ <external-id>88667</external-id>
+ <id>3</id>
+ <name>American University of Sharjah</name>
+ <nationality>ARE</nationality>
+ <region>Africa and the Middle East</region>
+ <university>American University of Sharjah</university>
+</team>
+<team>
+ <external-id>88112</external-id>
+ <id>92</id>
+ <name>University of New South Wales</name>
+ <nationality>AUS</nationality>
+ <region>South Pacific</region>
+ <university>University of New South Wales</university>
+</team>
+<team>
+ <external-id>88066</external-id>
+ <id>83</id>
+ <name>University of Canterbury</name>
+ <nationality>NZL</nationality>
+ <region>South Pacific</region>
+ <university>University of Canterbury</university>
+</team>
+<team>
+ <external-id>88071</external-id>
+ <id>13</id>
+ <name>Duke University</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Duke University</university>
+</team>
+<team>
+ <external-id>88072</external-id>
+ <id>87</id>
+ <name>University of Illinois at Urbana-Champaign</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Illinois at Urbana-Champaign</university>
+</team>
+<team>
+ <external-id>88067</external-id>
+ <id>98</id>
+ <name>University of Waterloo</name>
+ <nationality>CAN</nationality>
+ <region>North America</region>
+ <university>University of Waterloo</university>
+</team>
+<team>
+ <external-id>88068</external-id>
+ <id>50</id>
+ <name>Princeton University</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Princeton University</university>
+</team>
+<team>
+ <external-id>88552</external-id>
+ <id>9</id>
+ <name>California State University - Chico</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>California State University - Chico</university>
+</team>
+<team>
+ <external-id>88553</external-id>
+ <id>57</id>
+ <name>Simon Fraser University</name>
+ <nationality>CAN</nationality>
+ <region>North America</region>
+ <university>Simon Fraser University</university>
+</team>
+<team>
+ <external-id>88075</external-id>
+ <id>81</id>
+ <name>University of Alberta</name>
+ <nationality>CAN</nationality>
+ <region>North America</region>
+ <university>University of Alberta</university>
+</team>
+<team>
+ <external-id>88076</external-id>
+ <id>93</id>
+ <name>University of Oklahoma</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Oklahoma</university>
+</team>
+<team>
+ <external-id>88073</external-id>
+ <id>91</id>
+ <name>University of Minnesota - Twin Cities</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Minnesota - Twin Cities</university>
+</team>
+<team>
+ <external-id>88074</external-id>
+ <id>39</id>
+ <name>Massachusetts Institute of Technology</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Massachusetts Institute of Technology</university>
+</team>
+<team>
+ <external-id>88385</external-id>
+ <id>10</id>
+ <name>Carnegie Mellon University</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Carnegie Mellon University</university>
+</team>
+<team>
+ <external-id>88386</external-id>
+ <id>90</id>
+ <name>University of Michigan at Ann Arbor</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Michigan at Ann Arbor</university>
+</team>
+<team>
+ <external-id>88387</external-id>
+ <id>96</id>
+ <name>University of Virginia</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Virginia</university>
+</team>
+<team>
+ <external-id>88388</external-id>
+ <id>88</id>
+ <name>University of Maryland</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Maryland</university>
+</team>
+<team>
+ <external-id>88389</external-id>
+ <id>84</id>
+ <name>University of Chicago</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Chicago</university>
+</team>
+<team>
+ <external-id>88390</external-id>
+ <id>99</id>
+ <name>University of Wisconsin - Madison</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Wisconsin - Madison</university>
+</team>
+<team>
+ <external-id>88391</external-id>
+ <id>58</id>
+ <name>South Dakota School of Mines and Technology</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>South Dakota School of Mines and Technology</university>
+</team>
+<team>
+ <external-id>88392</external-id>
+ <id>23</id>
+ <name>Harvey Mudd College</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Harvey Mudd College</university>
+</team>
+<team>
+ <external-id>88393</external-id>
+ <id>82</id>
+ <name>University of California - San Diego</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of California - San Diego</university>
+</team>
+<team>
+ <external-id>88504</external-id>
+ <id>27</id>
+ <name>Illinois State University</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>Illinois State University</university>
+</team>
+<team>
+ <external-id>88116</external-id>
+ <id>89</id>
+ <name>University of Miami</name>
+ <nationality>USA</nationality>
+ <region>North America</region>
+ <university>University of Miami</university>
+</team>
+<team>
+ <external-id>88537</external-id>
+ <id>45</id>
+ <name>Novosibirsk State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Novosibirsk State University</university>
+</team>
+<team>
+ <external-id>88538</external-id>
+ <id>63</id>
+ <name>Taras Shevchenko Kiev National University</name>
+ <nationality>UKR</nationality>
+ <region>Europe</region>
+ <university>Taras Shevchenko Kiev National University</university>
+</team>
+<team>
+ <external-id>88539</external-id>
+ <id>38</id>
+ <name>Lviv National University</name>
+ <nationality>UKR</nationality>
+ <region>Europe</region>
+ <university>Lviv National University</university>
+</team>
+<team>
+ <external-id>88540</external-id>
+ <id>12</id>
+ <name>Donetsk National University</name>
+ <nationality>UKR</nationality>
+ <region>Europe</region>
+ <university>Donetsk National University</university>
+</team>
+<team>
+ <external-id>88541</external-id>
+ <id>32</id>
+ <name>Jagiellonian University in Krakow</name>
+ <nationality>POL</nationality>
+ <region>Europe</region>
+ <university>Jagiellonian University in Krakow</university>
+</team>
+<team>
+ <external-id>88542</external-id>
+ <id>100</id>
+ <name>University of Wroclaw</name>
+ <nationality>POL</nationality>
+ <region>Europe</region>
+ <university>University of Wroclaw</university>
+</team>
+<team>
+ <external-id>88543</external-id>
+ <id>86</id>
+ <name>University of Helsinki</name>
+ <nationality>FIN</nationality>
+ <region>Europe</region>
+ <university>University of Helsinki</university>
+</team>
+<team>
+ <external-id>88544</external-id>
+ <id>37</id>
+ <name>Leiden University</name>
+ <nationality>NLD</nationality>
+ <region>Europe</region>
+ <university>Leiden University</university>
+</team>
+<team>
+ <external-id>88529</external-id>
+ <id>44</id>
+ <name>Nizhny Novgorod State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Nizhny Novgorod State University</university>
+</team>
+<team>
+ <external-id>88530</external-id>
+ <id>51</id>
+ <name>Saratov State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Saratov State University</university>
+</team>
+<team>
+ <external-id>88531</external-id>
+ <id>59</id>
+ <name>South Ural State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>South Ural State University</university>
+</team>
+<team>
+ <external-id>88532</external-id>
+ <id>101</id>
+ <name>Ural State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Ural State University</university>
+</team>
+<team>
+ <external-id>88533</external-id>
+ <id>7</id>
+ <name>Belarusian State University</name>
+ <nationality>BLR</nationality>
+ <region>Europe</region>
+ <university>Belarusian State University</university>
+</team>
+<team>
+ <external-id>88534</external-id>
+ <id>46</id>
+ <name>Orel State Technical University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Orel State Technical University</university>
+</team>
+<team>
+ <external-id>88535</external-id>
+ <id>48</id>
+ <name>Perm State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Perm State University</university>
+</team>
+<team>
+ <external-id>88536</external-id>
+ <id>33</id>
+ <name>Kazakh-British Technical University</name>
+ <nationality>KAZ</nationality>
+ <region>Europe</region>
+ <university>Kazakh-British Technical University</university>
+</team>
+<team>
+ <external-id>88526</external-id>
+ <id>41</id>
+ <name>Moscow State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Moscow State University</university>
+</team>
+<team>
+ <external-id>88528</external-id>
+ <id>60</id>
+ <name>St. Petersburg State University</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>St. Petersburg State University</university>
+</team>
+<team>
+ <external-id>88527</external-id>
+ <id>40</id>
+ <name>Moscow Institute of Physics &amp; Technology</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>Moscow Institute of Physics &amp; Technology</university>
+</team>
+<team>
+ <external-id>88514</external-id>
+ <id>61</id>
+ <name>St. Petersburg State University of IT, Mechanics and Optics</name>
+ <nationality>RUS</nationality>
+ <region>Europe</region>
+ <university>St. Petersburg State University of IT, Mechanics and Optics</university>
+</team>
+<team>
+ <external-id>88513</external-id>
+ <id>97</id>
+ <name>University of Warsaw</name>
+ <nationality>POL</nationality>
+ <region>Europe</region>
+ <university>University of Warsaw</university>
+</team>
+<team>
+ <external-id>88516</external-id>
+ <id>62</id>
+ <name>Swiss Federal Institute of Technology Zurich - VIS</name>
+ <nationality>CHE</nationality>
+ <region>Europe</region>
+ <university>Swiss Federal Institute of Technology Zurich - VIS</university>
+</team>
+<team>
+ <external-id>88515</external-id>
+ <id>16</id>
+ <name>Friedrich-Alexander-University Erlangen-Nuremberg</name>
+ <nationality>DEU</nationality>
+ <region>Europe</region>
+ <university>Friedrich-Alexander-University Erlangen-Nuremberg</university>
+</team>
+<team>
+ <external-id>88091</external-id>
+ <id>64</id>
+ <name>Taurida V.I. Vernadsky National University</name>
+ <nationality>UKR</nationality>
+ <region>Europe</region>
+ <university>Taurida V.I. Vernadsky National University</university>
+</team>
+<team>
+ <external-id>88079</external-id>
+ <id>78</id>
+ <name>Universidade Federal de Minas Gerais</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Universidade Federal de Minas Gerais</university>
+</team>
+<team>
+ <external-id>88080</external-id>
+ <id>76</id>
+ <name>Universidade de São Paulo - Escola Politécnica</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Universidade de São Paulo - Escola Politécnica</university>
+</team>
+<team>
+ <external-id>88077</external-id>
+ <id>79</id>
+ <name>Universidade Federal de Pernambuco</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Universidade Federal de Pernambuco</university>
+</team>
+<team>
+ <external-id>88078</external-id>
+ <id>30</id>
+ <name>Instituto Tecnológico de Aeronautica</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Instituto Tecnológico de Aeronautica</university>
+</team>
+<team>
+ <external-id>88088</external-id>
+ <id>75</id>
+ <name>Universidad Nacional de Córdoba - FaMAF</name>
+ <nationality>ARG</nationality>
+ <region>Latin America</region>
+ <university>Universidad Nacional de Córdoba - FaMAF</university>
+</team>
+<team>
+ <external-id>88114</external-id>
+ <id>72</id>
+ <name>Universidad de las Ciencias Informáticas</name>
+ <nationality>CUB</nationality>
+ <region>Latin America</region>
+ <university>Universidad de las Ciencias Informáticas</university>
+</team>
+<team>
+ <external-id>88087</external-id>
+ <id>49</id>
+ <name>Pontificia Universidad Católica del Perú</name>
+ <nationality>PER</nationality>
+ <region>Latin America</region>
+ <university>Pontificia Universidad Católica del Perú</university>
+</team>
+<team>
+ <external-id>88113</external-id>
+ <id>70</id>
+ <name>Universidad de Guanajuato - CIMAT</name>
+ <nationality>MEX</nationality>
+ <region>Latin America</region>
+ <university>Universidad de Guanajuato - CIMAT</university>
+</team>
+<team>
+ <external-id>88086</external-id>
+ <id>69</id>
+ <name>Universidad de Buenos Aires - FCEN</name>
+ <nationality>ARG</nationality>
+ <region>Latin America</region>
+ <university>Universidad de Buenos Aires - FCEN</university>
+</team>
+<team>
+ <external-id>88085</external-id>
+ <id>74</id>
+ <name>Universidad Nacional de Colombia - Bogotá</name>
+ <nationality>COL</nationality>
+ <region>Latin America</region>
+ <university>Universidad Nacional de Colombia - Bogotá</university>
+</team>
+<team>
+ <external-id>88115</external-id>
+ <id>71</id>
+ <name>Universidad de La Habana</name>
+ <nationality>CUB</nationality>
+ <region>Latin America</region>
+ <university>Universidad de La Habana</university>
+</team>
+<team>
+ <external-id>88084</external-id>
+ <id>14</id>
+ <name>EAFIT University</name>
+ <nationality>COL</nationality>
+ <region>Latin America</region>
+ <university>EAFIT University</university>
+</team>
+<team>
+ <external-id>88083</external-id>
+ <id>73</id>
+ <name>Universidad del Valle</name>
+ <nationality>COL</nationality>
+ <region>Latin America</region>
+ <university>Universidad del Valle</university>
+</team>
+<team>
+ <external-id>88082</external-id>
+ <id>80</id>
+ <name>Universidade Federal do Paraná</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Universidade Federal do Paraná</university>
+</team>
+<team>
+ <external-id>88081</external-id>
+ <id>77</id>
+ <name>Universidade de São Paulo - Instituto de Matemática e Estatística</name>
+ <nationality>BRA</nationality>
+ <region>Latin America</region>
+ <university>Universidade de São Paulo - Instituto de Matemática e Estatística</university>
+</team>
+<team>
+ <external-id>88089</external-id>
+ <id>68</id>
+ <name>Universidad Católica Boliviana - La Paz</name>
+ <nationality>BOL</nationality>
+ <region>Latin America</region>
+ <university>Universidad Católica Boliviana - La Paz</university>
+</team>
+<info>
+ <length>05:00:00</length>
+ <penalty>20</penalty>
+ <started>False</started>
+ <starttime>1306760154.09</starttime>
+ <title>The 2011 35th Annual World Finals of the ACM International Collegiate Programming Contest</title>
+</info>
+<clar>
+ <answer></answer>
+ <answered>False</answered>
+ <id>1</id>
+ <question>what collapses?
+a tunnel?
+</question>
+ <status>fresh</status>
+ <team>95</team>
+ <time>429.650784</time>
+ <timestamp>1306760583.74</timestamp>
+ <to-all>False</to-all>
+</clar>
+<clar>
+ <answer>No comment, read problem statement.</answer>
+ <answered>True</answered>
+ <id>1</id>
+ <question>what collapses?
+a tunnel?
+</question>
+ <status>done</status>
+ <team>95</team>
+ <time>429.650784</time>
+ <timestamp>1306760583.74</timestamp>
+ <to-all>False</to-all>
+</clar>
+<clar>
+ <answer></answer>
+ <answered>False</answered>
+ <id>2</id>
+ <question>No samples ?</question>
+ <status>fresh</status>
+ <team>16</team>
+ <time>648.66573</time>
+ <timestamp>1306760802.75</timestamp>
+ <to-all>False</to-all>
+</clar>
+<run>
+ <id>1</id>
+ <judged>False</judged>
+ <language>C++</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>60</team>
+ <time>713.752925</time>
+ <timestamp>1306760867.84</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>1</judgement_id>
+ <n>1</n>
+ <result>AC</result>
+ <run-id>1</run-id>
+ <solved>True</solved>
+ <time>715.091655</time>
+ <timestamp>1306760869.18</timestamp>
+</testcase>
+<run>
+ <id>1</id>
+ <judged>True</judged>
+ <language>C++</language>
+ <penalty>False</penalty>
+ <problem>11</problem>
+ <result>AC</result>
+ <solved>True</solved>
+ <status>done</status>
+ <team>60</team>
+ <time>713.752925</time>
+ <timestamp>1306760869.18</timestamp>
+</run>
+<clar>
+ <answer>Should be a folder on your desktop called samps</answer>
+ <answered>True</answered>
+ <id>2</id>
+ <question>No samples ?</question>
+ <status>done</status>
+ <team>16</team>
+ <time>648.66573</time>
+ <timestamp>1306760802.75</timestamp>
+ <to-all>False</to-all>
+</clar>
+<run>
+ <id>2</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>61</team>
+ <time>782.138369</time>
+ <timestamp>1306760936.22</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>2</judgement_id>
+ <n>1</n>
+ <result>AC</result>
+ <run-id>2</run-id>
+ <solved>True</solved>
+ <time>783.407554</time>
+ <timestamp>1306760937.49</timestamp>
+</testcase>
+<run>
+ <id>2</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>False</penalty>
+ <problem>11</problem>
+ <result>AC</result>
+ <solved>True</solved>
+ <status>done</status>
+ <team>61</team>
+ <time>782.138369</time>
+ <timestamp>1306760937.5</timestamp>
+</run>
+<run>
+ <id>3</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>82</team>
+ <time>851.989045</time>
+ <timestamp>1306761006.08</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>3</judgement_id>
+ <n>1</n>
+ <result>WA</result>
+ <run-id>3</run-id>
+ <solved>False</solved>
+ <time>855.576337</time>
+ <timestamp>1306761009.66</timestamp>
+</testcase>
+<run>
+ <id>3</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>WA</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>82</team>
+ <time>851.989045</time>
+ <timestamp>1306761009.67</timestamp>
+</run>
+<run>
+ <id>4</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>82</team>
+ <time>869.473767</time>
+ <timestamp>1306761023.56</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>4</judgement_id>
+ <n>1</n>
+ <result>WA</result>
+ <run-id>4</run-id>
+ <solved>False</solved>
+ <time>892.960396</time>
+ <timestamp>1306761047.05</timestamp>
+</testcase>
+<run>
+ <id>4</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>WA</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>82</team>
+ <time>869.473767</time>
+ <timestamp>1306761047.05</timestamp>
+</run>
+<run>
+ <id>5</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>82</team>
+ <time>944.722888</time>
+ <timestamp>1306761098.81</timestamp>
+</run>
+<run>
+ <id>6</id>
+ <judged>False</judged>
+ <language>C++</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>62</team>
+ <time>965.22707</time>
+ <timestamp>1306761119.31</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>6</judgement_id>
+ <n>1</n>
+ <result>WA</result>
+ <run-id>6</run-id>
+ <solved>False</solved>
+ <time>966.109435</time>
+ <timestamp>1306761120.2</timestamp>
+</testcase>
+<run>
+ <id>6</id>
+ <judged>True</judged>
+ <language>C++</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>WA</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>62</team>
+ <time>965.22707</time>
+ <timestamp>1306761120.2</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>5</judgement_id>
+ <n>1</n>
+ <result>TLE</result>
+ <run-id>5</run-id>
+ <solved>False</solved>
+ <time>970.544707</time>
+ <timestamp>1306761124.63</timestamp>
+</testcase>
+<run>
+ <id>5</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>TLE</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>82</team>
+ <time>944.722888</time>
+ <timestamp>1306761124.63</timestamp>
+</run>
+<run>
+ <id>7</id>
+ <judged>False</judged>
+ <language>C++</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>48</team>
+ <time>1002.700926</time>
+ <timestamp>1306761156.79</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>7</judgement_id>
+ <n>1</n>
+ <result>AC</result>
+ <run-id>7</run-id>
+ <solved>True</solved>
+ <time>1004.059486</time>
+ <timestamp>1306761158.15</timestamp>
+</testcase>
+<run>
+ <id>7</id>
+ <judged>True</judged>
+ <language>C++</language>
+ <penalty>False</penalty>
+ <problem>11</problem>
+ <result>AC</result>
+ <solved>True</solved>
+ <status>done</status>
+ <team>48</team>
+ <time>1002.700926</time>
+ <timestamp>1306761158.15</timestamp>
+</run>
+<run>
+ <id>8</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>93</team>
+ <time>1088.317137</time>
+ <timestamp>1306761242.4</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>8</judgement_id>
+ <n>1</n>
+ <result>WA</result>
+ <run-id>8</run-id>
+ <solved>False</solved>
+ <time>1090.198886</time>
+ <timestamp>1306761244.29</timestamp>
+</testcase>
+<run>
+ <id>8</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>WA</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>93</team>
+ <time>1088.317137</time>
+ <timestamp>1306761244.29</timestamp>
+</run>
+<run>
+ <id>9</id>
+ <judged>False</judged>
+ <language>Java</language>
+ <problem>11</problem>
+ <status>fresh</status>
+ <team>82</team>
+ <time>1104.468766</time>
+ <timestamp>1306761258.56</timestamp>
+</run>
+<run>
+ <id>10</id>
+ <judged>False</judged>
+ <language>C++</language>
+ <problem>10</problem>
+ <status>fresh</status>
+ <team>95</team>
+ <time>1105.876943</time>
+ <timestamp>1306761259.96</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>10</judgement_id>
+ <n>1</n>
+ <result>WA</result>
+ <run-id>10</run-id>
+ <solved>False</solved>
+ <time>1107.487148</time>
+ <timestamp>1306761261.57</timestamp>
+</testcase>
+<run>
+ <id>10</id>
+ <judged>True</judged>
+ <language>C++</language>
+ <penalty>True</penalty>
+ <problem>10</problem>
+ <result>WA</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>95</team>
+ <time>1105.876943</time>
+ <timestamp>1306761261.58</timestamp>
+</run>
+<testcase>
+ <i>1</i>
+ <judged>True</judged>
+ <judgement_id>9</judgement_id>
+ <n>1</n>
+ <result>TLE</result>
+ <run-id>9</run-id>
+ <solved>False</solved>
+ <time>1130.750538</time>
+ <timestamp>1306761284.84</timestamp>
+</testcase>
+<run>
+ <id>9</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>TLE</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>82</team>
+ <time>1104.468766</time>
+ <timestamp>1306761284.84</timestamp>
+</run>
+<run>
+ <id>12</id>
+ <judged>True</judged>
+ <language>Java</language>
+ <penalty>True</penalty>
+ <problem>11</problem>
+ <result>TLE</result>
+ <solved>False</solved>
+ <status>done</status>
+ <team>82</team>
+ <time>1104.468766</time>
+ <timestamp>1306761284.84</timestamp>
+</run>
+</contest>

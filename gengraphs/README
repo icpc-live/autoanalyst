@@ -1,0 +1,11 @@
+This is initial work by Jan Kuipers to generate graphics plots
+about contest statistics.
+
+The python program 'languages.py' generates a GNUplot program
+as output that draws a bar chart of languages used. Run as:
+
+$ ./languages.py | gnuplot
+
+See sample languages.eps output file.
+
+It currently queries a DOMjudge SQL database.

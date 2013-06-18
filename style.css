@@ -1,0 +1,134 @@
+/* ----------------------- */
+/* KATTIS SCOREBOARD STUFF */
+/* ----------------------- */
+table#standings { 
+    border-collapse:collapse;
+    margin-top:15px;
+    width:100%;
+}
+#standings th {
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:3px;
+    padding-bottom:0px;
+    border-bottom:2px solid #AAAAAA;
+    border-top:2px solid #AAAAAA;
+    border-right:1px solid #CCCCCC;
+    border-left:1px solid #CCCCCC;
+}  
+#standings td {
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:3px;
+    padding-bottom:0px;
+    border:1px solid #CCCCCC;
+} 
+td.solved{
+    background-color:#99FF99;
+}
+
+td.solvedfirst{
+    background-color:#008800;
+    font-weight: bold;
+    color: white;
+}
+td.attempted{
+    background-color:#FF9999;
+}
+td.pending{
+    background-color:#9999FF;
+}
+#standings td.school, #standings td.flag {
+    vertical-align:middle;
+}
+#standings img.school, #standings img.flag {
+    height:28px;
+    width:28px;
+}
+
+#standings td.group_leader { background-color: #FFFFAA; }
+
+/* ----------------------- */
+/* COMMON FORMS            */
+/* ----------------------- */
+
+form#num_events_form {
+    display: inline-block;
+}
+
+form#team_lookup_form {
+    display: inline-block;
+}
+
+/* ----------------------- */
+/* TEAM STATIC SUMMARY     */
+/* ----------------------- */
+table#static_summary {
+    /*border: 1px black solid;*/
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table#static_summary td, table#static_summary th {
+}
+
+table#static_summary th {
+    background: #ddd;
+}
+
+table#fun_fact {
+    width: 100%;
+}
+
+table#team_region_info {
+}
+
+table#previous_wf_performance {
+}
+
+table#static_summary img.flag {
+    border: thin solid black;
+    padding: 3px;
+    background: #eee;
+}
+
+/* ----------------------- */
+/* TAG FEED                */
+/* ----------------------- */
+
+table#recent_events {
+    border: thick solid green;
+}
+
+table#tagged_events {
+    border: thick solid green;
+}
+
+table.event_feed {
+    width: 100%;
+}
+
+/* ----------------------- */
+/* MISCELLANEOUS           */
+/* ----------------------- */
+.hl { /* highlight */
+    background: red;
+    border: thick green dashed;
+}
+
+div#navigation_container {
+    font-size: 80%;
+}
+
+div#navigation_container > div {
+    width: auto;
+    padding: 0px 3px;
+    display: inline-block;
+}
+
+div#navigation_container div#link_container a {
+    padding: 0px 5px;
+}
+
+div#searchbox_chooser { background: yellow; display: block; }
+

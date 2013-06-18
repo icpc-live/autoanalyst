@@ -1,0 +1,6 @@
+AuthUserFile /home/frehe/www-pub/icat/.htpasswd
+AuthName "Skyddade sidor!"
+AuthType Basic
+<Limit GET POST>
+require valid-user
+</Limit>

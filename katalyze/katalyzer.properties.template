@@ -1,0 +1,40 @@
+# Katalyzer properties file
+
+# --- Database export
+db.enable = false
+db.driver = com.mysql.jdbc.Driver
+db.connection = jdbc:mysql://localhost/icat?user=root&password=THISISNOTAPASSWORD
+
+# --- Web Server
+web.enable = true
+web.compress = true
+web.port = 8099
+
+# --- File pusblisher
+#file.enable = true
+#file.targetDirectory = /Users/Stein/Dev/icat/output
+
+# -- Twitter
+twitter.enable = false
+twitter.oAuthConsumer = "", ""
+twitter.accessToken = "", ""
+twitter.hashtag = "#katalyzer"
+
+# -- Event Stream
+eventStream.enable = true
+eventStream.target = /Users/Stein/Dev/icat/bin/eventstream.xml
+
+# Rules
+rule.problemFirstSolved.enable = true
+
+rule.newLeader.enable = true
+rule.newLeader.ranks = 10
+
+rule.rejectedSubmission.enable = true
+rule.rejectedSubmission.ranks = 10 
+
+# Charts
+charts.enable = false
+charts.directory = output
+
+# 

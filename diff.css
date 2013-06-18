@@ -1,0 +1,74 @@
+/*
+ * diff.css
+ *
+ * Common CSS settings for viewing diffs. See diff.js for more details. The
+ * expected structure of the HTML is:
+ *
+ *  <div class='diff_container'>
+ *      <div class='diff_controls'>[checkboxes for options]</div>
+ *      <div class='diff_column_a'>
+ *          <div class='diff_name'>name of file a</div>
+ *          <div class='diff_code'></div>
+ *      </div>
+ *      <div class='diff_column_b'>
+ *          <div class='diff_name'>name of file b</div>
+ *          <div class='diff_code'></div>
+ *      </div>
+ * </div>
+ *
+ * The 'diff_code' class allows the two divs to be (easily) styled in the same
+ * way, and the 'a_column' and 'b_column' differentiate the two.
+ *
+ * If you want to limit/fix the height of a diff view, then set the height or
+ * max-height properties on the div.diff_code (as a CSS rule in the file where
+ * it is used).
+ *
+ * Author: Greg Hamerly (hamerly@cs.baylor.edu)
+ */
+
+div.diff_column_a, div.diff_column_b {
+    width: 49%;
+    display: inline-block;
+    vertical-align: text-top;
+    border: thin solid black;
+    white-space: pre;
+    font-family: monospace;
+}
+
+
+div.diff_code {
+    background: #eee;
+    overflow: scroll;
+}
+
+div.diff_name {
+    text-align: center;
+    font-weight: bold;
+    height: 2em;
+    line-height: 2em;
+    border-bottom: thin solid black;
+}
+
+/* make sure that the lines used in the diff have uniform dimensions */
+div.diff_line {
+    height: 1.3em;
+    padding: 0;
+    margin-bottom: 2px;
+}
+
+/* color the different types of lines */
+div.diff_code div.diff_nodiff { background: #fff; }
+div.diff_code div.diff_match { background: #bfb; }
+div.diff_code div.diff_nomatch { background: #fbb; }
+div.diff_code div.diff_empty { background: #aaa; }
+div.diff_code div.diff_hidden_common_lines { text-align: center; background: #ff3; }
+
+span.diff_line_number { display: inline-block; width: 3em; border-right: thin solid black; text-align: right; }
+span.diff_line_number.diff_hidden { display: none; }
+
+/* ensure that the controls and their labels do not get split across lines */
+span.diff_option { display: inline-block; margin: 0.2em;
+    /* disable user selection of the control text */
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
+}
+

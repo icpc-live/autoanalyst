@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
+    <link type="text/css" href="css/katalyze.css" rel="stylesheet" />
+    
+    <script type='text/javascript' src='web/jquery-1.6.1.js'></script>
+    <script type='text/javascript' src='web/jquery-ui-1.8.13.custom.js'></script>
+    <script type='text/javascript' src='web/jquery.tmpl.js'></script>
+    <script type='text/javascript' src='web/knockout-1.1.2.js'></script>
+    <script type='text/javascript' src='web/graphs.js'></script>
+  </head>
+  <body>
+
+	<div class="horizontalBar">
+    	<div id="contestTime">Contest time: <input class="smallInput" data-bind="value: contestTime"></input></div>
+    	<div id='slider'></div>
+    </div>
+    
+    <div class="leftMenu" data-bind='template: "availableGraphs"'> </div>
+    <div class="graphArea">
+      <div data-bind='template: {name: "selectedGraph", data: selectedGraphId}'></div>
+    </div>
+    <div class="horizontalBar">
+    <button class="alert">Refresh</button>
+    </div>
+
+
+    <script type="text/html" id="availableGraphs">
+        {{each(i, graph) graphs()}}
+                <div>
+		  <a href="#" data-bind="click: function() { viewModel.select(graph); }">${description}</a>
+		    </div>
+        {{/each}}
+	</script>
+
+
+    <script id="selectedGraph" type="text/html">
+      <div>
+	<img src="${viewModel.selectedGraphPath($item.data)}"/>
+      </div>
+    </script>
+    
+    
+  </body>
+
+</html>

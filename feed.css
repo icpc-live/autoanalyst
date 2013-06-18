@@ -1,0 +1,115 @@
+/*
+ * feed.css
+ *
+ * Common CSS settings for viewing feeds. See feed.js for more details. The
+ * expected structure of the HTML (most of which is constructed by the
+ * javascript) is:
+ *
+ *  <div id=some_unique_id' class='feed_container'>
+ *      <div class='feed_name'>Feed: NAME_OF_FEED</div>
+ *      <div class='feed_controls'>
+ *          <span class='feed_pause_control'>Running</span>&nbsp;&nbsp;
+ *          <span class='feed_update'>Last update: <span class='feed_last_update_seconds'>SECONDS</span> secs.</span>
+ *          <span class='feed_sort'>Sort: 
+ *              <select class='feed_sort_key'>
+ *                  <option value='id'>id</option>
+ *                  ...
+ *              </select>
+ *              <input type='checkbox' id='feed_ascending_control_X' class='feed_sort_ascending'>
+ *              <label for='feed_ascending_control_X'>Ascending</label>
+ *          </span>
+ *      </div>
+ *      <div class='feed_pinned_rows_container'>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_pin_control'>unpin</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_pin_control'>unpin</div></div>
+ *          ...
+ *      </div>
+ *      <div class='feed_rows_container'>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_pin_control'>pin</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_pin_control'>pin</div></div>
+ *          ...
+ *      </div>
+ *  </div>
+ *
+ * Almost all of this is constructed on the fly; the only thing the user needs
+ * to supply is the anchoring outermost div with the unique id.
+ *
+ * Author: Greg Hamerly (hamerly@cs.baylor.edu)
+ */
+
+/* the root div of a feed has class .feed_container */
+.feed_container { border: thin solid black; } 
+
+/* at the top of the feed are two divs placed next to each other: .feed_name and
+ * .feed_controls
+ */
+.feed_container .feed_name { font-weight: bold; padding-left: 1em; display: inline-block; width: 30%; }
+
+/* The controls allow pausing/unpausing, and displaying relevant information
+ * about the state of the feed (last update, etc.).
+ */
+.feed_container .feed_controls { display: inline-block; width: 60%; padding: 2px; font-size: small;
+    /* disable user selection of the control text */
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
+}
+.feed_container .feed_controls .feed_pause_control {
+    cursor: hand;
+    display: inline-block;
+    text-align: center;
+    width: 6em;
+    background: #ddd;
+    padding: 2px;
+    font-weight: bold;
+    color: green;
+}
+.feed_container .feed_controls .feed_pause_control:active { background: #333; }
+.feed_container .feed_controls .feed_pause_control.feed_paused { color: red; }
+
+.feed_container .feed_controls .feed_pause_control,
+.feed_container .feed_controls .feed_update,
+.feed_container .feed_controls .feed_sort {
+    display: inline-block;
+    margin: 0 3px;
+}
+
+
+/* the main part of the feed is the .feed_rows_container. Note that the height
+ * of this div determines the overall height of the entire feed box (i.e.  the
+ * parent, .feed_container).
+ */
+.feed_container .feed_rows_container { overflow: scroll; height: 20em; }
+/* Each individual row is placed in its own .feed_row */
+.feed_container .feed_row { padding: 0.2em; margin: 0.2em; background: #fee;  position: relative; }
+.feed_container .feed_row .feed_row_description { display: inline-block; width: 90%; vertical-align: text-top; }
+.feed_container .feed_row .feed_row_pin_control:hover { color: black; border: thin solid blue; }
+.feed_container .feed_row .feed_row_pin_control {
+    display: inline-block;
+    width: 5em;
+    font-size: 80%;
+    max-width: 7%;
+    border: thin dashed gray;
+    color: gray;
+    cursor: hand;
+    vertical-align: text-top;
+    text-align: center;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
+}
+/* This setting can be useful to obtain one-line rows. */
+/* .feed_container .feed_row {  white-space: nowrap; } */
+
+/* styling for pinned rows */
+.feed_container .feed_pinned_rows_container { display: block; border: thick solid red; }
+.feed_container .feed_pinned_rows_container:empty { border: none; }
+.feed_container .feed_pinned_rows_container:before { content: "Pinned events:"; font-weight: bold; }
+.feed_container .feed_pinned_rows_container:empty:before { content: none; }
+
+/* style the different priority items with different font sizes */
+.feed_container .feed_row span.priority_0 { font-size: 150%; font-weight: bold; }
+.feed_container .feed_row span.priority_1 { font-size: 100%; }
+.feed_container .feed_row span.priority_2 { font-size: 75%; }
+
+.feed_container .feed_row.feed_row_recent { background: yellow; }
+
+/* for results of the submissions feed */
+span.kattis_result_accepted { color: green; font-weight: bold; }
+span.kattis_result_not_accepted { color: red; }

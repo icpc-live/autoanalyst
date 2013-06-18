@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /home/frehe/www-pub/scoreboard
+while 1 ; do
+  wget http://scrool.se/icpc/wf2011
+done

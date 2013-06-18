@@ -1,0 +1,7 @@
+#!/bin/sh
+cd /home/icpc/scoreboard
+while :; do
+  rm index.html*
+  wget --no-check-certificate https://192.168.1.141/standings/
+  scp index.html frehe@remote.ida.liu.se:/home/frehe/www-pub/scoreboard
+done

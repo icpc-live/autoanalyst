@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="katalyze">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="/usr/lib/eclipse"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit4_4.5.0.v20090824/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.jar"/>
+    </path>
+    <path id="katalyze.classpath">
+        <pathelement location="bin"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+        <pathelement location="lib/commons-lang-2.6.jar"/>
+        <pathelement location="lib/ezmorph-1.0.6.jar"/>
+        <pathelement location="lib/commons-logging-1.1.1.jar"/>
+        <pathelement location="lib/commons-collections-3.2.1.jar"/>
+        <pathelement location="lib/commons-beanutils-1.8.3.jar"/>
+	<pathelement location="lib/commons-configuration-1.9.jar"/>
+        <pathelement location="lib/jcommon-1.0.16.jar"/>
+        <pathelement location="lib/jfreechart-1.0.13-swt.jar"/>
+        <pathelement location="lib/jfreechart-1.0.13.jar"/>
+        <pathelement location="lib/json-lib-2.4-jdk15.jar"/>
+        <pathelement location="lib/log4j-1.2.16.jar"/>
+        <pathelement location="lib/mysql-connector-java-5.0.8-bin.jar"/>
+        <pathelement location="lib/twitter4j-core-2.2.5.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="katalyze.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="Katalyze">
+        <java classname="katalyzeapp.Katalyze" failonerror="true" fork="yes">
+            <arg line="-input /home/stein/dev/icat/katalyze/data/kattislog_wf2012.txt"/>
+            <classpath refid="katalyze.classpath"/>
+        </java>
+    </target>
+    <target name="tests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.ParseTests" todir="${junit.output.dir}"/>
+            <test name="tests.ScoreCalculation" todir="${junit.output.dir}"/>
+            <test name="tests.ScoreOrdering" todir="${junit.output.dir}"/>
+            <test name="tests.StandingsCriteria" todir="${junit.output.dir}"/>
+            <test name="tests.StateComparingRules" todir="${junit.output.dir}"/>
+            <classpath refid="katalyze.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
