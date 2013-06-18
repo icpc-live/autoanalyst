@@ -37,7 +37,7 @@ public abstract class StateComparingRule {
 			String clearTextMessage = getCleartextMessage(message, submission);
 			String icatMessage = getICatMessage(message, submission);
 			
-			LoggableEvent event = new LoggableEvent(team.getContest(), submission.getTeam(), minutesFromStart, clearTextMessage, icatMessage, score, importance);
+			LoggableEvent event = new LoggableEvent(minutesFromStart, team.getContest(), submission.getTeam(), minutesFromStart, clearTextMessage, icatMessage, score, importance);
 			target.notify(event);
 		}
 	}

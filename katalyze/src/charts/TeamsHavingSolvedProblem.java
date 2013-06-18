@@ -1,9 +1,7 @@
 package charts;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 

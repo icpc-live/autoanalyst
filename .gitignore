@@ -1,1 +1,6 @@
 katalyze/bin
+katalyze/katalyzer.properties
+.metadata
+*~
+
+
