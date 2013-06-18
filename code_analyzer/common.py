@@ -1,6 +1,8 @@
 import MySQLdb
 import sys, dbconfig
 
+from dbconfig import dbHost, dbUser, dbPasswd, database
+
 try:
     dbConn = MySQLdb.connect( host = dbHost,
                               user = dbUser,
