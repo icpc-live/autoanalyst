@@ -2,13 +2,13 @@ package charts;
 
 import java.util.ArrayList;
 
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-
 import model.Contest;
 import model.Problem;
 import model.Score;
 import model.Standings;
+
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class TeamsHavingSolvedProblem extends TimeLineGraph {
 

@@ -1,6 +1,7 @@
 package charts;
 
 import model.Contest;
+
 import org.jfree.chart.JFreeChart;
 
 public interface ContestChart {

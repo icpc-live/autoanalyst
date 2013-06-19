@@ -21,7 +21,6 @@ public class ProblemSubmissionsPerMinute extends ContestTimeGraph {
 
         XYSeries sTotal = new XYSeries("Total submissions per minute");
         XYSeries sAccepted = new XYSeries("Accepted submissions per minute");
-        int lengthInMinutes = contest.getLengthInMinutes();
         List<Submission> submissions = contest.getSubmissions();
         for (int time=0; time<=currentTime; time++) {
         	int total = 0;

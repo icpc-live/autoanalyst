@@ -22,14 +22,14 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 		// this method replaces EVERYTHING in the scoreboard row for
 		// the given team
 		int teamId = event.team.getTeamNumber();
-		Score score = event.score;
+		//Score score = event.score;
 		
-		int totalTime = score.getTimeIncludingPenalty();
-		int numSolutions = score.solvedProblemCount();
+		//int totalTime = score.getTimeIncludingPenalty();
+		//int numSolutions = score.solvedProblemCount();
 		
 		// build up all the changed fields
 		String changes = "total_time = ?, num_solutions = ?";
-		int numProblems = event.contest.getProblems().size();
+		//int numProblems = event.contest.getProblems().size();
 		for (Problem p : event.contest.getProblems()) {
 			changes = changes + ", " + p.getLetter().toLowerCase() + "_submissions = ?";
 			changes = changes + ", " + p.getLetter().toLowerCase() + "_soln_time = ?";

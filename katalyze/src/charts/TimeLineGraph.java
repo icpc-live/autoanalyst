@@ -2,6 +2,7 @@ package charts;
 
 import java.awt.BasicStroke;
 import java.awt.Font;
+import java.util.List;
 
 import model.Contest;
 
@@ -41,13 +42,12 @@ public abstract class TimeLineGraph implements ContestChart {
     	XYPlot plot = (XYPlot) chart.getPlot();
     	
 		XYItemRenderer renderer = plot.getRenderer();
-		int i=0;
-    	for (Object series : dataset.getSeries()) {
-    	
-//    		XYSeries xySeries = (XYSeries) series;
+
+		List<?> seriesList = dataset.getSeries();
+		
+		for (int i=0; i<seriesList.size(); i++) {
     		renderer.setSeriesStroke(i, new BasicStroke((float) 2.0));
-    		i++;
-    	}
+		}
     	
     	NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
     	rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());

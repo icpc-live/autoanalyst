@@ -18,6 +18,7 @@ import model.LifeCycleAware;
 
 import com.sun.net.httpserver.*;
 
+@SuppressWarnings("restriction")
 class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 	static Logger logger = Logger.getLogger(Katalyze.class);
 	
@@ -104,7 +105,7 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 				Iterator<String> iter = keySet.iterator();
 				while (iter.hasNext()) {
 					String key = iter.next();
-					List values = requestHeaders.get(key);
+					List<?> values = requestHeaders.get(key);
 					String s = key + " = " + values.toString() + "\n";
 					responseBody.write(s.getBytes());
 				}
