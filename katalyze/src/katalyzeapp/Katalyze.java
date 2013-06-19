@@ -40,6 +40,7 @@ public class Katalyze {
 			}
 			
 			katalyzer = new Katalyzer();
+			katalyzer.start();
 			katalyzer.process(input);
 			
 			logger.info("Done. Press enter to stop the application");
@@ -54,7 +55,7 @@ public class Katalyze {
 		}
 		finally {
 			if (katalyzer != null) {
-				katalyzer.close();
+				katalyzer.stop();
 			}
 			
 			logger.info("Katalyze terminated");

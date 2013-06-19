@@ -13,6 +13,7 @@ public class Analyzer implements NotificationTarget {
 	List<StandingsUpdatedEvent> stateRules = new ArrayList<StandingsUpdatedEvent>();
 	List<NotificationTarget> targets = new ArrayList<NotificationTarget>();
 	List<OutputHook> outputHooks = new ArrayList<OutputHook>();
+	List<LifeCycleAware> lifeCycleAwareObjects = new ArrayList<LifeCycleAware>();
 	final static ScoreTableComparer comparator = new ScoreTableComparer();
 	int lastHookTime = -1;
 	int videoCaptureTreshold;
@@ -30,6 +31,31 @@ public class Analyzer implements NotificationTarget {
 	
 	public void addNotifier(NotificationTarget newNotifier) {
 		targets.add(newNotifier);
+	}
+	
+	public void manageLifeCycle(LifeCycleAware target) {
+		lifeCycleAwareObjects.add(target);
+	}
+	
+	
+	public void start() {
+		for (LifeCycleAware target : lifeCycleAwareObjects) {
+			try {
+				target.start();
+			} catch (Exception e) {
+				logger.error(String.format("Error while starting %s: %s", target, e));
+			}
+		}
+	}
+
+	public void stop() {
+		for (LifeCycleAware target : lifeCycleAwareObjects) {
+			try {
+				target.stop();
+			} catch (Exception e) {
+				logger.error(String.format("Error while stopping %s: %s", target, e));
+			}
+		}
 	}
 	
 	public void notify(LoggableEvent event) {

@@ -5,18 +5,16 @@ import java.util.HashMap;
 import web.Publisher;
 
 
-public class WebNotificationTarget implements NotificationTarget{
+public class WebNotificationTarget implements NotificationTarget {
 	
 	final Publisher publisher;
 	
-
 	PublishableEventList allEvents;
 	HashMap<Team, PublishableEventList> teamEvents = new HashMap<Team, PublishableEventList>();
 
 	public WebNotificationTarget(Publisher publisher) {
 		this.publisher = publisher;
 		this.allEvents = new PublishableEventList(publisher, "/AllNotifications");
-
 	}
 	
 	
@@ -38,7 +36,7 @@ public class WebNotificationTarget implements NotificationTarget{
 			teamList.add(event);	
 		}
 	}
-	
 
+	
 
 }

@@ -1,6 +1,7 @@
 package katalyzeapp;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 
@@ -10,6 +11,9 @@ import org.apache.log4j.Logger;
 import config.TwitterConfig;
 
 import rules.*;
+import teamscore.ExtendedScoreDump;
+import web.FileWebPublisher;
+import web.WebPublisher;
 
 import charts.ChartDumperHook;
 
@@ -20,6 +24,7 @@ import model.Contest;
 import model.DatabaseNotificationTarget;
 import model.ModelDumperHook;
 import model.TwitterNotificationTarget;
+import model.WebNotificationTarget;
 
 public class ConfigReader {
 	static Logger logger = Logger.getLogger(ConfigReader.class);
@@ -135,6 +140,37 @@ public class ConfigReader {
 		}
 	}
 	
+	public void setupWebPublisher(Contest contest, Analyzer analyzer) {
+		KatalyzerHttpHandler httpHandler;
+		if (featureEnabled("web")) {
+			int port = config.getInteger("web.port", 8099);
+			boolean useCompression = config.getBoolean("web.compress", true);
+			
+			WebPublisher webPublisher = new WebPublisher(useCompression);
+			
+			httpHandler = new KatalyzerHttpHandler(contest, webPublisher, port);
+			
+			analyzer.addOutputHook(new ExtendedScoreDump(contest, webPublisher));
+			analyzer.addNotifier(new WebNotificationTarget(webPublisher));
+			analyzer.manageLifeCycle(httpHandler);
+		
+		}
+	}
+	
+	public void setupFilePublisher(Contest contest, Analyzer analyzer) {
+		if (featureEnabled("file")) {
+			String targetDirectory = config.getString("file.targetDirectory");
+			
+			try {
+				FileWebPublisher publisher = new FileWebPublisher(targetDirectory);
+				analyzer.addNotifier(new WebNotificationTarget(publisher));
+			} catch (IOException e) {
+				logger.error(String.format("Failed to initialize file publisher. Reason: %s", e));
+			}
+			
+		}
+	}
+	
 	
 	
 	public void SetupAnalyzer(Contest contest, Analyzer analyzer, ContestMessages messageHandlers) {
@@ -143,6 +179,8 @@ public class ConfigReader {
 		setupCharts(contest, analyzer);
 		setupDatabaseNotifier(analyzer);
 		setupTwitterNotifier(analyzer);
+		setupWebPublisher(contest, analyzer);
+		setupFilePublisher(contest, analyzer);
 		
 		setupOutputStream(analyzer, messageHandlers);	
 		

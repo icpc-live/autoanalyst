@@ -14,23 +14,26 @@ import org.apache.log4j.Logger;
 import web.*;
 
 import model.Contest;
+import model.LifeCycleAware;
 
 import com.sun.net.httpserver.*;
 
-class KatalyzerHttpHandler implements HttpHandler {
+class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 	static Logger logger = Logger.getLogger(Katalyze.class);
 	
 	Contest contest;
 	HttpServer server = null;
 	WebPublisher publisher;
+	int port;
 	
 
-	public KatalyzerHttpHandler(Contest contest, WebPublisher publisher) {
+	public KatalyzerHttpHandler(Contest contest, WebPublisher publisher, int port) {
 		this.contest = contest;
 		this.publisher = publisher;
+		this.port = port;
 	}
 	
-	public void start(int port) throws IOException{
+	public void start() throws IOException{
 	    InetSocketAddress addr = new InetSocketAddress(port);
 	    server = HttpServer.create(addr, 0);
 
@@ -48,6 +51,9 @@ class KatalyzerHttpHandler implements HttpHandler {
 	    publisher.publish("/css/katalyze.css", new DynamicFileWebDocument("text/css","css/katalyze.css"));
 	    
 	}
+	
+	
+	
 	
 	public void stop() {
 		server.stop(0);
