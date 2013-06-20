@@ -1,0 +1,11 @@
+Build avconv:
+- clone newest avconv library (ffmpeg replacement)
+- ./configure --enable-gpl --enable-encoder=prores && make && sudo make install
+
+To convert with overlay:
+convert -background darkblue -fill white  -font Trebuchet-MS-Fett -size 1920x100  -pointsize 62   -gravity West label:" Råndom Ünivérçity, rank 4"     label_gravity.png
+avconv -i team41-clap.avi -i label_gravity.png -strict experimental -ss 0 -t 20  -filter_complex "[0:v]scale=1920:1080[scaled];[scaled][1:v]overlay=0:900[overlayed];[overlayed]interlace" -flags +ildct -r 50 -vcodec prores -profile:v 1 team41-clap-50i.mov
+
+OR if 25p is enough:
+avconv -i ../team41-clap.avi -i label_gravity.png -strict experimental -ss 0 -t 20  -filter_complex "[0:v]scale=1920:1080[scaled];[scaled][1:v]overlay=0:900" -flags +ildct  -vcodec prores -profile:v 1 team41-clap-25p.mov
+
