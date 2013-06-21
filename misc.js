@@ -41,3 +41,20 @@ $(document).ready(function() {
         return false;
     });
 });
+
+var get_json_synchronous = (function(url) {
+    var response;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': url,
+        'dataType': 'json',
+        'success': function(data) { response = data; },
+        'error': function(err) {
+            console.log('error in get_json_synchronous:');
+            console.log(err);
+        }
+    })
+    return response;
+});
+
