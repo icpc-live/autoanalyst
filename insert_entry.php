@@ -9,6 +9,8 @@ $text          = $_GET["text"];
 include('icat.php');
 $db = init_db();
 
+$_SESSION['entry_username'] = $user;
+
 $result = mysql_query(
     "insert into entries (date, contest_time, user, priority, text) values " .
     sprintf("('%s', %d, '%s', %d, '%s')",
