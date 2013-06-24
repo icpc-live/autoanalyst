@@ -7,7 +7,7 @@ function ActivityPlot(target, team_id, problem_id) {
     self.source_url = 'activity_data_source.php';
     self.target.data("activity_plot", self);
     self.update_interval = 5 * 1000;
-    var data = get_json_synchronous("common_data.php");
+    var data = get_json_synchronous("icpc/common_data.php");
     self.BALLOON_COLORS = data['BALLOON_COLORS'];
     self.TEAMS= data['TEAMS'];
 

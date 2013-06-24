@@ -20,7 +20,7 @@ function which_view() {
         print("Team: " . 
             implode(", ", 
                 array_map(function($tid) use ($school_short) {
-                    return "<a href='team_feed.php?team_id=$tid'>" . $school_short[$tid] . "</a>";
+                    return "<a href='team.php?team_id=$tid'>" . $school_short[$tid] . "</a>";
                 }, $team_ids)
             )
         );
@@ -42,6 +42,7 @@ div#activity_plot {
 }
 div#activity_plot div.ticklabel { font-size: 150%; }
 </style>
+<meta charset="utf-8">
 <script type="text/javascript" src="katalyze/web/jquery-1.6.1.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.resize.min.js"></script>

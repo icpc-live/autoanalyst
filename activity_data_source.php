@@ -1,5 +1,5 @@
 <?php
-include("icat.php");
+require_once "icat.php";
 $db = init_db();
 
 // IDEAS:
@@ -71,7 +71,7 @@ $result = mysql_query(
 # scaling of the plot)
 $edit_bins = array();
 $max_problems_per_bin = 0; // need to know how many problems are solved in any one binned time interval
-while ($row = mysql_fetch_assoc($result)) {
+while ($result && ($row = mysql_fetch_assoc($result))) {
     $count = intval($row["count"]);
     $edit_bins[strtoupper($row["problem_id"])][intval($row["contest_time_binned"])] = $count;
     $max_problems_per_bin = max($max_problems_per_bin, $count);
@@ -167,7 +167,8 @@ foreach ($submissions as $result => $result_submissions) {
         if (! isset($problem_minute_counter[$problem_minute])) {
             $problem_minute_counter[$problem_minute] = 0;
         }
-        $scale = max(10, $num_at_problem_minute[$problem_minute]);
+        $n = isset($num_at_problem_minute[$problem_minute]) ? $num_at_problem_minute[$problem_minute] : 0;
+        $scale = max(10, $n);
         $dataset["data"][] = array(
             $sub["contest_time"], 
             $baseline_per_problem[$problem_id] + $problem_minute_counter[$problem_minute] * $max_problems_per_bin / $scale
