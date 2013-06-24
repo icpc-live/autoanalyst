@@ -1,16 +1,20 @@
 <?php
-$problem_id = strtoupper($_GET["problem_id"]);
-include("icat.php");
+$problem_id = 'A';
+if (isset($_GET["problem_id"])) {
+    $problem_id = strtoupper($_GET["problem_id"]);
+}
+require_once 'icat.php';
 $db = init_db();
 
 ?>
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!doctype html>
 <html>
 <head>
 <title>iCAT -- problems</title>
 
 <link rel="stylesheet" type="text/css" href="feed.css" />
 <link rel="stylesheet" type="text/css" href="style.css" />
+<meta charset="utf-8">
 <style type="text/css">
 h1 { text-align: center; margin: 0px; }
 
@@ -71,7 +75,7 @@ $(document).ready(function() {
 
 <?php navigation_container(); ?>
 
-<h1>Problem <?php echo $problem_id; ?> &mdash; <?php echo $PROBLEM_ID_TO_NAME[$problem_id]; ?> </h1>
+<h1>Problem <?php echo $problem_id; ?> &mdash; <?php echo $COMMON_DATA['PROBLEM_ID_TO_NAME'][$problem_id]; ?> </h1>
 
 <div id="statistics_activity_container">
 <div id='problem_statistics'>
@@ -112,7 +116,7 @@ Statistics about the problem:
             . " where problem_id = '$problem_id' and contest_time = $first_submission_time order by team_id", $db);
         $first_teams_to_submit = array();
         while ($row = mysql_fetch_assoc($result)) {
-            $first_teams_to_submit[] = sprintf("<a href='team_feed.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+            $first_teams_to_submit[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
         }
         $first_teams_to_submit = $first_teams_to_submit ? sprintf("(Team %s)", implode(", ", $first_teams_to_submit)) : "";
 
@@ -121,7 +125,7 @@ Statistics about the problem:
             . " where problem_id = '$problem_id' and result = 'AC' and contest_time = $first_solution_time order by team_id", $db);
         $first_teams_to_solve = array();
         while ($row = mysql_fetch_assoc($result)) {
-            $first_teams_to_solve[] = sprintf("<a href='team_feed.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+            $first_teams_to_solve[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
         }
         $first_teams_to_solve = $first_teams_to_solve ? sprintf("(Team %s)", implode(", ", $first_teams_to_solve)) : "";
 
@@ -152,16 +156,24 @@ Statistics about the problem:
             . " (select *, count(*) as c from edit_activity "
             . " where problem_id = '$problem_id' and valid != 0 group by team_id having c = 1) as arbitrary_table_name",
             $db);
-        $row = mysql_fetch_assoc($result);
-        $count_one_edit = $row["count_one_edit"];
+        if ($result) {
+            $row = mysql_fetch_assoc($result);
+            $count_one_edit = $row["count_one_edit"];
+        } else {
+            $count_one_edit = 0;
+        }
 
         #########################################
         $result = mysql_query("select count(*) as count_two_plus_edits from "
             . " (select *, count(*) as c from edit_activity "
             . " where problem_id = '$problem_id' and valid != 0 group by team_id having c > 1) as arbitrary_table_name",
             $db);
-        $row = mysql_fetch_assoc($result);
-        $count_two_plus_edits = $row["count_two_plus_edits"];
+        if ($result) {
+            $row = mysql_fetch_assoc($result);
+            $count_two_plus_edits = $row["count_two_plus_edits"];
+        } else {
+            $count_two_plus_edits = 0;
+        }
 
         #########################################
         $result = mysql_query("select count(distinct team_id) as num_submitted_problem "
@@ -174,7 +186,7 @@ Statistics about the problem:
     <li>Teams solved: <?php echo $num_solutions; ?> /
          Teams submitted but not solved: <?php echo $num_submitted_problem - $num_solutions; ?> /
          Total submissions: <?php echo $num_submissions; ?>
-    <li># Solutions by language: <?php echo $solutions_by_language; ?>
+    <li># Solutions by <a href="language.php?problem_id=<?php echo $problem_id; ?>">language</a>: <?php echo $solutions_by_language; ?>
     <li># Submissions by language: <?php echo $submissions_by_language; ?>
     <li>Avg. time to solution: <?php echo $avg_time_to_soln; ?> min.
     <li>Avg. # incorrect submissions before accepted: <?php echo $avg_num_incorrect_submissions; ?>
@@ -188,7 +200,7 @@ Statistics about the problem:
             /*
     <li>Teams that solved this problem (in order of solution):
             do {
-                printf("<a href='team_feed.php?team_id=%d'>%d</a>, ", $row['team_id'], $row['team_id']);
+                printf("<a href='team.php?team_id=%d'>%d</a>, ", $row['team_id'], $row['team_id']);
             } while ($row = mysql_fetch_assoc($result));
             */
         ?>
