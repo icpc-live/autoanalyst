@@ -1,13 +1,14 @@
 <?php
-include('icat.php');
+require_once 'icat.php';
 ?>
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!doctype html>
 <html>
 <head>
 <title>iCAT overview</title>
 
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="katalyze/css/katalyze.css" />
+<meta charset="utf-8">
 <style type="text/css">
 h1 { text-align: center; margin: 0; }
 </style>
