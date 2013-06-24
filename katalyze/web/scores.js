@@ -142,7 +142,7 @@
 				});
 			}
 
-            var name = "<a href='team_feed.php?team_id=" + data.team.id + "'>" + data.team.name + "</a>";
+            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + data.team.name + "</a>";
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.141:58" + padded_id + "'>low</a>, " +
