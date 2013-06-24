@@ -20,13 +20,13 @@
  *          </span>
  *      </div>
  *      <div class='feed_pinned_rows_container'>
- *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_pin_control'>unpin</div></div>
- *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_pin_control'>unpin</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_controls feed_row_pin_control'>unpin</div><div class='feed_row_controls feed_row_tweet_control'>tweet</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_controls feed_row_pin_control'>unpin</div><div class='feed_row_controls feed_row_tweet_control'>tweet</div></div>
  *          ...
  *      </div>
  *      <div class='feed_rows_container'>
- *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_pin_control'>pin</div></div>
- *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_pin_control'>pin</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 1 description</div><div class='feed_row_controls feed_row_pin_control'>pin</div><div class='feed_row_controls feed_row_tweet_control'>tweet</div></div>
+ *          <div class='feed_row pinned_row'><div class='feed_row_description'>row 2 description</div><div class='feed_row_controls feed_row_pin_control'>pin</div><div class='feed_row_controls feed_row_tweet_control'>tweet</div></div>
  *          ...
  *      </div>
  *  </div>
@@ -79,21 +79,34 @@
  */
 .feed_container .feed_rows_container { overflow: scroll; height: 20em; }
 /* Each individual row is placed in its own .feed_row */
-.feed_container .feed_row { padding: 0.2em; margin: 0.2em; background: #fee;  position: relative; }
-.feed_container .feed_row .feed_row_description { display: inline-block; width: 90%; vertical-align: text-top; }
-.feed_container .feed_row .feed_row_pin_control:hover { color: black; border: thin solid blue; }
-.feed_container .feed_row .feed_row_pin_control {
+.feed_container .feed_row { padding: 0em; margin: 0.2em; background: #fee; position: relative; }
+.feed_container .feed_row .feed_row_description { display: inline-block; width: 100%; vertical-align: text-top; }
+.feed_container .feed_row:hover .feed_row_controls { visibility: visible; }
+.feed_container .feed_row .feed_row_controls div:hover { color: black; background: white; border: thin solid blue; }
+.feed_container .feed_row .feed_row_controls {
+    font-size: 50%;
+    visibility: hidden;
+    position: absolute;
     display: inline-block;
-    width: 5em;
-    font-size: 80%;
-    max-width: 7%;
-    border: thin dashed gray;
-    color: gray;
+    vertical-align: middle;
+    right: 0%;
+    top: 0%;
+    height: 100%;
+    width: 11em;
+}
+.feed_container .feed_row .feed_row_controls div {
+    display: inline-block;
+    width: 40%;
+    border: thin solid gray;
+    color: black;
     cursor: hand;
-    vertical-align: text-top;
+    vertical-align: middle;
     text-align: center;
+    background: #ddd;
     -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
 }
+.feed_container .feed_row .feed_row_tweet_control { margin-left: 1%; }
+
 /* This setting can be useful to obtain one-line rows. */
 /* .feed_container .feed_row {  white-space: nowrap; } */
 

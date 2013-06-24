@@ -116,7 +116,7 @@ if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
     $problems_used = array_map(function($s) { return strtoupper($s); }, explode(",", $_GET["problem_id"]));
 } else {
     $problems_used = array();
-    for ($problem_ndx = 0; $problem_ndx < $G_NUM_PROBLEMS; ++$problem_ndx) {
+    for ($problem_ndx = 0; $problem_ndx < count($COMMON_DATA['PROBLEM_ID_TO_NAME']); ++$problem_ndx) {
         $problems_used[] = chr(ord('A') + $problem_ndx);
     }
 }
@@ -138,15 +138,15 @@ foreach ($problems_used as $problem_id) {
 
 // Create series of points for submissions, one per type of result
 $point_options_by_result = array(
-    'AC'   => array("label" => 'Accepted',                "color" => '#1a1',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 3,  "fillColor" => false, "fill" => 1)),
-    '(CE)' => array("label" => 'Compile Error',           "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    '(IF)' => array("label" => 'Illegal Function',        "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'MLE'  => array("label" => 'Memory Limit Exceeded',   "color" => 'pink',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'OLE'  => array("label" => 'Output Limit Exceeded',   "color" => 'purple',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'PE'   => array("label" => 'Presentation Error',      "color" => 'gray',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'RTE'  => array("label" => 'Run Time Error',          "color" => 'orange',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'TLE'  => array("label" => 'Time Limit Exceeded',     "color" => 'red',     "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-    'WA'   => array("label" => 'Wrong Answer',            "color" => '#333',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'AC'   => array("label" => 'AC'   /* 'Accepted'              */,   "color" => '#1a1',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 3,  "fillColor" => false, "fill" => 1)),
+    'CE'   => array("label" => 'CE'   /* 'Compile Error'         */,   "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'IF'   => array("label" => 'IF'   /* 'Illegal Function'      */,   "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'MLE'  => array("label" => 'MLE'  /* 'Memory Limit Exceeded' */,   "color" => 'pink',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'OLE'  => array("label" => 'OLE'  /* 'Output Limit Exceeded' */,   "color" => 'purple',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'PE'   => array("label" => 'PE'   /* 'Presentation Error'    */,   "color" => 'gray',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'RTE'  => array("label" => 'RTE'  /* 'Run Time Error'        */,   "color" => 'orange',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'TLE'  => array("label" => 'TLE'  /* 'Time Limit Exceeded'   */,   "color" => 'red',     "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+    'WA'   => array("label" => 'WA'   /* 'Wrong Answer'          */,   "color" => '#333',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
     // FIXME: do we want a result type for "status: fresh"? (i.e. the submission has not been judged) The status is not a "result"
 );
 
