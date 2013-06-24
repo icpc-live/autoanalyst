@@ -22,14 +22,14 @@ UPDATING TO LATEST SVN
 <?php system("svn update"); ?>
 
 --------------------------------------------------------
-LINK config.php TO THE RIGHT CONFIG FILE
-<?php system("rm config.php"); ?>
-<?php system("ln -s icpc2012/config_may15_test.php config.php"); ?>
+LINK TO THIS YEAR'S FILES
+<?php system("rm icpc"); ?>
+<?php system("ln -s icpc2013 icpc"); ?>
 
 --------------------------------------------------------
 MAKE SURE WE CAN CONNECT TO THE DATABASE
 <?php
-include('icat.php');
+require_once 'icat.php';
 $db = init_db();
 if (! $db) {
     print("ERROR: couldn't connect to database\n");
@@ -39,7 +39,7 @@ if (! $db) {
 --------------------------------------------------------
 TRUNCATING ALL THE RELEVANT TABLES
 <?php
-$to_truncate = array('icpc2012_entries', 'icpc2012_tagnames', 'icpc2012_scoreboard', 'icpc2012_submissions');
+$to_truncate = array('icpc2013_entries', 'icpc2013_scoreboard', 'icpc2013_submissions');
 foreach ($to_truncate as $table) {
    $sql = "truncate table $table";
    print("TRUNCATING TABLE $table\n");
