@@ -1,12 +1,13 @@
 <?php
 
-$date          = $_GET["date"];
-$contest_time  = $_GET["contest_time"];
-$user          = $_GET["user"];
-$priority      = $_GET["priority"];
-$text          = $_GET["text"];
 
-include('icat.php');
+$date          =& $_GET["date"];
+$contest_time  =& $_GET["contest_time"];
+$user          =& $_GET["user"];
+$priority      =& $_GET["priority"];
+$text          =& $_GET["text"];
+
+require_once 'icat.php';
 $db = init_db();
 
 $_SESSION['entry_username'] = $user;
