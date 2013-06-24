@@ -1,8 +1,7 @@
 <?php
 
-require_once "config.php";
-require_once "dbconfig.php";
-require_once "common_data.php";
+require_once "icpc/config.php";
+require_once "icpc/common_data.php";
 
 session_start();
 
@@ -11,11 +10,13 @@ function init_db()
     global $dbuser;
     global $dbhost;
     global $dbpassword;
-  $db = mysql_connect($dbhost, $dbuser, $dbpassword);
-   echo mysql_error();
-   mysql_select_db("icat", $db);
-   echo mysql_error();
-   return $db;
+    $db = mysql_connect($dbhost, $dbuser, $dbpassword);
+    echo mysql_error();
+    mysql_select_db("icat", $db);
+    echo mysql_error();
+    mysql_set_charset("utf8");
+    echo mysql_error();
+    return $db;
 }
 
 function get_times_in_wf($db, $pid)
@@ -119,13 +120,20 @@ function add_entry_container() {
         <tr> <th></th> <th>contest_time</th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
-            <?php /* FIXME: set contest time automatically? */ ?>
-            <td><input type="text"   name="contest_time"  size="8"></td>
-            <?php $entry_username = "frehe";
-            if ($_SESSION['entry_username']) {
+            <?php
+            $result = mysql_query("SELECT MAX(contest_time) AS last_submission FROM submissions");
+            $last_submission = 0;
+            if ($result) {
+                $row = mysql_fetch_assoc($result);
+                $last_submission = $row['last_submission'];
+            }
+
+            $entry_username = "frehe";
+            if (isset($_SESSION['entry_username'])) {
                 $entry_username = $_SESSION['entry_username'];
             }
             ?>
+            <td><input type="text"   name="contest_time"  size="8" value="<?php echo $last_submission; ?>"></td>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
             <td><input type="text"   name="priority"      size="8" value="0"></td>
             <td><input type="text"   name="text"          size="80"></td>
