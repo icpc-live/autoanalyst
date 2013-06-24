@@ -21,14 +21,14 @@ UPDATING TO LATEST SVN
 <?php system("svn update"); ?>
 
 --------------------------------------------------------
-LINK config.php TO THE RIGHT CONFIG FILE
-<?php system("rm config.php"); ?>
-<?php system("ln -s icpc2012/config_may16_dress_rehearsal.php config.php"); ?>
+LINK TO THIS YEAR'S FILES
+<?php system("rm icpc"); ?>
+<?php system("ln -s icpc2013 icpc"); ?>
 
 --------------------------------------------------------
 MAKE SURE WE CAN CONNECT TO THE DATABASE
 <?php
-include('icat.php');
+require_once 'icat.php';
 $db = init_db();
 if (! $db) {
     print("ERROR: couldn't connect to database\n");
@@ -38,7 +38,7 @@ if (! $db) {
 --------------------------------------------------------
 DUMP THE ICAT DATABASE
 <?php
-   include("dbconfig.php";
+   require_once 'icpc/config.php';
    $date=date('dMY_hi');
    system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --database icat > icat_$date.sql");
 ?>
