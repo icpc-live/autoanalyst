@@ -3,12 +3,11 @@
 // This file is used for exposing common data that will not change during the 
 // contest for both PHP and Javascript needs.
 
-
-require_once 'dbconfig.php';
-#require_once 'icat.php';
+require_once 'config.php';
 
 mysql_connect($dbhost, $dbuser, $dbpassword);
 mysql_select_db("icat");
+mysql_set_charset("utf8");
 
 $COMMON_DATA = array();
 
@@ -19,22 +18,23 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 
-// TODO: create tables to put the balloon colors and problem names into the database
+// 2013 ballon colors
 $COMMON_DATA["BALLOON_COLORS"] = array(
-        "A" => "#ffffff",
-        "B" => "#ff1546",
-        "C" => "#7818a4",
+        "A" => "#FF0000",
+        "B" => "#9500AD",
+        "C" => "#F5F500",
         "D" => "#000000",
-        "E" => "#31e113",
-        "F" => "#f3b3c8",
-        "G" => "#ff8315",
-        "H" => "#c6c6c6",
-        "I" => "#caf727",
-        "J" => "#f3c13b",
-        "K" => "#00a0dc",
-        "L" => "#f7f417"
+        "E" => "#FFFFFF",
+        "F" => "#FBA1B2",
+        "G" => "#FF8000",
+        "H" => "#A4A4A4",
+        "I" => "#0080EB",
+        "J" => "#FF54E8",
+        "K" => "#03DD3E",
+        "L" => "#808080"
     );
 
+// TODO: add problem names
 $COMMON_DATA["PROBLEM_ID_TO_NAME"] = array(
         "A" => "Preludes",
         "B" => "Limited Correspondence",
