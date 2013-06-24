@@ -8,6 +8,7 @@ public abstract class ContestSimulatorTest {
 	protected Contest contest;
 	protected Problem[] problems;
 	protected Team[] teams;
+	protected static int submissionId = 0;
 
 	protected void InitContest(int nProblems, int nTeams) {
 		
@@ -27,11 +28,11 @@ public abstract class ContestSimulatorTest {
 		
 	
 	public static void Accepted(Team team, Problem problem, int minutesFromStart) {
-		team.submit(problem, minutesFromStart, "AC", true, false, "unknown");
+		team.submit(submissionId++, problem, minutesFromStart, "AC", true, false, "unknown");
 	}
 	
 	public static void WrongAnswer(Team team, Problem problem, int minutesFromStart) {
-		team.submit(problem, minutesFromStart, "WA", false, true, "unknown");
+		team.submit(submissionId++, problem, minutesFromStart, "WA", false, true, "unknown");
 	}	
 
 }

@@ -3,6 +3,7 @@ package model;
 public class Submission {
 	public static final int CostOfFailedSubmission = 20;
 	
+	final InitialSubmission initialSubmission;
 	final int serialNumber;
 	final Team team;
 	final int minutesFromStart;
@@ -11,8 +12,10 @@ public class Submission {
 	final String outcome;
 	final Problem problem;
 	final String language;
+	final TestCaseExecution failingCase;
 
-	public Submission(int serialNumber, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, String language) {
+	public Submission(InitialSubmission initialSubmission, int serialNumber, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, String language, TestCaseExecution failingCase) {
+		this.initialSubmission = initialSubmission;
 		this.serialNumber = serialNumber;
 		this.team = team;
 		this.minutesFromStart = minutesFromStart;
@@ -21,6 +24,7 @@ public class Submission {
 		this.outcome = outcome;
 		this.problem = problem;
         this.language = language;
+        this.failingCase = failingCase;
 	}
 	
 	public boolean isAccepted() {
@@ -39,6 +43,17 @@ public class Submission {
 		}
 	}
 	
+	public String getDetailedOutcome() {
+		String status = (failingCase == null)
+				? outcome
+				: String.format("%s (#%d)", outcome, failingCase.caseNumber);
+		if (!accepted && !penalty) {
+			return "("+status+")";
+		} else {
+			return status;
+		}		
+	}
+	
 	public Team getTeam() {
 		return team;
 	}
@@ -53,6 +68,10 @@ public class Submission {
 	
 	public int getSerialNumber() {
 		return serialNumber;
+	}
+	
+	public InitialSubmission getInitialSubmission() {
+		return initialSubmission;
 	}
 	
 	public int cost() {

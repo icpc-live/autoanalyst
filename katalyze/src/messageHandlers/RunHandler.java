@@ -2,6 +2,7 @@ package messageHandlers;
 
 import java.security.InvalidKeyException;
 
+import model.InitialSubmission;
 import model.Problem;
 import model.Team;
 import io.SimpleMessage;
@@ -16,6 +17,7 @@ public class RunHandler extends SingleMessageHandler {
 		double secondsFromStart = message.getDouble("time");
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
+		int submissionId = message.getInt("id");
 		String problemId = message.get("problem");
 		int teamNumber = message.getInt("team");
         String language = message.get("language");
@@ -30,13 +32,16 @@ public class RunHandler extends SingleMessageHandler {
 			return;
 		}
 		
-		team.freshSubmission(problem, minutesFromStart, language);
+		InitialSubmission newSubmission = new InitialSubmission(submissionId, minutesFromStart, team, problem, language);
+		
+		team.freshSubmission(newSubmission);
 	}
 	
 	private void processJudgedSubmission(SimpleMessage message) {
 		double secondsFromStart = message.getDouble("time");
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
+		int submissionId = message.getInt("id");
 		String problemId = message.get("problem");
 		String judgement = message.get("result");
 		boolean solved = message.getBool("solved");
@@ -54,7 +59,7 @@ public class RunHandler extends SingleMessageHandler {
 			return;
 		}
 		
-		team.submit(problem, minutesFromStart, judgement, solved, penalty, language);
+		team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty, language);
 	}
 	
 	@Override

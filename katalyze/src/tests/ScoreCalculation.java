@@ -11,6 +11,7 @@ public class ScoreCalculation {
 	Problem problemA;
 	Problem problemB;
 	Contest contest;
+	int submissionId = 0;
 	
 	@Before public void Setup() {
 		problemA = new Problem(1, "Problem A");
@@ -23,15 +24,15 @@ public class ScoreCalculation {
 	}
 	
 	private void fail(Problem problem, int time) {
-		teamA.submit(problem, time, "WA", false, true, "unknown");
+		teamA.submit(submissionId++, problem, time, "WA", false, true, "unknown");
 	}
 	
 	private void compilationError(Problem problem, int time) {
-		teamA.submit(problem, time, "CE", false, false, "unknown");
+		teamA.submit(submissionId++, problem, time, "CE", false, false, "unknown");
 	}
 	
 	private void solve(Problem problem, int time) {
-		teamA.submit(problem, time,"AC", true, false, "unknown");
+		teamA.submit(submissionId++, problem, time,"AC", true, false, "unknown");
 	}
 	
 	private void assertScore(int score, Problem... problems) {

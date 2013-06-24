@@ -15,6 +15,9 @@ public class Analyzer implements NotificationTarget {
 	List<OutputHook> outputHooks = new ArrayList<OutputHook>();
 	List<LifeCycleAware> lifeCycleAwareObjects = new ArrayList<LifeCycleAware>();
 	final static ScoreTableComparer comparator = new ScoreTableComparer();
+	
+	JudgingOutcomes judgingOutcomes = new JudgingOutcomes();
+	
 	int lastHookTime = -1;
 	int videoCaptureTreshold;
 	int nextEventId = 0;
@@ -114,13 +117,19 @@ public class Analyzer implements NotificationTarget {
 		notifyHooks(newSubmission.minutesFromStart);
 	}
 	
-	public void freshSubmission(Team team, Problem problem, int minutesFromStart) {
-		
+	public InitialSubmission submissionById(int id) {
+		return judgingOutcomes.getSubmission(id);
+	}
+	
+	public void freshSubmission(InitialSubmission submission) {
+		judgingOutcomes.newSubmission(submission);
+				
 		Standings standingsBefore = contest.getStandings();
 		
-		Score teamScore = standingsBefore.scoreOf(team);
+		Team team = submission.team;
 		
-		ScoreTableEntry fakeScore = FakeScore.PretendProblemSolved(teamScore, problem, minutesFromStart);
+		Score teamScore = standingsBefore.scoreOf(team);		
+		ScoreTableEntry fakeScore = FakeScore.PretendProblemSolved(teamScore, submission.problem, submission.minutesFromStart);
 		
 		ArrayList<ScoreTableEntry> scoresAbove = new ArrayList<ScoreTableEntry>();
 
@@ -143,7 +152,7 @@ public class Analyzer implements NotificationTarget {
 		
 		if (rank <= 6) {
 			String message = String.format("Team %s submitted solution for %s. If correct, they will get rank %d (%d)",
-					team.getName(), problem.getName(), rank, currentRank);
+					team.getName(), submission.problem.getName(), rank, currentRank);
 
 
 
@@ -164,6 +173,14 @@ public class Analyzer implements NotificationTarget {
 		}
 				
 		
+	}
+	
+	public void testCaseExecuted(TestCaseExecution outcome) {
+		judgingOutcomes.testCaseRun(outcome);
+	}
+	
+	public TestCaseExecution getFailureInfo(InitialSubmission submission) {
+		return judgingOutcomes.getFailureInfo(submission);
 	}
 	
 

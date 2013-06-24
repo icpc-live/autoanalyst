@@ -23,8 +23,14 @@ public class Team {
 		return String.format("#t%d", teamNumber);
 	}
 	
-	public Submission submit(Problem problem, int minutesFromStart, String judgement, Boolean accepted, Boolean penalty, String language) {
-		Submission newSubmission = new Submission(contest.getSubmissionCount(), this, minutesFromStart, problem, judgement, accepted, penalty, language);
+	public Submission submit(int submissionId, Problem problem, int minutesFromStart, String judgement, Boolean accepted, Boolean penalty, String language) {
+		
+		Analyzer analyzer = contest.getAnalyzer();
+		InitialSubmission initialSubmission = analyzer.submissionById(submissionId);
+		TestCaseExecution judgeOutcome = analyzer.getFailureInfo(initialSubmission);
+		
+		
+		Submission newSubmission = new Submission(initialSubmission, contest.getSubmissionCount(), this, minutesFromStart, problem, judgement, accepted, penalty, language, judgeOutcome);
 
 		progress.register(newSubmission);
 		contest.processSubmission(newSubmission);
@@ -32,8 +38,8 @@ public class Team {
 		return newSubmission;
 	}
 	
-	public void freshSubmission(Problem problem, int minutesFromStart, String language) {
-		contest.getAnalyzer().freshSubmission(this, problem, minutesFromStart);
+	public void freshSubmission(InitialSubmission submission) {
+		contest.getAnalyzer().freshSubmission(submission);
 	}
 	
 	public Score getScore(int submissionCount) {
