@@ -23,7 +23,7 @@ public class ContestMessages {
 		add(new ProblemHandler());
 		add(new RunHandler());
 		add(new TeamHandler());
-		add(new NullHandler("testcase"));
+		add(new TestCaseHandler());
 		add(new NullHandler("clar"));
 	}
 	

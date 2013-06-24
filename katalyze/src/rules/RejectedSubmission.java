@@ -10,7 +10,7 @@ public class RejectedSubmission extends StateComparingRuleBase {
 		super(notificationTarget);
 		this.numberOfPositionsToMonitor = positionsToMonitor;
 	}
-	
+
 	
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
@@ -26,10 +26,12 @@ public class RejectedSubmission extends StateComparingRuleBase {
 		
 		Score teamScore = transition.before.scoreOf(submission.getTeam());
 		Submission[] previousSubmissions = teamScore.submissionsFor(submission.getProblem());
+
+		
 		
 		if (previousSubmissions.length == 1) {
 		
-			target.notify(transition.createEvent(String.format("{team} fails its first attempt on {problem} due to %s", submission.getOutcome()), defaultImportance));
+			target.notify(transition.createEvent(String.format("{team} fails its first attempt on {problem} due to %s", submission.getDetailedOutcome()), defaultImportance));
 		} else {
 			String previousAttempts = "";
 			boolean first = true;
@@ -42,7 +44,7 @@ public class RejectedSubmission extends StateComparingRuleBase {
 			}
 			
 			target.notify(transition.createEvent(String.format("{team} fails again on {problem} due to %s. Previous attempts:%s", 
-					submission.getOutcome(), previousAttempts), defaultImportance));
+					submission.getDetailedOutcome(), previousAttempts), defaultImportance));
 		}
 		
 	}
