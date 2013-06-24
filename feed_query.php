@@ -18,7 +18,7 @@
 function my_isset($x) { return isset($x) and $x != ''; }
 
 // connect to the database
-include("icat.php");
+require_once "icat.php";
 $db = init_db();
 
 // for responses
@@ -55,13 +55,15 @@ $G_ALLOWED_CONDITIONS = array(
 );
 
 // get the parameters
+if (! isset($_GET["table"])) { error("Please provide the table name"); }
 $table = $_GET["table"];
+if (! isset($_GET["conditions"])) { error("Please provide the conditions"); }
 $conditions = $_GET["conditions"];
 // if magic quotes is turned on, then strip out slashes from the conditions 
 if (get_magic_quotes_gpc()) { $conditions = stripslashes($conditions); }
 $conditions = stripslashes($conditions);
-$id = $_GET["id"];
-$limit = $_GET["limit"];
+if (isset($_GET["id"])) { $id = $_GET["id"]; }
+if (isset($_GET["limit"])) { $limit = $_GET["limit"]; }
 
 // validate that the query is allowed
 if (! array_key_exists($table, $G_ALLOWED_CONDITIONS)) {

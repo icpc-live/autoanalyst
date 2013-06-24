@@ -46,7 +46,7 @@ function feed(div, properties) {
     this.unique_feed_id = GLOBAL_FEED_ID_COUNTER;
     GLOBAL_FEED_ID_COUNTER++;
 
-    var data = get_json_synchronous("common_data.php");
+    var data = get_json_synchronous("icpc/common_data.php");
     this.TEAMS = data['TEAMS'];
 
     this.div = $(div);
@@ -80,7 +80,7 @@ function _feed_pinRow(clickedObject) {
     var pinned_row = p.clone();
     var control = pinned_row.find("div.feed_row_pin_control");
     var self = this;
-    control.text("unpin");
+    control.html("<i class='icon-remove'></i>");
     control.click(function() { $(this).parents(".feed_row").remove(); });
 
     // TODO -- should we detect pinned duplicates and avoid them being pinned?
@@ -89,7 +89,7 @@ function _feed_pinRow(clickedObject) {
 
 // Send the row to twitter.
 function _feed_tweet(clickedObject) {
-    var tweeted_row = $(clickedObject).parent();
+    var tweeted_row = $(clickedObject).parents('.feed_row');
     console.log('tweeting');
     console.log(tweeted_row[0].innerHTML);
 }
@@ -100,11 +100,13 @@ function _feed_togglePause() {
     var pause_control = this.div.find('span.feed_pause_control');
     if (this.paused) {
         pause_control.addClass('feed_paused');
-        pause_control.text("Paused");
+        pause_control.attr('title', 'Resume this feed');
+        pause_control.html("<i class='icon-play'></i>");
         clearTimeout(this.timeout);
     } else {
         pause_control.removeClass('feed_paused');
-        pause_control.text("Running");
+        pause_control.attr('title', 'Pause this feed');
+        pause_control.html("<i class='icon-pause'></i>");
         this.update();
     }
 }
@@ -169,20 +171,19 @@ function _feed_updateWith(rows) {
             if (this.formatter) {
                 description = this.formatter(row);
             } else if (this.table == 'entries') {
-                // TODO -- change team numbers into team names?
                 var text = row.text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>problem $1</a>");
                 text = text.replace(/#t([0-9]+)/g, 
                         function(match, contents, offset, s) {
-                            var link = "<a href='team_feed.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a>";
+                            var link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a>";
                             return link;
                         });
-                description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>";
+                description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
+                              " (<span class='entry_user'>" + row.user + "</span>)";
             } else if (this.table == 'edit_activity') {
                 var gitweb_url = '/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                              "<a href='team_feed.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
+                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
-                              // "<a href='view_source.php?id=" + row.id + "'>" + row.path + "</a> &mdash; " +
                               row.modify_time;
             } else if (this.table == 'submissions') {
                 var kattis_result_translator = {
@@ -201,7 +202,7 @@ function _feed_updateWith(rows) {
 
                 description = row.contest_time + ': ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                             "<a href='team_feed.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
+                             "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
                              result;
             } else {
@@ -215,8 +216,8 @@ function _feed_updateWith(rows) {
             var htmlDescription = $("<div class='feed_row feed_row_recent'>" +
                     "<div class='feed_row_description'>" + description + "</div>" +
                     "<div class='feed_row_controls'>" +
-                    "<div class='feed_row_pin_control'>pin</div>" +
-                    "<div class='feed_row_tweet_control'>tweet</div>" +
+                    "<div class='feed_row_pin_control' title='Pin this event'><i class='icon-pushpin'></i></div>" +
+                    "<div class='feed_row_tweet_control' title='Tweet this event'><i class='icon-twitter'></i></div>" +
                     "</div></div>");
             // add data which allows sorting
             for (var key in row) {
@@ -290,12 +291,14 @@ function _feed_initUI() {
     var feed_content =
         $("<div class='feed_name'>" + this.name + "</div>\n" +
           "<div class='feed_controls'>\n" +
-          "    <span class='feed_pause_control'>Running</span>\n" +
-          "    <span class='feed_update'>Last update: <span class='feed_last_update_seconds'>0</span> secs.</span>\n" +
+          "    <span class='feed_pause_control' title='Pause this feed'><i class='icon-pause'></i></span>\n" +
+          "    <span class='feed_update'>Updated <span class='feed_last_update_seconds'>0</span> secs. ago</span>\n" +
           "    <span class='feed_sort'>Sort: " +
-          "         <select class='feed_sort_key'><option value='id'>id</option></select>\n" +
-          "         <input type='checkbox' id='" + checkbox_id + "' class='feed_sort_ascending'>" +
-          "         <label for='" + checkbox_id + "'>Ascending</label>" +
+          "         <select class='feed_sort_key' title='Sort feed by database field'><option value='id'>id</option></select>\n" +
+          "         <div class='feed_sort_ascending_container'>" +
+          "             <input type='checkbox' id='" + checkbox_id + "' class='feed_sort_ascending'>" +
+          "             <label for='" + checkbox_id + "'>Ascending</label>" +
+          "         </div>" +
           "    </span>\n" +
           "</div>\n" +
           "<div class='feed_pinned_rows_container'></div>\n" +
