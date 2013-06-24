@@ -2,28 +2,7 @@
 $(document).ready(function() {
     $("#searchbox").change(function(evt) {
         var query = $(this).val().replace(/^ *| *$/, '');
-        if (/^[0-9]+$/.test(query)) {
-            var href = 'team_feed.php?team_id=' + query;
-            window.location.assign(href);
-        } else if (/^[A-Z]$/i.test(query)) {
-            var href = 'problem.php?problem_id=' + query;
-            window.location.assign(href);
-        } else {
-            $.ajax({url: "search.php?query=" + query}).done(function(response) {
-                data = JSON.parse(response);
-                if (data.length == 0) {
-                    $("#searchbox_chooser").text("I couldn't find anything about that query. Please enter a team #, problem letter, school name, or country 3-letter abbreviation.");
-                } else if (data.length == 1) {
-                    window.location.assign(data[0].url);
-                } else {
-                    var links = "I found several teams that match:<br>";
-                    for (var idx in data) {
-                        links += "<a href='" + data[idx].url + "'>" + data[idx].school_name + "</a><br>";
-                    }
-                    $("#searchbox_chooser").html(links);
-                }
-            });
-        }
+        return search_query(query);
     });
 
     $("#add_entry_container .add_entry_form").submit(function(evt) {
@@ -42,7 +21,7 @@ $(document).ready(function() {
     });
 });
 
-var get_json_synchronous = (function(url) {
+function get_json_synchronous(url) {
     var response;
     $.ajax({
         'async': false,
@@ -56,5 +35,33 @@ var get_json_synchronous = (function(url) {
         }
     })
     return response;
-});
+}
 
+function search_query(query, type) {
+    if (type == 'team' || /^[0-9]+$/.test(query)) {
+        var href = 'team.php?team_id=' + query;
+        window.location.assign(href);
+    } else if (type == 'problem' || /^[A-Z]$/i.test(query)) {
+        var href = 'problem.php?problem_id=' + query;
+        window.location.assign(href);
+    } else {
+        var type_query = "";
+        if (type) {
+            type_query = "&type=" + type;
+        }
+        $.ajax({url: "search.php?query=" + query + type_query}).done(function(response) {
+            data = JSON.parse(response);
+            if (data.length == 0) {
+                $("#searchbox_chooser").text("I couldn't find anything about that query ('" + query + "'). Please enter a team #, problem letter, school name, or country 3-letter abbreviation.");
+            } else if (data.length == 1) {
+                window.location.assign(data[0].url);
+            } else {
+                var links = "<p>I found " + data.length + " teams that match:<br>";
+                for (var idx in data) {
+                    links += "<div class='search_query_result'><a href='" + data[idx].url + "'>" + data[idx].school_name + "</a></div>";
+                }
+                $("#searchbox_chooser").html(links);
+            }
+        });
+    }
+}
