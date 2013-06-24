@@ -1,7 +1,5 @@
 <?php
 
-//$_GET["region_id"] = "3";
-
 $query = "";
 if (isset($_GET["region_id"]) && $_GET["region_id"] != "") {
     $query = "region_id = " . intval($_GET["region_id"]);
@@ -14,7 +12,7 @@ if (isset($_GET["region_id"]) && $_GET["region_id"] != "") {
     die();
 }
 
-include("icat.php");
+require_once 'icat.php';
 $db = init_db();
 
 // get the region/super region names
@@ -29,7 +27,7 @@ while ($result && $row = mysql_fetch_assoc($result)) {
 
 
 ?>
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!doctype html>
 <html>
 <head>
 <title>Region/Super-region</title>
@@ -37,6 +35,7 @@ while ($result && $row = mysql_fetch_assoc($result)) {
 <link rel="stylesheet" type="text/css" href="feed.css" />
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="katalyze/css/katalyze.css" />
+<meta charset="utf-8">
 <style type="text/css">
 
 div#team_scoreboard_container { text-align: center; }
@@ -127,7 +126,7 @@ while ($result && $row = mysql_fetch_assoc($result)) {
     $tid = $row["id"];
     $school_name = $row["school_name"];
     $country = $row["country"];
-    printf("<li><a href='team_feed.php?team_id=$tid'>$school_name</a> ($country)\n");
+    printf("<li><a href='team.php?team_id=$tid'>$school_name</a> (<a href='javascript:search_query(\"$country\", \"country\")'>$country</a>)\n");
 }
 
 ?>

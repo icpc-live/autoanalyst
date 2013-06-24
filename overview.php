@@ -1,13 +1,14 @@
 <?php
-include('icat.php');
+require_once 'icat.php';
 ?>
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!doctype html>
 <html>
 <head>
 <title>iCAT overview</title>
 
 <link rel="stylesheet" type="text/css" href="feed.css" />
 <link rel="stylesheet" type="text/css" href="style.css" />
+<meta charset="utf-8">
 <style type="text/css">
 div#leftColumn, div#rightColumn { display: inline-block; width: 49%; vertical-align: text-top; }
 div#high_priority_feed .feed_rows_container { height: 30em; }

@@ -1,11 +1,12 @@
 <?php
 
-include('icat.php');
+require_once 'icat.php';
 $db = init_db();
 
 ?>
 <html>
 <head>
+<meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="style.css" />
 <script type="text/javascript" src="katalyze/web/jquery-1.6.1.js"></script>
 <script type="text/javascript" src="misc.js"></script>
