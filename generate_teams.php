@@ -5,7 +5,7 @@
     * (before the contest) for efficiency.
     */
    header('Content-type: text/plain');
-   include("icat.php");
+   require_once "icat.php";
    $db = init_db();
 
    $sql = "SELECT id, school_name FROM `teams` order by id";
