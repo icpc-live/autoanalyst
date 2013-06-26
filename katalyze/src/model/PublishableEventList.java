@@ -36,6 +36,10 @@ public class PublishableEventList {
 		.element("message", event.message)
 		.element("importance", event.importance.ordinal());
 		
+		if (event.submission != null) {
+			eventInfo = eventInfo.element("submission", event.submission.id);
+		}
+		
 		jsonEvents.add(eventInfo);
 		publish();
 		

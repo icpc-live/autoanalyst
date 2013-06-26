@@ -9,8 +9,9 @@ public class LoggableEvent {
 	public final String icatMessage;
 	public final Score score;
 	public final EventImportance importance;
+	public final InitialSubmission submission;
 	
-	public LoggableEvent(int id, Contest contest, Team team, int time, String clearTextMessage, String icatMessage, Score score, EventImportance importance) {
+	public LoggableEvent(int id, Contest contest, Team team, int time, String clearTextMessage, String icatMessage, Score score, EventImportance importance, InitialSubmission submission) {
 		this.id = id;
 		this.contest = contest;
 		this.team = team;
@@ -19,5 +20,6 @@ public class LoggableEvent {
 		this.icatMessage = icatMessage;
 		this.score = score;
 		this.importance = importance;
+		this.submission = submission;
 	}
 }

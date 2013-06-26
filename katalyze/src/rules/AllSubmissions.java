@@ -27,7 +27,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
     	logger.info("ALL SUBMISSIONS GOT " + submission);
         try {
             PreparedStatement s;
-            s = conn.prepareStatement("insert into submissions (problem_id, team_id, lang_id, result, date, contest_time) values (?, ?, ?, ?, ?, ?)");
+            s = conn.prepareStatement("insert into submissions (problem_id, team_id, lang_id, result, date, contest_time, submission_id) values (?, ?, ?, ?, ?, ?, ?)");
             s.setString(1, submission.getProblem().getLetter());
             s.setInt(2, submission.getTeam().getTeamNumber());
             s.setString(3, submission.getLanguage());
@@ -37,6 +37,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
             Date d = new Date();
             s.setString(5, df.format(d));
             s.setInt(6, submission.getMinutesFromStart());
+            s.setInt(7, submission.getInitialSubmission().id.intValue());
 
             s.executeUpdate();
 

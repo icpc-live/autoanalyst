@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `icpc2011_entries` (
   `priority` int(11) NOT NULL,
   `user` varchar(10) NOT NULL,
   `text` text NOT NULL,
+  `submission_id` int(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `avoid_dups` (`contest_time`,`text`(300))
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=406 ;
@@ -256,6 +257,7 @@ CREATE TABLE IF NOT EXISTS `icpc2011_submissions` (
   `team_id` int(11) NOT NULL,
   `lang_id` int(11) NOT NULL,
   `result` char(10) NOT NULL,
+  `submission_id` int(11) NOT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 

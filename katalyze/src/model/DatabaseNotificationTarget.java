@@ -72,11 +72,16 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 
 		try {
 			PreparedStatement s;
-			s = conn.prepareStatement("insert into entries (contest_time, user, text, priority) values (?, ?, ?, ?)");
+			s = conn.prepareStatement("insert into entries (contest_time, user, text, priority, submission_id) values (?, ?, ?, ?, ?)");
 			s.setInt(1, event.time);
 			s.setString(2, "katalyzer");
 			s.setString(3, event.icatMessage);
 			s.setInt(4, event.importance.ordinal());
+			if (event.submission != null) {
+				s.setInt(5, event.submission.id.intValue());
+			} else {
+				s.setNull(5, java.sql.Types.INTEGER);
+			}
 
 			s.executeUpdate();
 
