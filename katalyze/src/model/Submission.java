@@ -46,7 +46,7 @@ public class Submission {
 	public String getDetailedOutcome() {
 		String status = (failingCase == null)
 				? outcome
-				: String.format("%s (#%d)", outcome, failingCase.caseNumber);
+				: String.format("%s on case %d", outcome, failingCase.caseNumber);
 		if (!accepted && !penalty) {
 			return "("+status+")";
 		} else {

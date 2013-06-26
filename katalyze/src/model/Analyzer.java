@@ -93,7 +93,7 @@ public class Analyzer implements NotificationTarget {
 		String clearTextMessage = getCleartextMessage(message, submission);
 		String icatMessage = getICatMessage(message, submission);
 		
-		LoggableEvent event = new LoggableEvent(nextEventId, contest, submission.getTeam(), minutesFromStart, clearTextMessage, icatMessage, score, importance);
+		LoggableEvent event = new LoggableEvent(nextEventId, contest, submission.getTeam(), minutesFromStart, clearTextMessage, icatMessage, score, importance, submission.initialSubmission);
 		
 		nextEventId++;
 		return event;
