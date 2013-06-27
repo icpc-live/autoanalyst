@@ -3,7 +3,7 @@ package rules;
 import model.EventImportance;
 import model.NotificationTarget;
 
-public class StateChanged extends StateComparingRuleBase {
+public class StateChanged extends StateComparingRuleBase implements StandingsUpdatedEvent{
 	private StandingsCriterion criterion;
 	
 	public StateChanged(NotificationTarget target, StandingsCriterion criterion) {
@@ -17,7 +17,7 @@ public class StateChanged extends StateComparingRuleBase {
 		if (!fulfilledBefore) {
 			boolean fulfilledAfter = criterion.isFulfilled(transition.after);
 			if (fulfilledAfter) {
-				target.notify(transition.createEvent(criterion.message(), EventImportance.Normal));
+				notify(transition.createEvent(criterion.message(), EventImportance.Normal));
 			}
 		}
 		

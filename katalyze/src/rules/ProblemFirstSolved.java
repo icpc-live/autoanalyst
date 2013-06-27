@@ -2,7 +2,7 @@ package rules;
 
 import model.*;
 
-public class ProblemFirstSolved extends StateComparingRuleBase {
+public class ProblemFirstSolved extends StateComparingRuleBase implements StandingsUpdatedEvent{
 	
 	public ProblemFirstSolved(NotificationTarget target) {
 		super(target);
@@ -18,7 +18,7 @@ public class ProblemFirstSolved extends StateComparingRuleBase {
 	
 		Problem submittedProblem = submission.getProblem();
 		if (!transition.before.isSolved(submittedProblem)) {
-			target.notify(transition.createEvent( "{team} is the first team to solve problem {problem}", EventImportance.Breaking));
+			notify(transition.createEvent( "{team} is the first team to solve problem {problem}", EventImportance.Breaking));
 		}
 	}
 	

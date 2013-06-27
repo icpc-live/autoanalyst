@@ -24,6 +24,8 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 		int teamId = event.team.getTeamNumber();
 		//Score score = event.score;
 		
+		Score score = event.team.getScore(event.contest.getSubmissionCount());
+		
 		//int totalTime = score.getTimeIncludingPenalty();
 		//int numSolutions = score.solvedProblemCount();
 		
@@ -40,20 +42,20 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			PreparedStatement s = conn.prepareStatement(query);
 
 			// populate the fields
-			s.setInt(1, event.score.getTimeIncludingPenalty()); // total time (including penalties)
-			s.setInt(2, event.score.solvedProblemCount()); // total # solved problems
+			s.setInt(1, score.getTimeIncludingPenalty()); // total time (including penalties)
+			s.setInt(2, score.solvedProblemCount()); // total # solved problems
 			int field = 3;
 			int solutionCountByTime = 0; // TEST
 			int solutionCount = 0; // TEST
 			for (Problem p : event.contest.getProblems()) {
-				if (event.score.solutionTime(p) > 0) { solutionCountByTime++; } // TEST
-				if (event.score.isSolved(p)) { solutionCount++; } // TEST
-				s.setInt(field++, event.score.submissionCount(p));
-				s.setInt(field++, event.score.solutionTime(p));
+				if (score.solutionTime(p) > 0) { solutionCountByTime++; } // TEST
+				if (score.isSolved(p)) { solutionCount++; } // TEST
+				s.setInt(field++, score.submissionCount(p));
+				s.setInt(field++, score.solutionTime(p));
 			}
 			s.setInt(field, teamId);
  
-			logger.info("solution count: " + solutionCount + ", by time: " + solutionCountByTime + ", solvedProblemCount: " + event.score.solvedProblemCount()); // TEST
+			logger.info("solution count: " + solutionCount + ", by time: " + solutionCountByTime + ", solvedProblemCount: " + score.solvedProblemCount()); // TEST
 
 			logger.info("updating scoreboard: " + s);
 

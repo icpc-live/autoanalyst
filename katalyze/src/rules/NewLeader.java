@@ -7,7 +7,7 @@ import model.Score;
 import model.Submission;
 import model.Team;
 
-public class NewLeader extends StateComparingRuleBase {
+public class NewLeader extends StateComparingRuleBase implements StandingsUpdatedEvent {
 
 	private int numberOfPositionsToMonitor;
 	
@@ -80,7 +80,7 @@ public class NewLeader extends StateComparingRuleBase {
 			assert rankAfter <= rankBefore;
 		}
 		
-		target.notify(event);
+		notify(event);
 	}
 
 }

@@ -33,6 +33,9 @@ rule.newLeader.ranks = 10
 rule.rejectedSubmission.enable = true
 rule.rejectedSubmission.ranks = 10 
 
+rule.rankPredictor.enable = true
+rule.rankPredictor.ranks = 8
+
 # Charts
 charts.enable = false
 charts.directory = output

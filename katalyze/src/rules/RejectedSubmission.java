@@ -2,7 +2,7 @@ package rules;
 
 import model.*;
 
-public class RejectedSubmission extends StateComparingRuleBase {
+public class RejectedSubmission extends StateComparingRuleBase implements StandingsUpdatedEvent{
 
 	final int numberOfPositionsToMonitor;
 	
@@ -31,7 +31,7 @@ public class RejectedSubmission extends StateComparingRuleBase {
 		
 		if (previousSubmissions.length == 1) {
 		
-			target.notify(transition.createEvent(String.format("{team} fails its first attempt on {problem} due to %s", submission.getDetailedOutcome()), defaultImportance));
+			notify(transition.createEvent(String.format("{team} fails its first attempt on {problem} due to %s", submission.getDetailedOutcome()), defaultImportance));
 		} else {
 			String previousAttempts = "";
 			boolean first = true;
@@ -43,7 +43,7 @@ public class RejectedSubmission extends StateComparingRuleBase {
 				}
 			}
 			
-			target.notify(transition.createEvent(String.format("{team} fails again on {problem} due to %s. Previous attempts:%s", 
+			notify(transition.createEvent(String.format("{team} fails again on {problem} due to %s. Previous attempts:%s", 
 					submission.getDetailedOutcome(), previousAttempts), defaultImportance));
 		}
 		
