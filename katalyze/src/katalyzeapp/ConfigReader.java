@@ -103,7 +103,11 @@ public class ConfigReader {
 		
 		if (ruleEnabled("rejectedSubmission")) {
 			analyzer.addRule(new RejectedSubmission(analyzer, config.getInt("rule.RejectedSubmission.ranks", 10)));
-		}		
+		}
+		
+		if (ruleEnabled("rankPredictor")) {
+			analyzer.addRule(new RankPredictor(analyzer, config.getInt("rule.rankPredictor.ranks", 10)));
+		}
 	}
 	
 	private void setupCharts(Contest contest, Analyzer analyzer) {

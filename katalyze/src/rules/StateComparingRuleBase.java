@@ -2,16 +2,17 @@ package rules;
 
 import model.*;
 
-public abstract class StateComparingRuleBase implements StandingsUpdatedEvent {
+public abstract class StateComparingRuleBase {
 	
-	protected final NotificationTarget target;
+	private final NotificationTarget target;
 	
 	public StateComparingRuleBase(NotificationTarget target) {
 		this.target = target;
 	}
 	
-
+	void notify(LoggableEvent event) {
+		target.notify(event);
+	}
 	
-	public abstract void onStandingsUpdated(StandingsTransition transition);
 
 }

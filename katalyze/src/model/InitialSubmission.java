@@ -15,4 +15,12 @@ public class InitialSubmission {
 		this.language = language;
 	}
 	
+	public Team getTeam() {
+		return team;
+	}
+	
+	public Problem getProblem() {
+		return problem;
+	}
+	
 }

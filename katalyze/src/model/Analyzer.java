@@ -11,10 +11,11 @@ public class Analyzer implements NotificationTarget {
 	final Contest contest;
 	static Logger logger = Logger.getLogger(Analyzer.class);
 	List<StandingsUpdatedEvent> stateRules = new ArrayList<StandingsUpdatedEvent>();
+	List<SolutionSubmittedEvent> submissionRules = new ArrayList<SolutionSubmittedEvent>();
+	
 	List<NotificationTarget> targets = new ArrayList<NotificationTarget>();
 	List<OutputHook> outputHooks = new ArrayList<OutputHook>();
 	List<LifeCycleAware> lifeCycleAwareObjects = new ArrayList<LifeCycleAware>();
-	final static ScoreTableComparer comparator = new ScoreTableComparer();
 	
 	JudgingOutcomes judgingOutcomes = new JudgingOutcomes();
 	
@@ -27,9 +28,17 @@ public class Analyzer implements NotificationTarget {
 		this.videoCaptureTreshold = videoCaptureTreshold;
 	}
 	
-	public void addRule(StandingsUpdatedEvent newRule) {
-		logger.info(String.format("Activating rule %s", newRule));
-		stateRules.add(newRule);
+	public void addRule(Object newRule) {
+		if (newRule instanceof StandingsUpdatedEvent) {
+			stateRules.add((StandingsUpdatedEvent) newRule);
+		} else if (newRule instanceof SolutionSubmittedEvent) {
+			submissionRules.add((SolutionSubmittedEvent) newRule);
+		} else {
+			logger.error(String.format("Rule %s is not known to the Analyzer and will never be invoked", newRule));
+			return;
+		}
+		logger.info(String.format("Rule %s activated", newRule));
+
 	}
 	
 	public void addNotifier(NotificationTarget newNotifier) {
@@ -67,35 +76,10 @@ public class Analyzer implements NotificationTarget {
 		}
 	}
 	
-	private static String getCleartextMessage(String message, Submission submission) {
-		if (submission != null) {
-			message = message.replaceAll("\\{problem\\}", submission.getProblem().getName());
-			message = message.replaceAll("\\{team\\}", submission.getTeam().getName());
-		}
-		return message;
-	}
 	
-	private static String getICatMessage(String message, Submission submission) {
-		if (submission != null) {
-			message = message.replaceAll("\\{problem\\}", submission.getProblem().toString());
-			message = message.replaceAll("\\{team\\}", submission.getTeam().toString());
-		}
-		return message;
-	}
-	
-	
-	public LoggableEvent createEvent(Submission submission, String message, EventImportance importance) {
-		
-		int minutesFromStart = submission.getMinutesFromStart();
-		Team team = submission.getTeam();
-		Score score = team.getScore(submission.getSerialNumber() + 1);
-
-		String clearTextMessage = getCleartextMessage(message, submission);
-		String icatMessage = getICatMessage(message, submission);
-		
-		LoggableEvent event = new LoggableEvent(nextEventId, contest, submission.getTeam(), minutesFromStart, clearTextMessage, icatMessage, score, importance, submission.initialSubmission);
-		
-		nextEventId++;
+	public LoggableEvent createEvent(InitialSubmission submission, String message, EventImportance importance) {
+						
+		LoggableEvent event = new LoggableEvent(contest, message, importance, submission);		
 		return event;
 	}
 	
@@ -123,55 +107,16 @@ public class Analyzer implements NotificationTarget {
 	
 	public void freshSubmission(InitialSubmission submission) {
 		judgingOutcomes.newSubmission(submission);
-				
-		Standings standingsBefore = contest.getStandings();
-		
-		Team team = submission.team;
-		
-		Score teamScore = standingsBefore.scoreOf(team);		
-		ScoreTableEntry fakeScore = FakeScore.PretendProblemSolved(teamScore, submission.problem, submission.minutesFromStart);
-		
-		ArrayList<ScoreTableEntry> scoresAbove = new ArrayList<ScoreTableEntry>();
-
-		int currentRank = standingsBefore.rankOf(team);
-		
-		for (ScoreTableEntry candidate : standingsBefore) {
-			if (candidate != teamScore) {
-				scoresAbove.add(candidate);
-			} else {
-				break;
+		Standings before = contest.getStandings();
+		StandingsAtSubmission standings = new StandingsAtSubmission(this, before, submission);
+		for (SolutionSubmittedEvent rule : submissionRules) {
+			try {
+				rule.onSolutionSubmitted(standings);
+			}
+			catch (Exception e) {
+				logger.error(String.format("Error %s while processing rule %s for submission %d", e, rule, submission));
 			}
 		}
-		
-		int fakeIndex = scoresAbove.size()-1;
-		
-		while (fakeIndex>=0 && comparator.compare(fakeScore, scoresAbove.get(fakeIndex))<=0) {
-			fakeIndex--;
-		}
-		int rank = fakeIndex+2;
-		
-		if (rank <= 6) {
-			String message = String.format("Team %s submitted solution for %s. If correct, they will get rank %d (%d)",
-					team.getName(), submission.problem.getName(), rank, currentRank);
-
-
-
-			/* Disabled video capture for now
-			if (minutesFromStart > videoCaptureTreshold) {
-				String myCommand = String.format("/home/analyst10/record.sh %d", team.getTeamNumber());
-			
-				try {
-					Runtime.getRuntime().exec(myCommand);
-				}
-				catch (Exception e) {
-					logger.error(e.getMessage());
-				}
-			} */
-			
-			
-			logger.info(message);
-		}
-				
 		
 	}
 	
@@ -205,3 +150,5 @@ public class Analyzer implements NotificationTarget {
 	
 
 }
+
+	
