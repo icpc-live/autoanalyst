@@ -22,10 +22,10 @@ DROP VIEW IF EXISTS `team_strip`;
 
 cursor = dbConn.cursor()
 cursor.execute( """
-DROP TABLE IF EXISTS `icpc2012_edit_activity`;
-DROP TABLE IF EXISTS `icpc2012_edit_latest`;
-DROP TABLE IF EXISTS `icpc2012_analyzer_parameters`;
-DROP TABLE IF EXISTS `icpc2012_problem_name`;
-DROP TABLE IF EXISTS `icpc2012_problem_file`;
-DROP TABLE IF EXISTS `icpc2012_team_strip`;
+DROP TABLE IF EXISTS `icpc2013_edit_activity`;
+DROP TABLE IF EXISTS `icpc2013_edit_latest`;
+DROP TABLE IF EXISTS `icpc2013_analyzer_parameters`;
+DROP TABLE IF EXISTS `icpc2013_problem_name`;
+DROP TABLE IF EXISTS `icpc2013_problem_file`;
+DROP TABLE IF EXISTS `icpc2013_team_strip`;
 """ )

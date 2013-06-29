@@ -20,7 +20,7 @@ from common import dbConn
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_edit_activity` (
+CREATE TABLE IF NOT EXISTS `icpc2013_edit_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `icpc2012_edit_activity` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_edit_latest` (
+CREATE TABLE IF NOT EXISTS `icpc2013_edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `icpc2012_edit_latest` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_analyzer_parameters` (
+CREATE TABLE IF NOT EXISTS `icpc2013_analyzer_parameters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `value` varchar(60),
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `icpc2012_analyzer_parameters` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_problem_name` (
+CREATE TABLE IF NOT EXISTS `icpc2013_problem_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL,
   `name` varchar(45),
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `icpc2012_problem_name` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_problem_file` (
+CREATE TABLE IF NOT EXISTS `icpc2013_problem_file` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `icpc2012_problem_file` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE TABLE IF NOT EXISTS `icpc2012_team_strip` (
+CREATE TABLE IF NOT EXISTS `icpc2013_team_strip` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `str` varchar(30),
@@ -121,12 +121,12 @@ CREATE TABLE IF NOT EXISTS `icpc2012_team_strip` (
 
 cursor = dbConn.cursor()
 cursor.execute( """
-CREATE VIEW edit_activity AS SELECT * FROM icpc2012_edit_activity;
-CREATE VIEW edit_latest AS SELECT * FROM icpc2012_edit_latest;
-CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2012_analyzer_parameters;
-CREATE VIEW problem_name AS SELECT * FROM icpc2012_problem_name;
-CREATE VIEW problem_file AS SELECT * FROM icpc2012_problem_file;
-CREATE VIEW team_strip AS SELECT * FROM icpc2012_team_strip;
+CREATE VIEW edit_activity AS SELECT * FROM icpc2013_edit_activity;
+CREATE VIEW edit_latest AS SELECT * FROM icpc2013_edit_latest;
+CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2013_analyzer_parameters;
+CREATE VIEW problem_name AS SELECT * FROM icpc2013_problem_name;
+CREATE VIEW problem_file AS SELECT * FROM icpc2013_problem_file;
+CREATE VIEW team_strip AS SELECT * FROM icpc2013_team_strip;
 """ )
 
 cursor.close()

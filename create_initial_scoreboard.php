@@ -21,7 +21,7 @@
    $qr = mysql_query($sql, $db);
 
    # populate the scoreboard with empty rows
-   $sql = "SELECT id, school_name FROM `icpc2011` order by id";
+   $sql = "SELECT id, school_name FROM `icpc2013` order by id";
    $qr = mysql_query($sql, $db);
    while ($row = mysql_fetch_assoc($qr)) {
 	   $sql = sprintf("insert into scoreboard (team_id) values (%d)", $row["id"]);
