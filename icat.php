@@ -105,7 +105,8 @@ function navigation_container() {
         <a href='overview.php'>Overview</a>
         <a href='activity.php'>Activity graph</a>
         <a href='scoreboard.php'>Scoreboard</a>
-        <a href='regions.php'>Regions</a>
+        <a href='language.php'>Languages</a>
+        <a href='region.php'>Regions</a>
     </div>
 </div>
 <div id='searchbox_chooser'></div>
