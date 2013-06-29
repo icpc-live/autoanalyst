@@ -183,15 +183,15 @@ Statistics about the problem:
         $num_submitted_problem = $row["num_submitted_problem"];
 
         ?>
-    <li>Teams solved: <?php echo $num_solutions; ?> /
-         Teams submitted but not solved: <?php echo $num_submitted_problem - $num_solutions; ?> /
-         Total submissions: <?php echo $num_submissions; ?>
-    <li># Solutions by <a href="language.php?problem_id=<?php echo $problem_id; ?>">language</a>: <?php echo $solutions_by_language; ?>
-    <li># Submissions by language: <?php echo $submissions_by_language; ?>
+    <li>Teams solved: <?php echo $num_solutions; ?>
+    <li>Teams submitted but not solved: <?php echo $num_submitted_problem - $num_solutions; ?>
+    <li>Total submissions: <?php echo $num_submissions; ?>
+    <li># solutions by <a href="language.php?problem_id=<?php echo $problem_id; ?>">language</a>: <?php echo $solutions_by_language; ?>
+    <li># submissions by language: <?php echo $submissions_by_language; ?>
     <li>Avg. time to solution: <?php echo $avg_time_to_soln; ?> min.
     <li>Avg. # incorrect submissions before accepted: <?php echo $avg_num_incorrect_submissions; ?>
-    <li>First submission / solution: <?php printf("%d min. %s / %d min. %s", 
-        $first_submission_time, $first_teams_to_submit, $first_solution_time, $first_teams_to_solve); ?>
+    <li>First submission: <?php printf("%d min. %s", $first_submission_time, $first_teams_to_submit); ?>
+    <li>First solution: <?php printf("%d min. %s", $first_solution_time, $first_teams_to_solve); ?>
     <li># teams with 1 edit: <?php echo $count_one_edit; ?>
     <li># teams with 2+ edits: <?php echo $count_two_plus_edits; ?>
 
