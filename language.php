@@ -92,6 +92,7 @@ while ($per_result && $row = mysql_fetch_assoc($per_result)) {
 }
 
 $flot_count_data_ordered = array();
+$flot_percent_data_ordered = array();
 foreach ($preferred_order as $short => $long) {
     if (array_key_exists($short, $flot_count_data)) {
         $flot_count_data_ordered[] = $flot_count_data[$short];
