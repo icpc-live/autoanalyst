@@ -146,7 +146,7 @@ printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter
 ?>
 </div>
 <div id='team_submission_info'>
-    Number of submissions by <a href="language.php">language</a>:
+    Number of submissions by <a href="language.php?team_id=<?php echo $team_id; ?>">language</a>:
     <?php
         $printed = false;
         foreach ($language_counts as $lang => $count) {
@@ -215,7 +215,10 @@ printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter
               $total_times_in_wf++;
           }
           for ($y = $end_year; $y >= $start_year; --$y) {
-              printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>", $y, $p[$y]["place"], $p[$y]["solved"], $p[$y]["time"]);
+              $place = isset($p[$y]["place"]) ? $p[$y]["place"] : null;
+              $solved = isset($p[$y]["solved"]) ? $p[$y]["solved"] : null;
+              $time = isset($p[$y]["time"]) ? $p[$y]["time"] : null;
+              printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>", $y, $place, $solved, $time);
           }
           printf("<tr><td colspan='4'>%d world finals the last %d years</td></tr>", $total_times_in_wf, $end_year - $start_year + 1);
         ?>
