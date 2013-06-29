@@ -14,9 +14,6 @@
  * Author: Greg Hamerly (hamerly@cs.baylor.edu)
  */
 
-// determine if a GET variable is set to a usable value
-function my_isset($x) { return isset($x) and $x != ''; }
-
 // connect to the database
 require_once "icat.php";
 $db = init_db();
@@ -77,20 +74,20 @@ if (! preg_match('/^' . $cond_regexp . '$/i', $conditions)) {
     error("That condition is not permitted. Here is what I received: '" . $conditions . "'");
 }
 
-if (my_isset($limit) && ! preg_match("/^[0-9]+$/", $limit)) {
+if (isset($limit) && ! preg_match("/^[0-9]+$/", $limit)) {
     error("Limit must be an integer.");
 }
 
-if (my_isset($id) && ! preg_match("/^[0-9]+$/", $id)) {
+if (isset($id) && ! preg_match("/^[0-9]+$/", $id)) {
     error("Id must be an integer.");
 }
 
 // construct the conditions on the query
 $sql_conditions = array();
-if (my_isset($id)) { $sql_conditions[] = sprintf(' id >= %d ', $id); }
-if (my_isset($conditions)) { $sql_conditions[] = $conditions; }
+if (isset($id)) { $sql_conditions[] = sprintf(' id >= %d ', $id); }
+if (isset($conditions)) { $sql_conditions[] = $conditions; }
 $sql_conditions = (count($sql_conditions) > 0) ? ' where ' . implode(" and ", $sql_conditions) : '';
-if (my_isset($limit)) { $sql_conditions .= " limit " . $limit; }
+if (isset($limit)) { $sql_conditions .= " limit " . $limit; }
 
 // construct the query; do the query
 $query = sprintf("select * from %s %s", $table, $sql_conditions);
