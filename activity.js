@@ -1,5 +1,7 @@
-function ActivityPlot(target, team_id, problem_id) {
+function ActivityPlot(target, team_id, problem_id, update) {
     var self = this;
+
+    self.update = typeof update !== 'undefined' ? update : true;
 
     self.target = target;
     self.team_id = team_id;
@@ -87,7 +89,9 @@ function ActivityPlot(target, team_id, problem_id) {
             dataType: "json"
         });
 
-        setTimeout(self.updatePlot, self.update_interval);
+        if (self.update) {
+            setTimeout(self.updatePlot, self.update_interval);
+        }
     }
 
     self.initUI = function() {
