@@ -16,7 +16,7 @@ div#language_count_plot, div#language_percent_plot {
     background: #ddd;
 }
 
-body { text-align: center; }
+body {  }
 div.plot_container { position: relative; display: inline-block; width: 45%; height: 70%;  }
 div.flot_plot div.ticklabel { font-size: 150%; }
 div.flot_plot_x_axis_label { text-align: center; }
@@ -30,23 +30,29 @@ div.title { text-align: center; }
 <?php
 
 $where_clause = "";
-$where_description = "all teams, all problems";
+$where_description = "(all teams, all problems)";
 if ($team_id || $problem_id) {
     $clauses = array();
     $descriptions = array();
     if ($team_id) {
         $ids = preg_split('/[^0-9]+/', $team_id);
         $clauses[] = "team_id IN (" . implode(",", $ids) . ")";
-        $descriptions[] = "teams: " . implode(", ", $ids);
+        $team = (count($ids) > 1) ? "teams" : "team";
+        $ids = array_map(function ($id) {
+            global $COMMON_DATA;
+            return "<a href='team.php?team_id=$id'>" . $COMMON_DATA["TEAMS"][$id]["school_short"] . "</a>";
+        }, $ids);
+        $descriptions[] = "$team: " . implode(", ", $ids);
     }
     if ($problem_id) {
         $ids = str_split(strtolower(preg_replace('/[^a-zA-Z]/', '', $problem_id)));
         $clauses[] = "problem_id IN ('" . implode("','", $ids) . "')";
-        $descriptions[] = "problems: " . strtoupper(implode(", ", $ids));
+        $problem = (count($ids) > 1) ? "problems" : "problem";
+        $descriptions[] = "$problem: " . strtoupper(implode(", ", $ids));
     }
 
     $where_clause = "WHERE " . implode(" AND ", $clauses);
-    $where_description = implode(" and ", $descriptions);
+    $where_description = "(" . implode(" and ", $descriptions) . ") (<a href='language.php'>see all teams, all problems</a>)";
 }
 $sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
 $per_result = mysql_query($sql);
@@ -177,7 +183,7 @@ function hover(event, position, item) {
 <body>
 <?php navigation_container() ?>
 
-<h2>Language use (<?php echo $where_description; ?>)</h2>
+<h2>Language use <?php echo $where_description; ?></h2>
 
 <div class="plot_container">
 <div class="title">Number of submissions per language and result</div>
