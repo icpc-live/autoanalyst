@@ -136,6 +136,8 @@
 .feed_container .feed_pinned_rows_container:before { content: "Pinned events:"; font-weight: bold; }
 .feed_container .feed_pinned_rows_container:empty:before { content: none; }
 
+.feed_row .feed_timestamp { margin-left: 1ex; }
+
 /* style the different priority items with different font sizes */
 .feed_container .feed_row span.priority_0 { font-size: 150%; font-weight: bold; }
 .feed_container .feed_row span.priority_1 { font-size: 100%; }

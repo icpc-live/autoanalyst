@@ -67,6 +67,7 @@ function feed(div, properties) {
     this.pinRow      = _feed_pinRow;
     this.tweet       = _feed_tweet;
     this.sort        = _feed_sort;
+    this.updateTimestamps = _feed_updateTimestamps;
 
     // Set up the user interface, and start the feed
     this.initUI();
@@ -174,22 +175,27 @@ function _feed_updateWith(rows) {
                 var text = row.text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>problem $1</a>");
                 text = text.replace(/#t([0-9]+)/g, 
                         function(match, contents, offset, s) {
-                            var link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a>";
+                            var link = contents;
+                            try { // FIXME: QUICK FIX FOR DATABASE WITH NOT ENOUGH TEAMS IN IT
+                                link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a>";
+                            } catch (e) { }
                             return link;
                         });
                 description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
-                              " (<span class='entry_user'>" + row.user + "</span>)";
+                              " (<span class='entry_user'>" + row.user + "</span>" +
+                              '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity') {
                 var gitweb_url = '/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
-                              row.modify_time;
+                              row.modify_time + 
+                              "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
             } else if (this.table == 'submissions') {
                 var kattis_result_translator = {
                    'AC'  : "Accepted",
-                   'CE'  : "Compile Error",
-                   'IF'  : "Illegal Function",
+                   '(CE)': "Compile Error",
+                   '(IF)': "Illegal Function",
                    'MLE' : "Memory Limit Exceeded",
                    'OLE' : "Output Limit Exceeded",
                    'PE'  : "Presentation Error",
@@ -200,11 +206,16 @@ function _feed_updateWith(rows) {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
                 var result = "<span class='" + is_accepted + "'>" + kattis_result_translator[row.result] + "</span>";
 
-                description = row.contest_time + ': ' + 
+                // FIXME -- need to add a URL for kattis and/or domjudge. Quoting Stein:
+                // If the submission_id is 4711, the link to the same submission
+                // in DOMjudge is similar to: http://domjudge/jury/submission.php?ext_id=4711
+                // The same link to kattis would be: http://kattis/submission?id=4711
+                description = "<a href='http://KATTIS_OR_DOMJUDGE_URL/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
-                             result;
+                             result +
+                             "<span class='feed_timestamp' timestamp='" + row.date + "'></span>";
             } else {
                 // default formatter -- just display everything in the row
                 description = '';
@@ -245,6 +256,9 @@ function _feed_updateWith(rows) {
         var self = this;
         this.timeout = setTimeout(function() { self.update(); }, this.poll_interval_seconds * 1000);
     }
+
+    self.updateTimestamps();
+    setInterval(function() { self.updateTimestamps(); }, 1000);
 }
 
 // sort all the rows in the live feed according to the user's selection
@@ -283,6 +297,27 @@ function _feed_updateTimer() {
     setTimeout(function() { self.updateTimer(); }, 1000);
 }
 
+function _feed_updateTimestamps() {
+    var timestamps = this.div.find('.feed_timestamp');
+    var now = new Date();
+    timestamps.each(function(ndx, element) {
+        var e = $(element);
+        var ts = e.attr('timestamp');
+        // FIXME -- the database (default-entered) timestamps may not be set to
+        // UTC, in which case a javascript timestamp (which is in UTC) will vary
+        // by the timezone difference
+        var diff_seconds = Math.floor((now - new Date(ts + ' +0200'/* FIXME: KLUDGE */)) / 1000);
+        var diff_minutes = Math.floor(diff_seconds / 60);
+        var msg = '';
+        if (diff_seconds < 60) {
+            msg = diff_seconds + ' sec.';
+        } else {
+            msg = diff_minutes + ' min.';
+        }
+
+        e.text(msg + ' ago');
+    });
+}
 
 // create the relevant DOM objects that will contain the feed and its controls
 function _feed_initUI() {
