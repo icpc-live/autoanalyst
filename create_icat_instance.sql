@@ -17,6 +17,7 @@
 -- Table structure for table `icpc2013_teams`
 --
 
+DROP TABLE IF EXISTS `icpc2013_teams`;
 CREATE TABLE IF NOT EXISTS `icpc2013_teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reservation_id` int(11) NOT NULL,
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_teams` (
 -- Table structure for table `icpc2013_entries`
 --
 
+DROP TABLE IF EXISTS `icpc2013_entries`;
 CREATE TABLE IF NOT EXISTS `icpc2013_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -66,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_entries` (
 -- Table structure for table `icpc2013_facts`
 --
 
+DROP TABLE IF EXISTS `icpc2013_facts`;
 CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
   `team_id` int(11) NOT NULL,
   `type` varchar(10) NOT NULL,
@@ -84,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
 -- Table structure for table `icpc2013_regions`
 --
 
+DROP TABLE IF EXISTS `icpc2013_regions`;
 CREATE TABLE IF NOT EXISTS `icpc2013_regions` (
   `team_id` int(11) NOT NULL AUTO_INCREMENT,
   `regional_team_id` int(11) NOT NULL,
@@ -104,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_regions` (
 -- Table structure for table `icpc2013_scoreboard`
 --
 
+DROP TABLE IF EXISTS `icpc2013_scoreboard`;
 CREATE TABLE IF NOT EXISTS `icpc2013_scoreboard` (
   `team_id` int(11) NOT NULL,
   `rank` int(11) NOT NULL DEFAULT '1',
@@ -142,12 +147,15 @@ CREATE TABLE IF NOT EXISTS `icpc2013_scoreboard` (
 -- Table structure for table `icpc2013_submissions`
 --
 
+DROP TABLE IF EXISTS `icpc2013_submissions`;
 CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `problem_id` int(11) NOT NULL,
+  `problem_id` char(1) NOT NULL,
   `team_id` int(11) NOT NULL,
-  `lang_id` int(11) NOT NULL,
-  `result` char(10) NOT NULL,
+  `lang_id` varchar(11) NOT NULL,
+  `result` varchar(10) NOT NULL,
+  `date` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
+  `contest_time` int(11) NOT NULL,
   `submission_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -159,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
 -- Table structure for table `icpc2013_problems`
 --
 
+DROP TABLE IF EXISTS `icpc2013_problems`;
 CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
   `problem_id` int(11) NOT NULL,
   `problem_letter` char(10) NOT NULL, 
@@ -184,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
 -- Table structure for table `icpc2013_top_coder`
 --
 
+DROP TABLE IF EXISTS `icpc2013_top_coder`;
 CREATE TABLE IF NOT EXISTS `icpc2013_top_coder` (
   `university_name` varchar(150) NOT NULL,
   `coach_tcname` varchar(50) NOT NULL,
@@ -218,9 +228,17 @@ CREATE TABLE IF NOT EXISTS `icpc2013_top_coder` (
 
 -- 
 -- Create views for the current contest
-CREATE VIEW teams AS SELECT * FROM icpc2013_teams;
+DROP VIEW IF EXISTS entries;
 CREATE VIEW entries AS SELECT * FROM icpc2013_entries;
+DROP VIEW IF EXISTS facts;
 CREATE VIEW facts AS SELECT * FROM icpc2013_facts;
+DROP VIEW IF EXISTS regions;
 CREATE VIEW regions AS SELECT * FROM icpc2013_regions;
+DROP VIEW IF EXISTS scoreboard;
 CREATE VIEW scoreboard AS SELECT * FROM icpc2013_scoreboard;
+DROP VIEW IF EXISTS submissions;
+CREATE VIEW submissions AS SELECT * FROM icpc2013_submissions;
+DROP VIEW IF EXISTS teams;
+CREATE VIEW teams AS SELECT * FROM icpc2013_teams;
+DROP VIEW IF EXISTS top_coder;
 CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
