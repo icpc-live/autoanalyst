@@ -22,6 +22,7 @@ function init_db()
 function get_times_in_wf($db, $pid)
 {
   $sql = "SELECT COUNT(pid) AS times_in_wf FROM history_attendees WHERE pid='$pid' AND (role_type LIKE 'Contestant%' OR role_type LIKE 'Coach%')";
+  $times_in_wf = '';
   if ( $res = mysql_query($sql, $db) ) {
     if ( $row = mysql_fetch_array($res) ) {
       $times_in_wf = $row["times_in_wf"];
@@ -114,6 +115,16 @@ function navigation_container() {
 }
 
 function add_entry_container() {
+    $tags = array();
+    if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
+        $problem_ids = preg_replace("/[^a-z]+/i", ' ', $_GET["problem_id"]);
+        $tags[] = preg_replace("/([a-z])/i", '#p$1', $problem_ids);
+    }
+    if (isset($_GET["team_id"]) && $_GET["team_id"] != "") {
+        $team_ids = preg_replace("/[^0-9]+/", ' ', $_GET["team_id"]);
+        $tags[] = preg_replace("/([0-9]+)/", '#t$1', $team_ids);
+    }
+    $tags = implode(" ", $tags);
 ?>
 <div id='add_entry_container'>
     <form class='add_entry_form' action=''>
@@ -137,7 +148,7 @@ function add_entry_container() {
             <td><input type="text"   name="contest_time"  size="8" value="<?php echo $last_submission; ?>"></td>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
             <td><input type="text"   name="priority"      size="8" value="0"></td>
-            <td><input type="text"   name="text"          size="80"></td>
+            <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>"></td>
         </tr>
     </table>
     </form>
