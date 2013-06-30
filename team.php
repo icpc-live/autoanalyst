@@ -1,5 +1,6 @@
 <?php
 $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : null;
+$problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : null;
 
 require_once "icat.php";
 $db = init_db();
@@ -66,13 +67,14 @@ $(document).ready(function() {
 
     new feed("#entries_feed_container", {
         name: 'Katalyze events',
+        table: 'entries',
         conditions: 'text regexp "#t' + team_id + '[[:>:]]"'
     });
 
     new feed("#edit_activity_feed_container", {
         name: 'Edit activity',
         table: 'edit_activity',
-        conditions: 'team_id = ' + team_id + ' and valid != 0'
+        conditions: 'team_id = ' + team_id + ' and valid != 0' // FIXME -- VALID IS NOT IN THE SCHEMA ANYMORE?
     });
 
     new feed("#submissions_feed_container", {
@@ -81,7 +83,7 @@ $(document).ready(function() {
         conditions: 'team_id = ' + team_id
     });
 
-    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '');
+    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>');
 });
 
 </script>
@@ -115,7 +117,6 @@ while ($row = mysql_fetch_assoc($result)) {
 <div id="title">
     <div id="schoolname"> <?php
         printf("<a href='icpc/logos/%d.png'><img class='university_logo' src='icpc/logos/%d.png'></a>", $team_id, $team_id);
-        print "<!-- SCHOOL NAME: " . $school_name . " -->\n";
         printf("%s (Id: %d)", $school_name, $team_id);
      ?> </div>
     <div id="teamname">Team: <?php echo $team_row["team_name"]; ?></div>
@@ -141,7 +142,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 <div id='team_scoreboard_container'>
 <?php
-printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter=\"score.team.id=='%d'\"></div>", $team_id);
+//printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter=\"score.team.id=='%d'\"></div>", $team_id);
 /*scrape_kattis_scoreboard_for_team($team_id);*/
 ?>
 </div>
@@ -207,7 +208,7 @@ printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter
           $results = mysql_query($results_sql, $db);
           $p = array();
           $total_times_in_wf = 0;
-          while ($row = mysql_fetch_array($results)) {
+          while ($results && ($row = mysql_fetch_array($results))) {
               if ($row["solved"] == 0) { $row["solved"] = "";   }
               if ($row["place"]  == 0) { $row["place"]  = "hm"; }
               if ($row["time"]   == 0) { $row["time"]   = "";   }
@@ -230,7 +231,6 @@ printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter
     </div>
 </div>
 
-<script type='text/javascript' src='katalyze/web/scores.js'></script>
 
 </body>
 </html>
