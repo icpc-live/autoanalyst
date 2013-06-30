@@ -26,7 +26,7 @@ function ActivityPlot(target, team_id, problem_id, update) {
 
         for (var i = 0; i < num_problems; ++i) {
             var pid = problems_used[i].toUpperCase();
-            var href = add_query_field(window.location.href, 'problem_id', pid);
+            var href = set_query_field(window.location.href, 'problem_id', pid);
             ticks.push([i * problem_height, '<a href="' + href + '">' + pid + '</a>']);
             colors.push(self.BALLOON_COLORS[pid]);
         }
@@ -104,8 +104,12 @@ function ActivityPlot(target, team_id, problem_id, update) {
                     var content = '(unknown)';
                     if (item.series && item.series.submissionInfo) {
                         // for the submissions
+                        var school_name = 'UNKNOWN';
+                        try {
+                            school_name = self.TEAMS[item.series.submissionInfo[item.dataIndex].team_id]['school_name'];
+                        } catch (e) {}
                         content = item.series.label + ": " 
-                                + self.TEAMS[item.series.submissionInfo[item.dataIndex].team_id]['school_name'] +
+                                + school_name +
                                   " problem " + item.series.submissionInfo[item.dataIndex].problem_id +
                                   " at time " + item.datapoint[0] +
                                   " (" + item.series.submissionInfo[item.dataIndex].lang_id + ")";

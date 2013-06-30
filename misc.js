@@ -72,11 +72,24 @@ function add_query_field(url, field, value) {
         return url + '?' + field + '=' + value;
     }
     var already_there = RegExp(field + '=[^&]*' + value, 'i');
-    var has_field = RegExp(field + '=[^&]*', 'i');
+    var has_field = RegExp('(' + field + '=[^&]*)', 'i');
     if (already_there.test(url)) {
         return url;
     } else if (has_field.test(url)) {
-        return url.replace(has_field, has_field + ',' + value);
+        return url.replace(has_field, '$1' + ',' + value);
+    } else {
+        return url + '&' + field + '=' + value;
+    }
+}
+
+function set_query_field(url, field, value) {
+    var parts = url.split('?');
+    if (parts.length == 1) {
+        return url + '?' + field + '=' + value;
+    }
+    var has_field = RegExp('(' + field + '=[^&]*)', 'i');
+    if (has_field.test(url)) {
+        return url.replace(has_field, field + '=' + value);
     } else {
         return url + '&' + field + '=' + value;
     }
