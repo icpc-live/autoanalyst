@@ -17,7 +17,8 @@ div#language_count_plot, div#language_percent_plot {
 }
 
 body {  }
-div.plot_container { position: relative; display: inline-block; width: 45%; height: 70%;  }
+div.plot_outer_container { margin-left: auto; margin-right: auto; text-align: center; }
+div.plot_container { position: relative; display: inline-block; width: 45%; height: 70%;  padding: 20px; }
 div.flot_plot div.ticklabel { font-size: 150%; }
 div.flot_plot_x_axis_label { text-align: center; }
 div.title { text-align: center; }
@@ -54,9 +55,6 @@ if ($team_id || $problem_id) {
     $where_clause = "WHERE " . implode(" AND ", $clauses);
     $where_description = "(" . implode(" and ", $descriptions) . ") (<a href='language.php'>see all teams, all problems</a>)";
 }
-$sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
-$per_result = mysql_query($sql);
-
 $sql = "SELECT lang_id, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id";
 $result_total = mysql_query($sql);
 while ($result_total && $row = mysql_fetch_assoc($result_total)) {
@@ -69,9 +67,13 @@ $preferred_order = array(
     "WA" => "Wrong Answer",
     "TLE" => "Time Limit Exceeded",
     "RTE" => "Run Time Error",
-    "CE" => "Compile Error",
-    "IF" => "Illegal Function"
+    "(CE)" => "Compile Error",
+    "(IF)" => "Illegal Function"
 );
+
+$sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
+$per_result = mysql_query($sql);
+
 $language_location = array("C" => 0, "C++" => 1, "Java" => 2);
 while ($per_result && $row = mysql_fetch_assoc($per_result)) {
     $submission_result = $row['result'];
@@ -81,7 +83,7 @@ while ($per_result && $row = mysql_fetch_assoc($per_result)) {
     if (! array_key_exists($submission_result, $flot_count_data)) {
         $new_row = array(
             "label" => $preferred_order[$submission_result],
-            "data" => array()
+            "data" => array(),
         );
         $flot_count_data[$submission_result] = $new_row;
         $flot_percent_data[$submission_result] = $new_row;
@@ -89,6 +91,9 @@ while ($per_result && $row = mysql_fetch_assoc($per_result)) {
 
     $flot_count_data[$submission_result]['data'][] = array($language_location[$lang_id], $count);
     $flot_percent_data[$submission_result]['data'][] = array($language_location[$lang_id], $count / $count_per_language[$lang_id] * 100.0);
+    $subInfo = array("lang_id" => $lang_id, "result" => $submission_result);
+    $flot_count_data[$submission_result]['submissionInfo'][] = $subInfo;
+    $flot_percent_data[$submission_result]['submissionInfo'][] = $subInfo;
 }
 
 $flot_count_data_ordered = array();
@@ -108,6 +113,7 @@ $xticks = json_encode($xticks);
 ?>
 
 <script type="text/javascript">
+var COMMON_DATA = get_json_synchronous("icpc/common_data.php");
 $(document).ready(
     function() {
         var series_common = {
@@ -120,7 +126,7 @@ $(document).ready(
             {
                 series: series_common,
                 legend: { backgroundOpacity: 0.4, position: "nw" },
-                grid: { hoverable: true },
+                grid: { hoverable: true, clickable: true },
                 xaxis: { ticks: <?php echo $xticks; ?> },
             }
         );
@@ -132,7 +138,7 @@ $(document).ready(
             {
                 series: series_common,
                 legend: { backgroundOpacity: 0.4, position: "nw" },
-                grid: { hoverable: true },
+                grid: { hoverable: true, clickable: true },
                 yaxis: {
                     ticks: [
                        [  0,   '0%'],
@@ -153,11 +159,67 @@ $(document).ready(
         );
 
         count_plot.bind("plothover", hover);
+        count_plot.bind("plotclick", showsubmissions);
         count_plot.attr("suffix", " submissions");
         percent_plot.bind("plothover", hover);
+        percent_plot.bind("plotclick", showsubmissions);
         percent_plot.attr("suffix", "%");
     }
 );
+
+
+function showsubmissions(event, position, item) {
+    if (item) {
+        var subInfo = item.series.submissionInfo[item.dataIndex];
+        var problem_match = window.location.search.match(/problem_id=[a-z]/i);
+        var team_match = window.location.search.match(/team_id=[0-9]+/i);
+        var problem_selector = problem_match ? "&" + problem_match[0] : "";
+        var team_selector = team_match ? "&" + team_match[0] : "";
+        console.log(window.location.search);
+        console.log(problem_selector);
+        console.log(team_selector);
+
+        var url = 'language_submission_query.php?lang_id=' + encodeURI(subInfo.lang_id) + "&result=" + encodeURI(subInfo.result) + problem_selector + team_selector;
+
+        $.ajax({
+            url: url,
+            data: { lang_id: subInfo.lang_id, result: subInfo.result },
+            success: displaySubmissions,
+            error: function(jqXHR, err) { console.log("updatePlot failed for " + url + ": " + jqXHR + ", " + err); },
+            dataType: "json"
+        });
+    }
+}
+
+function displaySubmissions(result) {
+    var text = [];
+    var submissions = result.submissions;
+    console.log(result);
+    for (t_ndx in submissions) {
+        var school_name = t_ndx;
+        try {
+            // FIXME -- shouldn't need this try/catch if all the school names are properly in the database
+            school_name = COMMON_DATA['TEAMS'][t_ndx]['school_name'];
+        } catch (e) {}
+
+        var team_submissions = [];
+        for (s_ndx in submissions[t_ndx]) {
+            var s_id = submissions[t_ndx][s_ndx];
+            team_submissions.push("<a href='http://KATTIS_OR_DOMJUDGE/submission.php?ext_id=" + s_id + "'>" + s_id + "</a>");
+        }
+        text.push("<a href='team.php?team_id=" + t_ndx + "'>" + school_name + "</a>: (" + team_submissions.join(", ") + ")");
+    }
+    var title = [];
+    for (field in result) {
+        if (field != 'submissions') {
+            title.push(field + ": " + result[field]);
+        }
+    }
+    //if (result.team_id) { title.push('Team ID: ' + result.team_id); }
+    //if (result.lang_id) { title.push('Language: ' + result.lang_id); }
+    //if (result.result) { title.push('Result: ' + result.result); }
+    $("#submissioninfo").html("<h2>" + title.join(", ") + "</h2><ol><li>" + text.join("<li> ") + "</ol>");
+}
 
 function hover(event, position, item) {
     if (item) {
@@ -186,6 +248,7 @@ function hover(event, position, item) {
 
 <h2>Language use <?php echo $where_description; ?></h2>
 
+<div class="plot_outer_container">
 <div class="plot_container">
 <div class="title">Number of submissions per language and result</div>
 <div class='flot_plot' id="language_count_plot"></div>
@@ -196,9 +259,12 @@ function hover(event, position, item) {
 <div class='flot_plot' id="language_percent_plot"></div>
 <div class='flot_plot_x_axis_label'>Language</div>
 </div>
-
-<div id="instructions">
 </div>
+
+<div clear="both"></div>
+
+<div id="submissioninfo"></div>
+
 </body>
 </html>
 
