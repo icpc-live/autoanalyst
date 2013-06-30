@@ -13,9 +13,9 @@ $db = init_db();
 $_SESSION['entry_username'] = $user;
 
 $result = mysql_query(
-    "insert into entries (date, contest_time, user, priority, text) values " .
-    sprintf("('%s', %d, '%s', %d, '%s')",
-    mysql_escape_string($date), $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text)),
+    "insert into entries (contest_time, user, priority, text) values " .
+    sprintf("(%d, '%s', %d, '%s')",
+    $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text)),
     $db
 );
 
