@@ -5,28 +5,55 @@ require_once "icpc/common_data.php";
 
 session_start();
 
+if (file_exists("icpc/sql_cache.php")) {
+    require_once "icpc/sql_cache.php";
+}
+
 function init_db()
 {
+    global $SQL_CACHE;
     global $dbuser;
     global $dbhost;
     global $dbpassword;
-    $db = mysql_connect($dbhost, $dbuser, $dbpassword);
-    echo mysql_error();
-    mysql_select_db("icat", $db);
-    echo mysql_error();
-    mysql_set_charset("utf8");
-    echo mysql_error();
-    return $db;
+    if (isset($SQL_CACHE)) {
+        return "";
+    } else {
+        $db = mysql_connect($dbhost, $dbuser, $dbpassword);
+        echo mysql_error();
+        mysql_select_db("icat", $db);
+        echo mysql_error();
+        mysql_set_charset("utf8");
+        echo mysql_error();
+        return $db;
+    }
+}
+
+function mysql_query_cacheable($sql) {
+    global $SQL_CACHE;
+    if (isset($SQL_CACHE)) {
+        $sql = strtolower($sql);
+        if (array_key_exists($sql, $SQL_CACHE)) {
+            return $SQL_CACHE[$sql];
+        }
+        return null;
+    }
+
+    # non-cached version
+    $result = mysql_query($sql);
+    $rows = array();
+    while ($result && ($row = mysql_fetch_assoc($result))) {
+        $rows[] = $row;
+    }
+    return $rows;
 }
 
 function get_times_in_wf($db, $pid)
 {
   $sql = "SELECT COUNT(pid) AS times_in_wf FROM history_attendees WHERE pid='$pid' AND (role_type LIKE 'Contestant%' OR role_type LIKE 'Coach%')";
   $times_in_wf = '';
-  if ( $res = mysql_query($sql, $db) ) {
-    if ( $row = mysql_fetch_array($res) ) {
+  $rows = mysql_query_cacheable($sql);
+  foreach ($rows as $row) {
       $times_in_wf = $row["times_in_wf"];
-    }
   }
   return $times_in_wf;
 }
@@ -34,12 +61,13 @@ function get_times_in_wf($db, $pid)
 function gen_facts($db, $team_id, $type)
 {
   $facts_sql = "SELECT * FROM facts WHERE type='$type' AND team_id=$team_id";
-  if ( $facts_res = mysql_query($facts_sql, $db) ) {
-    printf("<table id='%s_fact'>", $type);
-    while ( $facts_row = mysql_fetch_array($facts_res) ) {
-      printf("<tr><td>%s</td></tr>", $facts_row["text"]);
-    }
-    echo "</table>";
+  $rows = mysql_query_cacheable($facts_sql);
+  if ($rows) {
+      printf("<table id='%s_fact'>", $type);
+      foreach ($rows as $facts_row) {
+          printf("<tr><td>%s</td></tr>", $facts_row["text"]);
+      }
+      echo "</table>";
   }
 }
 
@@ -133,10 +161,10 @@ function add_entry_container() {
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
             <?php
-            $result = mysql_query("SELECT MAX(contest_time) AS last_submission FROM submissions");
+            $rows = mysql_query_cacheable("SELECT MAX(contest_time) AS last_submission FROM submissions");
             $last_submission = 0;
-            if ($result) {
-                $row = mysql_fetch_assoc($result);
+            if ($rows) {
+                $row = $rows[0];
                 $last_submission = $row['last_submission'];
             }
 

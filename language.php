@@ -1,6 +1,6 @@
 <?php
 require_once 'icat.php';
-$db = init_db();
+init_db();
 $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : null;
 $problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : null;
 ?>
@@ -56,8 +56,8 @@ if ($team_id || $problem_id) {
     $where_description = "(" . implode(" and ", $descriptions) . ") (<a href='language.php'>see all teams, all problems</a>)";
 }
 $sql = "SELECT lang_id, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id";
-$result_total = mysql_query($sql);
-while ($result_total && $row = mysql_fetch_assoc($result_total)) {
+$rows = mysql_query_cacheable($sql);
+foreach ($rows as $row) {
     $count_per_language[$row['lang_id']] = $row['count'];
 }
 
@@ -72,10 +72,10 @@ $preferred_order = array(
 );
 
 $sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
-$per_result = mysql_query($sql);
+$rows = mysql_query_cacheable($sql);
 
 $language_location = array("C" => 0, "C++" => 1, "Java" => 2);
-while ($per_result && $row = mysql_fetch_assoc($per_result)) {
+foreach ($rows as $row) {
     $submission_result = $row['result'];
     $lang_id = $row['lang_id'];
     $count = (int)($row['count']);
@@ -175,9 +175,6 @@ function showsubmissions(event, position, item) {
         var team_match = window.location.search.match(/team_id=[0-9]+/i);
         var problem_selector = problem_match ? "&" + problem_match[0] : "";
         var team_selector = team_match ? "&" + team_match[0] : "";
-        console.log(window.location.search);
-        console.log(problem_selector);
-        console.log(team_selector);
 
         var url = 'language_submission_query.php?lang_id=' + encodeURI(subInfo.lang_id) + "&result=" + encodeURI(subInfo.result) + problem_selector + team_selector;
 
@@ -194,7 +191,6 @@ function showsubmissions(event, position, item) {
 function displaySubmissions(result) {
     var text = [];
     var submissions = result.submissions;
-    console.log(result);
     for (t_ndx in submissions) {
         var school_name = t_ndx;
         try {
@@ -204,8 +200,8 @@ function displaySubmissions(result) {
 
         var team_submissions = [];
         for (s_ndx in submissions[t_ndx]) {
-            var s_id = submissions[t_ndx][s_ndx];
-            team_submissions.push("<a href='http://KATTIS_OR_DOMJUDGE/submission.php?ext_id=" + s_id + "'>" + s_id + "</a>");
+            var sub = submissions[t_ndx][s_ndx];
+            team_submissions.push("<a href='http://KATTIS_OR_DOMJUDGE/submission.php?ext_id=" + sub.submission_id + "'>" + sub.problem_id + "</a>");
         }
         text.push("<a href='team.php?team_id=" + t_ndx + "'>" + school_name + "</a>: (" + team_submissions.join(", ") + ")");
     }
@@ -215,10 +211,7 @@ function displaySubmissions(result) {
             title.push(field + ": " + result[field]);
         }
     }
-    //if (result.team_id) { title.push('Team ID: ' + result.team_id); }
-    //if (result.lang_id) { title.push('Language: ' + result.lang_id); }
-    //if (result.result) { title.push('Result: ' + result.result); }
-    $("#submissioninfo").html("<h2>" + title.join(", ") + "</h2><ol><li>" + text.join("<li> ") + "</ol>");
+    $("#submissioninfo").html("<h2>Submissions for " + title.join(", ") + "</h2><ol><li>" + text.join("<li> ") + "</ol>");
 }
 
 function hover(event, position, item) {
