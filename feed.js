@@ -206,13 +206,19 @@ function _feed_updateWith(rows) {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
                 var result = "<span class='" + is_accepted + "'>" + kattis_result_translator[row.result] + "</span>";
 
+                var school_name = "Team " + row.team_id;
+                try {
+                    // FIXME -- this protection is only here if the school_name
+                    // is not in the databases
+                    school_name = self.TEAMS[row.team_id]['school_short'];
+                } catch (e) {}
                 // FIXME -- need to add a URL for kattis and/or domjudge. Quoting Stein:
                 // If the submission_id is 4711, the link to the same submission
                 // in DOMjudge is similar to: http://domjudge/jury/submission.php?ext_id=4711
                 // The same link to kattis would be: http://kattis/submission?id=4711
                 description = "<a href='http://KATTIS_OR_DOMJUDGE_URL/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                             "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
+                             "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
                              result +
                              "<span class='feed_timestamp' timestamp='" + row.date + "'></span>";
