@@ -1,7 +1,7 @@
 <?php
 require_once "icat.php";
 
-function get_activity_data() {
+function get_activity_data($team_id, $problem_id) {
     global $COMMON_DATA;
     $db = init_db();
 
@@ -13,9 +13,9 @@ function get_activity_data() {
 
     // determine if we should limit this to one team
     $where_conditions = array();
-    if (isset($_GET["team_id"]) && $_GET["team_id"] != "") {
+    if (isset($team_id) && $team_id != "") {
         # FIXME -- check that this SQL is safe. Written on a plane without php references. Should be simpler.
-        $team_ids = array_unique(preg_split("/,/", $_GET["team_id"]));
+        $team_ids = array_unique(preg_split("/,/", $team_id));
         $team_ids_safe = array();
         foreach ($team_ids as $tid) {
             if (preg_match("/^[0-9]+$/", $tid)) {
@@ -26,14 +26,14 @@ function get_activity_data() {
         $where_conditions[] = "team_id in (" . $team_ids_safe . ")";
     }
 
-    if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
+    if (isset($problem_id) && $problem_id != "") {
         # FIXME -- IMPROVE THIS TERRIBLE PHP -- WRITTEN ON A PLANE WITHOUT AN API REFERENCE
-        $problem_id = preg_split("//", preg_replace("/[^a-z]/i", "", $_GET["problem_id"]));
+        $problem_id = preg_split("//", preg_replace("/[^a-z]/i", "", $problem_id));
         array_pop($problem_id);
         array_shift($problem_id);
         $problem_id = array_unique($problem_id);
-        $_GET["problem_id"] = implode(",", $problem_id);
-        $where_conditions[] = 'problem_id IN ("' . preg_replace('/,/', '","', $_GET["problem_id"]) . '")';
+        $problem_id = implode(",", $problem_id);
+        $where_conditions[] = 'problem_id IN ("' . preg_replace('/,/', '","', $problem_id) . '")';
     }
 
     # where clause for submissions
@@ -50,7 +50,7 @@ function get_activity_data() {
 
     # Grab the edit_activity rows aggregated by time, binning by every $G_BIN_MINUTES 
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
-    $result = mysql_query(
+    $rows = mysql_query_cacheable(
         /*
         // This query gives all edits (even if a single team makes many edits)
         "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
@@ -71,15 +71,13 @@ function get_activity_data() {
         . " ORDER BY problem_id, contest_time_binned, team_id "
         . " ) as FOO "
         . " group by problem_id, contest_time_binned "
-        ,
-        $db
     );
 
     # go through all the rows, save each, and determine the maximum counts (for 
     # scaling of the plot)
     $edit_bins = array();
     $max_problems_per_bin = 0; // need to know how many problems are solved in any one binned time interval
-    while ($result && ($row = mysql_fetch_assoc($result))) {
+    foreach ($rows as $row) {
         $count = intval($row["count"]);
         $edit_bins[strtoupper($row["problem_id"])][intval($row["contest_time_binned"])] = $count;
         $max_problems_per_bin = max($max_problems_per_bin, $count);
@@ -95,9 +93,9 @@ function get_activity_data() {
     # get the number of submissions of each problem per minute
     $sql = "select concat(problem_id, '_', contest_time) as problem_minute, count(*) as num_at_problem_minute " .
            " from submissions $where_clause_submissions group by problem_id, contest_time";
-    $result = mysql_query($sql, $db); # grab the submission activity
+    $rows = mysql_query_cacheable($sql); # grab the submission activity
     $num_at_problem_minute = array();
-    while ($result && ($row = mysql_fetch_assoc($result))) {
+    foreach ($rows as $row) {
         $num_at_problem_minute[$row["problem_minute"]] = intval($row["num_at_problem_minute"] * 1.4); # scale so that we don't hit the ceiling
     }
 
@@ -105,10 +103,9 @@ function get_activity_data() {
         . "$where_clause_submissions "
         . "ORDER BY contest_time ASC, result ASC ";
 
-    $result = mysql_query($sql, $db); # grab the submission activity
+    $rows = mysql_query_cacheable($sql); # grab the submission activity
     $submissions = array();
-    while ($result && ($row = mysql_fetch_assoc($result))) {
-        // TODO: ADD LANGUAGE TO SUBMISSION INFO
+    foreach ($rows as $row) {
         $submissions[$row["result"]][] = array('problem_id' => strtoupper($row["problem_id"]), 'contest_time' => intval($row["contest_time"]), 'team_id' => intval($row["team_id"]), 'lang_id' => $row['lang_id']);
     }
 
@@ -121,8 +118,8 @@ function get_activity_data() {
     // Create the histograms of edit_activity
     $baseline_counter = 0;
     $baseline_per_problem = array();
-    if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
-        $problems_used = array_map(function($s) { return strtoupper($s); }, explode(",", $_GET["problem_id"]));
+    if (isset($problem_id) && $problem_id != "") {
+        $problems_used = array_map(function($s) { return strtoupper($s); }, explode(",", $problem_id));
     } else {
         $problems_used = array();
         for ($problem_ndx = 0; $problem_ndx < count($COMMON_DATA['PROBLEM_ID_TO_NAME']); ++$problem_ndx) {
@@ -161,7 +158,6 @@ function get_activity_data() {
 
 
     $problem_minute_counter = array();
-    $row_counter = 0;
     foreach ($submissions as $result => $result_submissions) {
         $dataset = array();
         $dataset["legend"] = array("show" => true);
@@ -179,7 +175,7 @@ function get_activity_data() {
             $n = isset($num_at_problem_minute[$problem_minute]) ? $num_at_problem_minute[$problem_minute] : 0;
             $scale = max(10, $n);
             $dataset["data"][] = array(
-                $sub["contest_time"], 
+                $sub["contest_time"],
                 $baseline_per_problem[$problem_id] + $problem_minute_counter[$problem_minute] * $max_problems_per_bin / $scale
             );
             $problem_minute_counter[$problem_minute]++;
@@ -189,7 +185,6 @@ function get_activity_data() {
             $dataset["submissionInfo"][] = array("team_id" => $sub["team_id"], "problem_id" => $sub["problem_id"], "lang_id" => $sub["lang_id"]);
         }
         $datasets[] = $dataset;
-        $row_counter++;
     }
 
 
@@ -204,7 +199,9 @@ function get_activity_data() {
 
 
 if (preg_match('/\/activity_data_source.php$/', $_SERVER["SCRIPT_FILENAME"])) {
-    $response = get_activity_data();
+    $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : null;
+    $problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : null;
+    $response = get_activity_data($team_id, $problem_id);
     header('Content-type: application/json');
     print json_encode($response);
 }
