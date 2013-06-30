@@ -26,7 +26,8 @@ function ActivityPlot(target, team_id, problem_id, update) {
 
         for (var i = 0; i < num_problems; ++i) {
             var pid = problems_used[i].toUpperCase();
-            ticks.push([i * problem_height, pid]);
+            var href = add_query_field(window.location.href, 'problem_id', pid);
+            ticks.push([i * problem_height, '<a href="' + href + '">' + pid + '</a>']);
             colors.push(self.BALLOON_COLORS[pid]);
         }
 
@@ -40,10 +41,11 @@ function ActivityPlot(target, team_id, problem_id, update) {
                 max: maxY,
             },
             xaxis: {
-                zoomRange: [20, 321], // extra space to allow for the legend
+                zoomRange: [10, 321], // extra space to allow for the legend
                 panRange: [0, 320], // extra space to allow for the legend
                 min: 0,
                 max: 320, // extra space to allow for the legend
+                tickDecimals: 0,
             },
             zoom: { interactive: true,  },
             pan: { interactive: true,  },
@@ -105,7 +107,8 @@ function ActivityPlot(target, team_id, problem_id, update) {
                         content = item.series.label + ": " 
                                 + self.TEAMS[item.series.submissionInfo[item.dataIndex].team_id]['school_name'] +
                                   " problem " + item.series.submissionInfo[item.dataIndex].problem_id +
-                                  " at time " + item.datapoint[0];
+                                  " at time " + item.datapoint[0] +
+                                  " (" + item.series.submissionInfo[item.dataIndex].lang_id + ")";
                     } else {
                         // for the edits
                         var numEdits = item.datapoint[1] - item.datapoint[2];
@@ -122,17 +125,8 @@ function ActivityPlot(target, team_id, problem_id, update) {
         self.target.bind("plotclick",
             function(evt, pos, item) {
                 if (item && item.series && item.series.submissionInfo) {
-                    var query = '?team_id=' + item.series.submissionInfo[item.dataIndex].team_id;
-                    var current = window.location.href;
-                    // hack...
-                    if (/activity\.php/.test(current)) {
-                        current = current.replace(/\?.*/, '') + query;
-                    } else {
-                        current = current.replace(/[^\/]+$/, '') + 'activity.php' + query;
-                    }
-                        
-                    //var href = window.location.href.replace(/\?.*/, '') + '?team_id=' + item.series.submissionInfo[item.dataIndex].team_id;
-                    window.location.assign(current);
+                    var new_location = add_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
+                    window.location.assign(new_location);
                 }
             }
         );
