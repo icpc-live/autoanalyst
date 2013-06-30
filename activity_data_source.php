@@ -10,42 +10,47 @@ function get_activity_data() {
 
     // the resolution of the time-based bins -- FIXME -- make this a parameter
     $G_BIN_MINUTES = 5;
-    $G_BIN_SECONDS = $G_BIN_MINUTES * 60;
 
     // determine if we should limit this to one team
     $where_conditions = array();
     if (isset($_GET["team_id"]) && $_GET["team_id"] != "") {
-        $where_conditions[] = "team_id in (" . $_GET["team_id"] . ")";
+        # FIXME -- check that this SQL is safe. Written on a plane without php references. Should be simpler.
+        $team_ids = array_unique(preg_split("/,/", $_GET["team_id"]));
+        $team_ids_safe = array();
+        foreach ($team_ids as $tid) {
+            if (preg_match("/^[0-9]+$/", $tid)) {
+                $team_ids_safe[] = $tid;
+            }
+        }
+        $team_ids_safe = implode(",", $team_ids_safe);
+        $where_conditions[] = "team_id in (" . $team_ids_safe . ")";
     }
 
     if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
-        $problem_id = preg_replace("/([a-z])/i", '"$1"', $_GET["problem_id"]);
-        $where_conditions[] = "problem_id in (" . $problem_id . ")";
+        # FIXME -- IMPROVE THIS TERRIBLE PHP -- WRITTEN ON A PLANE WITHOUT AN API REFERENCE
+        $problem_id = preg_split("//", preg_replace("/[^a-z]/i", "", $_GET["problem_id"]));
+        array_pop($problem_id);
+        array_shift($problem_id);
+        $problem_id = array_unique($problem_id);
+        $_GET["problem_id"] = implode(",", $problem_id);
+        $where_conditions[] = 'problem_id IN ("' . preg_replace('/,/', '","', $_GET["problem_id"]) . '")';
     }
 
     # where clause for submissions
-    $where_clause_submissions = $where_conditions ? "where " . implode(" and ", $where_conditions) : "";
+    $where_clause_submissions = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     # where clause for edit_activity
     # don't grab edit_activity rows that have been marked invalid
-    $where_conditions[] = "valid != 0";
-    $where_clause_edit_activity = $where_conditions ? "where " . implode(" and ", $where_conditions) : "";
+    $where_conditions[] = "valid != 0"; # FIXME -- WHERE IS THE FIELD "valid"? -- ASK DAVID ABOUT THIS
+    $where_clause_edit_activity = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     ##########################################################
     # Edit activity
     ##########################################################
 
-    # Grab the edit_activity rows aggregated by time, binning by every $G_BIN_SECONDS 
+    # Grab the edit_activity rows aggregated by time, binning by every $G_BIN_MINUTES 
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
     $result = mysql_query(
-        /*
-        "SELECT ROUND((UNIX_TIMESTAMP(modify_time) - $G_CONTEST_START_TIME_UNIX) / $G_BIN_SECONDS) * $G_BIN_MINUTES AS contest_time_binned "
-        . ", problem_id, COUNT(*) AS count "
-        . "FROM edit_activity "
-        . "$where_clause_edit_activity "
-        . "GROUP BY problem_id, contest_time_binned "
-        . "ORDER BY problem_id, contest_time_binned "
-        */
         /*
         // This query gives all edits (even if a single team makes many edits)
         "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
@@ -103,7 +108,8 @@ function get_activity_data() {
     $result = mysql_query($sql, $db); # grab the submission activity
     $submissions = array();
     while ($result && ($row = mysql_fetch_assoc($result))) {
-        $submissions[$row["result"]][] = array('problem_id' => strtoupper($row["problem_id"]), 'contest_time' => intval($row["contest_time"]), 'team_id' => intval($row["team_id"]));
+        // TODO: ADD LANGUAGE TO SUBMISSION INFO
+        $submissions[$row["result"]][] = array('problem_id' => strtoupper($row["problem_id"]), 'contest_time' => intval($row["contest_time"]), 'team_id' => intval($row["team_id"]), 'lang_id' => $row['lang_id']);
     }
 
     ##########################################################
@@ -142,8 +148,8 @@ function get_activity_data() {
     // Create series of points for submissions, one per type of result
     $point_options_by_result = array(
         'AC'   => array("label" => 'AC'   /* 'Accepted'              */,   "color" => '#1a1',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 3,  "fillColor" => false, "fill" => 1)),
-        'CE'   => array("label" => 'CE'   /* 'Compile Error'         */,   "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'IF'   => array("label" => 'IF'   /* 'Illegal Function'      */,   "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+        '(CE)' => array("label" => 'CE'   /* 'Compile Error'         */,   "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
+        '(IF)' => array("label" => 'IF'   /* 'Illegal Function'      */,   "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
         'MLE'  => array("label" => 'MLE'  /* 'Memory Limit Exceeded' */,   "color" => 'pink',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
         'OLE'  => array("label" => 'OLE'  /* 'Output Limit Exceeded' */,   "color" => 'purple',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
         'PE'   => array("label" => 'PE'   /* 'Presentation Error'    */,   "color" => 'gray',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
@@ -180,7 +186,7 @@ function get_activity_data() {
         }
         $dataset["submissionInfo"] = array();
         foreach ($result_submissions as $sub) {
-            $dataset["submissionInfo"][] = array("team_id" => $sub["team_id"], "problem_id" => $sub["problem_id"]);
+            $dataset["submissionInfo"][] = array("team_id" => $sub["team_id"], "problem_id" => $sub["problem_id"], "lang_id" => $sub["lang_id"]);
         }
         $datasets[] = $dataset;
         $row_counter++;
