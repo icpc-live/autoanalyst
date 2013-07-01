@@ -215,11 +215,7 @@ function _feed_updateWith(rows) {
                     // is not in the databases
                     school_name = self.TEAMS[row.team_id]['school_short'];
                 } catch (e) {}
-                // FIXME -- need to add a URL for kattis and/or domjudge. Quoting Stein:
-                // If the submission_id is 4711, the link to the same submission
-                // in DOMjudge is similar to: http://domjudge/jury/submission.php?ext_id=4711
-                // The same link to kattis would be: http://kattis/submission?id=4711
-                description = "<a href='http://KATTIS_OR_DOMJUDGE_URL/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
+                description = "<a href='/domjudge/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                              "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
