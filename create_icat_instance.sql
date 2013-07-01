@@ -102,44 +102,6 @@ CREATE TABLE IF NOT EXISTS `icpc2013_regions` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=90241 ;
 
 
--- --------------------------------------------------------
-
---
--- Table structure for table `icpc2013_scoreboard`
---
-
-DROP TABLE IF EXISTS `icpc2013_scoreboard`;
-CREATE TABLE IF NOT EXISTS `icpc2013_scoreboard` (
-  `team_id` int(11) NOT NULL,
-  `rank` int(11) NOT NULL DEFAULT '1',
-  `total_time` int(11) NOT NULL DEFAULT '0',
-  `num_solutions` int(11) NOT NULL DEFAULT '0',
-  `a_submissions` int(11) NOT NULL DEFAULT '0',
-  `a_soln_time` int(11) NOT NULL DEFAULT '0',
-  `b_submissions` int(11) NOT NULL DEFAULT '0',
-  `b_soln_time` int(11) NOT NULL DEFAULT '0',
-  `c_submissions` int(11) NOT NULL DEFAULT '0',
-  `c_soln_time` int(11) NOT NULL DEFAULT '0',
-  `d_submissions` int(11) NOT NULL DEFAULT '0',
-  `d_soln_time` int(11) NOT NULL DEFAULT '0',
-  `e_submissions` int(11) NOT NULL DEFAULT '0',
-  `e_soln_time` int(11) NOT NULL DEFAULT '0',
-  `f_submissions` int(11) NOT NULL DEFAULT '0',
-  `f_soln_time` int(11) NOT NULL DEFAULT '0',
-  `g_submissions` int(11) NOT NULL DEFAULT '0',
-  `g_soln_time` int(11) NOT NULL DEFAULT '0',
-  `h_submissions` int(11) NOT NULL DEFAULT '0',
-  `h_soln_time` int(11) NOT NULL DEFAULT '0',
-  `i_submissions` int(11) NOT NULL DEFAULT '0',
-  `i_soln_time` int(11) NOT NULL DEFAULT '0',
-  `j_submissions` int(11) NOT NULL DEFAULT '0',
-  `j_soln_time` int(11) NOT NULL DEFAULT '0',
-  `k_submissions` int(11) NOT NULL DEFAULT '0',
-  `k_soln_time` int(11) NOT NULL DEFAULT '0',
-  `l_submissions` int(11) NOT NULL DEFAULT '0',
-  `l_soln_time` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 
@@ -234,8 +196,6 @@ DROP VIEW IF EXISTS facts;
 CREATE VIEW facts AS SELECT * FROM icpc2013_facts;
 DROP VIEW IF EXISTS regions;
 CREATE VIEW regions AS SELECT * FROM icpc2013_regions;
-DROP VIEW IF EXISTS scoreboard;
-CREATE VIEW scoreboard AS SELECT * FROM icpc2013_scoreboard;
 DROP VIEW IF EXISTS submissions;
 CREATE VIEW submissions AS SELECT * FROM icpc2013_submissions;
 DROP VIEW IF EXISTS teams;
