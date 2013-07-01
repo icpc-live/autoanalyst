@@ -56,18 +56,8 @@ UPDATING THE REPOSITORY
 <?php system("git pull"); ?>
 
 --------------------------------------------------------
-INITIALIZE CODEALYZER
-<?php system("code_analyzer/util/reset.sh"); ?>
-
-
---------------------------------------------------------
-REMOVING GRAPHS IN OUTPUT DIRECTORY
-<?php system("rm -rf katalyze/output"); ?>
-
---------------------------------------------------------
 BUILDING KATALYZE
-<?php system("make -C katalyze"); ?>
-
+<?php system("cd katalyze && ant"); ?>
 
 --------------------------------------------------------
 STARTING KATALYZE

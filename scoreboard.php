@@ -22,7 +22,7 @@ h1 { text-align: center; margin: 0; }
 <body>
 <?php navigation_container() ?>
 <h1>Scoreboard</h1>
-<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter="">(Katalyzer must be running for this to work)</div>
+<div class='teamscore' data-source='http://192.168.0.51:8099' data-filter="">(Katalyzer must be running for this to work)</div>
 <script type='text/javascript' src='katalyze/web/scores.js'></script>
 </body>
 </html>
