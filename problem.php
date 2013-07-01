@@ -22,7 +22,7 @@ div#feed_container { display: table; table-layout: fixed; width: 100%; }
 div#entries_feed_container, div#edit_activity_feed_container,
 div#submission_feed_container { display: table-cell; }
 
-div#statistics_activity_container { white-space: nowrap; overflow-x: scroll; }
+div#statistics_activity_container { white-space: nowrap;  }
 
 div#problem_statistics {
     display: inline-block;
