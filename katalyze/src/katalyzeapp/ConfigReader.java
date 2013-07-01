@@ -23,6 +23,7 @@ import model.Analyzer;
 import model.Contest;
 import model.DatabaseNotificationTarget;
 import model.ModelDumperHook;
+import model.ShellNotificationTarget;
 import model.TwitterNotificationTarget;
 import model.WebNotificationTarget;
 
@@ -92,22 +93,26 @@ public class ConfigReader {
 		return (config.getBoolean(featureName+".enable", false));
 	}
 	
+	
+	private void addRuleIfEnabled(Analyzer analyzer, String ruleName, StateComparingRuleBase newRule) {
+		if (!ruleEnabled(ruleName)) {
+			return;
+		}
+		
+		analyzer.addRule(newRule);
+		String execTemplate = config.getString("rule."+ruleName+".exec", "");
+		if (!"".equals(execTemplate)) {
+			logger.info(String.format("Adding trigger on rule %s: %s", newRule, execTemplate));
+			ShellNotificationTarget executer = new ShellNotificationTarget(execTemplate);
+			newRule.addNotificationTarget(executer);
+		}
+	}
+	
 	private void setupRules(Analyzer analyzer) {
-		if (ruleEnabled("problemFirstSolved")) {
-			analyzer.addRule(new ProblemFirstSolved(analyzer));
-		}
-		
-		if (ruleEnabled("newLeader")) {
-			analyzer.addRule(new NewLeader(analyzer, config.getInt("rule.newLeader.ranks", 10)));
-		}
-		
-		if (ruleEnabled("rejectedSubmission")) {
-			analyzer.addRule(new RejectedSubmission(analyzer, config.getInt("rule.RejectedSubmission.ranks", 10)));
-		}
-		
-		if (ruleEnabled("rankPredictor")) {
-			analyzer.addRule(new RankPredictor(analyzer, config.getInt("rule.rankPredictor.ranks", 10)));
-		}
+		addRuleIfEnabled(analyzer, "problemFirstSolved", new ProblemFirstSolved());
+		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("rule.newLeader.ranks", 10)));
+		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("rule.RejectedSubmission.ranks", 10)));
+		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("rule.rankPredictor.ranks", 10)));
 	}
 	
 	private void setupCharts(Contest contest, Analyzer analyzer) {

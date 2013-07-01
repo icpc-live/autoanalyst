@@ -39,22 +39,22 @@ function get_activity_data($team_id, $problem_id) {
     # where clause for submissions
     $where_clause_submissions = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
-    # where clause for edit_activity
-    $where_clause_edit_activity = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
+    # where clause for edit_activity_problem
+    $where_clause_edit_activity_problem = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     ##########################################################
     # Edit activity
     ##########################################################
 
-    # Grab the edit_activity rows aggregated by time, binning by every $G_BIN_MINUTES 
+    # Grab the edit_activity_problem rows aggregated by time, binning by every $G_BIN_MINUTES 
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
     $rows = mysql_query_cacheable(
         /*
         // This query gives all edits (even if a single team makes many edits)
         "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
         . ", problem_id, COUNT(*) AS count "
-        . "FROM edit_activity "
-        . "$where_clause_edit_activity "
+        . "FROM edit_activity_problem "
+        . "$where_clause_edit_activity_problem "
         . "GROUP BY problem_id, contest_time_binned "
         . "ORDER BY problem_id, contest_time_binned "
         */
@@ -62,8 +62,8 @@ function get_activity_data($team_id, $problem_id) {
         "SELECT contest_time_binned, problem_id, count(*) as count FROM "
         . " (SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned, "
         . " problem_id, team_id, COUNT(*) AS count "
-        . " FROM edit_activity  "
-        . $where_clause_edit_activity
+        . " FROM edit_activity_problem "
+        . $where_clause_edit_activity_problem
         . " GROUP BY problem_id, contest_time_binned, team_id "
         . " HAVING contest_time_binned >= 0 and contest_time_binned <= 300 "
         . " ORDER BY problem_id, contest_time_binned, team_id "
@@ -113,7 +113,7 @@ function get_activity_data($team_id, $problem_id) {
 
     $datasets = array();
 
-    // Create the histograms of edit_activity
+    // Create the histograms of edit_activity_problem
     $baseline_counter = 0;
     $baseline_per_problem = array();
     if (isset($problem_id) && $problem_id != "") {
@@ -141,18 +141,12 @@ function get_activity_data($team_id, $problem_id) {
     }
 
     // Create series of points for submissions, one per type of result
-    $point_options_by_result = array(
-        'AC'   => array("label" => 'AC'   /* 'Accepted'              */,   "color" => '#1a1',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 3,  "fillColor" => false, "fill" => 1)),
-        '(CE)' => array("label" => 'CE'   /* 'Compile Error'         */,   "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        '(IF)' => array("label" => 'IF'   /* 'Illegal Function'      */,   "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'MLE'  => array("label" => 'MLE'  /* 'Memory Limit Exceeded' */,   "color" => 'pink',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'OLE'  => array("label" => 'OLE'  /* 'Output Limit Exceeded' */,   "color" => 'purple',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'PE'   => array("label" => 'PE'   /* 'Presentation Error'    */,   "color" => 'gray',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'RTE'  => array("label" => 'RTE'  /* 'Run Time Error'        */,   "color" => 'orange',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'TLE'  => array("label" => 'TLE'  /* 'Time Limit Exceeded'   */,   "color" => 'red',     "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'WA'   => array("label" => 'WA'   /* 'Wrong Answer'          */,   "color" => '#333',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        // FIXME: do we want a result type for "status: fresh"? (i.e. the submission has not been judged) The status is not a "result"
-    );
+    $point_options_by_result = $COMMON_DATA['JUDGEMENTS'];
+    foreach (array_keys($point_options_by_result) as $result) {
+        $point_options_by_result[$result]["shadowSize"] = 0;
+        $point_options_by_result[$result]["points"] = array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1);
+    }
+    $point_options_by_result['AC']["points"]["radius"] = 3;
 
 
     $problem_minute_counter = array();

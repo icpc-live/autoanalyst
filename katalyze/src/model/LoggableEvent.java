@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Map;
+
 public class LoggableEvent {
 	private static int nextEventId = 0;
 	
@@ -12,8 +14,9 @@ public class LoggableEvent {
 	public final String icatMessage;
 	public final EventImportance importance;
 	public final InitialSubmission submission;
+	public final Map<String, String> supplements;
 	
-	public LoggableEvent(Contest contest, String message, EventImportance importance, InitialSubmission submission) {
+	public LoggableEvent(Contest contest, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = submission.getTeam();
@@ -22,6 +25,7 @@ public class LoggableEvent {
 		this.icatMessage = getICatMessage(message, submission);
 		this.importance = importance;
 		this.submission = submission;
+		this.supplements = supplements;
 	}
 	
 	private static String getCleartextMessage(String message, InitialSubmission submission) {

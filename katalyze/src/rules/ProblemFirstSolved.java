@@ -4,10 +4,6 @@ import model.*;
 
 public class ProblemFirstSolved extends StateComparingRuleBase implements StandingsUpdatedEvent{
 	
-	public ProblemFirstSolved(NotificationTarget target) {
-		super(target);
-	}
-	
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		Submission submission = transition.submission;

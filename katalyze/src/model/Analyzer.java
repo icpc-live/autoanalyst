@@ -29,6 +29,11 @@ public class Analyzer implements NotificationTarget {
 	}
 	
 	public void addRule(Object newRule) {
+		if (newRule instanceof StateComparingRuleBase) {
+			((StateComparingRuleBase) newRule).addNotificationTarget(this);
+		}
+		
+		
 		if (newRule instanceof StandingsUpdatedEvent) {
 			stateRules.add((StandingsUpdatedEvent) newRule);
 		} else if (newRule instanceof SolutionSubmittedEvent) {
@@ -78,12 +83,14 @@ public class Analyzer implements NotificationTarget {
 	
 	
 	public LoggableEvent createEvent(InitialSubmission submission, String message, EventImportance importance) {
-						
-		LoggableEvent event = new LoggableEvent(contest, message, importance, submission);		
-		return event;
+		return new LoggableEvent(contest, message, importance, submission, null);		
 	}
 	
+	public LoggableEvent createEvent(InitialSubmission submission, String message, EventImportance importance, Map<String,String> supplements) {
+		return new LoggableEvent(contest, message, importance, submission, supplements);
+	}
 	
+
 	
 	
 	private void processRules(Standings before, Standings after, Submission submission) {

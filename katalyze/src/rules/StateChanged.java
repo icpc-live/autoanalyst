@@ -1,13 +1,11 @@
 package rules;
 
 import model.EventImportance;
-import model.NotificationTarget;
 
 public class StateChanged extends StateComparingRuleBase implements StandingsUpdatedEvent{
 	private StandingsCriterion criterion;
 	
-	public StateChanged(NotificationTarget target, StandingsCriterion criterion) {
-		super(target);
+	public StateChanged(StandingsCriterion criterion) {
 		this.criterion = criterion;
 	}
 

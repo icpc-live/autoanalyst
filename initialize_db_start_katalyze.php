@@ -1,5 +1,5 @@
 --------------------------------------------------------
-THIS SCRIPT STARTS KATALYZER
+THIS SCRIPT RESETS AND INITIALIZES ICAT AND STARTS KATALYZER
 
 IN A FEW SECONDS IT WILL EMPTY SQL TABLES, 
 REMOVE GRAPHS, START KATALYZE, ETC.
@@ -18,10 +18,6 @@ for ($i = 5; $i >= 1; --$i) {
 ?>
 
 --------------------------------------------------------
-UPDATING TO LATEST SVN
-<?php system("svn update"); ?>
-
---------------------------------------------------------
 LINK TO THIS YEAR'S FILES
 <?php system("rm icpc"); ?>
 <?php system("ln -s icpc2013 icpc"); ?>
@@ -37,32 +33,23 @@ if (! $db) {
 ?>
 
 --------------------------------------------------------
+DUMP THE ICAT DATABASE
+<?php
+   require_once 'icpc/config.php';
+   $date=date('dMY_hi');
+   system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --database icat > icat_$date.sql");
+?>
+
+--------------------------------------------------------
 TRUNCATING ALL THE RELEVANT TABLES
 <?php
-$to_truncate = array('icpc2013_entries', 'icpc2013_scoreboard', 'icpc2013_submissions');
+$to_truncate = array('icpc2013_entries', 'icpc2013_submissions');
 foreach ($to_truncate as $table) {
-   $sql = "truncate table $table";
+   $sql = "TRUNCATE TABLE $table";
    print("TRUNCATING TABLE $table\n");
    $qr = mysql_query($sql, $db);
 }
 ?>
-
---------------------------------------------------------
-POPULATING TEAMS IN SCOREBOARD
-<?
-$sql = "SELECT id, school_name FROM `teams` order by id";
-$qr = mysql_query($sql, $db);
-$sql = "insert into scoreboard (team_id) values ";
-$first = true;
-while ($row = mysql_fetch_assoc($qr)) {
-	if (! $first) { $sql .= ", "; }
-	$sql .= "(" . $row["id"] . ")";
-	$first = false;
-}
-printf("populating scoreboard with teams:\n%s\n", $sql);
-mysql_query($sql, $db);
-?>
-
 
 --------------------------------------------------------
 INITIALIZE CODEALYZER

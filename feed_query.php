@@ -38,7 +38,7 @@ function feed_query($table, $conditions, $id, $limit) {
             'text regexp "#t\([0-9]+(\|[0-9]+)+\)\[\[:>:\]\]"',
             '1', # to fulfill an empty "where" clause
         ),
-        "edit_activity" => array(
+        "edit_activity_problem" => array(
             'team_id = [0-9]+',
             'problem_id = "[A-Z]"',
             'problem_id = "[A-Z]" and team_id = [0-9]+',

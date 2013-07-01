@@ -6,8 +6,7 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 
 	final int numberOfPositionsToMonitor;
 	
-	public RejectedSubmission(NotificationTarget notificationTarget, int positionsToMonitor) {
-		super(notificationTarget);
+	public RejectedSubmission(int positionsToMonitor) {
 		this.numberOfPositionsToMonitor = positionsToMonitor;
 	}
 

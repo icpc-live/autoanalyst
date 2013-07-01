@@ -48,6 +48,7 @@ function feed(div, properties) {
 
     var data = get_json_synchronous("icpc/common_data.php");
     this.TEAMS = data['TEAMS'];
+    this.JUDGEMENTS = data['JUDGEMENTS'];
 
     this.div = $(div);
 
@@ -187,7 +188,7 @@ function _feed_updateWith(rows) {
                 description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
-            } else if (this.table == 'edit_activity') {
+            } else if (this.table == 'edit_activity_problem') {
                 var gitweb_url = '/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
@@ -195,19 +196,8 @@ function _feed_updateWith(rows) {
                               row.modify_time + 
                               "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
             } else if (this.table == 'submissions') {
-                var kattis_result_translator = {
-                   'AC'  : "Accepted",
-                   '(CE)': "Compile Error",
-                   '(IF)': "Illegal Function",
-                   'MLE' : "Memory Limit Exceeded",
-                   'OLE' : "Output Limit Exceeded",
-                   'PE'  : "Presentation Error",
-                   'RTE' : "Run Time Error",
-                   'TLE' : "Time Limit Exceeded",
-                   'WA'  : "Wrong Answer",
-                };
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
-                var result = "<span class='" + is_accepted + "'>" + kattis_result_translator[row.result] + "</span>";
+                var result = "<span class='" + is_accepted + "'>" + self.JUDGEMENTS[row.result].label_long + "</span>";
 
                 var school_name = "Team " + row.team_id;
                 try {
@@ -215,11 +205,7 @@ function _feed_updateWith(rows) {
                     // is not in the databases
                     school_name = self.TEAMS[row.team_id]['school_short'];
                 } catch (e) {}
-                // FIXME -- need to add a URL for kattis and/or domjudge. Quoting Stein:
-                // If the submission_id is 4711, the link to the same submission
-                // in DOMjudge is similar to: http://domjudge/jury/submission.php?ext_id=4711
-                // The same link to kattis would be: http://kattis/submission?id=4711
-                description = "<a href='http://KATTIS_OR_DOMJUDGE_URL/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
+                description = "<a href='/domjudge/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                              "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
@@ -267,7 +253,7 @@ function _feed_updateWith(rows) {
     }
 
     self.updateTimestamps();
-    setInterval(function() { self.updateTimestamps(); }, 1000);
+    setInterval(function() { self.updateTimestamps(); }, 60 * 1000);
 }
 
 // sort all the rows in the live feed according to the user's selection
@@ -312,19 +298,11 @@ function _feed_updateTimestamps() {
     timestamps.each(function(ndx, element) {
         var e = $(element);
         var ts = e.attr('timestamp');
-        // FIXME -- the database (default-entered) timestamps may not be set to
-        // UTC, in which case a javascript timestamp (which is in UTC) will vary
-        // by the timezone difference
-        var diff_seconds = Math.floor((now - new Date(ts + ' +0200'/* FIXME: KLUDGE */)) / 1000);
-        var diff_minutes = Math.floor(diff_seconds / 60);
-        var msg = '';
-        if (diff_seconds < 60) {
-            msg = diff_seconds + ' sec.';
-        } else {
-            msg = diff_minutes + ' min.';
+        if (ts) {
+            var diff_minutes = Math.floor((now - new Date(ts)) / (60 * 1000));
+            var msg = diff_minutes + ' mins. ago';
+            e.text(msg);
         }
-
-        e.text(msg + ' ago');
     });
 }
 
