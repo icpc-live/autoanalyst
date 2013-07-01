@@ -102,9 +102,6 @@ if (! $team_row) {
 <?php
 $school_name = $team_row["school_name"];
 
-$result = mysql_query("select * from regions where team_id = $team_id", $db);
-$region_row = mysql_fetch_array($result);
-
 $result = mysql_query("select count(*) as cnt, lang_id from submissions where team_id = $team_id group by lang_id", $db);
 $language_counts = array();
 while ($row = mysql_fetch_assoc($result)) {
@@ -121,9 +118,6 @@ while ($row = mysql_fetch_assoc($result)) {
      ?> </div>
     <div id="teamname">Team: <?php echo $team_row["team_name"]; ?></div>
     <div id="country">Country: <?php $c = $team_row["country"]; printf("<a href='javascript:search_query(\"%s\", \"country\");'>%s <img class='flag' src='images/flags/%s.png'></a>", $c, $c, $c); ?></div>
-    <!--
-    <div id="region">Region: <?php printf("<a href='%s'>%s</a>", $region_row["region_scoreboard_url"], $region_row["region_name"]); ?> </div>
-    -->
 </div>
 
 <div id="video_container">

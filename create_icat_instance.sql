@@ -81,26 +81,6 @@ CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
 -- Dumping data for table `icpc2013_facts`
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `icpc2013_regions`
---
-
-DROP TABLE IF EXISTS `icpc2013_regions`;
-CREATE TABLE IF NOT EXISTS `icpc2013_regions` (
-  `team_id` int(11) NOT NULL AUTO_INCREMENT,
-  `regional_team_id` int(11) NOT NULL,
-  `regional_team_name` varchar(50) NOT NULL,
-  `region_name` varchar(50) NOT NULL,
-  `region_scoreboard_url` varchar(150) NOT NULL,
-  `problems_solved` int(11) NOT NULL,
-  `rank` int(11) NOT NULL,
-  `last_problem_time` int(11) NOT NULL,
-  `total_time` int(11) NOT NULL,
-  PRIMARY KEY (`team_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=90241 ;
-
 
 
 -- --------------------------------------------------------
@@ -148,6 +128,23 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
   `wa` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `icpc2013_team_regions`
+--
+
+DROP TABLE IF EXISTS `icpc2013_team_regions`;
+CREATE TABLE `icpc2013_team_regions` (
+  `id` int(11) NOT NULL auto_increment,
+  `region_id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `region_name` varchar(100) NOT NULL,
+  `super_region_name` varchar(100) NOT NULL,
+  `super_region_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
+
 
 -- --------------------------------------------------------
 
@@ -194,11 +191,11 @@ DROP VIEW IF EXISTS entries;
 CREATE VIEW entries AS SELECT * FROM icpc2013_entries;
 DROP VIEW IF EXISTS facts;
 CREATE VIEW facts AS SELECT * FROM icpc2013_facts;
-DROP VIEW IF EXISTS regions;
-CREATE VIEW regions AS SELECT * FROM icpc2013_regions;
 DROP VIEW IF EXISTS submissions;
 CREATE VIEW submissions AS SELECT * FROM icpc2013_submissions;
 DROP VIEW IF EXISTS teams;
 CREATE VIEW teams AS SELECT * FROM icpc2013_teams;
+DROP VIEW IF EXISTS team_regions;
+CREATE VIEW facts AS SELECT * FROM icpc2013_team_regions;
 DROP VIEW IF EXISTS top_coder;
 CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
