@@ -133,8 +133,7 @@ function single_region_or_superregion($db, $team_ids, $name) {
             conditions: 'team_id in (' + team_ids_list + ')'
         });
 
-        new ActivityPlot($("#activity_container"), team_ids_list, '');
-
+        new ActivityPlot($("#activity_container"), team_ids_list, '', true, false);
     });
 
     </script>
