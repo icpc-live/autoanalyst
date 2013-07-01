@@ -1,6 +1,8 @@
 package rules;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.*;
 
@@ -9,8 +11,7 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 	
 	final int rankThreshold;
 
-	public RankPredictor(NotificationTarget target, int rankThreshold) {
-		super(target);
+	public RankPredictor(int rankThreshold) {
 		this.rankThreshold = rankThreshold;
 	}
 	
@@ -46,7 +47,10 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		if (potentialRank <= rankThreshold) {
 			String message = String.format("{team} submitted solution for {problem}. If correct, they will get rank %d (%d)",
 					potentialRank, currentRank);
-			LoggableEvent event = new LoggableEvent(contest, message, EventImportance.Normal, standingsAtSubmission.submission);
+			Map<String, String> supplements = new HashMap<String, String>();
+			supplements.put("currentRank", Integer.toString(currentRank));
+			supplements.put("potentialRank", Integer.toString(potentialRank));
+			LoggableEvent event = new LoggableEvent(contest, message, EventImportance.Normal, standingsAtSubmission.submission, supplements);
 			notify(event);						
 		}
 		

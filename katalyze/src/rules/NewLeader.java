@@ -2,7 +2,6 @@ package rules;
 
 import model.EventImportance;
 import model.LoggableEvent;
-import model.NotificationTarget;
 import model.Score;
 import model.Submission;
 import model.Team;
@@ -11,8 +10,7 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 
 	private int numberOfPositionsToMonitor;
 	
-	public NewLeader(NotificationTarget target, int numberOfPositionsToMonitor) {
-		super(target);
+	public NewLeader(int numberOfPositionsToMonitor) {
 		this.numberOfPositionsToMonitor = numberOfPositionsToMonitor;
 	}
 	

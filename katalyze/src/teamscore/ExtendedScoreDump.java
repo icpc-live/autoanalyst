@@ -137,7 +137,6 @@ public class ExtendedScoreDump implements OutputHook {
 	}
 	
 	public ExtendedScoreDump(Contest contest, WebPublisher target) {
-		log.info("CREATED ExtendedScoreDump");
 		this.contest = contest;
 		this.publisherTarget = target;
 	}
@@ -145,7 +144,7 @@ public class ExtendedScoreDump implements OutputHook {
 	
 	@Override
 	public void execute(int minutesFromStart) {
-		log.info("publishing Standings... " + minutesFromStart);
+		log.debug("publishing Standings... " + minutesFromStart);
 		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
 				
 		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
