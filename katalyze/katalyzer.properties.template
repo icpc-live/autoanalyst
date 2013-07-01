@@ -1,4 +1,14 @@
-# Katalyzer properties file
+# AutoAnalyst Stream Analyzer properties file
+
+# ---- INPUTS ---------------------------------------------------------------------------
+
+# These are currently not in use
+input = tcp://192.168.1.1:4714
+#input = data/kattislog_vm2010.txt
+
+
+# ---- OUTPUTS ---------------------------------------------------------------------------
+#
 
 # --- Database export
 db.enable = false
@@ -24,20 +34,22 @@ twitter.hashtag = "#katalyzer"
 eventStream.enable = true
 eventStream.target = /Users/Stein/Dev/icat/bin/eventstream.xml
 
-# Rules
+# ---- RULES ---------------------------------------------------------------------------
+
+# ProblemFirstSolved - whenever a problem is solved for the first time
 rule.problemFirstSolved.enable = true
 
+# NewLeader - when a team takes the lead, or gets into the top n positions
 rule.newLeader.enable = true
 rule.newLeader.ranks = 10
 
+# RejectedSubmission - when the judges reject a submission from one of the
+# top n teams
 rule.rejectedSubmission.enable = true
 rule.rejectedSubmission.ranks = 10 
 
+# RankPredictor - when a team submits a solution that would put the team
+# among the top n teams
 rule.rankPredictor.enable = true
-rule.rankPredictor.ranks = 8
-
-# Charts
-charts.enable = false
-charts.directory = output
-
-# 
+rule.rankPredictor.ranks = 10
+#rule.rankPredictor.exec = ./capture.sh {teamId} {time} {currentRank} {potentialRank}
