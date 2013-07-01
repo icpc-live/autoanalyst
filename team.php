@@ -83,7 +83,7 @@ $(document).ready(function() {
         conditions: 'team_id = ' + team_id
     });
 
-    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>', true, false);
+    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>', true, true);
 });
 
 </script>
