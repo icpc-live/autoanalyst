@@ -12,15 +12,24 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 
 	Connection conn;
 	DatabaseNotificationConfig config;
+	int suppressedMinutes = 0;
 
 	public DatabaseNotificationTarget(DatabaseNotificationConfig config) throws Exception {
 		this.config = config;
 		this.conn = config.createConnection();
 	}
 	
+	public void suppressUntil(int contestMinutes) {
+		this.suppressedMinutes = contestMinutes;
+	}
+	
 			
 	@Override
 	public void notify(LoggableEvent event) {
+		if (event.time < suppressedMinutes) {
+			logger.info("skipping message (due to restart): " + event.icatMessage);
+			return;
+		}
 
 		try {
 			PreparedStatement s;
@@ -42,4 +51,6 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			logger.error("exception in sql insert: " + e.getMessage());
 		}
 	}
+
+
 }

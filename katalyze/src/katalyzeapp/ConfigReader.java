@@ -58,6 +58,8 @@ public class ConfigReader {
 			logger.info("Enabling database notifier");
 
 			DatabaseNotificationTarget notifier = new DatabaseNotificationTarget(dbConfig);
+			notifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+			
 			StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
 			
 			analyzer.addNotifier(notifier);
@@ -81,8 +83,10 @@ public class ConfigReader {
 				config.getString("twitter.hashtag")
 				);
 
-			
-		analyzer.addNotifier(new TwitterNotificationTarget(twitterConfig));
+		TwitterNotificationTarget twitterNotifier = new TwitterNotificationTarget(twitterConfig);
+		twitterNotifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+
+		analyzer.addNotifier(twitterNotifier);
 	}
 	
 	private boolean ruleEnabled(String ruleName) {
@@ -104,6 +108,7 @@ public class ConfigReader {
 		if (!"".equals(execTemplate)) {
 			logger.info(String.format("Adding trigger on rule %s: %s", newRule, execTemplate));
 			ShellNotificationTarget executer = new ShellNotificationTarget(execTemplate);
+			executer.suppressUntil(config.getInt("notifications.suppressUntil", 0));
 			newRule.addNotificationTarget(executer);
 		}
 	}

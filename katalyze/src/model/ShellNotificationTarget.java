@@ -9,15 +9,24 @@ public class ShellNotificationTarget implements NotificationTarget {
 
 	String template;
 	Runtime runtime;
+	int suppressedMinutes = 0;
 	
 	public ShellNotificationTarget(String template) {
 		this.template = template;
 		this.runtime = Runtime.getRuntime();
 	}
 	
+	public void suppressUntil(int contestMinutes) {
+		this.suppressedMinutes = contestMinutes;
+	}
+	
 	
 	@Override
 	public void notify(LoggableEvent event) {
+		if (event.time < suppressedMinutes) {
+			return;
+		}
+		
 		String command = substituteTags(event);
 		try {
 			logger.debug(String.format("Executing: %s", command));
@@ -26,9 +35,6 @@ public class ShellNotificationTarget implements NotificationTarget {
 			logger.error(String.format("Error executing '%s':%s", command, e));
 		}
 	}
-
-
-
 
 	private String substituteTags(LoggableEvent event) {
 		String output = template;

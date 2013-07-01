@@ -10,6 +10,7 @@ public class TwitterNotificationTarget implements NotificationTarget {
 
 	static Logger logger = LogManager.getLogger(TwitterNotificationTarget.class);
 	String hashtag;
+	int suppressedMinutes = 0;
 	
 	Twitter twitter;
 	
@@ -18,8 +19,15 @@ public class TwitterNotificationTarget implements NotificationTarget {
 		hashtag = config.getHashtag();
 	}
 	
+	public void suppressUntil(int contestMinutes) {
+		this.suppressedMinutes = contestMinutes;
+	}
+	
 	@Override
 	public void notify(LoggableEvent event) {
+		if (event.time < suppressedMinutes) {
+			return;
+		}
 		try {
 			if (event.importance == EventImportance.Breaking) {
 				String fullMessage = event.message + " "+hashtag;
@@ -37,5 +45,4 @@ public class TwitterNotificationTarget implements NotificationTarget {
 		}
 	}
 	
-
 }
