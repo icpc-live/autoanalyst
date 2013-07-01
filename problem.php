@@ -22,14 +22,24 @@ div#feed_container { display: table; table-layout: fixed; width: 100%; }
 div#entries_feed_container, div#edit_activity_feed_container,
 div#submission_feed_container { display: table-cell; }
 
+div#statistics_activity_container { white-space: nowrap; overflow-x: scroll; }
+
 div#problem_statistics {
     display: inline-block;
-    width: 40%;
+    width: 25em;
+}
+
+div#judgement_proportions {
+    width: 17em;
+    /* I would like to make the judgement_proportions resizeable (i.e. % width) 
+        but pie charts break on resize and I'm too tired to create a fix right now */
+    height:  200px;
+    display: inline-block;
 }
 
 div#activity_container {
     background: #ddd;
-    width: 55%;
+    width: 40em;
     height: 200px;
     display: inline-block;
 }
@@ -42,6 +52,7 @@ div#activity_container {
 <script type="text/javascript" src="flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.resize.min.js"></script>
 <script type="text/javascript" src="flot/jquery.flot.navigate.min.js"></script>
+<script type="text/javascript" src="flot/jquery.flot.pie.min.js"></script>
 <script type="text/javascript" src="activity.js"></script>
 <script type="text/javascript">
 
@@ -66,7 +77,27 @@ $(document).ready(function() {
         conditions: 'problem_id = "' + problem_id + '"',
     });
 
-    new ActivityPlot($("#activity_container"), '', problem_id);
+    <?php
+        $result = mysql_query("select result, count(*) as count from submissions where problem_id = '" . $problem_id . "' group by result");
+        $proportion_data = array();
+        while ($result && ($row = mysql_fetch_assoc($result))) {
+            $judgement_info = $COMMON_DATA['JUDGEMENTS'][$row['result']];
+            $proportion_data[] = array(
+                "label" => $judgement_info['label'],
+                "color" => $judgement_info['color'],
+                "data" => (int)$row['count'],
+                "sortOrder" => (int)$judgement_info['sortOrder'],
+            );
+        }
+        sort_judgement_data($proportion_data);
+    ?>
+    var proportion_data = <?php echo json_encode($proportion_data); ?>;
+
+    $.plot($("#judgement_proportions"),
+        proportion_data, { series: { pie: { show: true } } }
+    );
+
+    new ActivityPlot($("#activity_container"), '', problem_id, null, false);
 });
 
 </script>
@@ -194,8 +225,7 @@ Statistics about the problem:
     <li>First solution: <?php printf("%d min. %s", $first_solution_time, $first_teams_to_solve); ?>
     <li># teams with 1 edit: <?php echo $count_one_edit; ?>
     <li># teams with 2+ edits: <?php echo $count_two_plus_edits; ?>
-
-
+    
         <?php
             /*
     <li>Teams that solved this problem (in order of solution):
@@ -208,6 +238,8 @@ Statistics about the problem:
 
 </div>
 <div id='activity_container'></div>
+<div id="judgement_proportions"></div>
+
 </div>
 
 <div id='feed_container'>
