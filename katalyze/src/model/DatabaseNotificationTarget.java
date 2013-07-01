@@ -18,59 +18,10 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 		this.conn = config.createConnection();
 	}
 	
-	private void updateScoreboard(LoggableEvent event) {
-		// this method replaces EVERYTHING in the scoreboard row for
-		// the given team
-		int teamId = event.team.getTeamNumber();
-		//Score score = event.score;
-		
-		Score score = event.team.getScore(event.contest.getSubmissionCount());
-		
-		//int totalTime = score.getTimeIncludingPenalty();
-		//int numSolutions = score.solvedProblemCount();
-		
-		// build up all the changed fields
-		String changes = "total_time = ?, num_solutions = ?";
-		//int numProblems = event.contest.getProblems().size();
-		for (Problem p : event.contest.getProblems()) {
-			changes = changes + ", " + p.getLetter().toLowerCase() + "_submissions = ?";
-			changes = changes + ", " + p.getLetter().toLowerCase() + "_soln_time = ?";
-		}
-
-		try {
-			String query = "UPDATE scoreboard SET " + changes + " WHERE team_id = ?";
-			PreparedStatement s = conn.prepareStatement(query);
-
-			// populate the fields
-			s.setInt(1, score.getTimeIncludingPenalty()); // total time (including penalties)
-			s.setInt(2, score.solvedProblemCount()); // total # solved problems
-			int field = 3;
-			int solutionCountByTime = 0; // TEST
-			int solutionCount = 0; // TEST
-			for (Problem p : event.contest.getProblems()) {
-				if (score.solutionTime(p) > 0) { solutionCountByTime++; } // TEST
-				if (score.isSolved(p)) { solutionCount++; } // TEST
-				s.setInt(field++, score.submissionCount(p));
-				s.setInt(field++, score.solutionTime(p));
-			}
-			s.setInt(field, teamId);
- 
-			logger.info("solution count: " + solutionCount + ", by time: " + solutionCountByTime + ", solvedProblemCount: " + score.solvedProblemCount()); // TEST
-
-			logger.info("updating scoreboard: " + s);
-
-			s.executeUpdate();
-		} catch (Exception e) {
-			logger.error("exception in updating scoreboard: " + e.getMessage());
-		}
-		
-	}
-
+			
 	@Override
 	public void notify(LoggableEvent event) {
 		logger.info(String.format("[%d] %s", event.time, event.message));
-		
-		updateScoreboard(event);		
 
 		try {
 			PreparedStatement s;
