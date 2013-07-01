@@ -205,7 +205,7 @@ function _feed_updateWith(rows) {
                     // is not in the databases
                     school_name = self.TEAMS[row.team_id]['school_short'];
                 } catch (e) {}
-                description = "<a href='/domjudge/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
+                description = "<a href='/domjudge/jury/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                              "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> &mdash; " +
                              row.lang_id + " &mdash; " +
