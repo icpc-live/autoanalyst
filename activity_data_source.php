@@ -104,7 +104,13 @@ function get_activity_data($team_id, $problem_id) {
     $rows = mysql_query_cacheable($sql); # grab the submission activity
     $submissions = array();
     foreach ($rows as $row) {
-        $submissions[$row["result"]][] = array('problem_id' => strtoupper($row["problem_id"]), 'contest_time' => intval($row["contest_time"]), 'team_id' => intval($row["team_id"]), 'lang_id' => $row['lang_id']);
+        $submissions[$row["result"]][] = array(
+            'problem_id' => strtoupper($row["problem_id"]),
+            'contest_time' => intval($row["contest_time"]),
+            'team_id' => intval($row["team_id"]),
+            'lang_id' => $row['lang_id'],
+            'submission_id' => $row['submission_id']
+            );
     }
 
     ##########################################################
@@ -174,7 +180,7 @@ function get_activity_data($team_id, $problem_id) {
         }
         $dataset["submissionInfo"] = array();
         foreach ($result_submissions as $sub) {
-            $dataset["submissionInfo"][] = array("team_id" => $sub["team_id"], "problem_id" => $sub["problem_id"], "lang_id" => $sub["lang_id"]);
+            $dataset["submissionInfo"][] = array("team_id" => $sub["team_id"], "problem_id" => $sub["problem_id"], "lang_id" => $sub["lang_id"], "submission_id" => $sub["submission_id"]);
         }
         $datasets[] = $dataset;
     }
