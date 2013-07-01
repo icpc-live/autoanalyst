@@ -20,6 +20,7 @@ DROP VIEW IF EXISTS `analyzer_parameters`;
 DROP VIEW IF EXISTS `problem_name`;
 DROP VIEW IF EXISTS `problem_keywords`;
 DROP VIEW IF EXISTS `team_strips`;
+DROP VIEW IF EXISTS `edit_activity_problem`;
 """ )
 
 cursor = dbConn.cursor()

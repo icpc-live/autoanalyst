@@ -169,6 +169,7 @@ CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2013_analyzer_parameters;
 CREATE VIEW problem_name AS SELECT * FROM icpc2013_problem_name;
 CREATE VIEW problem_keywords AS SELECT * FROM icpc2013_problem_keywords;
 CREATE VIEW team_strips AS SELECT * FROM icpc2013_team_strips;
+CREATE VIEW edit_activity_problem AS SELECT edit_activity.*, file_to_problem.problem_id FROM edit_activity LEFT JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path);
 """ )
 
 cursor.close()
