@@ -83,7 +83,7 @@ $(document).ready(function() {
         conditions: 'team_id = ' + team_id
     });
 
-    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>');
+    new ActivityPlot($("#activity_container"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>', true, false);
 });
 
 </script>
@@ -136,7 +136,6 @@ while ($row = mysql_fetch_assoc($result)) {
             if ($counter > 1) { print ", "; }
             printf("<a href='http://192.168.0.52/?%d'>%d</a>", $row['submission_id'], $counter);
         }
-        // TODO (2013): add video captures from the database and/or share
     ?>
 </div>
 
@@ -144,10 +143,7 @@ while ($row = mysql_fetch_assoc($result)) {
 <!-- Dynamic content (things that change during the contest) -->
 
 <div id='team_scoreboard_container'>
-<?php
-//printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter=\"score.team.id=='%d'\"></div>", $team_id);
-/*scrape_kattis_scoreboard_for_team($team_id);*/
-?>
+<div class='teamscore' data-source='http://<?php echo $_SERVER['SERVER_ADDR']; ?>:8099' data-filter="score.team.id=='<?php echo $team_id; ?>'"></div>
 </div>
 <div id='team_submission_info'>
     Number of submissions by <a href="language.php?team_id=<?php echo $team_id; ?>">language</a>:
@@ -234,7 +230,7 @@ while ($row = mysql_fetch_assoc($result)) {
     </div>
 </div>
 
-
+<script type='text/javascript' src='katalyze/web/scores.js'></script>
 </body>
 </html>
 
