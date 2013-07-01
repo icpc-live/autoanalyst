@@ -52,6 +52,10 @@ foreach ($to_truncate as $table) {
 ?>
 
 --------------------------------------------------------
+UPDATING THE REPOSITORY
+<?php system("git pull"); ?>
+
+--------------------------------------------------------
 INITIALIZE CODEALYZER
 <?php system("code_analyzer/util/reset.sh"); ?>
 
