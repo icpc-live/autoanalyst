@@ -21,7 +21,6 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			
 	@Override
 	public void notify(LoggableEvent event) {
-		logger.info(String.format("[%d] %s", event.time, event.message));
 
 		try {
 			PreparedStatement s;
@@ -38,7 +37,7 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 
 			s.executeUpdate();
 
-			logger.info("inserted into db: " + s);
+			logger.debug("inserted into db: " + s);
 		} catch (Exception e) {
 			logger.error("exception in sql insert: " + e.getMessage());
 		}

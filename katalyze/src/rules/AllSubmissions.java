@@ -23,8 +23,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
 
     public void onStandingsUpdated(StandingsTransition transition) {
         Submission submission = transition.submission;
-        
-    	logger.info("ALL SUBMISSIONS GOT " + submission);
+
         try {
             PreparedStatement s;
             s = conn.prepareStatement("insert into submissions (problem_id, team_id, lang_id, result, date, contest_time, submission_id) values (?, ?, ?, ?, ?, ?, ?)");
@@ -41,7 +40,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
 
             s.executeUpdate();
 
-            logger.info("inserted into db: " + s);
+            logger.debug("inserted into db: " + s);
         } catch (Exception e) {
             logger.error("exception in sql insert: " + e.getMessage());
         }
