@@ -15,7 +15,8 @@ except MySQLdb.Error, e:
 
 # path to the top of the backup directory, date and time
 # directories start right under this.
-BACKUP_TOP = "/home/analyst6/homedirs"
+# BACKUP_TOP = "/home/analyst6/homedirs"
+BACKUP_TOP = "/home/sturgill/homedirs"
 
 # Static time interval for backups, if it matters, in seconds
 BACKUP_INTERVAL = 120

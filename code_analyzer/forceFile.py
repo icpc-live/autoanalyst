@@ -14,22 +14,23 @@ from common import dbConn, BACKUP_TOP
 import re
 
 def usage():
-    print "Usage: forceFile.py <problem> <abs_path>"
+    print "Usage: forceFile.py <abs_path> <problem_id>"
     exit( 1 )
 
 if len( sys.argv ) != 3:
     usage()
 
+path = sys.argv[ 1 ]
+prob = sys.argv[ 2 ].upper()
+
 prefix = "%s/team" % BACKUP_TOP
-if not sys.argv[ 2 ].startswith( prefix ):
+if not path.startswith( prefix ):
     print "Bad path format"
     usage()
 
-path = sys.argv[ 2 ]
-
 # Strip off the front, and extract the team id.
 path = path[len(prefix):]
-mg = re.match( "([0-9]+)", path )
+mg = re.match( "^([0-9]+)", path )
 if ( mg == None ):
     print "Bad path format, no team id"
     usage()
@@ -37,12 +38,10 @@ if ( mg == None ):
 team = mg.group( 1 )
 
 path = path[ len(team)+1:]
-prob = sys.argv[ 1 ]
 
 cursor = dbConn.cursor()
 
-# Make sure the problem id is plausible.  We chould check the
-# database for this.
+# Make sure this is a legal problem_id.  We just consult the database.
 cmd = "SELECT problem_id FROM problem_name WHERE problem_id='%s'" % prob
 cursor.execute( cmd )
 
@@ -50,27 +49,24 @@ if cursor.fetchone() == None:
     print "Bad problem id: %s" % prob
 
 # See if there is already an entry for this file.
-cmd = "SELECT team_id FROM problem_file WHERE path='%s' AND team_id='%s'" % ( path, team )
+cmd = "SELECT team_id FROM file_to_problem WHERE path='%s' AND team_id='%s'" % ( path, team )
 cursor.execute( cmd )
 
 # Just see if it's arealdy there.  There should be a better way to do this.
 if cursor.fetchone() == None:
-    cmd = "insert into problem_file ( team_id, problem_id, path ) values ( '%s', '%s', '%s' )" % ( team, prob, path )
+    cmd = "insert into file_to_problem ( team_id, path, problem_id, override ) values ( '%s', '%s', '%s', 1 )" % ( team, path, prob )
     cursor.execute( cmd )
 else:
-    cmd = "UPDATE problem_file SET problem_id='%s' WHERE team_id='%s' AND path='%s'" % ( prob, team, path )
+    cmd = "UPDATE file_to_problem SET problem_id='%s',override='1' WHERE path='%s' AND team_id='%s'" % ( prob, path, team )
     cursor.execute( cmd )
 
 
-# This turns out to be a bad idea, it's more likely that a team has
-# two source files that correspond to the same problem.  If we want to
-# suppress edits to a bad file, we need to mark just that file
 #
-#cmd = "UPDATE edit_activity SET valid='0' WHERE team_id='%s' AND problem_id='%s' AND path<>'%s'" % ( team, prob, path )
-#cursor.execute( cmd )
+# Note that the script may still find other files it thinks go wit this problem.  That's
+# probably OK.  The team may have multiple files that all represent work on a single problem.
+# if there are other files that should be ignored, they should be marked as such using
+# ignoreFile.py.
 #
-
-cmd = "UPDATE edit_activity SET valid='1',problem_id='%s' WHERE team_id='%s' AND path='%s'" % ( prob, team, path )
-cursor.execute( cmd )
 
 cursor.close()
+dbConn.close()

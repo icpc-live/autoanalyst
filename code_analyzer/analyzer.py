@@ -67,10 +67,24 @@ def lcs( a, b ):
     
     return dst[ len( a ) ][ len( b ) ]
 
+def repeatedString( str, pat ):
+    """Return true if str is one or more repeated copies of pat."""
+        
+    n = len( pat );
+    if len( str ) < n:
+        return 0
+        
+    for j in range( 0, len( str ) ):
+        if str[ j ] != pat[ j % n ]:
+            return 0;
+
+    return 1;
+
+        
+
 class File:
     def __init__( self, path, time ):
-        # Set real and effective path names, maybe reapPath is really
-        # an autosave file representing path.
+        # Set file name and modification time.
         self.path = path
         self.time = time
 
@@ -98,38 +112,42 @@ class Analyzer:
         # filename extensions for code files.
         self.codeExtensions = [ 'cc', 'cpp', 'c', 'java' ]
 
-        # map from problem ID to a list of plausible names.
-        self.probNames = {}
+        # map from problem ID to a list of keywords to look for.
+        self.probKeywords = {}
 
-        # Contest start time, in UTC seconds, likely to be overwritten by the
-        # database later.
+        # Contest start time, in UTC seconds, tentitative value for
+        # now, overwritten by the database as script executes.
         self.contestStart = time.time()
 
-        # Latest database version of every problem, so we can tell if
-        # it's been edited recently.  A map from team and problem to a
-        # database id and a timestamp (in utc seconds)
-        self.dbTime = {}
+        # For each team, a list of team-specific strips from filenames.
+        self.teamStrips = {}
 
-        # map from team_id and path to the problem_id.  Multiple
+        # For every team and path, this is a triple, datatabase_id,
+        # latest modification time and File object (if the file has
+        # has changed).  We only add a new entry to edit_activity if
+        # it's sufficiently newer than what we have there.
+        self.lastEditTimes = {}
+
+        # map from team_id and path to a 4-tuple, db_id, problem_id,
+        # override flag and new problem ID (if we just generated a new
+        # mapping).  This lets us know what to ignore in the mapping
+        # and what to update when we re-write the database.  Multiple
         # files may map to the same problem, if the team is working on
         # multiple versions.
-        self.fileOverride = {}
-
-        # For each team, a list of team-specific strips from filenames.
-        self.teamStrip = {}
+        self.fileMappings = {}
 
     def loadConfiguration( self ):
         # Read the list of problem names
-        self.probNames = {}
+        self.probKeywords = {}
 
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT problem_id, name FROM problem_name" )
+        cursor.execute( "SELECT problem_id, keyword FROM problem_keywords" )
         row = cursor.fetchone()
         while ( row != None ):
-            if ( row[ 0 ] in self.probNames ):
-                self.probNames[ row[ 0 ] ].append( row[ 1 ].lower() )
+            if ( row[ 0 ] in self.probKeywords ):
+                self.probKeywords[ row[ 0 ] ].append( row[ 1 ].lower() )
             else:
-                self.probNames[ row[ 0 ] ] = [ row[ 1 ].lower() ]
+                self.probKeywords[ row[ 0 ] ] = [ row[ 1 ].lower() ]
 
             row = cursor.fetchone()
 
@@ -142,30 +160,31 @@ class Analyzer:
                 
             row = cursor.fetchone()
 
-        # get latest edit times for every problem
-        cursor.execute( "SELECT id, team_id, problem_id, modify_time_utc FROM edit_latest" )
+        # get latest known edit times for every team/path
+        cursor.execute( "SELECT id, team_id, path, modify_time_utc FROM file_modtime" )
         row = cursor.fetchone()
         while ( row != None ):
             t = int( calendar.timegm( row[ 3 ].timetuple() ) )
-            self.dbTime[ ( row[ 1 ], row[ 2 ] ) ] = ( row[ 0 ], t )
+            self.lastEditTimes[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t, None ]
 
             row = cursor.fetchone()
         
-        # get any file overrides for team/problem
-        cursor.execute( "SELECT team_id, problem_id, path FROM problem_file" )
+        # get existing mapping records for all mapped files.
+        cursor.execute( "SELECT id, team_id, path, problem_id, override FROM file_to_problem" )
         row = cursor.fetchone()
         while ( row != None ):
-            self.fileOverride[ ( row[ 0 ], row[ 2 ] ) ] = row[ 1 ]
+            self.fileMappings[ ( int( row[ 1 ] ), row[ 2 ] ) ] = [ row[ 0 ], row[ 3 ], row[ 4 ], None ]
+                
             row = cursor.fetchone()
 
         # load any team-specific strips.
-        cursor.execute( "SELECT team_id, str FROM team_strip" )
+        cursor.execute( "SELECT team_id, str FROM team_strips" )
         row = cursor.fetchone()
         while ( row != None ):
-            if ( row[ 0 ] in self.teamStrip ):
-                self.teamStrip[ row[ 0 ] ].append( row[ 1 ].lower() )
+            if ( row[ 0 ] in self.teamStrips ):
+                self.teamStrips[ row[ 0 ] ].append( row[ 1 ].lower() )
             else:
-                self.teamStrip[ row[ 0 ] ] = [ row[ 1 ].lower() ]
+                self.teamStrips[ row[ 0 ] ] = [ row[ 1 ].lower() ]
 
             row = cursor.fetchone()
         
@@ -189,7 +208,7 @@ class Analyzer:
         if os.path.exists( autoFile ):
             autoTime = os.path.getmtime( autoFile )
 
-        # is it a vim vim autosave file
+        # is it a vim autosave file
         autoFile = "%s/.%s.swp" % ( dirName, fileName )
         if os.path.exists( autoFile ):
             newTime = os.path.getmtime( autoFile )
@@ -224,8 +243,8 @@ class Analyzer:
         strips = []
         for x in self.commonStrips:
             strips.append( x )
-        if ( team in self.teamStrip ):
-            for x in self.teamStrip[ team ]:
+        if ( team in self.teamStrips ):
+            for x in self.teamStrips[ team ]:
                 strips.append( x )
         
         baseName, extension = os.path.splitext( fileName )
@@ -241,17 +260,19 @@ class Analyzer:
         # at the matches that are more confident.  Then, we look
         # at the ones that are less likely
 
-        # Need to add a check for names like bbb.cpp or the same
-        # thing in the path.  Some teams are doing this when they
-        # start working on a second version of the problem.
-
-        # First, consider just the filename against all problem names.
-        for problem_id, names in self.probNames.iteritems():
-            for name in names:
-                # a.cpp -> a
-                if shortName == name:
+        # First, consider just the filename against all problem keywords.
+        for problem_id, keywords in self.probKeywords.iteritems():
+            for keyword in keywords:
+                # tsp.cpp -> a
+                if shortName == keyword:
                     return problem_id
                 
+        # Here, we try to match against arbitrarily many occurrences of the problem
+        # letter.  Some teams are using names like aaa.c for their third attempt.
+        for problem_id, keywords in self.probKeywords.iteritems():
+            # a.cpp -> a or aaa.cpp -> a
+            if repeatedString( shortName, problem_id.lower() ):
+                return problem_id
 
         # Then, start looking at the path.
         if len( dirName ) > 0:
@@ -260,33 +281,40 @@ class Analyzer:
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
                         
-                for problem_id, names in self.probNames.iteritems():
-                    for name in names:
-                        # b/sol.java -> b
-                        if shortDirName == name:
+                for problem_id, keywords in self.probKeywords.iteritems():
+                    for keyword in keywords:
+                        # tsp/sol.java -> a
+                        if shortDirName == keyword:
                             return problem_id
+                        
+                for problem_id, keywords in self.probKeywords.iteritems():
+                    # a/code.cpp -> a or aaa/code.cpp -> a
+                    if repeatedString( shortDirName, problem_id.lower() ):
+                        return problem_id
 
                 
         # Then, take matches that occur anywhere in the problem name
-        for problem_id, names in self.probNames.iteritems():
-            for name in names:
-                # For longer names, we'll take the problem name anywhere in the
-                # filename.  Really, this covers the next two checks for
-                # all but the really short names.
-                if ( len( name ) > 1 and name in baseName ):
+        for problem_id, keywords in self.probKeywords.iteritems():
+            for keyword in keywords:
+                if ( keyword in baseName ):
                     return problem_id
 
-                # b_2.c -> b
-                if ( len( baseName ) > len( name ) and 
-                     baseName.startswith( name ) and
-                     not baseName[ len( name ) ].isalpha() ):
-                    return problem_id
+        # Then, the problem letter attached to some other word with a
+        # non-alpha character.
+        for problem_id, keywords in self.probKeywords.iteritems():
+            letter = problem_id.lower()
 
-                # losning_b.c -> b
-                if ( len( baseName ) > len( name ) and 
-                     baseName.endswith( name ) and
-                     not baseName[ -( len( name ) + 1  )].isalpha() ):
-                    return problem_id
+            # b_2.c -> b
+            if ( len( baseName ) > len( letter ) and 
+                 baseName.startswith( letter ) and
+                 not baseName[ len( letter ) ].isalpha() ):
+                return problem_id
+
+            # losning_b.c -> b
+            if ( len( baseName ) > len( letter ) and 
+                 baseName.endswith( letter ) and
+                 not baseName[ -( len( letter ) + 1  )].isalpha() ):
+                return problem_id
         
 
         # Then, look for path elements containing the name.
@@ -296,20 +324,18 @@ class Analyzer:
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
                         
-                for problem_id, names in self.probNames.iteritems():
-                    for name in names:
+                for problem_id, keywords in self.probKeywords.iteritems():
+                    for keyword in keywords:
                         # retry_b/sol.java -> b
-                        if len( name ) > 1 and name in shortDirName:
+                        if keyword in shortDirName:
                             return problem_id
 
-        # Then, try an approximate match for the file name.
-        for problem_id, names in self.probNames.iteritems():
-            for name in names:
-                # For longer names, we'll take the problem name anywhere in the
-                # filename.  Really, this covers the next two checks for
-                # all but the really short names.
-                if ( len( name ) > 3 and 
-                     editDist( name, shortName ) <= len( name ) * 0.25 ):
+        # Then, try an approximate match against a keyword, willing to miss
+        # a fraction of the total characters.
+        for problem_id, keywords in self.probKeywords.iteritems():
+            for keyword in keywords:
+                if ( len( keyword ) > 3 and 
+                     editDist( keyword, shortName ) <= len( keyword ) * 0.25 ):
                     return problem_id
 
 
@@ -318,10 +344,10 @@ class Analyzer:
             dirList = dirName.split( '/' )
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
-                for problem_id, names in self.probNames.iteritems():
-                    for name in names:
-                        if ( len( name ) > 3 and 
-                             editDist( name, shortDirName ) <= len( name ) * 0.25 ):
+                for problem_id, keywords in self.probKeywords.iteritems():
+                    for keyword in keywords:
+                        if ( len( keyword ) > 3 and 
+                             editDist( keyword, shortDirName ) <= len( keyword ) * 0.25 ):
                             return problem_id
         return None
 
@@ -337,9 +363,6 @@ class Analyzer:
 
         self.loadConfiguration()
 
-        # map from team and problem to a file object.
-        probMap = {}
-
         # Visit home directory for each team.
         tlist = sorted( glob.glob( bdir + '/team*' ) )
         for tdir in tlist:
@@ -349,69 +372,128 @@ class Analyzer:
             for f in os.popen( cmd ).readlines():
                 f = f.rstrip( '\n' )
                 fname = f[len(tdir) + 1:]
-                fobj = File( fname, os.path.getmtime( f ) )
+                ( dummy, extension ) = os.path.splitext( fname )
+                extension = extension.lstrip( '.' )
+                if extension in self.codeExtensions:
+                    fobj = File( fname, os.path.getmtime( f ) )
 
-                prob = None;
+                    mappingRec = None;
+                    lastEditRec = None;
 
-                # see if there's an override for this file.
-                if ( team, fname ) in self.fileOverride:
-                    prob = self.fileOverride[ ( team, fname ) ]
+                    # see if there's a mapping for this file.
+                    if ( team, fname ) in self.fileMappings:
+                        mappingRec = self.fileMappings[ ( team, fname ) ]
 
-                # If there's no override for this problem, guess
-                # the problem ID.
-                if prob == None:
-                    prob = self.guessProblem( team, fobj.path )
+                    # If there's no forced mapping for this problem, try to guess one.
+                    if ( mappingRec == None or mappingRec[ 2 ] == 0 ):
+                        prob = self.guessProblem( team, fobj.path )
+                        if prob != None:
+                            if mappingRec == None:
+                                mappingRec = [ None, None, 0, None ]
+                                self.fileMappings[ ( team, fname ) ] = mappingRec
+                                
+                            if mappingRec[ 1 ] != prob:
+                                mappingRec[ 3 ] = prob;
+                    
+                    # see if there's an edit record for this file.
+                    if ( team, fname ) in self.lastEditTimes:
+                        lastEditRec = self.lastEditTimes[ ( team, fname ) ]
 
-                if prob != None and prob.lower() != "none":
                     # check common editor auto-saves, to see if there
                     # is a fresher modificationt ime.
                     autoTime = self.checkAutosaves( f );
                     if ( autoTime != None and autoTime > fobj.time ):
                         fobj.time = autoTime
 
-                    timeTuple = None
-                    if ( team, prob ) in self.dbTime:
-                        timeTuple = self.dbTime[ ( team, prob ) ]
-                    
                     # is this newer than our last known edit?
-                    if ( timeTuple == None or timeTuple[ 1 ] + 15 < fobj.time ):
-                        # count lines for this file, since it's worth something.
+                    if ( lastEditRec == None or lastEditRec[ 1 ] + 15 < fobj.time ):
+                        if lastEditRec == None:
+                            lastEditRec = [ None, None, None ]
+                            self.lastEditTimes[ ( team, fname ) ] = lastEditRec
+                                
+                        # count lines for this file, since it has changed.
                         fobj.lineCount = self.countLines( f )
                         
-                        # and store it in our map.
-                        probMap[ ( team, prob ) ] = fobj
-                        if timeTuple == None:
-                            self.dbTime[ ( team, prob ) ] = ( None, fobj.time )
-                        else:
-                            self.dbTime[ ( team, prob ) ] = ( timeTuple[ 0 ], fobj.time )
+                        lastEditRec[ 2 ] = fobj;
 
 
-        # Add db content for all files.
+        # Write out any new mappings
         cursor = dbConn.cursor()
-        for k, v in probMap.iteritems():
-            tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v.time ) )
-            cmin = ( v.time - self.contestStart ) / 60
-            update = "INSERT INTO edit_activity (team_id, problem_id, path, modify_time_utc, modify_time, line_count, git_tag, valid ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%s', '%s', 1 )" % ( k[ 0 ], k[ 1 ], v.path, tstr, cmin, v.lineCount, tag )
+        for k, v in self.fileMappings.iteritems():
+            if v[ 3 ] != None:
+                if v[ 0 ] == None:
+                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, override ) VALUES ( '%s', '%s', '%s', '0' )" % ( k[ 0 ], k[ 1 ], v[ 3 ] )
                 
-            cursor.execute( update )
+                    cursor.execute( update )
+                else:
+                    update = "UPDATE file_to_problem SET problem_id='%s' WHERE id='%d'" % ( v[ 3 ], v[ 0 ] )
+                    cursor.execute( update )
+                print "( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v[ 3 ] )
 
-            print "( %s, %s ) -> %s %d" % ( k[ 0 ], k[ 1 ], v.path, v.time )
+        # Write out fresh edit times to file_modtime and new records to edit_activity
+        cursor = dbConn.cursor()
+        for k, v in self.lastEditTimes.iteritems():
+            if v[ 2 ] != None:
+                tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 2 ].time ) )
 
-        for k, v in self.dbTime.iteritems():
+                if v[ 0 ] == None:
+                    update = "INSERT INTO file_modtime (team_id, path, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], k[ 1 ], tstr )
+                
+                    cursor.execute( update )
+                else:
+                    update = "UPDATE file_modtime SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
+                    cursor.execute( update )
+
+                cmin = ( v[ 2 ].time - self.contestStart ) / 60
+
+                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, line_count, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].lineCount, tag )
+                
+                cursor.execute( update )
+                
+
+        # Create and write the summary of edit activity by problem, edit_latest
+        modLatest = {}
+
+        # get latest known edit times for every team/problem.
+        cursor.execute( "SELECT id, team_id, problem_id, modify_time_utc FROM edit_latest" )
+        row = cursor.fetchone()
+        while ( row != None ):
+            t = int( calendar.timegm( row[ 3 ].timetuple() ) )
+            modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t ]
+            row = cursor.fetchone()
+        
+        for k, v in self.fileMappings.iteritems():
+            prob = v[ 1 ]
+            if v[ 3 ] != None:
+                prob = v[ 3 ];
+                
+            if prob != None and prob != 'none':
+                if k in self.lastEditTimes:
+                    lastEditRec = self.lastEditTimes[ k ]
+                    t = lastEditRec[ 1 ]
+                    if lastEditRec[ 2 ] != None:
+                        t = lastEditRec[ 2 ].time;
+                
+                    if ( k[ 0 ], prob ) in modLatest:
+                        rec = modLatest[ ( k[ 0 ], prob ) ]
+                        if t > rec[ 1 ]:
+                            rec[ 1 ] = t
+                    else:
+                        modLatest[ ( k[ 0 ], prob ) ] = [ None, t ]
+
+        for k, v in modLatest.iteritems():
             tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 1 ] ) )
-
             if v[ 0 ] == None:
                 update = "INSERT INTO edit_latest (team_id, problem_id, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], k[ 1 ], tstr )
+                
                 cursor.execute( update )
             else:
                 update = "UPDATE edit_latest SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
                 cursor.execute( update )
-
-        cursor.close()
-
+            
     def reportUnclassified( self, bdir ):
-        """Report all the source files that don't match any of our
-        patterns"""
+        """Report all the source files that are not mapped to any problem
+        yet."""
 
         self.loadConfiguration()
 
@@ -424,46 +506,32 @@ class Analyzer:
             for f in os.popen( cmd ).readlines():
                 f = f.rstrip( '\n' )
                 fname = f[len(tdir) + 1:]
-                fobj = File( fname, os.path.getmtime( f ) )
 
-                prob = None;
-
-                # see if there's an override for this file.
-                if ( team, fname ) in self.fileOverride:
-                    prob = self.fileOverride[ ( team, fname ) ]
-
-                # see if there's an override for this problem.
-                if prob == None:
-                    prob = self.guessProblem( team, fobj.path )
-
-                ( dummy, extension ) = os.path.splitext( fobj.path )
+                ( dummy, extension ) = os.path.splitext( fname )
                 extension = extension.lstrip( '.' )
                 if extension in self.codeExtensions:
+                    fobj = File( fname, os.path.getmtime( f ) )
+
+                    prob = None;
+                    
+                    # see if there's an override for this file.
+                    if ( team, fname ) in self.fileOverrides:
+                        mappingRec = self.fileMappings[ ( team, fname ) ]
+                        if mappingRec[ 2 ]:
+                            prob = mappingRec[ 1 ]
+                            print "%s <= %s" % ( prob, f )
+                    
+                    # if it's not a forced mapping, try to guess and report that.
                     if prob == None:
-                        print "unknown -> %s" % ( f )
-                    else:
-                        print "%s -> %s" % ( prob, f )
+                        # No forced problem, try to guess.
+                        prob = self.guessProblem( team, fobj.path )
+                        
+                        # report the file and the problem its assigned to.
+                        if prob == None:
+                            print "unknown <- %s" % ( f )
+                        else:
+                            print "%s <- %s" % ( prob, f )
 
-
-    def updateAnalysis( self ):
-        # Is current newer than the latest backup time?
-        current = "%s/current" % self.basePath;
-        if not os.path.exists( current ):
-            return
-
-        st = os.lstat( current )
-        if ( self.latestBackupTime == None or
-             st.st_mtime > self.latestBackupTime ):
-            print "Generating Analysis Snapshot"
-            self.checkActivity( current, "default-tag" )
-            self.latestBackupTime = st.st_mtime
-
-
-    def periodicCheck( self ):
-        while ( True ):
-            # Check once per second for new backup directories.
-            time.sleep( 1 )
-            analyzer.updateAnalysis()
 
 if __name__ == '__main__':
     analyzer = Analyzer( BACKUP_TOP )

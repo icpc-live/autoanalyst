@@ -20,16 +20,16 @@ def usage():
 if len( sys.argv ) != 2:
     usage()
 
+path = sys.argv[ 1 ]
+
 prefix = "%s/team" % BACKUP_TOP
-if not sys.argv[ 1 ].startswith( prefix ):
+if not path.startswith( prefix ):
     print "Bad path format"
     usage()
 
-path = sys.argv[ 1 ]
-
 # Strip off the front, and extract the team id.
 path = path[len(prefix):]
-mg = re.match( "([0-9]+)", path )
+mg = re.match( "^([0-9]+)", path )
 if ( mg == None ):
     print "Bad path format, no team id"
     usage()
@@ -41,18 +41,16 @@ path = path[ len(team)+1:]
 cursor = dbConn.cursor()
 
 # See if there is already an entry for this file.
-cmd = "SELECT team_id FROM problem_file WHERE path='%s' AND team_id='%s'" % ( path, team )
+cmd = "SELECT team_id FROM file_to_problem WHERE path='%s' AND team_id='%s'" % ( path, team )
 cursor.execute( cmd )
 
 # Just see if it's arealdy there.  There should be a better way to do this.
 if cursor.fetchone() == None:
-    cmd = "insert into problem_file ( team_id, problem_id, path ) values ( '%s', 'none', '%s' )" % ( team, path )
+    cmd = "insert into file_to_problem ( team_id, path, problem_id, override ) values ( '%s', '%s', 'none', 1 )" % ( team, path )
     cursor.execute( cmd )
 else:
-    cmd = "UPDATE problem_file SET problem_id='none' WHERE team_id='%s' AND path='%s'" % ( team, path )
+    cmd = "UPDATE file_to_problem SET problem_id='none',override='1' WHERE path='%s' AND team_id='%s'" % ( path, team )
     cursor.execute( cmd )
 
-cmd = "UPDATE edit_activity SET valid='0' WHERE team_id='%s' AND path='%s'" % ( team, path )
-cursor.execute( cmd )
-
 cursor.close()
+dbConn.close()

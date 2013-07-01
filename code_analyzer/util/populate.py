@@ -14,55 +14,62 @@ cursor = dbConn.cursor()
 cursor.execute( """
     INSERT INTO problem_name (problem_id, name)
     VALUES
-( 'a', 'a' ),
-( 'a', 'asteroid' ),
-( 'a', 'rangers' ),
-( 'a', 'mst' ),
-( 'b', 'b' ),
-( 'b', 'curvy' ),
-( 'b', 'bottle' ),
-( 'c', 'c' ),
-( 'c', 'bustour' ),
-( 'c', 'bus' ),
-( 'c', 'tour' ),
-( 'd', 'd' ),
-( 'd', 'fibonacci' ),
-( 'd', 'fib' ),
-( 'd', 'words' ),
-( 'e', 'e' ),
-( 'e', 'infiltrat' ),
-( 'f', 'f' ),
-( 'f', 'keys' ),
-( 'g', 'g' ),
-( 'g', 'minflow' ),
-( 'g', 'minimum' ),
-( 'g', 'cost' ),
-( 'g', 'flow' ),
-( 'h', 'h' ),
-( 'h', 'room' ),
-( 'h', 'service' ),
-( 'i', 'i' ),
-( 'i', 'safe' ),
-( 'i', 'bet' ),
-( 'i', 'mirror' ),
-( 'j', 'j' ),
-( 'j', 'shortest' ),
-( 'j', 'short' ),
-( 'j', 'flight' ),
-( 'j', 'path' ),
-( 'k', 'k' ),
-( 'k', 'stacking' ),
-( 'k', 'plates' ),
-( 'l', 'l' ),
-( 'l', 'takeover' ),
-( 'l', 'wars' )
+( 'A', 'Space Rangers' ),
+( 'B', 'Curvy Bottles' ),
+( 'C', 'Bus Tour' ),
+( 'D', 'Fibonacci' ),
+( 'E', 'Infiltrate' ),
+( 'F', 'Keys' ),
+( 'G', 'Minflow' ),
+( 'H', 'Room Service' ),
+( 'I', 'Safe Bet' ),
+( 'J', 'Shortest Flight' ),
+( 'K', 'Stacking Plates' ),
+( 'L', 'Takeover' )
     """ )
 print "Problem name rows inserted: %d" % cursor.rowcount
+
+cursor = dbConn.cursor()
+cursor.execute( """
+    INSERT INTO problem_keywords (problem_id, keyword)
+    VALUES
+( 'A', 'asteroid' ),
+( 'A', 'rangers' ),
+( 'A', 'mst' ),
+( 'B', 'curvy' ),
+( 'B', 'bottle' ),
+( 'C', 'bustour' ),
+( 'C', 'bus' ),
+( 'C', 'tour' ),
+( 'D', 'fibonacci' ),
+( 'D', 'fib' ),
+( 'D', 'words' ),
+( 'E', 'infiltrat' ),
+( 'F', 'keys' ),
+( 'G', 'minflow' ),
+( 'G', 'minimum' ),
+( 'G', 'cost' ),
+( 'G', 'flow' ),
+( 'H', 'room' ),
+( 'H', 'service' ),
+( 'I', 'safe' ),
+( 'I', 'bet' ),
+( 'I', 'mirror' ),
+( 'J', 'shortest' ),
+( 'J', 'short' ),
+( 'J', 'flight' ),
+( 'J', 'path' ),
+( 'K', 'stacking' ),
+( 'K', 'plates' ),
+( 'L', 'takeover' ),
+( 'L', 'wars' )
+    """ )
+print "Problem keywords rows inserted: %d" % cursor.rowcount
 
 cursor.execute( """
     INSERT INTO analyzer_parameters (name, value)
     VALUES
-      ( 'CONTEST_START', '2012-05-17 8:00:00' )
+      ( 'CONTEST_START', '2013-06-30 8:00:00' )
     """ )
 print "Parameter rows inserted: %d" % cursor.rowcount
 
