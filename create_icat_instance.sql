@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
   `date` timestamp NOT NULL default '0000-00-00 00:00:00' on update CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
   `submission_id` int(11) NOT NULL,
+  `has_video` boolean DEFAULT false,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
