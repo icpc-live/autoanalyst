@@ -299,7 +299,8 @@ function _feed_updateTimestamps() {
         var e = $(element);
         var ts = e.attr('timestamp');
         if (ts) {
-            var diff_minutes = Math.floor((now - new Date(ts)) / (60 * 1000));
+	    ts = new Date(ts.replace(/-/g, '/'));
+            var diff_minutes = Math.floor((now - ts) / (60 * 1000));
             var msg = diff_minutes + ' mins. ago';
             e.text(msg);
         }
