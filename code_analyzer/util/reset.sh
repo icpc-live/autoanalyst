@@ -1,3 +1,7 @@
-code_analyzer/util/delete_tables.py
-code_analyzer/util/create_tables.py
-code_analyzer/util/populate.py
+#!/bin/sh
+
+DIR=`dirname $0`
+
+$DIR/delete_tables.py
+$DIR/create_tables.py
+$DIR/populate.py
