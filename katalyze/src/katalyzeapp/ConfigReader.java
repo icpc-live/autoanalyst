@@ -134,7 +134,10 @@ public class ConfigReader {
 			
 			try {
 				PrintStream outputStream = new PrintStream(f, "UTF-8");
-				messageHandlers.add(new PassthroughHandler(outputStream));
+				
+				PassthroughHandler outgoingEventFeed = new PassthroughHandler(outputStream);
+				messageHandlers.add(outgoingEventFeed);
+				analyzer.addNotifier(outgoingEventFeed);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

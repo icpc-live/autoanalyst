@@ -1,14 +1,19 @@
 package messageHandlers;
 
 import java.io.PrintStream;
-
 import javax.xml.stream.XMLStreamException;
+
+import org.apache.log4j.Logger;
 
 import io.MessageXmlSerializer;
 import io.SimpleMessage;
 import model.Contest;
+import model.InitialSubmission;
+import model.LoggableEvent;
+import model.NotificationTarget;
 
-public class PassthroughHandler implements MessageHandler {
+public class PassthroughHandler implements MessageHandler, NotificationTarget {
+	static Logger logger = Logger.getLogger(PassthroughHandler.class);
 
 	PrintStream output;
 	MessageXmlSerializer serializer;
@@ -46,6 +51,32 @@ public class PassthroughHandler implements MessageHandler {
 		} else {
 			serializer.serialize(message);
 		}
+	}
+	
+	private SimpleMessage createFeedMessageFromEvent(LoggableEvent event) {
+		SimpleMessage eventMessage = new SimpleMessage("analystmsg");
+		eventMessage.put("id", Integer.toString(event.id));
+		eventMessage.put("team", Integer.toString(event.team.getTeamNumber()));
+		eventMessage.put("time", Integer.toString(event.time));
+		if (event.submission != null) {
+			InitialSubmission submission = event.submission;
+			eventMessage.put("problem", submission.problem.getId());
+		}
+		eventMessage.put("message", event.message);
+		return eventMessage;		
+	}
+
+	@Override
+	public void notify(LoggableEvent event) {
+		try {
+			serializer.serialize(createFeedMessageFromEvent(event));
+		}
+		catch (Exception e) {
+			logger.error(String.format("Error while posting event to xml feed: %s", e));
+			// If there is an error, there isn't much more we can do than log it and hope that someone notices.
+			// The show must go on.
+		}
+
 	}
 
 }
