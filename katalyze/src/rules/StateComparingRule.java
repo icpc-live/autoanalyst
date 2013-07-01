@@ -13,7 +13,7 @@ public abstract class StateComparingRule {
 	
 	protected void notify(Submission submission, String message, EventImportance importance) {
 		Team team = submission.getTeam();
-		LoggableEvent event = new LoggableEvent(team.getContest(), message, importance, submission.getInitialSubmission());
+		LoggableEvent event = new LoggableEvent(team.getContest(), message, importance, submission.getInitialSubmission(), null);
 
 		for (NotificationTarget target : notificationTargets) {
 			target.notify(event);

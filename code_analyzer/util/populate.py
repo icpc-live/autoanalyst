@@ -69,7 +69,7 @@ print "Problem keywords rows inserted: %d" % cursor.rowcount
 cursor.execute( """
     INSERT INTO analyzer_parameters (name, value)
     VALUES
-      ( 'CONTEST_START', '2013-06-30 8:00:00' )
+      ( 'CONTEST_START', '2013-07-01 5:00:00' )
     """ )
 print "Parameter rows inserted: %d" % cursor.rowcount
 

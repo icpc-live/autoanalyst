@@ -42,7 +42,7 @@ def editDist( a, b ):
     
     return dst[ len( a ) ][ len( b ) ]
 
-# Longest common sequence, for approximate problem matching.
+# Longest common sequence, for approximate problem matching (not currently used)
 def lcs( a, b ):
     dst = [ [ 0 for x in range( 0, len( b ) + 1 ) ] for y in range( 0, len( a ) + 1 ) ]
     
@@ -121,6 +121,11 @@ class Analyzer:
 
         # For each team, a list of team-specific strips from filenames.
         self.teamStrips = {}
+
+        # we use the next two fields to hold copies of database
+        # information (the file_to_problem and file_modtime tables)
+        # while the script is running, and to update the tables once
+        # the script has run.
 
         # For every team and path, this is a triple, datatabase_id,
         # latest modification time and File object (if the file has
@@ -452,6 +457,9 @@ class Analyzer:
                 
 
         # Create and write the summary of edit activity by problem, edit_latest
+        # Map from team and problem_id to a triple, database_id, timestamp and valid flag.
+        # the valid flag lets us delete.  An entry is valid as long as there is a file
+        # that's mapped to the given problem, even if the file doesn't exist.
         modLatest = {}
 
         # get latest known edit times for every team/problem.
@@ -459,7 +467,7 @@ class Analyzer:
         row = cursor.fetchone()
         while ( row != None ):
             t = int( calendar.timegm( row[ 3 ].timetuple() ) )
-            modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t ]
+            modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t, 0 ]
             row = cursor.fetchone()
         
         for k, v in self.fileMappings.iteritems():
@@ -478,8 +486,9 @@ class Analyzer:
                         rec = modLatest[ ( k[ 0 ], prob ) ]
                         if t > rec[ 1 ]:
                             rec[ 1 ] = t
+                        rec[ 2 ] = 1;
                     else:
-                        modLatest[ ( k[ 0 ], prob ) ] = [ None, t ]
+                        modLatest[ ( k[ 0 ], prob ) ] = [ None, t, 1 ]
 
         for k, v in modLatest.iteritems():
             tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 1 ] ) )
@@ -487,9 +496,13 @@ class Analyzer:
                 update = "INSERT INTO edit_latest (team_id, problem_id, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], k[ 1 ], tstr )
                 
                 cursor.execute( update )
-            else:
+            elif v[ 2 ]:
                 update = "UPDATE edit_latest SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
                 cursor.execute( update )
+            else:
+                update = "DELETE FROM edit_latest WHERE id='%d'" % ( v[ 0 ] )
+                cursor.execute( update )
+                
             
     def reportUnclassified( self, bdir ):
         """Report all the source files that are not mapped to any problem
@@ -515,7 +528,7 @@ class Analyzer:
                     prob = None;
                     
                     # see if there's an override for this file.
-                    if ( team, fname ) in self.fileOverrides:
+                    if ( team, fname ) in self.fileMappings:
                         mappingRec = self.fileMappings[ ( team, fname ) ]
                         if mappingRec[ 2 ]:
                             prob = mappingRec[ 1 ]
