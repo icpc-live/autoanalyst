@@ -1,7 +1,8 @@
-function ActivityPlot(target, team_id, problem_id, update) {
+function ActivityPlot(target, team_id, problem_id, update, clickable) {
     var self = this;
 
     self.update = typeof update !== 'undefined' ? update : true;
+    self.clickable = typeof clickable !== 'undefined' ? clickable : true;
 
     self.target = target;
     self.team_id = team_id;
@@ -33,7 +34,7 @@ function ActivityPlot(target, team_id, problem_id, update) {
 
         var options = {
             colors: colors,
-            grid: { hoverable: true, clickable: true, },
+            grid: { hoverable: true, clickable: self.clickable, },
             yaxis: { ticks: ticks,
                 zoomRange: [maxY, maxY], // do not allow zooming in on the y-axis
                 panRange: [maxY, maxY], // do not allow panning on the y-axis
@@ -133,7 +134,7 @@ function ActivityPlot(target, team_id, problem_id, update) {
                     if (self.team_id && /^[0-9]+$/.test(self.team_id)) {
                         new_location = '/domjudge/jury/submission.php?ext_id=' + item.series.submissionInfo[item.dataIndex].submission_id;
                     } else {
-                        new_location = add_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
+                        new_location = set_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
                     }
                     if (new_location) {
                         window.location.assign(new_location);
