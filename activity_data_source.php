@@ -40,8 +40,6 @@ function get_activity_data($team_id, $problem_id) {
     $where_clause_submissions = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     # where clause for edit_activity
-    # don't grab edit_activity rows that have been marked invalid
-    $where_conditions[] = "valid != 0"; # FIXME -- WHERE IS THE FIELD "valid"? -- ASK DAVID ABOUT THIS
     $where_clause_edit_activity = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     ##########################################################

@@ -52,7 +52,7 @@ $(document).ready(function() {
     new feed("#edit_activity_feed_container", {
         name: "Edit activity",
         table: 'edit_activity',
-        conditions: 'problem_id = "' + problem_id + '" and valid != 0', // FIXME -- IS VALID USED ANYMORE?
+        conditions: 'problem_id = "' + problem_id + '"',
     });
 
     new feed("#entries_feed_container", {
@@ -146,7 +146,7 @@ Statistics about the problem:
         #########################################
        #$result = mysql_query("select count(*) as num_started_problem from "
        #    . " (select *, count(*) as c from edit_activity "
-       #    . " where problem_id = '$problem_id' and valid != 0 group by team_id having c > 1) as arbitrary_table_name",
+       #    . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name",
        #    $db);
        #$row = mysql_fetch_assoc($result);
        #$num_started_problem = $row["num_started_problem"];
@@ -154,7 +154,7 @@ Statistics about the problem:
         #########################################
         $result = mysql_query("select count(*) as count_one_edit from "
             . " (select *, count(*) as c from edit_activity "
-            . " where problem_id = '$problem_id' and valid != 0 group by team_id having c = 1) as arbitrary_table_name", // FIXME -- IS VALID USED ANYMORE?
+            . " where problem_id = '$problem_id' group by team_id having c = 1) as arbitrary_table_name",
             $db);
         if ($result) {
             $row = mysql_fetch_assoc($result);
@@ -166,7 +166,7 @@ Statistics about the problem:
         #########################################
         $result = mysql_query("select count(*) as count_two_plus_edits from "
             . " (select *, count(*) as c from edit_activity "
-            . " where problem_id = '$problem_id' and valid != 0 group by team_id having c > 1) as arbitrary_table_name", // FIXME -- IS VALID USED ANYMORE?
+            . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name",
             $db);
         if ($result) {
             $row = mysql_fetch_assoc($result);

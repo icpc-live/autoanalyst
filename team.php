@@ -74,7 +74,7 @@ $(document).ready(function() {
     new feed("#edit_activity_feed_container", {
         name: 'Edit activity',
         table: 'edit_activity',
-        conditions: 'team_id = ' + team_id + ' and valid != 0' // FIXME -- VALID IS NOT IN THE SCHEMA ANYMORE?
+        conditions: 'team_id = ' + team_id
     });
 
     new feed("#submissions_feed_container", {

@@ -37,9 +37,9 @@ $G_ALLOWED_CONDITIONS = array(
         '1', # to fulfill an empty "where" clause
     ),
     "edit_activity" => array(
-        'team_id = [0-9]+ and valid != 0', // FIXME -- IS valid USED ANYMORE?
-        'problem_id = "[A-Z]" and valid != 0',
-        'problem_id = "[A-Z]" and team_id = [0-9]+ and valid != 0',
+        'team_id = [0-9]+',
+        'problem_id = "[A-Z]"',
+        'problem_id = "[A-Z]" and team_id = [0-9]+',
         'team_id in \([0-9]+(,[0-9]+)+\)',
         '1',
     ),
