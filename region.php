@@ -123,7 +123,7 @@ function single_region_or_superregion($db, $team_ids, $name) {
 
         new feed("#edit_activity_feed_container", {
             name: 'Edit activity',
-            table: 'edit_activity',
+            table: 'edit_activity_problem',
             conditions: 'team_id in (' + team_ids_list + ')'
         });
 

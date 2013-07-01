@@ -39,22 +39,22 @@ function get_activity_data($team_id, $problem_id) {
     # where clause for submissions
     $where_clause_submissions = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
-    # where clause for edit_activity
-    $where_clause_edit_activity = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
+    # where clause for edit_activity_problem
+    $where_clause_edit_activity_problem = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
     ##########################################################
     # Edit activity
     ##########################################################
 
-    # Grab the edit_activity rows aggregated by time, binning by every $G_BIN_MINUTES 
+    # Grab the edit_activity_problem rows aggregated by time, binning by every $G_BIN_MINUTES 
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
     $rows = mysql_query_cacheable(
         /*
         // This query gives all edits (even if a single team makes many edits)
         "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
         . ", problem_id, COUNT(*) AS count "
-        . "FROM edit_activity "
-        . "$where_clause_edit_activity "
+        . "FROM edit_activity_problem "
+        . "$where_clause_edit_activity_problem "
         . "GROUP BY problem_id, contest_time_binned "
         . "ORDER BY problem_id, contest_time_binned "
         */
@@ -62,8 +62,8 @@ function get_activity_data($team_id, $problem_id) {
         "SELECT contest_time_binned, problem_id, count(*) as count FROM "
         . " (SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned, "
         . " problem_id, team_id, COUNT(*) AS count "
-        . " FROM edit_activity  "
-        . $where_clause_edit_activity
+        . " FROM edit_activity_problem "
+        . $where_clause_edit_activity_problem
         . " GROUP BY problem_id, contest_time_binned, team_id "
         . " HAVING contest_time_binned >= 0 and contest_time_binned <= 300 "
         . " ORDER BY problem_id, contest_time_binned, team_id "
@@ -113,7 +113,7 @@ function get_activity_data($team_id, $problem_id) {
 
     $datasets = array();
 
-    // Create the histograms of edit_activity
+    // Create the histograms of edit_activity_problem
     $baseline_counter = 0;
     $baseline_per_problem = array();
     if (isset($problem_id) && $problem_id != "") {

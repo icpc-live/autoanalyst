@@ -73,7 +73,7 @@ $(document).ready(function() {
 
     new feed("#edit_activity_feed_container", {
         name: 'Edit activity',
-        table: 'edit_activity',
+        table: 'edit_activity_problem',
         conditions: 'team_id = ' + team_id
     });
 

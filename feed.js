@@ -187,7 +187,7 @@ function _feed_updateWith(rows) {
                 description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
-            } else if (this.table == 'edit_activity') {
+            } else if (this.table == 'edit_activity_problem') {
                 var gitweb_url = '/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
