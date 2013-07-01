@@ -35,17 +35,23 @@ $COMMON_DATA["BALLOON_COLORS"] = array(
     );
 
 $COMMON_DATA["JUDGEMENTS"] = array(
-    'AC'   => array("label" => 'AC' , "label_long" => 'Accepted'              , "color" => '#10a010' /* green  */   ),
-    'WA'   => array("label" => 'WA' , "label_long" => 'Wrong Answer'          , "color" => '#333333' /* dark gray */),
-    'TLE'  => array("label" => 'TLE', "label_long" => 'Time Limit Exceeded'   , "color" => '#ff0000' /* red    */   ),
-    'RTE'  => array("label" => 'RTE', "label_long" => 'Run Time Error'        , "color" => '#ffaa00' /* orange */   ),
-    '(CE)' => array("label" => 'CE' , "label_long" => 'Compile Error'         , "color" => '#ffff00' /* yellow */   ),
-    '(IF)' => array("label" => 'IF' , "label_long" => 'Illegal Function'      , "color" => '#0000ff' /* blue   */   ),
-    // The remaining three judgements (MLE, OLE, PE) are not used anymore, I think. (Hamerly 2013)
-    'MLE'  => array("label" => 'MLE', "label_long" => 'Memory Limit Exceeded' , "color" => '#ffffaa' /* pink   */   ),
-    'OLE'  => array("label" => 'OLE', "label_long" => 'Output Limit Exceeded' , "color" => '#ff00ff' /* purple */   ),
-    'PE'   => array("label" => 'PE' , "label_long" => 'Presentation Error'    , "color" => '#aaaaaa' /* gray   */   ),
+    'AC'   => array("label" => 'AC' , "label_long" => 'Accepted'              , "color" => '#10a010' /* green  */   , "sortOrder" => 1),
+    'WA'   => array("label" => 'WA' , "label_long" => 'Wrong Answer'          , "color" => '#333333' /* dark gray */, "sortOrder" => 2),
+    'TLE'  => array("label" => 'TLE', "label_long" => 'Time Limit Exceeded'   , "color" => '#ff0000' /* red    */   , "sortOrder" => 3),
+    'RTE'  => array("label" => 'RTE', "label_long" => 'Run Time Error'        , "color" => '#ffaa00' /* orange */   , "sortOrder" => 4),
+    '(CE)' => array("label" => 'CE' , "label_long" => 'Compile Error'         , "color" => '#ffff00' /* yellow */   , "sortOrder" => 5),
+    '(IF)' => array("label" => 'IF' , "label_long" => 'Illegal Function'      , "color" => '#0000ff' /* blue   */   , "sortOrder" => 6),
+    // The remaining three judgements (MLE, OLE, PE) are not used anymore, I think. (Hamerly 2013)                                   
+    'MLE'  => array("label" => 'MLE', "label_long" => 'Memory Limit Exceeded' , "color" => '#ffffaa' /* pink   */   , "sortOrder" => 7),
+    'OLE'  => array("label" => 'OLE', "label_long" => 'Output Limit Exceeded' , "color" => '#ff00ff' /* purple */   , "sortOrder" => 8),
+    'PE'   => array("label" => 'PE' , "label_long" => 'Presentation Error'    , "color" => '#aaaaaa' /* gray   */   , "sortOrder" => 9),
 );
+
+function sort_judgement_data(&$arr) {
+    @usort($arr, function($a, $b) {
+        return $a["sortOrder"] - $b["sortOrder"];
+    });
+}
 
 
 // TODO: add problem names

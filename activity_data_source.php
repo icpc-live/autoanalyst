@@ -185,6 +185,7 @@ function get_activity_data($team_id, $problem_id) {
         $datasets[] = $dataset;
     }
 
+    sort_judgement_data($datasets);
 
     $response = array(
         "problems_used" => $problems_used,
