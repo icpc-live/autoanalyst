@@ -263,7 +263,7 @@ function _feed_updateWith(rows) {
     }
 
     self.updateTimestamps();
-    setInterval(function() { self.updateTimestamps(); }, 1000);
+    setInterval(function() { self.updateTimestamps(); }, 60 * 1000);
 }
 
 // sort all the rows in the live feed according to the user's selection
@@ -308,19 +308,11 @@ function _feed_updateTimestamps() {
     timestamps.each(function(ndx, element) {
         var e = $(element);
         var ts = e.attr('timestamp');
-        // FIXME -- the database (default-entered) timestamps may not be set to
-        // UTC, in which case a javascript timestamp (which is in UTC) will vary
-        // by the timezone difference
-        var diff_seconds = Math.floor((now - new Date(ts + ' +0200'/* FIXME: KLUDGE */)) / 1000);
-        var diff_minutes = Math.floor(diff_seconds / 60);
-        var msg = '';
-        if (diff_seconds < 60) {
-            msg = diff_seconds + ' sec.';
-        } else {
-            msg = diff_minutes + ' min.';
+        if (ts) {
+            var diff_minutes = Math.floor((now - new Date(ts)) / (60 * 1000));
+            var msg = diff_minutes + ' mins. ago';
+            e.text(msg);
         }
-
-        e.text(msg + ' ago');
     });
 }
 
