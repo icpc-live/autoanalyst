@@ -75,6 +75,7 @@ foreach ($rows as $row) {
     if (! array_key_exists($submission_result, $flot_count_data)) {
         $new_row = array(
             "label" => $COMMON_DATA['JUDGEMENTS'][$submission_result]['label_long'],
+            "color" => $COMMON_DATA['JUDGEMENTS'][$submission_result]['color'],
             "data" => array(),
         );
         $flot_count_data[$submission_result] = $new_row;
