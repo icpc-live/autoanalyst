@@ -141,18 +141,12 @@ function get_activity_data($team_id, $problem_id) {
     }
 
     // Create series of points for submissions, one per type of result
-    $point_options_by_result = array(
-        'AC'   => array("label" => 'AC'   /* 'Accepted'              */,   "color" => '#1a1',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 3,  "fillColor" => false, "fill" => 1)),
-        '(CE)' => array("label" => 'CE'   /* 'Compile Error'         */,   "color" => 'yellow',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        '(IF)' => array("label" => 'IF'   /* 'Illegal Function'      */,   "color" => 'blue',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'MLE'  => array("label" => 'MLE'  /* 'Memory Limit Exceeded' */,   "color" => 'pink',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'OLE'  => array("label" => 'OLE'  /* 'Output Limit Exceeded' */,   "color" => 'purple',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'PE'   => array("label" => 'PE'   /* 'Presentation Error'    */,   "color" => 'gray',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'RTE'  => array("label" => 'RTE'  /* 'Run Time Error'        */,   "color" => 'orange',  "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'TLE'  => array("label" => 'TLE'  /* 'Time Limit Exceeded'   */,   "color" => 'red',     "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        'WA'   => array("label" => 'WA'   /* 'Wrong Answer'          */,   "color" => '#333',    "shadowSize" => 0, "points" => array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1)),
-        // FIXME: do we want a result type for "status: fresh"? (i.e. the submission has not been judged) The status is not a "result"
-    );
+    $point_options_by_result = $COMMON_DATA['JUDGEMENTS'];
+    foreach (array_keys($point_options_by_result) as $result) {
+        $point_options_by_result[$result]["shadowSize"] = 0;
+        $point_options_by_result[$result]["points"] = array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1);
+    }
+    $point_options_by_result['AC']["points"]["radius"] = 3;
 
 
     $problem_minute_counter = array();

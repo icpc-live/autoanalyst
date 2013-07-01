@@ -62,14 +62,6 @@ foreach ($rows as $row) {
 }
 
 $flot_count_data = array();
-$preferred_order = array(
-    "AC" => "Accepted",
-    "WA" => "Wrong Answer",
-    "TLE" => "Time Limit Exceeded",
-    "RTE" => "Run Time Error",
-    "(CE)" => "Compile Error",
-    "(IF)" => "Illegal Function"
-);
 
 $sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
 $rows = mysql_query_cacheable($sql);
@@ -82,7 +74,7 @@ foreach ($rows as $row) {
 
     if (! array_key_exists($submission_result, $flot_count_data)) {
         $new_row = array(
-            "label" => $preferred_order[$submission_result],
+            "label" => $COMMON_DATA['JUDGEMENTS'][$submission_result]['label_long'],
             "data" => array(),
         );
         $flot_count_data[$submission_result] = $new_row;
@@ -98,7 +90,7 @@ foreach ($rows as $row) {
 
 $flot_count_data_ordered = array();
 $flot_percent_data_ordered = array();
-foreach ($preferred_order as $short => $long) {
+foreach ($COMMON_DATA['JUDGEMENTS'] as $short => $data) {
     if (array_key_exists($short, $flot_count_data)) {
         $flot_count_data_ordered[] = $flot_count_data[$short];
         $flot_percent_data_ordered[] = $flot_percent_data[$short];

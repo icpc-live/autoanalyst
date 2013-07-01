@@ -48,6 +48,7 @@ function feed(div, properties) {
 
     var data = get_json_synchronous("icpc/common_data.php");
     this.TEAMS = data['TEAMS'];
+    this.JUDGEMENTS = data['JUDGEMENTS'];
 
     this.div = $(div);
 
@@ -195,19 +196,8 @@ function _feed_updateWith(rows) {
                               row.modify_time + 
                               "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
             } else if (this.table == 'submissions') {
-                var kattis_result_translator = {
-                   'AC'  : "Accepted",
-                   '(CE)': "Compile Error",
-                   '(IF)': "Illegal Function",
-                   'MLE' : "Memory Limit Exceeded",
-                   'OLE' : "Output Limit Exceeded",
-                   'PE'  : "Presentation Error",
-                   'RTE' : "Run Time Error",
-                   'TLE' : "Time Limit Exceeded",
-                   'WA'  : "Wrong Answer",
-                };
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
-                var result = "<span class='" + is_accepted + "'>" + kattis_result_translator[row.result] + "</span>";
+                var result = "<span class='" + is_accepted + "'>" + self.JUDGEMENTS[row.result].label_long + "</span>";
 
                 var school_name = "Team " + row.team_id;
                 try {
