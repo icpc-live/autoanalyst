@@ -129,8 +129,16 @@ function ActivityPlot(target, team_id, problem_id, update) {
         self.target.bind("plotclick",
             function(evt, pos, item) {
                 if (item && item.series && item.series.submissionInfo) {
-                    var new_location = add_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
-                    window.location.assign(new_location);
+                    var new_location = null;
+                    if (self.team_id && /^[0-9]+$/.test(self.team_id)) {
+                        console.log("this is for a particular team!");
+                        new_location = '/domjudge/jury/submission.php?ext_id=' + item.series.submissionInfo.submission_id;
+                    } else {
+                        new_location = add_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
+                    }
+                    if (new_location) {
+                        window.location.assign(new_location);
+                    }
                 }
             }
         );
