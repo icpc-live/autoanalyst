@@ -136,12 +136,15 @@ function _feed_update() {
     var self = this;
     //console.log("about to query " + url);
     $.ajax({ url: url }).done(function(response) {
-        var response_obj = JSON.parse(response);
-        if (response_obj && response_obj.result == 'success') {
-            self.updateWith(response_obj.data);
+        //console.log('response: ', response);
+        if (response && response.result == 'success') {
+            self.updateWith(response.data);
         } else {
-            console.warn("Error in querying '" + url + "': response = '" + response_obj.data + "'");
+            console.warn("Error in querying '" + url + "': response = '" + response.data + "'");
         }
+    }).error(function(response) {
+        console.log("ERROR:");
+        console.log(response);
     });
 }
 
