@@ -223,7 +223,7 @@ function _feed_updateWith(rows) {
                     "<div class='feed_row_description'>" + description + "</div>" +
                     "<div class='feed_row_controls'>" +
                     "<div class='feed_row_pin_control' title='Pin this event'><i class='icon-pushpin'></i></div>" +
-                    "<div class='feed_row_tweet_control' title='Tweet this event'><i class='icon-twitter'></i></div>" +
+                    //"<div class='feed_row_tweet_control' title='Tweet this event'><i class='icon-twitter'></i></div>" +
                     "</div></div>");
             // add data which allows sorting
             for (var key in row) {

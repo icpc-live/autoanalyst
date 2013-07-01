@@ -113,11 +113,11 @@
     right: 0%;
     top: 0%;
     height: 100%;
-    width: 5em;
+    width: 2.5em;
 }
 .feed_container .feed_row .feed_row_controls div {
     display: inline-block;
-    width: 47%;
+    width: 95%;
     border: thin solid gray;
     color: black;
     cursor: hand;
