@@ -117,7 +117,7 @@ function navigation_container() {
     global $COMMON_DATA;
 ?>
 <div id="navigation_container">
-    <div id='searchbox_container'>
+    <div id='searchbox_container' title="Search by school name, team number, problem letter, or three-letter country">
     <label for='searchbox'>Search:</label><input type='text' id='searchbox' name="query">
     </div>
     
