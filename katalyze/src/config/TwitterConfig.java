@@ -18,7 +18,8 @@ public class TwitterConfig {
 		if (oAuthAccessToken.length != 2) {
 			throw new InvalidParameterException("invalid oAuthAccessToken array");
 		}
-		
+		this.oAuthConsumerKeys = oAuthConsumerKeys;
+		this.oAuthAccessToken = oAuthAccessToken;
 		this.hashtag = (hashtag == null) ? "" : hashtag;
 	}
 	

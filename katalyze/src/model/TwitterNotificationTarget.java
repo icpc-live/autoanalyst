@@ -36,7 +36,7 @@ public class TwitterNotificationTarget implements NotificationTarget {
 					
 					fullMessage = event.message.substring(0, maxContentLength-1) + "... "+hashtag;
 				}
-				
+				logger.info(String.format("Tweeting: %s", fullMessage));
 				twitter.updateStatus(fullMessage);
 			}
 		}
