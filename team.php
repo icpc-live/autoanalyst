@@ -203,7 +203,7 @@ while ($row = mysql_fetch_assoc($result)) {
         <?php
           $start_year = 1999;
           $end_year = 2012;
-          $results_sql = "SELECT * FROM history_results WHERE year < $end_year AND university_name LIKE '${school_name}%'";
+          $results_sql = "SELECT * FROM history_results WHERE year <= $end_year AND university_name LIKE '${school_name}%'";
           $results = mysql_query($results_sql, $db);
           $p = array();
           $total_times_in_wf = 0;
