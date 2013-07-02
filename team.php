@@ -90,7 +90,11 @@ $(document).ready(function() {
 </head>
 <body>
 
-<?php navigation_container(); ?>
+<?php
+$prev_next = sprintf("<a href='team.php?team_id=%d'>Previous team</a>", max($team_id - 1, 1))
+           . sprintf("<a href='team.php?team_id=%d'>Next team</a>", min($team_id + 1, count($COMMON_DATA['TEAMS'])));
+navigation_container($prev_next);
+ ?>
 
 <?php
 if (! $team_row) {
@@ -122,8 +126,8 @@ while ($row = mysql_fetch_assoc($result)) {
 
 <div id="video_container">
     <?php $padded_team_id = sprintf("%03d", $team_id); ?>
-    <a href="vlc://192.168.1.141:58<?php echo $padded_team_id; ?>">Camera</a>
-    <a href="vlc://192.168.1.141:59<?php echo $padded_team_id; ?>">Screen</a>
+    <a href="vlc://192.168.1.142:58<?php echo $padded_team_id; ?>">Camera</a>
+    <a href="vlc://192.168.1.142:59<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
         $result = mysql_query("select * from submissions where team_id = $team_id and has_video");
@@ -202,8 +206,8 @@ while ($row = mysql_fetch_assoc($result)) {
             <tr> <th>Year</th> <th>Place in WF</th> <th>Solved</th> <th>Time</th> </tr>
         <?php
           $start_year = 1999;
-          $end_year = 2011;
-          $results_sql = "SELECT * FROM history_results WHERE year < $end_year AND university_name LIKE '${school_name}%'";
+          $end_year = 2012;
+          $results_sql = "SELECT * FROM history_results WHERE year <= $end_year AND university_name LIKE '${school_name}%'";
           $results = mysql_query($results_sql, $db);
           $p = array();
           $total_times_in_wf = 0;

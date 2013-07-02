@@ -68,7 +68,8 @@ $(document).ready(function() {
 
     new feed("#entries_feed_container", {
         name: 'Katalyze events',
-        conditions: 'text regexp "#p' + problem_id + '[[:>:]]"'
+        table: 'entries',
+        conditions: 'text regexp "#p' + problem_id + '[[:>:]]"',
     });
 
     new feed("#submission_feed_container", {

@@ -29,11 +29,24 @@ public class ShellNotificationTarget implements NotificationTarget {
 		
 		String command = substituteTags(event);
 		try {
-			logger.debug(String.format("Executing: %s", command));
+			logger.info(String.format("Executing: %s", command));
 			runtime.exec(command);
 		} catch (IOException e) {
 			logger.error(String.format("Error executing '%s':%s", command, e));
 		}
+	}
+	
+	public static String escape(String source) {
+		StringBuilder target = new StringBuilder();
+		for (int i=0; i<source.length(); i++) {
+			char c = source.charAt(i);
+			if (Character.isLetter(c)) {
+				target.append(c);
+			} else if (Character.isWhitespace(c)) {
+				target.append("_");
+			}			
+		}
+		return target.toString();
 	}
 
 	private String substituteTags(LoggableEvent event) {
@@ -45,6 +58,8 @@ public class ShellNotificationTarget implements NotificationTarget {
 		
 		if (event.submission != null) {
 			output = output.replace("{runId}", Integer.toString(event.submission.id));
+			output = output.replace("{problemLetter}", event.submission.problem.getLetter());
+			output = output.replace("{teamName}", escape(event.team.getName()));
 		}
 		
 		output = output.replace("{time}", Integer.toString(event.time));

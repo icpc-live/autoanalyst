@@ -118,6 +118,7 @@ function single_region_or_superregion($db, $team_ids, $name) {
 
         new feed("#entries_feed_container", {
             name: 'Katalyze events',
+            table: 'entries',
             conditions: 'text regexp "#t(' + team_ids_regex + ')[[:>:]]"'
         });
 

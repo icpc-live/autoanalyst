@@ -73,47 +73,47 @@ function gen_facts($db, $team_id, $type)
 
 function scrape_kattis_scoreboard_for_team($team_id)
 {
-	global $TEAM_ID_TO_NAME;
-	$team_name = $TEAM_ID_TO_NAME[$team_id];
-	//$raw_html = file_get_contents("http://cm.baylor.edu/scoreboard");
-	//$raw_html = file_get_contents("http://scrool.se/icpc/wf2011/");
-	$raw_html = file_get_contents("http://www.ida.liu.se/~frehe/scoreboard");
+    global $TEAM_ID_TO_NAME;
+    $team_name = $TEAM_ID_TO_NAME[$team_id];
+    //$raw_html = file_get_contents("http://cm.baylor.edu/scoreboard");
+    //$raw_html = file_get_contents("http://scrool.se/icpc/wf2011/");
+    $raw_html = file_get_contents("http://www.ida.liu.se/~frehe/scoreboard");
 
-	#$raw_html = file_get_contents("index.html"); // for testing
+    #$raw_html = file_get_contents("index.html"); // for testing
 
-	# remove all newlines
-	$raw_html = preg_replace("/[\n\r]/", " ", $raw_html);
-	# remove everything before and after the standings table
-	$raw_html = preg_replace("/^.*<table id='standings'>/", "", $raw_html);
-	$raw_html = preg_replace("/<\/table>.*$/", "", $raw_html);
+    # remove all newlines
+    $raw_html = preg_replace("/[\n\r]/", " ", $raw_html);
+    # remove everything before and after the standings table
+    $raw_html = preg_replace("/^.*<table id='standings'>/", "", $raw_html);
+    $raw_html = preg_replace("/<\/table>.*$/", "", $raw_html);
 
-	# replace image url references to go to the server we are taking them from
-	$raw_html = preg_replace("/\/images/", "http://www.ida.liu.se/~frehe/icat/images", $raw_html);
+    # replace image url references to go to the server we are taking them from
+    $raw_html = preg_replace("/\/images/", "http://www.ida.liu.se/~frehe/icat/images", $raw_html);
 
-	# split into table rows, one per team
-	$rows = preg_split("/<tr[^>]*>/", $raw_html);
+    # split into table rows, one per team
+    $rows = preg_split("/<tr[^>]*>/", $raw_html);
 
-	# print the header row
-	printf("<table id='standings'><tr>%s\n", $rows[1]);
+    # print the header row
+    printf("<table id='standings'><tr>%s\n", $rows[1]);
 
-	# look for the team we are searching for
-	$found = false;
-	foreach ($rows as $row) {
+    # look for the team we are searching for
+    $found = false;
+    foreach ($rows as $row) {
         # make sure to look for a complete team name (hence the angle brackets requiring that it goes all the way from open to close tag)
         if (strpos($row, ">" . $team_name . "<")) {
-			# if found, print it, and stop looking...
-			printf("<tr>%s\n", $row);
-			$found = true;
-			break;
-		}
-	}
+            # if found, print it, and stop looking...
+            printf("<tr>%s\n", $row);
+            $found = true;
+            break;
+        }
+    }
 
-	if (! $found) { print("could not get scoreboard for $team_name"); }
-	print("</table>\n");
+    if (! $found) { print("could not get scoreboard for $team_name"); }
+    print("</table>\n");
 }
 
 
-function navigation_container() {
+function navigation_container($additional_links) {
     global $COMMON_DATA;
 ?>
 <div id="navigation_container">
@@ -136,6 +136,7 @@ function navigation_container() {
         <a href='scoreboard.php'>Scoreboard</a>
         <a href='language.php'>Languages</a>
         <a href='region.php'>Regions</a>
+        <?php if ($additional_links) { print $additional_links; } ?>
     </div>
 </div>
 <div id='searchbox_chooser'></div>
