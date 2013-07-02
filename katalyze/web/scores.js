@@ -146,7 +146,7 @@
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.142:58" + padded_id + "'>Camera</a>, " +
-                             "<a href='vnc://192.168.1.142:59" + padded_id + "'>Screen</a>";
+                             "<a href='vlc://192.168.1.142:59" + padded_id + "'>Screen</a>";
 			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks]);
 			 $.each(data.problems, function(i, problemData) {
 				 rowToAdd.append(scoreCell(problemData));
