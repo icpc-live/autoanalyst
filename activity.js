@@ -73,6 +73,7 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                 border: '1px solid green',
                 padding: '2px',
                 'background-color': '#efe',
+                'z-index': 100,
                 opacity: 0.90
             }
         ).appendTo(target);
