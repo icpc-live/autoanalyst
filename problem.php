@@ -68,8 +68,8 @@ $(document).ready(function() {
 
     new feed("#entries_feed_container", {
         name: 'Katalyze events',
+        table: 'entries',
         conditions: 'text regexp "#p' + problem_id + '[[:>:]]"',
-        tz_offset: '+0400',
     });
 
     new feed("#submission_feed_container", {

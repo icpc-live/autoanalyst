@@ -49,7 +49,7 @@ function feed(div, properties) {
     var data = get_json_synchronous("icpc/common_data.php");
     this.TEAMS = data['TEAMS'];
     this.JUDGEMENTS = data['JUDGEMENTS'];
-    this.tz_offset = "+0000";
+    this.tz_offset = "+0000"; // assume UTC timestamps
 
     this.div = $(div);
 
@@ -57,6 +57,12 @@ function feed(div, properties) {
     for (var attrname in properties) {
         if (! (attrname in this)) { console.warn("Alert: property '" + attrname + "' is unknown to the feed object"); }
         this[attrname] = properties[attrname];
+    }
+
+    if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
+        this.tz_offset = '+0400';
+        // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
+        // STORES DATA IN LOCALTIME (WHICH IN 2013 IS +0400)
     }
 
     // set up the methods for this object

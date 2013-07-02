@@ -25,13 +25,13 @@ div#all_entries_feed .feed_rows_container, div#first_solution_feed .feed_rows_co
 <script type="text/javascript">
 
 $(document).ready(function() {
-    new feed("#high_priority_feed", { name: "High priority katalyze events", table: 'entries', conditions: 'priority <= 0', tz_offset: "+0400" });
+    new feed("#high_priority_feed", { name: "High priority katalyze events", table: 'entries', conditions: 'priority <= 0' });
 
-    new feed("#first_solution_feed", { name: "First solutions", table: 'entries', conditions: 'text regexp "the first team to solve"', tz_offset: "+0400" });
+    new feed("#first_solution_feed", { name: "First solutions", table: 'entries', conditions: 'text regexp "the first team to solve"' });
 
-    new feed("#all_entries_feed", { name: "All katalyze events", table: 'entries', conditions: '1', tz_offset: "+0400"  });
+    new feed("#all_entries_feed", { name: "All katalyze events", table: 'entries', conditions: '1'  });
 
-    new feed("#analyst_entries_feed", { name: "All human analysts", table: 'entries', conditions: 'user != "katalyzer"',  tz_offset: "+0400" });
+    new feed("#analyst_entries_feed", { name: "All human analysts", table: 'entries', conditions: 'user != "katalyzer"' });
 });
 
 </script>

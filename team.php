@@ -68,8 +68,7 @@ $(document).ready(function() {
     new feed("#entries_feed_container", {
         name: 'Katalyze events',
         table: 'entries',
-        conditions: 'text regexp "#t' + team_id + '[[:>:]]"',
-        tz_offset: '+0400',
+        conditions: 'text regexp "#t' + team_id + '[[:>:]]"'
     });
 
     new feed("#edit_activity_feed_container", {
