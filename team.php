@@ -122,8 +122,8 @@ while ($row = mysql_fetch_assoc($result)) {
 
 <div id="video_container">
     <?php $padded_team_id = sprintf("%03d", $team_id); ?>
-    <a href="vlc://192.168.1.141:58<?php echo $padded_team_id; ?>">Camera</a>
-    <a href="vlc://192.168.1.141:59<?php echo $padded_team_id; ?>">Screen</a>
+    <a href="vlc://192.168.1.142:58<?php echo $padded_team_id; ?>">Camera</a>
+    <a href="vlc://192.168.1.142:59<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
         $result = mysql_query("select * from submissions where team_id = $team_id and has_video");
