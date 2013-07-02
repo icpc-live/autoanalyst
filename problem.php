@@ -82,10 +82,11 @@ $(document).ready(function() {
         $proportion_data = array();
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $judgement_info = $COMMON_DATA['JUDGEMENTS'][$row['result']];
+            $count = (int)$row['count'];
             $proportion_data[] = array(
-                "label" => $judgement_info['label'],
+                "label" => $judgement_info['label'] . " ($count)",
                 "color" => $judgement_info['color'],
-                "data" => (int)$row['count'],
+                "data" => $count,
                 "sortOrder" => (int)$judgement_info['sortOrder'],
             );
         }
