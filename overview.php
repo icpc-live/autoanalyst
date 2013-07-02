@@ -10,8 +10,12 @@ require_once 'icat.php';
 <link rel="stylesheet" type="text/css" href="style.css" />
 <meta charset="utf-8">
 <style type="text/css">
-div#leftColumn, div#rightColumn { display: inline-block; width: 49%; vertical-align: text-top; }
-div#high_priority_feed .feed_rows_container { height: 30em; }
+div#leftColumn, div#rightColumn {
+    display: inline-block;
+    width: 49%;
+    vertical-align: text-top;
+}
+div#leftColumn .feed_rows_container, div#rightColumn .feed_rows_container { height: 30em; }
 </style>
 
 <script type="text/javascript" src="katalyze/web/jquery-1.6.1.js"></script>
