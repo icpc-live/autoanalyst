@@ -92,11 +92,10 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 			if (document != null) {
 				sendWebDocument(exchange, document);;
 			} else {
-				logger.error("------------------------");
-				logger.error("uri = " + uri);
-				logger.error("path = " + path);
+				logger.warn("404: "+uri);
 				Headers responseHeaders = exchange.getResponseHeaders();
 				responseHeaders.set("Content-Type", "text/plain");
+				responseHeaders.set("Access-Control-Allow-Origin", "*");
 				exchange.sendResponseHeaders(404, 0);
 				
 				OutputStream responseBody = exchange.getResponseBody();
