@@ -124,6 +124,7 @@ public class Analyzer implements NotificationTarget {
 				logger.error(String.format("Error %s while processing rule %s for submission %d", e, rule, submission));
 			}
 		}
+		notifyHooks(submission.minutesFromStart);
 		
 	}
 	

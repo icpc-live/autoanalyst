@@ -9,22 +9,22 @@ import io.*;
 import java.io.*;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.log4j.Logger;
 
 public class Katalyzer implements Sink<SimpleMessage> {
-	static Logger logger = Logger.getLogger(Katalyze.class);
+	static Logger logger = Logger.getLogger(Katalyzer.class);
 	
 	Contest contest;
 	ContestMessages handlers;
 	
-	public Katalyzer() throws Exception {
+	public Katalyzer(BaseConfiguration config) throws Exception {
 		this.contest = new Contest();
 		this.handlers = new ContestMessages(contest);		
 		
 		Analyzer analyzer = contest.getAnalyzer();
 		
-		ConfigReader configReader = new ConfigReader(new PropertiesConfiguration("katalyzer.properties"));
+		ConfigReader configReader = new ConfigReader(config);
 		configReader.SetupAnalyzer(contest, analyzer, handlers);
 
 		analyzer.addNotifier(new LogNotificationTarget(false));

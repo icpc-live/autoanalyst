@@ -22,7 +22,13 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		
 		Team team = submission.team;
 		
-		Score teamScore = standingsBefore.scoreOf(team);		
+		Score teamScore = standingsBefore.scoreOf(team);
+		if (teamScore.isSolved(submission.getProblem())) {
+			String message = "Despite already having solved it, {team} submitted a solution for {problem}";
+			LoggableEvent event = new LoggableEvent(contest, message, EventImportance.Whatever, standingsAtSubmission.submission, null);
+			notify(event);
+			return;
+		}
 		ScoreTableEntry fakeScore = FakeScore.PretendProblemSolved(teamScore, submission.problem, submission.minutesFromStart);
 		
 		ArrayList<ScoreTableEntry> scoresAbove = new ArrayList<ScoreTableEntry>();
@@ -51,7 +57,7 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 			supplements.put("currentRank", Integer.toString(currentRank));
 			supplements.put("potentialRank", Integer.toString(potentialRank));
 			LoggableEvent event = new LoggableEvent(contest, message, EventImportance.Normal, standingsAtSubmission.submission, supplements);
-			notify(event);						
+			notify(event);
 		}
 		
 	}
