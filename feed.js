@@ -296,11 +296,12 @@ function _feed_updateTimer() {
 function _feed_updateTimestamps() {
     var timestamps = this.div.find('.feed_timestamp');
     var now = new Date();
+    var self = this;
     timestamps.each(function(ndx, element) {
         var e = $(element);
         var ts = e.attr('timestamp');
         if (ts) {
-	    ts = new Date(ts.replace(/-/g, '/'));
+            ts = new Date(ts.replace(/-/g, '/') + " " + self.tz_offset);
             var diff_minutes = Math.floor((now - ts) / (60 * 1000));
             var msg = diff_minutes + ' mins. ago';
             e.text(msg);
