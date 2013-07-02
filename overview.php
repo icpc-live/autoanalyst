@@ -15,7 +15,8 @@ div#leftColumn, div#rightColumn {
     width: 49%;
     vertical-align: text-top;
 }
-div#leftColumn .feed_rows_container, div#rightColumn .feed_rows_container { height: 30em; }
+div#high_priority_feed .feed_rows_container, div#analyst_entries_feed .feed_rows_container { height: 40em; }
+div#all_entries_feed .feed_rows_container, div#first_solution_feed .feed_rows_container { height: 25em; }
 </style>
 
 <script type="text/javascript" src="katalyze/web/jquery-1.6.1.js"></script>
