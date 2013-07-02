@@ -74,9 +74,22 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                 padding: '2px',
                 'background-color': '#efe',
                 'z-index': 100,
-                opacity: 0.90
+                opacity: 0.90,
+                'max-width': '20em'
             }
         ).appendTo(target);
+    }
+
+    self.clickableURL = function(clicked_item) {
+        var msg, url;
+        if (self.team_id && /^[0-9]+$/.test(self.team_id)) {
+            msg = 'View Submission';
+            url = '/domjudge/jury/submission.php?ext_id=' + clicked_item.submission_id;
+        } else {
+            msg = 'View Team Activity';
+            url = set_query_field(window.location.href, 'team_id', clicked_item.team_id);
+        }
+        return {message: msg, url: url};
     }
 
     self.updatePlot = function() {
@@ -114,7 +127,8 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                                 + school_name +
                                   " problem " + item.series.submissionInfo[item.dataIndex].problem_id +
                                   " at time " + item.datapoint[0] +
-                                  " (" + item.series.submissionInfo[item.dataIndex].lang_id + ")";
+                                  " (" + item.series.submissionInfo[item.dataIndex].lang_id + ")." +
+                                  " Click to " + self.clickableURL(item.series.submissionInfo[item.dataIndex]).message + ".";
                     } else {
                         // for the edits
                         var numEdits = item.datapoint[1] - item.datapoint[2];
@@ -131,14 +145,9 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
         self.target.bind("plotclick",
             function(evt, pos, item) {
                 if (item && item.series && item.series.submissionInfo) {
-                    var new_location = null;
-                    if (self.team_id && /^[0-9]+$/.test(self.team_id)) {
-                        new_location = '/domjudge/jury/submission.php?ext_id=' + item.series.submissionInfo[item.dataIndex].submission_id;
-                    } else {
-                        new_location = set_query_field(window.location.href, 'team_id', item.series.submissionInfo[item.dataIndex].team_id);
-                    }
-                    if (new_location) {
-                        window.location.assign(new_location);
+                    var msg_url = self.clickableURL(item.series.submissionInfo[item.dataIndex]);
+                    if (msg_url.url) {
+                        window.location.assign(msg_url.url);
                     }
                 }
             }
