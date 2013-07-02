@@ -47,6 +47,10 @@ public class ShellNotificationTarget implements NotificationTarget {
 			output = output.replace("{runId}", Integer.toString(event.submission.id));
 		}
 		
+		if (event.submission != null) {
+			output = output.replace("{problemLetter}", event.submission.problem.getLetter());
+		}
+		
 		output = output.replace("{time}", Integer.toString(event.time));
 		if (event.supplements != null) {
 			for (String key : event.supplements.keySet()) {
