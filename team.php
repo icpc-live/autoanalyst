@@ -202,7 +202,7 @@ while ($row = mysql_fetch_assoc($result)) {
             <tr> <th>Year</th> <th>Place in WF</th> <th>Solved</th> <th>Time</th> </tr>
         <?php
           $start_year = 1999;
-          $end_year = 2011;
+          $end_year = 2012;
           $results_sql = "SELECT * FROM history_results WHERE year < $end_year AND university_name LIKE '${school_name}%'";
           $results = mysql_query($results_sql, $db);
           $p = array();
