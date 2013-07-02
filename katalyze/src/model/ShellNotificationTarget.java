@@ -29,7 +29,7 @@ public class ShellNotificationTarget implements NotificationTarget {
 		
 		String command = substituteTags(event);
 		try {
-			logger.debug(String.format("Executing: %s", command));
+			logger.info(String.format("Executing: %s", command));
 			runtime.exec(command);
 		} catch (IOException e) {
 			logger.error(String.format("Error executing '%s':%s", command, e));
