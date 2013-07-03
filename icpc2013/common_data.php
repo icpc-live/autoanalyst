@@ -20,18 +20,17 @@ while ($row = mysql_fetch_assoc($result)) {
 
 // 2013 ballon colors
 $COMMON_DATA["BALLOON_COLORS"] = array(
-        "A" => "#FF0000",
-        "B" => "#9500AD",
-        "C" => "#F5F500",
-        "D" => "#000000",
-        "E" => "#FFFFFF",
-        "F" => "#FBA1B2",
-        "G" => "#FF8000",
-        "H" => "#A4A4A4",
-        "I" => "#0080EB",
-        "J" => "#FF54E8",
-        "K" => "#03DD3E",
-        "L" => "#808080"
+        "A" => "#FF0000", // Red
+        "B" => "#000000", // Black
+        "C" => "#40E0D0", // Turquoise
+        "D" => "#FFFF00", // Yellow
+        "E" => "#FF1493", // Dark Pink
+        "F" => "#0000FF", // Blue
+        "G" => "#800020", // Burgundy
+        "H" => "#00FF00", // Green
+        "I" => "#FFA500", // Orange
+        "J" => "#FFC0CB", // Pink
+        "K" => "#008080", // Teal
     );
 
 $COMMON_DATA["JUDGEMENTS"] = array(
