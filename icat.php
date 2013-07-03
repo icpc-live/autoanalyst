@@ -113,7 +113,7 @@ function scrape_kattis_scoreboard_for_team($team_id)
 }
 
 
-function navigation_container($additional_links) {
+function navigation_container($additional_links = '') {
     global $COMMON_DATA;
 ?>
 <div id="navigation_container">
