@@ -10,7 +10,8 @@ $(document).ready(function() {
         var query_str = "date=" + new Date().toString();
         $(this).find("input[type=text]").each(function(idx, item) {
             if (query_str) { query_str += "&"; }
-            query_str += escape($(item).attr("name")) + "=" + escape($(item).val());
+            query_str += escape($(item).attr("name")) + "=" + encodeURIComponent($(item).val());
+            console.log("encoding '" + $(item).val() + "' as '" + encodeURIComponent($(item).val()) + "'");
         });
         console.log('query_str = ' + query_str);
         $.ajax({url: "insert_entry.php?" + query_str }).done(function(response) {
