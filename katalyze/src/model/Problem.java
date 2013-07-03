@@ -8,7 +8,7 @@ public class Problem {
 	public Problem(int id, String name) {
 		this.id = String.format("%d", id);
 		this.abbreviation = ""+Character.toChars(64+id)[0];
-		this.name = name;
+		this.name = name.trim();
 	}
 	
 	@Override
