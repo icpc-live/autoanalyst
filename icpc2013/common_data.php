@@ -56,18 +56,17 @@ function sort_judgement_data(&$arr) {
 
 // TODO: add problem names
 $COMMON_DATA["PROBLEM_ID_TO_NAME"] = array(
-        "A" => "Preludes",
-        "B" => "Limited Correspondence",
-        "C" => "Heliocentric",
-        "D" => "In or Out",
-        "E" => "Polish Notation",
-        "F" => "Prime Spiral",
-        "G" => "Sierpinski circumference",
-        "H" => "Tower of Powers 2: Power Harder",
-        "I" => "Matrix Inverse",
-        "J" => "Reversing Roads",
-        "K" => "Counting Stars",
-        "L" => "Statistics",
+        "A" => "Self-Assembly",
+        "B" => "Hey, Better Bettor",
+        "C" => "Surely You Congest",
+        "D" => "Factors",
+        "E" => "Harvard",
+        "F" => "Low Power",
+        "G" => "Map Tiles",
+        "H" => "Maтрëшкa",
+        "I" => "Pirate Chest",
+        "J" => "Pollution Solution",
+        "K" => "Up a Tree"
     );
 
 /*
