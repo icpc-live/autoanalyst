@@ -91,7 +91,6 @@ $(document).ready(function() {
 
         self.updatePlot = function() {
             var url = 'result_per_problem.php';
-            console.log('updating pie chart');
             $.ajax({
                 url: url,
                 data: { problem_id: self.problem_id },
