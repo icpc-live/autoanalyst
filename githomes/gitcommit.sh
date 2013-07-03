@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-BACKUP='backuphost:/home/analyst12/team_backups/'
+BACKUP='/home/ya-icpc/teambackup/'
 
 BASEDIR=$HOME/homedirs
 
@@ -49,7 +49,7 @@ case "$1" in
 	commit)
 		cd $BASEDIR
 
-		rsync -av --delete --exclude=.git $BACKUP .
+		rsync -a --delete --exclude=.git $BACKUP .
 
 		TAG="Tag_`date '+%H_%M'`"
 
@@ -61,7 +61,8 @@ case "$1" in
 		git tag -f -m '' "$TAG" HEAD > /dev/null 2>&1
 		git gc --auto --quiet
 
-		~/icat/code_analyzer/analyzer.py $TAG
+		echo "Checking in $TAG at `date`"
+		~/autoanalyst/code_analyzer/analyzer.py $TAG
 		;;
 
 	*)
