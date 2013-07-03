@@ -99,7 +99,7 @@ $(document).ready(function() {
         proportion_data, { series: { pie: { show: true } } }
     );
 
-    new ActivityPlot($("#activity_container"), '', problem_id, null, false);
+    new ActivityPlot($("#activity_container"), '', problem_id, true, false);
 });
 
 </script>
