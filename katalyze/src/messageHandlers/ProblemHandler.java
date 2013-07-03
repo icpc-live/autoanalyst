@@ -13,8 +13,9 @@ public class ProblemHandler extends SingleMessageHandler {
 	public void process(SimpleMessage message) {
 		int id = message.getInt("id");
 		String abbrev = ""+Character.toChars(64+id)[0];
-	    logger.info("addProblem(" + message.get("id") + ", " + id + ", " + abbrev + ", " + message.get("name") + ")");
-	    Problem newProblem = new Problem(id, message.get("name"));
+		String problemName = message.get("name").trim();
+	    logger.info("addProblem(" + message.get("id") + ", " + id + ", " + abbrev + ", " + problemName + ")");
+	    Problem newProblem = new Problem(id, problemName);
 		contest.addProblem(newProblem);
 	}
 
