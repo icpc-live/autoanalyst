@@ -50,6 +50,7 @@ $(function() {
     new ActivityPlot($("#activity_plot"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>', true);
 });
 </script>
+<title>Activity<?php if (isset($team_id) && $team_id != "") { print(" (for $team_id)"); } ?></title>
 </head>
 <body>
 <?php navigation_container() ?>

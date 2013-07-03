@@ -4,7 +4,7 @@ require_once 'icat.php';
 <!doctype html>
 <html>
 <head>
-<title>iCAT overview</title>
+<title>Scoreboard</title>
 
 <link rel="stylesheet" type="text/css" href="style.css" />
 <link rel="stylesheet" type="text/css" href="katalyze/css/katalyze.css" />
