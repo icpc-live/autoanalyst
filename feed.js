@@ -260,7 +260,6 @@ function _feed_updateWith(rows) {
     }
 
     self.updateTimestamps();
-    setInterval(function() { self.updateTimestamps(); }, 60 * 1000);
 }
 
 // sort all the rows in the live feed according to the user's selection
@@ -313,6 +312,7 @@ function _feed_updateTimestamps() {
             e.text(msg);
         }
     });
+    setTimeout(function() { self.updateTimestamps(); }, 60 * 1000);
 }
 
 // create the relevant DOM objects that will contain the feed and its controls
