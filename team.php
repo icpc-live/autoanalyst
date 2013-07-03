@@ -130,15 +130,15 @@ while ($row = mysql_fetch_assoc($result)) {
     <a href="vlc://192.168.1.142:59<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
-        $result = mysql_query("select * from submissions where team_id = $team_id and has_video");
+        $result = mysql_query("select distinct(submission_id) from submissions where team_id = $team_id and has_video order by submission_id");
         $counter = 0;
         if (mysql_num_rows($result) > 0) {
-            print "Videos: ";
+            print "Contest videos: ";
         }
-        while ($result && ($row = mysql_fetch_row($result))) {
+        while ($result && ($row = mysql_fetch_assoc($result))) {
             $counter++;
             if ($counter > 1) { print ", "; }
-            printf("<a href='http://192.168.0.52/?%d'>%d</a>", $row['submission_id'], $counter);
+            printf("<a href='http://192.168.0.52/?id=%d'>%d</a>", $row['submission_id'], $counter);
         }
     ?>
 </div>
