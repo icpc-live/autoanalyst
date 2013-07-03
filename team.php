@@ -133,7 +133,7 @@ while ($row = mysql_fetch_assoc($result)) {
         $result = mysql_query("select distinct(submission_id) from submissions where team_id = $team_id and has_video order by submission_id");
         $counter = 0;
         if (mysql_num_rows($result) > 0) {
-            print "Contest videos: ";
+            print "Automatically recorded team reaction videos: ";
         }
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $counter++;
