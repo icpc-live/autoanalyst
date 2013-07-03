@@ -78,26 +78,36 @@ $(document).ready(function() {
         conditions: 'problem_id = "' + problem_id + '"',
     });
 
-    <?php
-        $result = mysql_query("select result, count(*) as count from submissions where problem_id = '" . $problem_id . "' group by result");
-        $proportion_data = array();
-        while ($result && ($row = mysql_fetch_assoc($result))) {
-            $judgement_info = $COMMON_DATA['JUDGEMENTS'][$row['result']];
-            $count = (int)$row['count'];
-            $proportion_data[] = array(
-                "label" => $judgement_info['label'] . " ($count)",
-                "color" => $judgement_info['color'],
-                "data" => $count,
-                "sortOrder" => (int)$judgement_info['sortOrder'],
-            );
-        }
-        sort_judgement_data($proportion_data);
-    ?>
-    var proportion_data = <?php echo json_encode($proportion_data); ?>;
+    function PieChart(target, problem_id) {
+        var self = this;
 
-    $.plot($("#judgement_proportions"),
-        proportion_data, { series: { pie: { show: true } } }
-    );
+        self.target = target;
+        self.problem_id = problem_id;
+
+        self.plot = function(response) {
+            var options = { series: { pie: { show: true } } };
+            self.flot = $.plot(self.target, response, options);
+        }
+
+        self.updatePlot = function() {
+            var url = 'result_per_problem.php';
+            console.log('updating pie chart');
+            $.ajax({
+                url: url,
+                data: { problem_id: self.problem_id },
+                success: self.plot,
+                error: function(jqXHR, err) { console.log("updatePlot failed for " + url + ": " + jqXHR + ", " + err); },
+                dataType: "json"
+            });
+
+            setTimeout(self.updatePlot, 10 * 1000);
+        }
+        $(function() {
+            self.updatePlot();
+        });
+    }
+
+    new PieChart($("#judgement_proportions"), problem_id);
 
     new ActivityPlot($("#activity_container"), '', problem_id, true, false);
 });
