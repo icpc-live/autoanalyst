@@ -197,6 +197,6 @@ CREATE VIEW submissions AS SELECT * FROM icpc2013_submissions;
 DROP VIEW IF EXISTS teams;
 CREATE VIEW teams AS SELECT * FROM icpc2013_teams;
 DROP VIEW IF EXISTS team_regions;
-CREATE VIEW facts AS SELECT * FROM icpc2013_team_regions;
+CREATE VIEW team_regions AS SELECT * FROM icpc2013_team_regions;
 DROP VIEW IF EXISTS top_coder;
 CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
