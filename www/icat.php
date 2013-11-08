@@ -1,12 +1,12 @@
 <?php
 
-require_once "icpc/config.php";
-require_once "icpc/common_data.php";
+require_once "contest/config.php";
+require_once "contest/common_data.php";
 
 session_start();
 
-if (file_exists("icpc/sql_cache.php")) {
-    require_once "icpc/sql_cache.php";
+if (file_exists("contest/sql_cache.php")) {
+    require_once "contest/sql_cache.php";
 }
 
 function init_db()
