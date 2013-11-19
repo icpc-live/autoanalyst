@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 CONFIG="../config.yaml"
+DIR=`dirname $0`
 
 # Simplistic method to get subkeys of 'teambackup' from config file;
 # assumes that every 'key: value' pair is contained on a single line.
@@ -9,10 +10,9 @@ yaml_get_key()
 	grep -A4 '^teambackup:' $CONFIG | grep "$1:" | sed "s/.*$key: *\(.*\)/\1/"
 }
 
-BACKUP=` yaml_get_key backupdir`
-BASEDIR=`yaml_get_key gitdir`
-
-echo "'$BACKUP' '$BASEDIR'"
+BACKUP=`  yaml_get_key backupdir`
+BASEDIR=` yaml_get_key gitdir`
+INTERVAL=`yaml_get_key interval`
 
 LISTINGFULL="listing_full.txt"
 LISTINGSHORT="listing.txt"
@@ -72,7 +72,14 @@ case "$1" in
 		git gc --auto --quiet
 
 		echo "Checking in $TAG at `date`"
-		~/autoanalyst/code_analyzer/analyzer.py $TAG
+		$DIR/../code_analyzer/analyzer.py $TAG
+		;;
+
+	run)
+		echo "Starting screen with sync/commit loop..."
+		sleep 3
+
+		screen bash -c "while true ; do $0 commit ; sleep $INTERVAL ; done"
 		;;
 
 	*)
