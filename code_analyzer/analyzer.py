@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# /home/icpc/team_backups
-
 import os, sys, inspect
 
 # Include the parent directory in the search path.

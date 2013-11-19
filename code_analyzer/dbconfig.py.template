@@ -1,5 +1,0 @@
-dbHost = "localhost"
-database = "icat"
-dbUser = "root"
-dbPasswd = "THISISNOTAPASSWORD"
-

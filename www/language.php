@@ -106,7 +106,7 @@ $xticks = json_encode($xticks);
 ?>
 
 <script type="text/javascript">
-var COMMON_DATA = get_json_synchronous("icpc/common_data.php");
+var COMMON_DATA = get_json_synchronous("common_data.php");
 $(document).ready(
     function() {
         var series_common = {

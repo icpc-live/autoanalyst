@@ -46,7 +46,7 @@ function feed(div, properties) {
     this.unique_feed_id = GLOBAL_FEED_ID_COUNTER;
     GLOBAL_FEED_ID_COUNTER++;
 
-    var data = get_json_synchronous("icpc/common_data.php");
+    var data = get_json_synchronous("common_data.php");
     this.TEAMS = data['TEAMS'];
     this.JUDGEMENTS = data['JUDGEMENTS'];
     this.tz_offset = "+0000"; // assume UTC timestamps

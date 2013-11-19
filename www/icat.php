@@ -1,7 +1,7 @@
 <?php
 
-require_once "contest/config.php";
-require_once "contest/common_data.php";
+require_once "config.php";
+require_once "common_data.php";
 
 session_start();
 
@@ -12,15 +12,13 @@ if (file_exists("contest/sql_cache.php")) {
 function init_db()
 {
     global $SQL_CACHE;
-    global $dbuser;
-    global $dbhost;
-    global $dbpassword;
+    global $dbhost, $dbuser, $dbname, $dbpassword;
     if (isset($SQL_CACHE)) {
         return "";
     } else {
         $db = mysql_connect($dbhost, $dbuser, $dbpassword);
         echo mysql_error();
-        mysql_select_db("icat", $db);
+        mysql_select_db($dbname, $db);
         echo mysql_error();
         mysql_set_charset("utf8");
         echo mysql_error();

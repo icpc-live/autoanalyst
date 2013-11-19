@@ -1,0 +1,42 @@
+# This is YAML configuration file for all components of the ICPC-live
+# autoanalyst software package.
+
+database:
+    host:     localhost
+    name:     icat
+    user:     root
+    password: THISISNOTAPASSWORD
+
+timezone: Europe/Moscow
+
+# Keep the backup configuration below in this format, to allow it to
+# be parsed by shell scripts.
+teambackup:
+    backupdir: /home/icpclive/backups
+    gitdir:    /home/icpclive/githomes
+    interval:  120
+
+problems:
+    A: { name: "Self-Assembly",           color: \#FF0000 } # Red
+    B: { name: "Hey, Better Bettor",      color: \#000000 } # Black
+    C: { name: "Surely You Congest",      color: \#40E0D0 } # Turquoise
+    D: { name: "Factors",                 color: \#FFFF00 } # Yellow
+    E: { name: "Harvard",                 color: \#FF1493 } # Dark Pink
+    F: { name: "Low Power",               color: \#0000FF } # Blue
+    G: { name: "Map Tiles",               color: \#800020 } # Burgundy
+    H: { name: "Maтрëшкa",                color: \#00FF00 } # Green
+    I: { name: "Pirate Chest",            color: \#FFA500 } # Orange
+    J: { name: "Pollution Solution",      color: \#FFC0CB } # Pink
+    K: { name: "Up a Tree",               color: \#008080 } # Teal
+
+judgements:
+    AC:   { label: AC,  label_long: "Accepted"             , color: "#10a010", sortOrder: 1 }
+    WA:   { label: WA,  label_long: "Wrong Answer"         , color: "#333333", sortOrder: 2 }
+    TLE:  { label: TLE, label_long: "Time Limit Exceeded"  , color: "#ff0000", sortOrder: 3 }
+    RTE:  { label: RTE, label_long: "Run Time Error"       , color: "#ffaa00", sortOrder: 4 }
+    (CE): { label: CE,  label_long: "Compile Error"        , color: "#ffff00", sortOrder: 5 }
+    (IF): { label: IF,  label_long: "Illegal Function"     , color: "#0000ff", sortOrder: 6 }
+# The remaining three judgements (MLE, OLE, PE) are not used anymore, I think. (Hamerly 2013)
+    MLE:  { label: MLE, label_long: "Memory Limit Exceeded", color: "#ffffaa", sortOrder: 7 }
+    OLE:  { label: OLE, label_long: "Output Limit Exceeded", color: "#ff00ff", sortOrder: 8 }
+    PE:   { label: PE , label_long: "Presentation Error"   , color: "#aaaaaa", sortOrder: 9 }

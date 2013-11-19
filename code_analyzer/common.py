@@ -1,14 +1,17 @@
 import MySQLdb
-import sys, dbconfig
+import sys
+import yaml
 
-from dbconfig import dbHost, dbUser, dbPasswd, database
+f = open('../config.yaml')
+config = yaml.safe_load(f)
+f.close()
 
 try:
-    dbConn = MySQLdb.connect( host = dbHost,
-                              user = dbUser,
-                              passwd = dbPasswd,
-                              db = database )
-    
+    dbConn = MySQLdb.connect( host   = config['database']['host'],
+                              user   = config['database']['user'],
+                              passwd = config['database']['password'],
+                              db     = config['database']['name'] )
+
 except MySQLdb.Error, e:
     print "Error %d: %s" % ( e.args[ 0 ], e.args[ 1 ])
     sys.exit( 1 )
@@ -16,8 +19,7 @@ except MySQLdb.Error, e:
 # path to the top of the backup directory, date and time
 # directories start right under this.
 # BACKUP_TOP = "/home/analyst6/homedirs"
-BACKUP_TOP = "/home/sturgill/homedirs"
+BACKUP_TOP = config['teambackup']['gitdir']
 
 # Static time interval for backups, if it matters, in seconds
-BACKUP_INTERVAL = 120
-
+BACKUP_INTERVAL = config['teambackup']['interval']

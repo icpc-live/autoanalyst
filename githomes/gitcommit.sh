@@ -1,8 +1,18 @@
 #!/bin/sh -e
 
-BACKUP='/home/ya-icpc/teambackup/'
+CONFIG="../config.yaml"
 
-BASEDIR=$HOME/homedirs
+# Simplistic method to get subkeys of 'teambackup' from config file;
+# assumes that every 'key: value' pair is contained on a single line.
+yaml_get_key()
+{
+	grep -A4 '^teambackup:' $CONFIG | grep "$1:" | sed "s/.*$key: *\(.*\)/\1/"
+}
+
+BACKUP=` yaml_get_key backupdir`
+BASEDIR=`yaml_get_key gitdir`
+
+echo "'$BACKUP' '$BASEDIR'"
 
 LISTINGFULL="listing_full.txt"
 LISTINGSHORT="listing.txt"
