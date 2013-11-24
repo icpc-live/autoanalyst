@@ -371,7 +371,7 @@ class Analyzer:
         for tdir in tlist:
             ( dirname, tname ) = os.path.split( tdir )
             team = int( tname.lstrip( 'team' ) )
-            cmd = "find %s -type f" % tdir
+            cmd = "find %s/ -type f" % tdir
             for f in os.popen( cmd ).readlines():
                 f = f.rstrip( '\n' )
                 fname = f[len(tdir) + 1:]
@@ -513,7 +513,7 @@ class Analyzer:
         for tdir in tlist:
             ( dirname, tname ) = os.path.split( tdir )
             team = int( tname.lstrip( 'team' ) )
-            cmd = "find %s -type f" % tdir
+            cmd = "find %s/ -type f" % tdir
             for f in os.popen( cmd ).readlines():
                 f = f.rstrip( '\n' )
                 fname = f[len(tdir) + 1:]
