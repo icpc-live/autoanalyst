@@ -71,6 +71,8 @@ case "$1" in
 		git tag -f -m '' "$TAG" HEAD > /dev/null 2>&1
 		git gc --auto --quiet
 
+		cd - > /dev/null
+
 		echo "Checking in $TAG at `date`"
 		$DIR/../code_analyzer/analyzer.py $TAG
 		;;
