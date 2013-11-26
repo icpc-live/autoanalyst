@@ -1,0 +1,28 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+
+# Suppress writing to swapfile that might be on slow USB flash memory:
+sysctl -q -w vm.swappiness=10
+
+# Run script specific for first-time booting this image:
+if [ -x /etc/first-boot.sh ]; then
+	/etc/first-boot.sh
+	rm -f /etc/first-boot.sh
+fi
+
+if [ -e /etc/icpclive-default-passwords ]; then
+	cat /etc/icpclive-default-passwords
+fi
+
+exit 0
