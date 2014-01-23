@@ -5,6 +5,7 @@ $feedURL = 'testfeed.xml';
 $sleeptime = 1;
 
 $knownRuns = array();
+libxml_disable_entity_loader(true);
 
 while (1) {
 	$feedXML = file_get_contents($feedURL);
