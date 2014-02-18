@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 
 public class LoggableEvent {
 	private static int nextEventId = 0;
@@ -27,19 +28,23 @@ public class LoggableEvent {
 		this.submission = submission;
 		this.supplements = supplements;
 	}
+
+	private static String replaceMarkup(String source, String tag, String replacement) {
+		return source.replaceAll("\\{"+tag+"\\}", Matcher.quoteReplacement(replacement));
+	}
 	
 	private static String getCleartextMessage(String message, InitialSubmission submission) {
 		if (submission != null) {
-			message = message.replaceAll("\\{problem\\}", submission.getProblem().getName());
-			message = message.replaceAll("\\{team\\}", submission.getTeam().getName());
+			message = replaceMarkup(message, "problem", submission.getProblem().getName());
+			message = replaceMarkup(message, "team", submission.getTeam().getName());
 		}
 		return message;
 	}
 	
 	private static String getICatMessage(String message, InitialSubmission submission) {
 		if (submission != null) {
-			message = message.replaceAll("\\{problem\\}", submission.getProblem().toString());
-			message = message.replaceAll("\\{team\\}", submission.getTeam().toString());
+			message = replaceMarkup(message, "problem", submission.getProblem().toString());
+			message = replaceMarkup(message, "team", submission.getTeam().toString());
 		}
 		return message;
 	}

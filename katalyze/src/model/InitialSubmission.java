@@ -23,4 +23,8 @@ public class InitialSubmission {
 		return problem;
 	}
 	
+	public String getLanguage() {
+		return language;
+	}
+	
 }

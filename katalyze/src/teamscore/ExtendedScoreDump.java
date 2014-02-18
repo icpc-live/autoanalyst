@@ -1,6 +1,8 @@
 package teamscore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -41,7 +43,7 @@ public class ExtendedScoreDump implements OutputHook {
 		public JSONObject DumpScore(Score score) {
 			
 			Team team = score.getTeam();
-			
+
 			JSONArray problems = new JSONArray();
 			for (Problem p: contest.getProblems()) {
 				boolean isSolved = score.isSolved(p);
@@ -55,6 +57,10 @@ public class ExtendedScoreDump implements OutputHook {
 					JSONObject potential = calcFictiousRank(scoresAbove, fake);
 					problemInfo = problemInfo.element("potential", potential);
 				}
+				String language = team.languageFor(p);
+				if (language != null) {
+					problemInfo = problemInfo.element("lang", language);
+				}
 				problems.add(problemInfo);
 			}
 			
@@ -67,6 +73,7 @@ public class ExtendedScoreDump implements OutputHook {
 					.element("name", team.getName()))
 				.element("nSolved", score.getNumberOfSolvedProblems())
 				.element("totalTime", score.getTimeIncludingPenalty())
+				.element("mainLang", team.getMainLanguage())
 				.element("problems", problems);
 			
 			return target;
@@ -94,13 +101,16 @@ public class ExtendedScoreDump implements OutputHook {
 		
 		public String execute() {
 			scoresAbove.clear();
-			
+						
 			JSONArray resultArray = new JSONArray();
-
+			ArrayList<JSONObject> jsonScores = new ArrayList<JSONObject>();
+			
 			for (Score score : standings) {
 				scoresAbove.add(score);
-				resultArray.add(DumpScore(score));
+				jsonScores.add(DumpScore(score));
 			}
+			
+			resultArray.addAll(jsonScores);
 
 			JSONObject contestInfo = getContestInfo(standings.getContest());			
 			
@@ -110,7 +120,7 @@ public class ExtendedScoreDump implements OutputHook {
 			
 			return contestStatus.toString();
 		}
-
+		
 		private JSONObject calcFictiousRank(ArrayList<Score> scoresAbove,
 				ScoreTableEntry fake) {
 			
@@ -144,15 +154,18 @@ public class ExtendedScoreDump implements OutputHook {
 	
 	@Override
 	public void execute(int minutesFromStart) {
-		log.debug("publishing Standings... " + minutesFromStart);
+		log.debug("preparing Standings... " + minutesFromStart);
 		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
 				
 		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
+		log.debug("dumping Standings... " + minutesFromStart);
 		String scoreTable = scoreDumper.execute();
 		
 		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
+		log.debug("publishing Standings... " + minutesFromStart);
 		publisherTarget.publish("/Standings", scoreDoc);
 		publisherTarget.publish(String.format("/Standings.%03d", minutesFromStart), scoreDoc);
+		log.debug("done publishing Standings... " + minutesFromStart);
 		
 	}
 	

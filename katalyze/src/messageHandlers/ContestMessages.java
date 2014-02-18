@@ -24,6 +24,7 @@ public class ContestMessages {
 		add(new RunHandler());
 		add(new TeamHandler());
 		add(new TestCaseHandler());
+		add(new LanguageHandler());
 		add(new NullHandler("clar"));
 	}
 	

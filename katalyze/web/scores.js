@@ -28,7 +28,7 @@
 		
 		var addTableHeader = function(boardTable, contestInfo) {
 			
-			var headerColumns = ["Rank", "Team", "Solved", "Time", "Video" ];
+			var headerColumns = ["Rank", "Team", "Solved", "Time", "Video", "Language" ];
 			$.each(contestInfo.problems, function(i, problem) {
 				headerColumns.push(problem.tag);
 			});
@@ -147,7 +147,8 @@
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.142:58" + padded_id + "'>Camera</a>, " +
                              "<a href='vlc://192.168.1.142:59" + padded_id + "'>Screen</a>";
-			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks]);
+			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks, data.mainLang]);
+			
 			 $.each(data.problems, function(i, problemData) {
 				 rowToAdd.append(scoreCell(problemData));
 			 });

@@ -53,6 +53,14 @@ public class Team {
 	public ScoreTableEntry getScore() {
 		return progress.calculateScore(contest.getSubmissionCount());
 	}
+	
+	public String languageFor(Problem problem) {
+		return progress.languageFor(problem);
+	}
+	
+	public String getMainLanguage() {
+		return progress.getMainLanguage();
+	}
 
 	public String getName() {
 		return this.name;

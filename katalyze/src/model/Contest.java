@@ -3,18 +3,26 @@ package model;
 import java.security.InvalidKeyException;
 import java.util.*;
 
+import stats.LanguageStats;
+
 public class Contest {
 	final List<Problem> problems;
 	final List<Team> teams;
 	final Analyzer analyzer;
 	final List<Submission> submissions;
+	final List<Language> languages;
+	final LanguageStats stats;
 	int lengthInMinutes = 300;
 	
 	public Contest() {
 		this.problems = new ArrayList<Problem>();
 		this.teams = new ArrayList<Team>();
-		this.analyzer = new Analyzer(this, 184);
+		this.analyzer = new Analyzer(this, 0);
+		this.languages = new ArrayList<Language>();
 		this.submissions = new ArrayList<Submission>();
+		this.stats = new LanguageStats();
+		
+		analyzer.addRule(stats.submissionsPerLanguage);
 	}
 	
 	public Team registerTeam(int teamNumber, String teamName) {
@@ -68,7 +76,7 @@ public class Contest {
 
 	public void processSubmission(Submission newSubmission) {
 		submissions.add(newSubmission);
-		analyzer.notifySubmission(newSubmission);		
+		analyzer.notifySubmission(newSubmission);
 	}
 
 	public Standings getPreviousStandings() {
@@ -78,6 +86,11 @@ public class Contest {
 	
 	public void addProblem(Problem newProblem) {
 		problems.add(newProblem);
+	}
+	
+	public void addLanguage(Language language) {
+		languages.add(language);
+		stats.submissionsPerLanguage.addLanguage(language.getName());
 	}
 
 	public List<Problem> getProblems() {
