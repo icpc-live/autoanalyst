@@ -98,10 +98,11 @@ su -l -c 'cd autoanalyst && git pull -q' icpclive
 ln -s /home/icpclive/autoanalyst/www /var/www/icpc
 
 # Make git repository of team homedirs available:
-ln -s /home/icpclive/githomes /var/cache/git/teambackups
+ln -s /home/icpclive/githomes/.git /var/cache/git/teambackups
 
-# Build PHP PECL yaml extension:
-pecl -q install yaml
+# Build PHP PECL yaml extension (pass <enter> to interactive request
+# for autodetection of libyaml install path):
+printf '\n' | pecl -q install yaml
 
 # Do some cleanup to prepare for creating a releasable image:
 echo "Doing final cleanup, this can take a while..."
