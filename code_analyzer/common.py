@@ -1,8 +1,8 @@
 import MySQLdb
-import sys
+import os, sys
 import yaml
 
-f = open('../config.yaml')
+f = open(os.path.join(os.path.dirname(sys.argv[0]),'../config.yaml'))
 config = yaml.safe_load(f)
 f.close()
 
