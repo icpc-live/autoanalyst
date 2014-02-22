@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_teams` (
   `contestant2_name` varchar(50) NOT NULL,
   `contestant3_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=106 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_entries` (
   `submission_id` int(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `avoid_dups` (`contest_time`,`text`(300))
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=406 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `icpc2013_entries`
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
   `text` varchar(500) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=183 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `icpc2013_facts`
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
   `submission_id` int(11) NOT NULL,
   `has_video` boolean DEFAULT false,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
 -- --------------------------------------------------------
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
   `rte` int(11) NOT NULL DEFAULT '0',
   `tle` int(11) NOT NULL DEFAULT '0',
   `wa` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -144,7 +144,7 @@ CREATE TABLE `icpc2013_team_regions` (
   `super_region_name` varchar(100) NOT NULL,
   `super_region_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
 -- --------------------------------------------------------
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_top_coder` (
   `contestant2_crank` varchar(50) NOT NULL,
   `contestant3_crank` varchar(50) NOT NULL,
   PRIMARY KEY (`university_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
 -- --------------------------------------------------------
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_file_to_problem` (
   `override` tinyint(1),
   PRIMARY KEY (`id`),
   INDEX `team_path_ftp_index` (`team_id`, `path`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Just a record of the modification times for files in team's directories.  This will
@@ -245,7 +245,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_edit_activity` (
   `git_tag` varchar(30),
   PRIMARY KEY (`id`),
   INDEX `team_path_ea_index` (`team_id`, `path`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Mapping from file team id and path name to last utc modification
@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_file_modtime` (
   `path` varchar(256),
   `modify_time_utc` timestamp,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Summary of edit activity, by problem ID.  It's a map from team id and
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_edit_latest` (
   `problem_id` varchar(10) NOT NULL,
   `modify_time_utc` timestamp,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Parameters for the code analyzer.
@@ -289,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_analyzer_parameters` (
   `name` varchar(30) NOT NULL,
   `value` varchar(60),
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Map from problem id to a problem name.  We have this elswehere, but
@@ -301,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problem_name` (
   `problem_id` varchar(10) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Map from problem id to a list of keywords for the problem.
@@ -312,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problem_keywords` (
   `problem_id` varchar(10) NOT NULL,
   `keyword` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Per-team list of strings to strip, if a team is using one
@@ -324,7 +324,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_team_strips` (
   `team_id` int(11) NOT NULL,
   `str` varchar(30),
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Create views for the current contest
