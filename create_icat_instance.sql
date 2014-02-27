@@ -204,13 +204,19 @@ CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
 
 
 --
--- Mapping from file team id and path name to problem id.  This records
--- any decisions the code analyzer makes about what problem each file
--- represents, and it also includes overrides made by the operator.
--- Problem_id may be null, to indicate that a particular file should be
--- ignored.
+-- Mapping from file, team id and path name to problem id and
+-- language.  This records any decisions the code analyzer makes about
+-- what problem each file represents, and it also includes overrides
+-- made by the operator.  Problem_id may be null, to indicate that a
+-- particular file should be ignored.
 --
--- override : true if this is inserted by the operator, so the script won't change it.
+-- The lang_id may be null, since we may be tracking files that aren't
+-- even source files.  If it is non-null, it should give the source
+-- language, but, it's possible to have multiple languages associated
+-- with a team's work, if, say, they switch languages.
+--
+-- override : true if this is inserted by the operator, so the script
+-- won't change it.
 --
 
 CREATE TABLE IF NOT EXISTS `icpc2013_file_to_problem` (
@@ -218,14 +224,16 @@ CREATE TABLE IF NOT EXISTS `icpc2013_file_to_problem` (
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
   `problem_id` varchar(10),
+  `lang_id` varchar(11),
   `override` tinyint(1),
   PRIMARY KEY (`id`),
   INDEX `team_path_ftp_index` (`team_id`, `path`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Just a record of the modification times for files in team's directories.  This will
--- generally be restricted to source files, but I suppose this wouldn't be required.
+-- Just a record of the modification times for files in team's
+-- directories.  This will generally be restricted to source files,
+-- but I suppose this wouldn't be required.
 --
 -- modify_time_utc is the modification time, in utc.
 -- modify_time is the minutes since the start of the contest.

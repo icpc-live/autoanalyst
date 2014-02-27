@@ -10,6 +10,7 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 from common import dbConn, BACKUP_TOP
+from analyzer import Analyzer
 
 import re
 
@@ -48,13 +49,22 @@ cursor.execute( cmd )
 if cursor.fetchone() == None:
     print "Bad problem id: %s" % prob
 
+# Just to get the extension map.
+analyzer = Analyzer( BACKUP_TOP )
+
 # See if there is already an entry for this file.
 cmd = "SELECT team_id FROM file_to_problem WHERE path='%s' AND team_id='%s'" % ( path, team )
 cursor.execute( cmd )
 
 # Just see if it's arealdy there.  There should be a better way to do this.
 if cursor.fetchone() == None:
-    cmd = "insert into file_to_problem ( team_id, path, problem_id, override ) values ( '%s', '%s', '%s', 1 )" % ( team, path, prob )
+    ( dummy, extension ) = os.path.splitext( path )
+    extension = extension.lstrip( '.' )
+    lang = 'none'
+    if extension in analyzer.extensionMap:
+        lang = extensionMap[ extension ]
+
+    cmd = "insert into file_to_problem ( team_id, path, problem_id, lang_id, override ) values ( '%s', '%s', '%s', '%s', 1 )" % ( team, path, prob, lang )
     cursor.execute( cmd )
 else:
     cmd = "UPDATE file_to_problem SET problem_id='%s',override='1' WHERE path='%s' AND team_id='%s'" % ( prob, path, team )
@@ -62,7 +72,7 @@ else:
 
 
 #
-# Note that the script may still find other files it thinks go wit this problem.  That's
+# Note that the script may still find other files it thinks go with this problem.  That's
 # probably OK.  The team may have multiple files that all represent work on a single problem.
 # if there are other files that should be ignored, they should be marked as such using
 # ignoreFile.py.

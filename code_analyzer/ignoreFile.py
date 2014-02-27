@@ -10,6 +10,7 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 from common import dbConn, BACKUP_TOP
+from analyzer import Analyzer
 
 import re
 
@@ -38,6 +39,9 @@ team = mg.group( 1 )
 
 path = path[ len(team)+1:]
 
+# Just to get the extension map.
+analyzer = Analyzer( BACKUP_TOP )
+
 cursor = dbConn.cursor()
 
 # See if there is already an entry for this file.
@@ -46,7 +50,13 @@ cursor.execute( cmd )
 
 # Just see if it's arealdy there.  There should be a better way to do this.
 if cursor.fetchone() == None:
-    cmd = "insert into file_to_problem ( team_id, path, problem_id, override ) values ( '%s', '%s', 'none', 1 )" % ( team, path )
+    ( dummy, extension ) = os.path.splitext( path )
+    extension = extension.lstrip( '.' )
+    lang = 'none'
+    if extension in analyzer.extensionMap:
+        lang = extensionMap[ extension ]
+
+    cmd = "insert into file_to_problem ( team_id, path, problem_id, lang_id, override ) values ( '%s', '%s', 'none', '%s', 1 )" % ( team, path, lang )
     cursor.execute( cmd )
 else:
     cmd = "UPDATE file_to_problem SET problem_id='none',override='1' WHERE path='%s' AND team_id='%s'" % ( path, team )

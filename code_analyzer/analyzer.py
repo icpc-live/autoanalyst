@@ -15,7 +15,7 @@ import time
 import calendar
 import glob
 
-# Edit distance, for approximate problem name matching, not used right now.
+# Edit distance, for approximate problem name matching.
 def editDist( a, b ):
     dst = [ [ 0 for x in range( 0, len( b ) + 1 ) ] for y in range( 0, len( a ) + 1 ) ]
     
@@ -92,6 +92,19 @@ class File:
     def __repr__(self):
         return '%s' % self.path
 
+# Representation for the value part of the file_to_problem mapping,
+# i.e., one line from the file_to_problem table.  This used to be a
+# 4-tuple.  When the lang_id was added, this struct was created to
+# help with the transition to 5 fields and to make the structure
+# easier to interpret.
+class MappingRec:
+    def __init__( self, db_id, problem_id, lang_id, override, new_problem_id ):
+        # Remember the five database fields.
+        self.db_id = db_id
+        self.problem_id = problem_id
+        self.lang_id = lang_id
+        self.override = override
+        self.new_problem_id = new_problem_id
 
 
 # This functionality needs to be split into an executable analyzer and
@@ -107,8 +120,14 @@ class Analyzer:
         # Strings to strip from the filename before we try to guess
         self.commonStrips = [ 'problem', 'prob', '_', '-' ]
 
-        # filename extensions for code files.
-        self.codeExtensions = [ 'cc', 'cpp', 'c', 'java' ]
+        # Valid source file extensions, and what each one says
+        # about the soruce file.
+        self.extensionMap = { 
+            'cc': "C++",
+            'cpp': "C++",
+            'c': "C",
+            'java': "Java"
+            }
 
         # map from problem ID to a list of keywords to look for.
         self.probKeywords = {}
@@ -131,12 +150,13 @@ class Analyzer:
         # it's sufficiently newer than what we have there.
         self.lastEditTimes = {}
 
-        # map from team_id and path to a 4-tuple, db_id, problem_id,
-        # override flag and new problem ID (if we just generated a new
-        # mapping).  This lets us know what to ignore in the mapping
-        # and what to update when we re-write the database.  Multiple
-        # files may map to the same problem, if the team is working on
-        # multiple versions.
+        # map from team_id and path to a MappingRec instance
+        # containing db_id, problem_id, lang_id, override flag and new
+        # problem ID (if we just generated a new mapping).  This lets
+        # us know what to ignore in the mapping and what to update
+        # when we re-write the database.  Multiple files may map to
+        # the same problem, if the team is working on multiple
+        # versions or has some supporting files.
         self.fileMappings = {}
 
     def loadConfiguration( self ):
@@ -173,10 +193,13 @@ class Analyzer:
             row = cursor.fetchone()
         
         # get existing mapping records for all mapped files.
-        cursor.execute( "SELECT id, team_id, path, problem_id, override FROM file_to_problem" )
+        cursor.execute( "SELECT id, team_id, path, problem_id, lang_id, override FROM file_to_problem" )
         row = cursor.fetchone()
         while ( row != None ):
-            self.fileMappings[ ( int( row[ 1 ] ), row[ 2 ] ) ] = [ row[ 0 ], row[ 3 ], row[ 4 ], None ]
+            self.fileMappings[ ( int( row[ 1 ] ), row[ 2 ] ) ] = MappingRec( row[ 0 ], row[ 3 ], row[ 4 ], row[ 5 ], None )
+                  
+# Old mapping
+# 0 -> id, 1 -> problem_id, 2 -> override, 3 -> new_problem_id
                 
             row = cursor.fetchone()
 
@@ -253,7 +276,7 @@ class Analyzer:
         baseName, extension = os.path.splitext( fileName )
         extension = extension.lstrip( '.' )
 
-        if not extension in self.codeExtensions:
+        if extension not in self.extensionMap:
             return None
 
         # Strip off extra words
@@ -377,7 +400,7 @@ class Analyzer:
                 fname = f[len(tdir) + 1:]
                 ( dummy, extension ) = os.path.splitext( fname )
                 extension = extension.lstrip( '.' )
-                if extension in self.codeExtensions:
+                if extension in self.extensionMap:
                     fobj = File( fname, os.path.getmtime( f ) )
 
                     mappingRec = None;
@@ -388,22 +411,23 @@ class Analyzer:
                         mappingRec = self.fileMappings[ ( team, fname ) ]
 
                     # If there's no forced mapping for this problem, try to guess one.
-                    if ( mappingRec == None or mappingRec[ 2 ] == 0 ):
+                    if ( mappingRec == None or mappingRec.override == 0 ):
                         prob = self.guessProblem( team, fobj.path )
                         if prob != None:
                             if mappingRec == None:
-                                mappingRec = [ None, None, 0, None ]
+                                mappingRec = MappingRec( None, None, self.extensionMap[ extension ],
+                                                         0, None );
                                 self.fileMappings[ ( team, fname ) ] = mappingRec
                                 
-                            if mappingRec[ 1 ] != prob:
-                                mappingRec[ 3 ] = prob;
+                            if mappingRec.problem_id != prob:
+                                mappingRec.new_problem_id = prob;
                     
                     # see if there's an edit record for this file.
                     if ( team, fname ) in self.lastEditTimes:
                         lastEditRec = self.lastEditTimes[ ( team, fname ) ]
 
                     # check common editor auto-saves, to see if there
-                    # is a fresher modificationt ime.
+                    # is a fresher modification time.
                     autoTime = self.checkAutosaves( f );
                     if ( autoTime != None and autoTime > fobj.time ):
                         fobj.time = autoTime
@@ -423,15 +447,15 @@ class Analyzer:
         # Write out any new mappings
         cursor = dbConn.cursor()
         for k, v in self.fileMappings.iteritems():
-            if v[ 3 ] != None:
-                if v[ 0 ] == None:
-                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, override ) VALUES ( '%s', '%s', '%s', '0' )" % ( k[ 0 ], k[ 1 ], v[ 3 ] )
+            if v.new_problem_id != None:
+                if v.db_id == None:
+                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( '%s', '%s', '%s', '%s', '0' )" % ( k[ 0 ], k[ 1 ], v.new_problem_id, v.lang_id )
                 
                     cursor.execute( update )
                 else:
-                    update = "UPDATE file_to_problem SET problem_id='%s' WHERE id='%d'" % ( v[ 3 ], v[ 0 ] )
+                    update = "UPDATE file_to_problem SET problem_id='%s' WHERE id='%d'" % ( v.new_problem_id, v[ 0 ] )
                     cursor.execute( update )
-                print "( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v[ 3 ] )
+                print "( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v.new_problem_id )
 
         # Write out fresh edit times to file_modtime and new records to edit_activity
         cursor = dbConn.cursor()
@@ -455,9 +479,12 @@ class Analyzer:
                 
 
         # Create and write the summary of edit activity by problem, edit_latest
-        # Map from team and problem_id to a triple, database_id, timestamp and valid flag.
-        # the valid flag lets us delete.  An entry is valid as long as there is a file
-        # that's mapped to the given problem, even if the file doesn't exist.
+
+        # Map from team and problem_id to a triple, database_id,
+        # timestamp and valid flag.  the valid flag lets us delete
+        # database rows (say, if a file_to_problem mapping changes).  An
+        # entry is valid as long as there is a file that's mapped to
+        # the given problem, even if the file no longer exists.
         modLatest = {}
 
         # get latest known edit times for every team/problem.
@@ -469,9 +496,9 @@ class Analyzer:
             row = cursor.fetchone()
         
         for k, v in self.fileMappings.iteritems():
-            prob = v[ 1 ]
-            if v[ 3 ] != None:
-                prob = v[ 3 ];
+            prob = v.problem_id
+            if v.new_problem_id != None:
+                prob = v.new_problem_id
                 
             if prob != None and prob != 'none':
                 if k in self.lastEditTimes:
@@ -520,7 +547,7 @@ class Analyzer:
 
                 ( dummy, extension ) = os.path.splitext( fname )
                 extension = extension.lstrip( '.' )
-                if extension in self.codeExtensions:
+                if extension in self.extensionMap:
                     fobj = File( fname, os.path.getmtime( f ) )
 
                     prob = None;
@@ -528,8 +555,8 @@ class Analyzer:
                     # see if there's an override for this file.
                     if ( team, fname ) in self.fileMappings:
                         mappingRec = self.fileMappings[ ( team, fname ) ]
-                        if mappingRec[ 2 ]:
-                            prob = mappingRec[ 1 ]
+                        if mappingRec.override:
+                            prob = mappingRec.problem_id
                             print "%s <= %s" % ( prob, f )
                     
                     # if it's not a forced mapping, try to guess and report that.

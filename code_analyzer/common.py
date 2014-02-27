@@ -1,9 +1,15 @@
 import MySQLdb
-import os, sys
+import sys
 import yaml
+import os
+import inspect
 
-f = open(os.path.join(os.path.dirname(sys.argv[0]),'../config.yaml'))
-config = yaml.safe_load(f)
+# Find the top-level directory for the analyzer
+analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( inspect.currentframe()))))
+        
+# Use top-level directory to load the config file.
+f = open( analystTop + "/config.yaml" )
+config = yaml.load( f )
 f.close()
 
 try:

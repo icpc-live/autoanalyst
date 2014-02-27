@@ -9,12 +9,17 @@ database:
 
 timezone: Europe/Moscow
 
-# Keep the backup configuration below in this format, to allow it to
-# be parsed by shell scripts.
+# root of the CDS server.
+CDSRoot:      "http://localhost:5000/"
+
+# This section used to be parsed by shell, but now it's python, so
+# format is no longer strict.  The backupdir may no longer be needed
+# depending on what version of githomes we use.
 teambackup:
     backupdir: /home/icpclive/backups
     gitdir:    /home/icpclive/githomes
     interval:  120
+    lastTeam:  119
 
 problems:
     A: { name: "Self-Assembly",           color: \#FF0000 } # Red
