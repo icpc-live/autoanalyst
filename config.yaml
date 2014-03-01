@@ -10,7 +10,7 @@ database:
 timezone: Europe/Moscow
 
 # root of the CDS server.
-CDSRoot:      "http://localhost:5000/"
+CDSRoot:      "https://192.168.1.207/"
 
 # This section used to be parsed by shell, but now it's python, so
 # format is no longer strict.  The backupdir may no longer be needed

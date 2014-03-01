@@ -1,4 +1,4 @@
--- USAGE: Search and replace icpc2013 with the name of the contest
+-- USAGE: Search and replace icpc2014 with the name of the contest
 
 -- Host: gedrix.ida.liu.se
 -- Server version: 5.1.49
@@ -14,11 +14,11 @@
 --
 
 --
--- Table structure for table `icpc2013_teams`
+-- Table structure for table `icpc2014_teams`
 --
 
-DROP TABLE IF EXISTS `icpc2013_teams`;
-CREATE TABLE IF NOT EXISTS `icpc2013_teams` (
+DROP TABLE IF EXISTS `icpc2014_teams`;
+CREATE TABLE IF NOT EXISTS `icpc2014_teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reservation_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS `icpc2013_teams` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_entries`
+-- Table structure for table `icpc2014_entries`
 --
 
-DROP TABLE IF EXISTS `icpc2013_entries`;
-CREATE TABLE IF NOT EXISTS `icpc2013_entries` (
+DROP TABLE IF EXISTS `icpc2014_entries`;
+CREATE TABLE IF NOT EXISTS `icpc2014_entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
@@ -59,17 +59,17 @@ CREATE TABLE IF NOT EXISTS `icpc2013_entries` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Dumping data for table `icpc2013_entries`
+-- Dumping data for table `icpc2014_entries`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_facts`
+-- Table structure for table `icpc2014_facts`
 --
 
-DROP TABLE IF EXISTS `icpc2013_facts`;
-CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
+DROP TABLE IF EXISTS `icpc2014_facts`;
+CREATE TABLE IF NOT EXISTS `icpc2014_facts` (
   `team_id` int(11) NOT NULL,
   `type` varchar(10) NOT NULL,
   `text` varchar(500) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Dumping data for table `icpc2013_facts`
+-- Dumping data for table `icpc2014_facts`
 --
 
 
@@ -86,11 +86,11 @@ CREATE TABLE IF NOT EXISTS `icpc2013_facts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_submissions`
+-- Table structure for table `icpc2014_submissions`
 --
 
-DROP TABLE IF EXISTS `icpc2013_submissions`;
-CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
+DROP TABLE IF EXISTS `icpc2014_submissions`;
+CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` char(1) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -107,11 +107,11 @@ CREATE TABLE IF NOT EXISTS `icpc2013_submissions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_problems`
+-- Table structure for table `icpc2014_problems`
 --
 
-DROP TABLE IF EXISTS `icpc2013_problems`;
-CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
+DROP TABLE IF EXISTS `icpc2014_problems`;
+CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
   `problem_id` int(11) NOT NULL,
   `problem_letter` char(10) NOT NULL, 
   `problem_name` char(255) NOT NULL, 
@@ -132,11 +132,11 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problems` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_team_regions`
+-- Table structure for table `icpc2014_team_regions`
 --
 
-DROP TABLE IF EXISTS `icpc2013_team_regions`;
-CREATE TABLE `icpc2013_team_regions` (
+DROP TABLE IF EXISTS `icpc2014_team_regions`;
+CREATE TABLE `icpc2014_team_regions` (
   `id` int(11) NOT NULL auto_increment,
   `region_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -150,11 +150,11 @@ CREATE TABLE `icpc2013_team_regions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `icpc2013_top_coder`
+-- Table structure for table `icpc2014_top_coder`
 --
 
-DROP TABLE IF EXISTS `icpc2013_top_coder`;
-CREATE TABLE IF NOT EXISTS `icpc2013_top_coder` (
+DROP TABLE IF EXISTS `icpc2014_top_coder`;
+CREATE TABLE IF NOT EXISTS `icpc2014_top_coder` (
   `university_name` varchar(150) NOT NULL,
   `coach_tcname` varchar(50) NOT NULL,
   `contestant1_tcname` varchar(50) NOT NULL,
@@ -189,17 +189,17 @@ CREATE TABLE IF NOT EXISTS `icpc2013_top_coder` (
 -- 
 -- Create views for the current contest
 DROP VIEW IF EXISTS entries;
-CREATE VIEW entries AS SELECT * FROM icpc2013_entries;
+CREATE VIEW entries AS SELECT * FROM icpc2014_entries;
 DROP VIEW IF EXISTS facts;
-CREATE VIEW facts AS SELECT * FROM icpc2013_facts;
+CREATE VIEW facts AS SELECT * FROM icpc2014_facts;
 DROP VIEW IF EXISTS submissions;
-CREATE VIEW submissions AS SELECT * FROM icpc2013_submissions;
+CREATE VIEW submissions AS SELECT * FROM icpc2014_submissions;
 DROP VIEW IF EXISTS teams;
-CREATE VIEW teams AS SELECT * FROM icpc2013_teams;
+CREATE VIEW teams AS SELECT * FROM icpc2014_teams;
 DROP VIEW IF EXISTS team_regions;
-CREATE VIEW team_regions AS SELECT * FROM icpc2013_team_regions;
+CREATE VIEW team_regions AS SELECT * FROM icpc2014_team_regions;
 DROP VIEW IF EXISTS top_coder;
-CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
+CREATE VIEW top_coder AS SELECT * FROM icpc2014_top_coder;
 
 
 
@@ -219,7 +219,8 @@ CREATE VIEW top_coder AS SELECT * FROM icpc2013_top_coder;
 -- won't change it.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_file_to_problem` (
+DROP TABLE IF EXISTS `icpc2014_file_to_problem`;
+CREATE TABLE IF NOT EXISTS `icpc2014_file_to_problem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -243,7 +244,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_file_to_problem` (
 -- git_tag, since I think that indicates a particular snapshot time.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_edit_activity` (
+DROP TABLE IF EXISTS `icpc2014_edit_activity`;
+CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -262,7 +264,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_edit_activity` (
 -- has changed more recently.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_file_modtime` (
+DROP TABLE IF EXISTS `icpc2014_file_modtime`;
+CREATE TABLE IF NOT EXISTS `icpc2014_file_modtime` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -278,7 +281,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_file_modtime` (
 --
 -- modify_time_utc is the modification time, in utc.
 
-CREATE TABLE IF NOT EXISTS `icpc2013_edit_latest` (
+DROP TABLE IF EXISTS `icpc2014_edit_latest`;
+CREATE TABLE IF NOT EXISTS `icpc2014_edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
@@ -292,7 +296,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_edit_latest` (
 -- CONTEST_START: UTC start of contest, YYYY-MM-DD-hh-mm-ss
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_analyzer_parameters` (
+DROP TABLE IF EXISTS `icpc2014_analyzer_parameters`;
+CREATE TABLE IF NOT EXISTS `icpc2014_analyzer_parameters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `value` varchar(60),
@@ -304,7 +309,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_analyzer_parameters` (
 -- I think it's just php.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_problem_name` (
+DROP TABLE IF EXISTS `icpc2014_problem_name`;
+CREATE TABLE IF NOT EXISTS `icpc2014_problem_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL,
   `name` varchar(45) NOT NULL,
@@ -315,7 +321,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problem_name` (
 -- Map from problem id to a list of keywords for the problem.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_problem_keywords` (
+DROP TABLE IF EXISTS `icpc2014_problem_keywords`;
+CREATE TABLE IF NOT EXISTS `icpc2014_problem_keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL,
   `keyword` varchar(45) NOT NULL,
@@ -327,7 +334,8 @@ CREATE TABLE IF NOT EXISTS `icpc2013_problem_keywords` (
 -- or more special strings as part of their filenames.
 --
 
-CREATE TABLE IF NOT EXISTS `icpc2013_team_strips` (
+DROP TABLE IF EXISTS `icpc2014_team_strips`;
+CREATE TABLE IF NOT EXISTS `icpc2014_team_strips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `str` varchar(30),
@@ -338,14 +346,23 @@ CREATE TABLE IF NOT EXISTS `icpc2013_team_strips` (
 -- Create views for the current contest
 --
 
-CREATE VIEW file_to_problem AS SELECT * FROM icpc2013_file_to_problem;
-CREATE VIEW edit_activity AS SELECT * FROM icpc2013_edit_activity;
-CREATE VIEW file_modtime AS SELECT * FROM icpc2013_file_modtime;
-CREATE VIEW edit_latest AS SELECT * FROM icpc2013_edit_latest;
-CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2013_analyzer_parameters;
-CREATE VIEW problem_name AS SELECT * FROM icpc2013_problem_name;
-CREATE VIEW problem_keywords AS SELECT * FROM icpc2013_problem_keywords;
-CREATE VIEW team_strips AS SELECT * FROM icpc2013_team_strips;
+DROP VIEW IF EXISTS file_to_problem;
+CREATE VIEW file_to_problem AS SELECT * FROM icpc2014_file_to_problem;
+DROP VIEW IF EXISTS edit_activity;
+CREATE VIEW edit_activity AS SELECT * FROM icpc2014_edit_activity;
+DROP VIEW IF EXISTS file_modtime;
+CREATE VIEW file_modtime AS SELECT * FROM icpc2014_file_modtime;
+DROP VIEW IF EXISTS edit_latest;
+CREATE VIEW edit_latest AS SELECT * FROM icpc2014_edit_latest;
+DROP VIEW IF EXISTS analyzer_parameters;
+CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2014_analyzer_parameters;
+DROP VIEW IF EXISTS problem_name;
+CREATE VIEW problem_name AS SELECT * FROM icpc2014_problem_name;
+DROP VIEW IF EXISTS problem_keywords;
+CREATE VIEW problem_keywords AS SELECT * FROM icpc2014_problem_keywords;
+DROP VIEW IF EXISTS team_strips;
+CREATE VIEW team_strips AS SELECT * FROM icpc2014_team_strips;
+DROP VIEW IF EXISTS edit_activity_problem;
 CREATE VIEW edit_activity_problem AS SELECT edit_activity.*, file_to_problem.problem_id
     FROM edit_activity LEFT JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path)
     WHERE file_to_problem.problem_id IS NOT NULL AND file_to_problem.problem_id != 'none';

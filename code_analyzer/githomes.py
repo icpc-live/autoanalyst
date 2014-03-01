@@ -103,26 +103,32 @@ class GitHomes:
         # is it a problem to make this object over and over?
         h = httplib2.Http(".cache")
         h.add_credentials( self.CDSUser, self.CDSPass )
+        h.disable_ssl_certificate_validation=True
 
         for teamIdx in range( 1, self.lastTeam + 1 ):
+            print("%sbackups/%d" % ( self.CDSRoot, teamIdx ))
 
-            (responseHeader, newHash) = h.request( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ), "GET" )
+            #(responseHeader, newHash) = h.request( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ), "GET" )
 
             # fp = urllib.urlopen( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ) );
             # newHash = fp.read()
             # fp.close()
 
-            if newHash != self.teamHashes[ teamIdx ]:
-                # remember the new hash
-                self.teamHashes[ teamIdx ] = newHash;
+            #if newHash != self.teamHashes[ teamIdx ]:
+            #    remember the new hash
+            #    self.teamHashes[ teamIdx ] = newHash;
                 
-                # pull down the latest zip file, and unzip it.
-                (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
-                f = tempfile.NamedTemporaryFile( delete=False )
-                f.write( result )
-                f.close()
-                subprocess.call( [ "unzip", "-qq", "-o", f.name, "-x", "*/.git", "*/.git/*" ] )
-                os.unlink( f.name )
+            # pull down the latest zip file, and unzip it.
+            (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
+            print(responseHeader)
+            #print(result)
+            f = tempfile.NamedTemporaryFile( delete=False )
+            print(f.name)
+            f.write( result )
+            f.close()
+            #subprocess.call( [ "unzip", "-qq", "-o", f.name, "-x", "*/.git", "*/.git/*" ] )
+            subprocess.call( [ "tar", "xf", f.name ] )
+            #os.unlink( f.name )
 
         os.chdir( self.origin )
 
