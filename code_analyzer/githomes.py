@@ -35,9 +35,9 @@ class GitHomes:
         # this gets lost when this script is restarted, but it doesn't
         # hurt anything.  It may just cause us to pull down new copies of the
         # backups when we don't really need to.
-        self.teamHashes = {};
-        for teamIdx in range( 1, self.lastTeam + 1 ):
-            self.teamHashes[ teamIdx ] = "";
+        # self.teamHashes = {};
+        # for teamIdx in range( 1, self.lastTeam + 1 ):
+        #     self.teamHashes[ teamIdx ] = "";
 
         # files listing modification times, etc for the contents of the repository.
         self.LISTINGFULL = "listing_full.txt"
@@ -118,7 +118,7 @@ class GitHomes:
             #    remember the new hash
             #    self.teamHashes[ teamIdx ] = newHash;
                 
-            # pull down the latest zip file, and unzip it.
+            # pull down the latest backup archive, and unpack it.
             (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
             print(responseHeader)
             #print(result)
@@ -126,8 +126,12 @@ class GitHomes:
             print(f.name)
             f.write( result )
             f.close()
-            #subprocess.call( [ "unzip", "-qq", "-o", f.name, "-x", "*/.git", "*/.git/*" ] )
-            subprocess.call( [ "tar", "xf", f.name ] )
+
+            teamDir = "team%d" % teamIdx
+            if not os.path.exists( teamDir ):
+                os.makedirs( teamDir )
+            
+            subprocess.call( [ "tar", "xf", f.name, "-C", teamDir ] )
             #os.unlink( f.name )
 
         os.chdir( self.origin )
