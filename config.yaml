@@ -20,6 +20,8 @@ teambackup:
     gitdir:    /home/icpclive/githomes
     interval:  120
     lastTeam:  119
+    CDSUser:   user
+    CDSPass:   THISISNOTAPASSWORD
 
 problems:
     A: { name: "Self-Assembly",           color: \#FF0000 } # Red

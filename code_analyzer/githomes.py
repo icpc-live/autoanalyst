@@ -2,6 +2,7 @@
 
 import os, inspect, subprocess, yaml, tempfile, time, urllib
 from datetime import datetime
+import httplib2
 
 # Just an object wrapping up the githomes functioanlity.
 class GitHomes:
@@ -25,6 +26,10 @@ class GitHomes:
 
         # base URL for the CDS
         self.CDSRoot = config[ "CDSRoot" ]
+
+        # user and password for CDS access
+        self.CDSUser = config[ "teambackup" ][ "CDSUser" ]
+        self.CDSPass = config[ "teambackup" ][ "CDSPass" ]
 
         # map from team number to the latest hash for that team's zip file.
         # this gets lost when this script is restarted, but it doesn't
@@ -94,19 +99,30 @@ class GitHomes:
 
     def pullBackups( self ):
         os.chdir( self.gitdir )
+
+        # is it a problem to make this object over and over?
+        h = httplib2.Http(".cache")
+        h.add_credentials( self.CDSUser, self.CDSPass )
+
         for teamIdx in range( 1, self.lastTeam + 1 ):
-            fp = urllib.urlopen( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ) );
-            newHash = fp.read()
-            fp.close()
+
+            (responseHeader, newHash) = h.request( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ), "GET" )
+
+            # fp = urllib.urlopen( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ) );
+            # newHash = fp.read()
+            # fp.close()
 
             if newHash != self.teamHashes[ teamIdx ]:
                 # remember the new hash
                 self.teamHashes[ teamIdx ] = newHash;
                 
                 # pull down the latest zip file, and unzip it.
-                result = urllib.urlretrieve( "%sbackups/%d" % ( self.CDSRoot, teamIdx ) );
-                subprocess.call( [ "unzip", "-qq", "-o", result[ 0 ], "-x", "*/.git", "*/.git/*" ] )
-                os.unlink( result[ 0 ] );
+                (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
+                f = tempfile.NamedTemporaryFile( delete=False )
+                f.write( result )
+                f.close()
+                subprocess.call( [ "unzip", "-qq", "-o", f.name, "-x", "*/.git", "*/.git/*" ] )
+                os.unlink( f.name )
 
         os.chdir( self.origin )
 
