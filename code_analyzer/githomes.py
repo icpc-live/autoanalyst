@@ -78,7 +78,7 @@ class GitHomes:
 
         os.chdir( self.gitdir )
 
-        # Not sure why this is needed, copied from the shell script.
+        # Make sure that gitweb (webserver) has access.
         subprocess.call( [ "chmod", "a+rx", "." ] )
 
         # Create an initial repository witht just the listings in it.
