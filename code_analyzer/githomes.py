@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, inspect, subprocess, yaml, tempfile, time, urllib
+import os, inspect, subprocess, yaml, tempfile, time, urllib, sys
 from datetime import datetime
 import httplib2
 
@@ -106,7 +106,8 @@ class GitHomes:
         h.disable_ssl_certificate_validation=True
 
         for teamIdx in range( 1, self.lastTeam + 1 ):
-            print("%sbackups/%d" % ( self.CDSRoot, teamIdx ))
+            str = "Polling %sbackups/%d... " % ( self.CDSRoot, teamIdx )
+            sys.stdout.write(str)
 
             #(responseHeader, newHash) = h.request( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ), "GET" )
 
@@ -121,18 +122,26 @@ class GitHomes:
             # pull down the latest backup archive, and unpack it.
             (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
             print(responseHeader)
-            #print(result)
-            f = tempfile.NamedTemporaryFile( delete=False )
-            print(f.name)
-            f.write( result )
-            f.close()
+            #print(responseHeader.status)
+            #print(responseHeader["status"])
 
-            teamDir = "team%d" % teamIdx
-            if not os.path.exists( teamDir ):
-                os.makedirs( teamDir )
-            
-            subprocess.call( [ "tar", "xf", f.name, "-C", teamDir ] )
-            #os.unlink( f.name )
+            if responseHeader["status"] == "200":
+                sys.stdout.write("updated, commit to git... ")
+
+                f = tempfile.NamedTemporaryFile( delete=False )
+                f.write( result )
+                f.close()
+                teamDir = "team%d" % teamIdx
+                if not os.path.exists( teamDir ):
+                    os.makedirs( teamDir )
+                subprocess.call( [ "tar", "xf", f.name, "-C", teamDir ] )
+                os.unlink( f.name )
+
+                print("done.")
+            elif responseHeader["status"] == "304":
+                print("no change, done.")
+            else:
+                print("error %s" % responseHeader)
 
         os.chdir( self.origin )
 
