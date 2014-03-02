@@ -100,8 +100,9 @@ class GitHomes:
     def pullBackups( self ):
         os.chdir( self.gitdir )
 
+        d = tempfile.mkdtemp(prefix='githomes')
         # is it a problem to make this object over and over?
-        h = httplib2.Http(".cache")
+        h = httplib2.Http(os.path.join(d,".cache"))
         h.add_credentials( self.CDSUser, self.CDSPass )
         h.disable_ssl_certificate_validation=True
 
