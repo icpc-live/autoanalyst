@@ -39,6 +39,10 @@ class GitHomes:
         # for teamIdx in range( 1, self.lastTeam + 1 ):
         #     self.teamHashes[ teamIdx ] = "";
 
+        self.teamLastModified = {};
+        for teamIdx in range( 1, self.lastTeam + 1 ):
+            self.teamLastModified[ teamIdx ] = "Sun, 02 Mar 2014 14:38:21 GMT";
+
         # files listing modification times, etc for the contents of the repository.
         self.LISTINGFULL = "listing_full.txt"
         self.LISTINGSHORT = "listing.txt"
@@ -120,8 +124,9 @@ class GitHomes:
             #    remember the new hash
             #    self.teamHashes[ teamIdx ] = newHash;
                 
+            #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
-            (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET" )
+            (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
             print(responseHeader)
             #print(responseHeader.status)
             #print(responseHeader["status"])
@@ -129,6 +134,7 @@ class GitHomes:
             if responseHeader["status"] == "200":
                 sys.stdout.write("updated, commit to git... ")
 
+                self.teamLastModified[ teamIdx ] = responseHeader["last-modified"]
                 f = tempfile.NamedTemporaryFile( delete=False )
                 f.write( result )
                 f.close()
