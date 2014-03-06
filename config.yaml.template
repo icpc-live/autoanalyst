@@ -1,5 +1,6 @@
-# This is YAML configuration file for all components of the ICPC-live
-# autoanalyst software package.
+# This is the YAML configuration template for all components of the
+# ICPC-live autoanalyst software package.
+# Copy this file to config.yaml and edit to your needs.
 
 database:
     host:     localhost
