@@ -126,7 +126,7 @@ class GitHomes:
                 teamDir = "team%d" % teamIdx
                 if not os.path.exists( teamDir ):
                     os.makedirs( teamDir )
-                subprocess.call( [ "tar", "xf", f.name, "-C", teamDir ] )
+                subprocess.call( [ "tar", "--exclude-vcs", "xf", f.name, "-C", teamDir ] )
                 os.unlink( f.name )
 
                 print("done.")
