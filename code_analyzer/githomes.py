@@ -31,17 +31,12 @@ class GitHomes:
         self.CDSUser = config[ "teambackup" ][ "CDSUser" ]
         self.CDSPass = config[ "teambackup" ][ "CDSPass" ]
 
-        # map from team number to the latest hash for that team's zip file.
-        # this gets lost when this script is restarted, but it doesn't
-        # hurt anything.  It may just cause us to pull down new copies of the
-        # backups when we don't really need to.
-        # self.teamHashes = {};
-        # for teamIdx in range( 1, self.lastTeam + 1 ):
-        #     self.teamHashes[ teamIdx ] = "";
-
+        # figure out a start time in the format we will get from the CDS.
+        startTime = time.strptime( config['analyzer']['contestStart'], "%Y-%m-%d %H:%M:%S" )
+        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", startTime )
         self.teamLastModified = {};
         for teamIdx in range( 1, self.lastTeam + 1 ):
-            self.teamLastModified[ teamIdx ] = "Sun, 02 Mar 2014 14:38:21 GMT";
+            self.teamLastModified[ teamIdx ] = startTime;
 
         # files listing modification times, etc for the contents of the repository.
         self.LISTINGFULL = "listing_full.txt"
@@ -114,16 +109,6 @@ class GitHomes:
             str = "Polling %sbackups/%d... " % ( self.CDSRoot, teamIdx )
             sys.stdout.write(str)
 
-            #(responseHeader, newHash) = h.request( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ), "GET" )
-
-            # fp = urllib.urlopen( "%sbackups/md5/%d" % ( self.CDSRoot, teamIdx ) );
-            # newHash = fp.read()
-            # fp.close()
-
-            #if newHash != self.teamHashes[ teamIdx ]:
-            #    remember the new hash
-            #    self.teamHashes[ teamIdx ] = newHash;
-                
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
             (responseHeader, result) = h.request( "%sbackups/%d" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )

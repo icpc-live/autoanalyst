@@ -13,16 +13,18 @@ timezone: Europe/Moscow
 # root of the CDS server.
 CDSRoot:      "https://192.168.1.207/"
 
-# This section used to be parsed by shell, but now it's python, so
-# format is no longer strict.  The backupdir may no longer be needed
-# depending on what version of githomes we use.
+# Configuration for the backup/githomes script
 teambackup:
-    backupdir: /home/icpclive/backups
     gitdir:    /home/icpclive/githomes
     interval:  120
     lastTeam:  119
     CDSUser:   user
     CDSPass:   THISISNOTAPASSWORD
+
+# Code analyzer parameters.
+analyzer:
+    # Start time for the contest.  We must have this somewhere else, right?
+    contestStart: "2014-03-11 10:00:00"
 
 problems:
     A: { name: "Self-Assembly",           color: \#FF0000 } # Red

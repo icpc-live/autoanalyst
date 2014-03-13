@@ -8,9 +8,9 @@ import inspect
 analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( inspect.currentframe()))))
         
 # Use top-level directory to load the config file.
-f = open( analystTop + "/config.yaml" )
-config = yaml.load( f )
-f.close()
+configFile = open( analystTop + "/config.yaml" )
+config = yaml.load( configFile )
+configFile.close()
 
 try:
     dbConn = MySQLdb.connect( host   = config['database']['host'],

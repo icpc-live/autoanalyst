@@ -9,7 +9,7 @@ cmd_folder = os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from common import dbConn, BACKUP_TOP
+from common import config, dbConn, BACKUP_TOP
 from analyzer import Analyzer
 
 import re
@@ -42,11 +42,8 @@ path = path[ len(team)+1:]
 
 cursor = dbConn.cursor()
 
-# Make sure this is a legal problem_id.  We just consult the database.
-cmd = "SELECT problem_id FROM problem_name WHERE problem_id='%s'" % prob
-cursor.execute( cmd )
-
-if cursor.fetchone() == None:
+# Make sure this is a legal problem_id.
+if prob not in config['problems']:
     print "Bad problem id: %s" % prob
 
 # Just to get the extension map.

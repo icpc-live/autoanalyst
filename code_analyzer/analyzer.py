@@ -7,7 +7,7 @@ cmd_folder = os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from common import dbConn, BACKUP_TOP
+from common import dbConn, BACKUP_TOP, config
 
 from datetime import datetime, timedelta
 import itertools
@@ -174,14 +174,9 @@ class Analyzer:
 
             row = cursor.fetchone()
 
-        cursor.execute( "SELECT name, value FROM analyzer_parameters" )
-        row = cursor.fetchone()
-        while ( row != None ):
-            if row[ 0 ] == "CONTEST_START":
-                t = int( calendar.timegm( time.strptime( row[ 1 ], "%Y-%m-%d %H:%M:%S" ) ) )
-                self.contestStart = t
-                
-            row = cursor.fetchone()
+        # get the contest time and turn it into a number of seconds.
+        t = config['analyzer']['contestStart']
+        self.contestStart = int( calendar.timegm( time.strptime( t, "%Y-%m-%d %H:%M:%S" ) ) )
 
         # get latest known edit times for every team/path
         cursor.execute( "SELECT id, team_id, path, modify_time_utc FROM file_modtime" )

@@ -291,33 +291,6 @@ CREATE TABLE IF NOT EXISTS `icpc2014_edit_latest` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Parameters for the code analyzer.
---
--- CONTEST_START: UTC start of contest, YYYY-MM-DD-hh-mm-ss
---
-
-DROP TABLE IF EXISTS `icpc2014_analyzer_parameters`;
-CREATE TABLE IF NOT EXISTS `icpc2014_analyzer_parameters` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  `value` varchar(60),
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
-
---
--- Map from problem id to a problem name.  We have this elswehere, but
--- I think it's just php.
---
-
-DROP TABLE IF EXISTS `icpc2014_problem_name`;
-CREATE TABLE IF NOT EXISTS `icpc2014_problem_name` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `problem_id` varchar(10) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
-
---
 -- Map from problem id to a list of keywords for the problem.
 --
 
@@ -354,10 +327,6 @@ DROP VIEW IF EXISTS file_modtime;
 CREATE VIEW file_modtime AS SELECT * FROM icpc2014_file_modtime;
 DROP VIEW IF EXISTS edit_latest;
 CREATE VIEW edit_latest AS SELECT * FROM icpc2014_edit_latest;
-DROP VIEW IF EXISTS analyzer_parameters;
-CREATE VIEW analyzer_parameters AS SELECT * FROM icpc2014_analyzer_parameters;
-DROP VIEW IF EXISTS problem_name;
-CREATE VIEW problem_name AS SELECT * FROM icpc2014_problem_name;
 DROP VIEW IF EXISTS problem_keywords;
 CREATE VIEW problem_keywords AS SELECT * FROM icpc2014_problem_keywords;
 DROP VIEW IF EXISTS team_strips;
