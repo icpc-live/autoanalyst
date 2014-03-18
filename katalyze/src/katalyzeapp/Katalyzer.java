@@ -7,12 +7,11 @@ import model.LogNotificationTarget;
 import io.*;
 
 import java.io.*;
-import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.log4j.Logger;
 
-public class Katalyzer implements Sink<SimpleMessage> {
+public class Katalyzer {
 	static Logger logger = Logger.getLogger(Katalyzer.class);
 	
 	Contest contest;
@@ -34,10 +33,15 @@ public class Katalyzer implements Sink<SimpleMessage> {
 	public void process(InputStream stream) throws Exception {
 		logger.info(String.format("Processing stream of type %s", stream.getClass()));
 		TokenFeeder feeder = new TokenFeeder(stream);
-		BlockingQueue<Token> tokenQueue = feeder.getQueue();
-
-		TokenStreamProcessor messageBuilder = new TokenStreamProcessor(tokenQueue, this);
-		messageBuilder.parse();		
+		
+		TokenQueue tokenQueue = new TokenQueue(feeder.getQueue());
+		while (tokenQueue.isOpen()) {
+			SimpleMessage message = tokenQueue.pop(500);
+			if (message != null) {
+				handlers.process(message);
+			}						
+		}
+		
 	}
 	
 	public Contest getContest() {
@@ -52,11 +56,5 @@ public class Katalyzer implements Sink<SimpleMessage> {
 		contest.getAnalyzer().stop();
 	}
 
-	
-	@Override
-	public void send(SimpleMessage message) {
-		logger.debug(String.format("Process %s", message));
-		handlers.process(message);
-	}
 
 }

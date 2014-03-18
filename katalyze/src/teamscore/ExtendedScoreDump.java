@@ -1,8 +1,6 @@
 package teamscore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

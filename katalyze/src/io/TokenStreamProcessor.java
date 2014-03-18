@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 
 public class TokenStreamProcessor {
 	
+	enum StreamState {Start, Middle, End};
+	
 	static Logger logger = Logger.getLogger(TokenStreamProcessor.class);
 
 
@@ -92,9 +94,8 @@ public class TokenStreamProcessor {
 		return target;
 	}
 	
-	void sendControlMessage(String messageName) {
-		SimpleMessage controlMessage = new SimpleMessage("!"+messageName);
-		output.send(controlMessage);
+	SimpleMessage controlMessage(String messageName) {
+		return new SimpleMessage("!"+messageName);
 	}
 
 	
@@ -102,7 +103,7 @@ public class TokenStreamProcessor {
 		advanceIgnoringWhiteSpace();
 		assertCurrentIs(StartTag.class);
 		assert (current instanceof StartTag) && ((StartTag) current).getName() == "contest";
-		sendControlMessage("beginStream");
+		output.send(controlMessage("beginStream"));
 
 		advanceIgnoringWhiteSpace();
 		while (current != null && !current.equals(EndOfStream.instance)) {
@@ -110,7 +111,7 @@ public class TokenStreamProcessor {
 				SimpleMessage message = parseSimpleMessage();
 				output.send(message);
 			} else if (current instanceof EndTag) {
-				sendControlMessage("endStream");
+				output.send(controlMessage("endStream"));
 				break;
 			}
 		}
