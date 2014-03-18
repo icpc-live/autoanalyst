@@ -45,6 +45,7 @@ cursor = dbConn.cursor()
 # Make sure this is a legal problem_id.
 if prob not in config['problems']:
     print "Bad problem id: %s" % prob
+    usage()
 
 # Just to get the extension map.
 analyzer = Analyzer( BACKUP_TOP )
