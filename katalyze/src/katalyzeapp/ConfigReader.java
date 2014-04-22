@@ -191,6 +191,7 @@ public class ConfigReader {
 	
 	
 	public void SetupAnalyzer(Contest contest, Analyzer analyzer, ContestMessages messageHandlers) {
+		setupOutputStream(analyzer, messageHandlers);
 		
 		setupRules(analyzer);
 		setupCharts(contest, analyzer);
@@ -199,7 +200,7 @@ public class ConfigReader {
 		setupWebPublisher(contest, analyzer);
 		setupFilePublisher(contest, analyzer);
 		
-		setupOutputStream(analyzer, messageHandlers);	
+
 		
 		
 	}

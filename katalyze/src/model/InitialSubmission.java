@@ -27,4 +27,8 @@ public class InitialSubmission {
 		return language;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
 }

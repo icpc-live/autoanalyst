@@ -61,6 +61,7 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 		if (event.submission != null) {
 			InitialSubmission submission = event.submission;
 			eventMessage.put("problem", submission.problem.getId());
+			eventMessage.put("run_id", Integer.toString(submission.getId()));
 		}
 		eventMessage.put("message", event.message);
 		return eventMessage;		

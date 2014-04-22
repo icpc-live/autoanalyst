@@ -27,6 +27,7 @@ public class Katalyzer {
 		configReader.SetupAnalyzer(contest, analyzer, handlers);
 
 		analyzer.addNotifier(new LogNotificationTarget(false));
+		handlers.addStandardHandlers();
 
 	}
 	

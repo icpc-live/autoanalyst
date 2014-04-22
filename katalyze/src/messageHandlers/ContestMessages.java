@@ -11,6 +11,7 @@ public class ContestMessages {
 	
 	ArrayList<MessageHandler> handlers = new ArrayList<MessageHandler>();
 	Contest contest = new Contest();
+	boolean standardHandlersAdded = false;
 	
 	public void add(MessageHandler handler) throws Exception {
 		handler.connectTo(contest);
@@ -19,6 +20,13 @@ public class ContestMessages {
 	
 	public ContestMessages(Contest contest) throws Exception {
 		this.contest = contest;
+
+	}
+	
+	public void addStandardHandlers() throws Exception{
+		if (standardHandlersAdded) {
+			throw new IllegalStateException("Standard handlers may not be added twice!");
+		}
 		
 		add(new ProblemHandler());
 		add(new RunHandler());
@@ -26,6 +34,7 @@ public class ContestMessages {
 		add(new TestCaseHandler());
 		add(new LanguageHandler());
 		add(new NullHandler("clar"));
+		standardHandlersAdded = true;
 	}
 	
 	public void process(SimpleMessage message) {
