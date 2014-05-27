@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import os, sys, inspect
+import os, sys, inspect, subprocess, tempfile
 
 # Include the parent directory in the search path.
 cmd_folder = os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe() ))[0])
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from common import dbConn, BACKUP_TOP, config
+from common import dbConn, DEFAULT_TAG, BACKUP_TOP, config
 
 from datetime import datetime, timedelta
 import itertools
@@ -40,31 +40,6 @@ def editDist( a, b ):
     
     return dst[ len( a ) ][ len( b ) ]
 
-# Longest common sequence, for approximate problem matching (not currently used)
-def lcs( a, b ):
-    dst = [ [ 0 for x in range( 0, len( b ) + 1 ) ] for y in range( 0, len( a ) + 1 ) ]
-    
-    for i in range( 0, len( a ) + 1 ):
-        dst[ i ][ 0 ] = 0
-
-    for j in range( 0, len( b ) + 1 ):
-        dst[ 0 ][ j ] = 0
-
-    for i in range( 1, len( a ) + 1 ):
-        for j in range( 1, len( b ) + 1 ):
-            if ( a[ i - 1 ] == b[ j - 1 ] ):
-                dst[ i ][ j ] = dst[ i - 1 ][ j - 1 ] + 1
-            else:
-                dst[ i ][ j ] = dst[ i - 1 ][ j - 1 ]
-
-                if dst[ i - 1 ][ j ] > dst[ i ][ j ]:
-                    dst[ i ][ j ] = dst[ i - 1 ][ j ]
-
-                if dst[ i ][ j - 1 ] > dst[ i ][ j ]:
-                    dst[ i ][ j ] = dst[ i ][ j - 1 ]
-    
-    return dst[ len( a ) ][ len( b ) ]
-
 def repeatedString( str, pat ):
     """Return true if str is one or more repeated copies of pat."""
         
@@ -82,12 +57,15 @@ def repeatedString( str, pat ):
 
 class File:
     def __init__( self, path, time ):
-        # Set file name and modification time.
+        # Set team directory, path under that and modification time.
         self.path = path
         self.time = time
 
         # Number of lines in the file (once we compute it)
-        self.lineCount = None
+        self.lineCount = 0
+
+        # Report of lines added and removed (from git)
+        self.linesChanged = 0
 
     def __repr__(self):
         return '%s' % self.path
@@ -147,7 +125,8 @@ class Analyzer:
         # For every team and path, this is a triple, datatabase_id,
         # latest modification time and File object (if the file has
         # has changed).  We only add a new entry to edit_activity if
-        # it's sufficiently newer than what we have there.
+        # it's sufficiently newer than what we have there or if we just
+        # committed and git reports that a file has changed.
         self.lastEditTimes = {}
 
         # map from team_id and path to a MappingRec instance
@@ -210,6 +189,30 @@ class Analyzer:
             row = cursor.fetchone()
         
         cursor.close()
+
+    def parseGitDiffs( self, bdir ):
+        """Get a full report of differences between the current
+        revision and the previous one.  Return as a map from path name
+        (teamxxx/path/to/file) to a tuple giving lines removed and
+        lines added."""
+        origin = os.getcwd()
+        os.chdir( bdir )
+
+        statFile = tempfile.TemporaryFile()
+
+        # Get the report.
+        subprocess.call( [ "git", "diff", "--numstat", "HEAD^", "HEAD" ], stdout=statFile )
+
+        # Each line is lines added, lines removed, path
+        result = {}
+        statFile.seek( 0 )
+        for line in statFile:
+            fields = line.rstrip().split( "\t" )
+            result[ fields[ 2 ] ] = ( int( fields[ 0 ] ), int( fields[ 1 ] ) )
+
+        os.chdir( origin )
+
+        return result;
 
     def countLines(self, p):
         """Given path p, count the number of lines in the file it points to."""
@@ -384,6 +387,15 @@ class Analyzer:
 
         self.loadConfiguration()
 
+        # Get diff reports from git.
+        gitDiffs = self.parseGitDiffs( bdir )
+
+        # We should rethink some of the following loop.  Right now, it
+        # tries to find file changes, including changes to editor auto-save
+        # files.  But, to report changed lines in the file, we depend on git
+        # (which probably isn't tracking these auto-save files, so we'd have
+        # nothing to report)
+        
         # Visit home directory for each team.
         tlist = sorted( glob.glob( bdir + '/team*' ) )
         for tdir in tlist:
@@ -398,6 +410,11 @@ class Analyzer:
                 if extension in self.extensionMap:
                     fobj = File( fname, os.path.getmtime( f ) )
 
+                    # Get lines changed, etc.  We need to consult the
+                    # git diff output.
+                    gitPath = f[len(bdir) + 1:]
+                    if gitPath in gitDiffs and tag != DEFAULT_TAG:
+                        fobj.linesChanged = gitDiffs[ gitPath ][ 0 ] + gitDiffs[ gitPath ][ 1 ];
                     mappingRec = None;
                     lastEditRec = None;
 
@@ -427,8 +444,15 @@ class Analyzer:
                     if ( autoTime != None and autoTime > fobj.time ):
                         fobj.time = autoTime
 
-                    # is this newer than our last known edit?
-                    if ( lastEditRec == None or lastEditRec[ 1 ] + 15 < fobj.time ):
+                    # Is this newer than our last known edit?  Or, did
+                    # we just do a commit and git thinks the file has
+                    # changed.  These may not always agree if, say, an
+                    # editor auto-save thinks a file has changed, but
+                    # git hasn't seen the change yet.  We record both
+                    # types of changes, but we don't want to log git's changed
+                    # lines multiple times.
+                    if ( lastEditRec == None or lastEditRec[ 1 ] + 10 < fobj.time or
+                         fobj.linesChanged > 0 ):
                         if lastEditRec == None:
                             lastEditRec = [ None, None, None ]
                             self.lastEditTimes[ ( team, fname ) ] = lastEditRec
@@ -466,9 +490,10 @@ class Analyzer:
                     update = "UPDATE file_modtime SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
                     cursor.execute( update )
 
+                # Compute time since start of contest.
                 cmin = ( v[ 2 ].time - self.contestStart ) / 60
 
-                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, line_count, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].lineCount, tag )
+                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
                 
                 cursor.execute( update )
                 
@@ -569,7 +594,7 @@ class Analyzer:
 if __name__ == '__main__':
     analyzer = Analyzer( BACKUP_TOP )
 
-    tag = "default-tag";
+    tag = DEFAULT_TAG;
     if len( sys.argv ) > 1:
         tag = sys.argv[ 1 ]
     

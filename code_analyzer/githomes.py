@@ -46,6 +46,10 @@ class GitHomes:
         # after temporarily working in the gitdir.
         self.origin = os.getcwd()
 
+    # The copy of team directories obtained from the CDS preserves modification
+    # times, but git doesn't.  Here, we generate two listing files (long and short)
+    # that hold this information and then get committed along with the latest
+    # versions of all the other files.
     def genListing( self ):
         tmpFull = tempfile.TemporaryFile()
         tmpShort = tempfile.TemporaryFile()
@@ -126,7 +130,7 @@ class GitHomes:
                 teamDir = "team%d" % teamIdx
                 if not os.path.exists( teamDir ):
                     os.makedirs( teamDir )
-                subprocess.call( [ "tar", "--exclude-vcs", "xf", f.name, "-C", teamDir ] )
+                subprocess.call( [ "tar", "xf", f.name, "--exclude-vcs", "-C", teamDir ] )
                 os.unlink( f.name )
 
                 print("done.")
@@ -150,7 +154,7 @@ class GitHomes:
 
             self.genListing()
 
-            tag = datetime.now().strftime( "Tag_%H_%M" )
+            tag = datetime.now().strftime( "Tag_%H_%M_%S" )
 
             # First do explicit 'git add' to include new files too
             subprocess.call( [ "git", "add", "-f", "--all", "--ignore-errors", "." ] )
