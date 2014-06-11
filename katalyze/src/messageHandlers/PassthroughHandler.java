@@ -1,10 +1,12 @@
 package messageHandlers;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 
+import io.EventFeedFile;
 import io.MessageXmlSerializer;
 import io.SimpleMessage;
 import model.Contest;
@@ -16,11 +18,13 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 	static Logger logger = Logger.getLogger(PassthroughHandler.class);
 
 	PrintStream output;
+	EventFeedFile eventFeedFile;
 	MessageXmlSerializer serializer;
 	
 	
-	public PassthroughHandler(PrintStream output) throws XMLStreamException {
-		this.output = output;
+	public PassthroughHandler(EventFeedFile eventFeedFile) throws XMLStreamException {
+		this.eventFeedFile = eventFeedFile;
+		this.output = eventFeedFile.getStream();
 		serializer = new MessageXmlSerializer(output);
 	}
 	
@@ -36,16 +40,16 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 	
 
 	@Override
-	public void close() throws XMLStreamException {
+	public void close() throws XMLStreamException, IOException {
 		serializer.close();
+		eventFeedFile.close();
 	}
-	
 
 	@Override
-	public void process(SimpleMessage message) throws XMLStreamException {
+	public void process(SimpleMessage message) throws XMLStreamException, IOException {
 		String messageName = message.getName();
 		if ("!endStream".equals(messageName)){
-			serializer.close();
+			close();
 		} else if ("!beginStream".equals(messageName)) {
 			serializer.init();
 		} else {

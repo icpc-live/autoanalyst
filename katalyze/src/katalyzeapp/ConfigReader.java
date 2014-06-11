@@ -1,5 +1,7 @@
 package katalyzeapp;
 
+import io.EventFeedFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -12,6 +14,7 @@ import config.TwitterConfig;
 
 import rules.*;
 import teamscore.ExtendedScoreDump;
+import web.EventFeedStreamer;
 import web.FileWebPublisher;
 import web.WebPublisher;
 
@@ -130,7 +133,7 @@ public class ConfigReader {
 		}
 	}
 	
-	private void setupOutputStream(Analyzer analyzer, ContestMessages messageHandlers) {
+	private EventFeedFile setupOutputStream(Analyzer analyzer, ContestMessages messageHandlers) {
 		if (featureEnabled("eventStream")) {
 			String target = config.getString("eventStream.target");
 		
@@ -143,21 +146,21 @@ public class ConfigReader {
 			}
 			
 			try {
-				PrintStream outputStream = new PrintStream(f, "UTF-8");
+				EventFeedFile outStream = new EventFeedFile(f);
 				
-				PassthroughHandler outgoingEventFeed = new PassthroughHandler(outputStream);
+				PassthroughHandler outgoingEventFeed = new PassthroughHandler(outStream);
 				messageHandlers.add(outgoingEventFeed);
 				analyzer.addNotifier(outgoingEventFeed);
+				return outStream;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
 		}
+		return null;
 	}
 	
-	public void setupWebPublisher(Contest contest, Analyzer analyzer) {
+	public void setupWebPublisher(Contest contest, Analyzer analyzer, EventFeedFile augmentedEventFeed) {
 		KatalyzerHttpHandler httpHandler;
 		if (featureEnabled("web")) {
 			int port = config.getInteger("web.port", 8099);
@@ -166,6 +169,8 @@ public class ConfigReader {
 			WebPublisher webPublisher = new WebPublisher(useCompression);
 			
 			httpHandler = new KatalyzerHttpHandler(contest, webPublisher, port);
+		    
+			httpHandler.addHandler(new EventFeedStreamer(augmentedEventFeed));
 			
 			analyzer.addOutputHook(new ExtendedScoreDump(contest, webPublisher));
 			analyzer.addNotifier(new WebNotificationTarget(webPublisher));
@@ -191,13 +196,13 @@ public class ConfigReader {
 	
 	
 	public void SetupAnalyzer(Contest contest, Analyzer analyzer, ContestMessages messageHandlers) {
-		setupOutputStream(analyzer, messageHandlers);
+		EventFeedFile augmentedEventFeed = setupOutputStream(analyzer, messageHandlers);
 		
 		setupRules(analyzer);
 		setupCharts(contest, analyzer);
 		setupDatabaseNotifier(analyzer);
 		setupTwitterNotifier(analyzer);
-		setupWebPublisher(contest, analyzer);
+		setupWebPublisher(contest, analyzer, augmentedEventFeed);
 		setupFilePublisher(contest, analyzer);
 		
 

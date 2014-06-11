@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 	Contest contest;
 	HttpServer server = null;
 	WebPublisher publisher;
+	List<WebHandler> handlers = new ArrayList<WebHandler>();
 	int port;
 	
 
@@ -34,8 +36,13 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 		this.port = port;
 	}
 	
+	public void addHandler(WebHandler handler) {
+		handlers.add(handler);
+	}
+	
 	public void start() throws IOException{
 	    InetSocketAddress addr = new InetSocketAddress(port);
+	    
 	    server = HttpServer.create(addr, 0);
 
 	    server.createContext("/", this);
@@ -82,6 +89,14 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 	
 	
 	public void handle(HttpExchange exchange) throws IOException {
+		for (WebHandler h : handlers) {
+			if (h.matches(exchange)) {
+				h.handle(exchange);
+				return;
+			}
+		}
+		
+		
 		String requestMethod = exchange.getRequestMethod();
 		if (requestMethod.equalsIgnoreCase("GET")) {
 			
