@@ -22,9 +22,12 @@ except MySQLdb.Error, e:
     print "Error %d: %s" % ( e.args[ 0 ], e.args[ 1 ])
     sys.exit( 1 )
 
+# Tag used for edit_activity entries that don't correspond
+# to fresh commits in the repository.
+DEFAULT_TAG = "default-tag";
+
 # path to the top of the backup directory, date and time
 # directories start right under this.
-# BACKUP_TOP = "/home/analyst6/homedirs"
 BACKUP_TOP = config['teambackup']['gitdir']
 
 # Static time interval for backups, if it matters, in seconds

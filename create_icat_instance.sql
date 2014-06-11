@@ -243,6 +243,9 @@ CREATE TABLE IF NOT EXISTS `icpc2014_file_to_problem` (
 -- remember it.  I expect they are both somewhat redundant with the
 -- git_tag, since I think that indicates a particular snapshot time.
 --
+-- Right now, lines changed is the sum of lines removed and lines
+-- added, compared to the last revision, as reported by git.
+--
 
 DROP TABLE IF EXISTS `icpc2014_edit_activity`;
 CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
@@ -252,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
   `modify_time_utc` timestamp,
   `modify_time` int(11),
   `line_count` int(11),
+  `lines_changed` int(11),
   `git_tag` varchar(30),
   PRIMARY KEY (`id`),
   INDEX `team_path_ea_index` (`team_id`, `path`)
