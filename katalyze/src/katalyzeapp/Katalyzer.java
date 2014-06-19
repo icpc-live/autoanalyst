@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 
 public class Katalyzer {
 	static Logger logger = Logger.getLogger(Katalyzer.class);
+	int updateInterval = 2000;
+	long lastUpdate = 0;
 	
 	Contest contest;
 	ContestMessages handlers;
@@ -31,15 +33,33 @@ public class Katalyzer {
 
 	}
 	
+	
+	private void updateScoreboards() {
+		long currentTime = System.currentTimeMillis();
+		if (currentTime - lastUpdate > updateInterval) {
+			contest.getAnalyzer().publishStandings();
+			lastUpdate = currentTime;
+		}
+	}
+	
+	
 	public void process(InputStream stream) throws Exception {
 		logger.info(String.format("Processing stream of type %s", stream.getClass()));
 		TokenFeeder feeder = new TokenFeeder(stream);
 		
 		TokenQueue tokenQueue = new TokenQueue(feeder.getQueue());
+
+		
+		
 		while (tokenQueue.isOpen()) {
 			SimpleMessage message = tokenQueue.pop(500);
 			if (message != null) {
+				double contestTime = message.tryGetDouble("time", Double.NaN);
+				if (!Double.isNaN(contestTime)) {
+					contest.updateTime(contestTime);
+				}
 				handlers.process(message);
+				updateScoreboards();
 			}						
 		}
 		

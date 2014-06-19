@@ -18,9 +18,10 @@ import model.Score;
 import model.ScoreTableComparer;
 import model.ScoreTableEntry;
 import model.Standings;
+import model.StandingsPublisher;
 import model.Team;
 
-public class ExtendedScoreDump implements OutputHook {
+public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 	static final Logger log = Logger.getLogger(ExtendedScoreDump.class);
 
 	final Contest contest;
@@ -147,6 +148,18 @@ public class ExtendedScoreDump implements OutputHook {
 	public ExtendedScoreDump(Contest contest, WebPublisher target) {
 		this.contest = contest;
 		this.publisherTarget = target;
+	}
+	
+	public void publishStandings() {
+		int minutesFromStart = contest.getMinutesFromStart();
+		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
+				
+		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
+		String scoreTable = scoreDumper.execute();
+		
+		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
+		log.debug("publishing Standings... " + minutesFromStart);
+		publisherTarget.publish("/Standings", scoreDoc);
 	}
 	
 	

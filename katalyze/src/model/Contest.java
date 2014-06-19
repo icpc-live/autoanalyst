@@ -12,6 +12,7 @@ public class Contest {
 	final List<Submission> submissions;
 	final List<Language> languages;
 	final LanguageStats stats;
+	double contestTime = 0;
 	int lengthInMinutes = 300;
 	
 	public Contest() {
@@ -49,6 +50,16 @@ public class Contest {
 	
 	public int getSubmissionCount() {
 		return submissions.size();
+	}
+	
+	public void updateTime(double contestTime) {
+		if (contestTime > this.contestTime) {
+			this.contestTime = contestTime;
+		}
+	}
+	
+	public int getMinutesFromStart() {
+		return (int) (contestTime / 60.0);
 	}
 	
 	public int getSubmissionsAtTime(int minutes) {

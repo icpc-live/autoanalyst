@@ -1,6 +1,7 @@
 package model;
 
 import rules.*;
+import model.StandingsPublisher;
 import java.util.*;
 
 
@@ -136,6 +137,13 @@ public class Analyzer implements NotificationTarget {
 		return judgingOutcomes.getFailureInfo(submission);
 	}
 	
+	public void publishStandings() {
+		for (OutputHook hook : outputHooks) {
+			if (hook instanceof StandingsPublisher) {
+				((StandingsPublisher) hook).publishStandings();
+			}
+		}
+	}
 
 	private void notifyHooks(int minutesFromStart) {
 		while (lastHookTime < minutesFromStart) {

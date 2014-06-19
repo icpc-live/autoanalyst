@@ -31,6 +31,14 @@ public class SimpleMessage {
 		return "True".equals(dropWhiteSpace(get(attribute)));
 	}
 	
+	public double tryGetDouble(String attribute, double defaultValue) {
+		String value = get(attribute);
+		if (value != null) {
+			return Double.parseDouble(dropWhiteSpace(value));
+		}
+		return defaultValue;
+	}
+	
 	public double getDouble(String attribute) {
 		return Double.parseDouble(dropWhiteSpace(get(attribute)));
 	}

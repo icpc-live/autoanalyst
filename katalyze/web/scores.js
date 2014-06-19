@@ -175,7 +175,7 @@
 		}
 		
 		refreshData();
-		window.setInterval(refreshData, 5000);
+		window.setInterval(refreshData, 2000);
 		
 	
 	});
