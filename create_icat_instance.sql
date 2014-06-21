@@ -255,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
   `modify_time_utc` timestamp,
   `modify_time` int(11),
   `line_count` int(11),
+  `file_size_bytes` int(11),
   `lines_changed` int(11),
   `git_tag` varchar(30),
   PRIMARY KEY (`id`),

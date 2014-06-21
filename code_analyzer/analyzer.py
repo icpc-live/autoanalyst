@@ -61,6 +61,9 @@ class File:
         self.path = path
         self.time = time
 
+        # File size in bytes
+        self.size = 0
+
         # Number of lines in the file (once we compute it)
         self.lineCount = 0
 
@@ -457,7 +460,8 @@ class Analyzer:
                             lastEditRec = [ None, None, None ]
                             self.lastEditTimes[ ( team, fname ) ] = lastEditRec
                                 
-                        # count lines for this file, since it has changed.
+                        # Grab file size and number of lines.
+                        fobj.size = os.path.getsize( f )
                         fobj.lineCount = self.countLines( f )
                         
                         lastEditRec[ 2 ] = fobj;
@@ -493,7 +497,7 @@ class Analyzer:
                 # Compute time since start of contest.
                 cmin = ( v[ 2 ].time - self.contestStart ) / 60
 
-                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
+                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
                 
                 cursor.execute( update )
                 
