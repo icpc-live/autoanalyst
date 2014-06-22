@@ -4,20 +4,6 @@ date_default_timezone_set("Europe/Warsaw");
 
 require_once "edit_activity.php";
 
-
-function init_db()
-{
-  $db=mysqli_connect("db.ida.liu.se", "impa", "impa9c4f", "impa");
-
-  // Check connection
-  if (mysqli_connect_errno()) {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  }
-  
-  return $db;
-}
-
-
 $db = init_db();
 
 $min = 5;
