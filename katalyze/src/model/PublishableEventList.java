@@ -31,10 +31,13 @@ public class PublishableEventList {
 	public void add(LoggableEvent event) {
 		JSONObject eventInfo = new JSONObject()
 		.element("id", Integer.toString(event.id))
-		.element("team", event.team.getTeamNumber())
 		.element("time", Integer.toString(event.time))
 		.element("message", event.message)
 		.element("importance", event.importance.ordinal());
+		
+		if (event.team != null) {
+			eventInfo =  eventInfo.element("team", event.team.getTeamNumber());
+		}
 		
 		if (event.submission != null) {
 			eventInfo = eventInfo.element("submission", event.submission.id);

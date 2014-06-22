@@ -2,10 +2,13 @@ package model;
 
 import rules.*;
 import model.StandingsPublisher;
+import icat.AnalystMessage;
+import icat.AnalystMessageSource;
+
 import java.util.*;
 
-
 import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 
 public class Analyzer implements NotificationTarget {
 	
@@ -13,6 +16,7 @@ public class Analyzer implements NotificationTarget {
 	static Logger logger = Logger.getLogger(Analyzer.class);
 	List<StandingsUpdatedEvent> stateRules = new ArrayList<StandingsUpdatedEvent>();
 	List<SolutionSubmittedEvent> submissionRules = new ArrayList<SolutionSubmittedEvent>();
+	AnalystMessageSource analystMsgSource = null;
 	
 	List<NotificationTarget> targets = new ArrayList<NotificationTarget>();
 	List<OutputHook> outputHooks = new ArrayList<OutputHook>();
@@ -27,6 +31,32 @@ public class Analyzer implements NotificationTarget {
 	public Analyzer(Contest contest, int videoCaptureTreshold) {
 		this.contest = contest;
 		this.videoCaptureTreshold = videoCaptureTreshold;
+	}
+	
+	public void forwardAnalystMessages() {
+		if (analystMsgSource == null) {
+			return;
+		}
+		
+		try {
+			List<AnalystMessage> newMessages = analystMsgSource.getNewMessages(contest.getMinutesFromStart());
+			
+			for (AnalystMessage msg : newMessages) {
+
+				LoggableEvent newEvent = new LoggableEvent(
+						contest,
+						msg.text,
+						msg.contestTime,
+						EventImportance.Normal);
+				notify(newEvent);
+				
+			}
+			
+		}
+		catch (Exception e) {
+			Log.error(String.format("Failed to get new analyst messages when reading from icat Database: %s",e));
+		}
+		
 	}
 	
 	public void addRule(Object newRule) {
@@ -45,6 +75,10 @@ public class Analyzer implements NotificationTarget {
 		}
 		logger.info(String.format("Rule %s activated", newRule));
 
+	}
+	
+	public void setAnalystMsgSource(AnalystMessageSource newSource) {
+		this.analystMsgSource = newSource;
 	}
 	
 	public void addNotifier(NotificationTarget newNotifier) {

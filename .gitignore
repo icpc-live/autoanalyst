@@ -4,7 +4,7 @@ katalyze/katalyzer.properties
 .metadata
 *.class
 *~
-
+output
 
 
 .DS_Store

@@ -38,6 +38,7 @@ public class Katalyzer {
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - lastUpdate > updateInterval) {
 			contest.getAnalyzer().publishStandings();
+			contest.getAnalyzer().forwardAnalystMessages();
 			lastUpdate = currentTime;
 		}
 	}

@@ -1,5 +1,6 @@
 package katalyzeapp;
 
+import icat.AnalystMessageSource;
 import io.EventFeedFile;
 
 import java.io.File;
@@ -10,15 +11,12 @@ import org.apache.commons.configuration.*;
 import org.apache.log4j.Logger;
 
 import config.TwitterConfig;
-
 import rules.*;
 import teamscore.ExtendedScoreDump;
 import web.EventFeedStreamer;
 import web.FileWebPublisher;
 import web.WebPublisher;
-
 import charts.ChartDumperHook;
-
 import messageHandlers.ContestMessages;
 import messageHandlers.PassthroughHandler;
 import model.Analyzer;
@@ -59,13 +57,19 @@ public class ConfigReader {
 		try {
 			logger.info("Enabling database notifier");
 
-			DatabaseNotificationTarget notifier = new DatabaseNotificationTarget(dbConfig);
-			notifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+			if (config.getBoolean("db.exportMessages",true)) {
+				DatabaseNotificationTarget notifier = new DatabaseNotificationTarget(dbConfig);
+				notifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
 			
-			StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
+				StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
+				analyzer.addNotifier(notifier);
+				analyzer.addRule(rule);				
+			}
 			
-			analyzer.addNotifier(notifier);
-			analyzer.addRule(rule);
+			AnalystMessageSource msgSource = new AnalystMessageSource(dbConfig);
+			msgSource.open();
+			analyzer.setAnalystMsgSource(msgSource);
+
 		}
 		catch (Exception e) {
 			logger.error(String.format("Failed to add Database Notifier to analyzer. Error: %s", e));

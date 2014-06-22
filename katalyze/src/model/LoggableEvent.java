@@ -28,6 +28,18 @@ public class LoggableEvent {
 		this.submission = submission;
 		this.supplements = supplements;
 	}
+	
+	public LoggableEvent(Contest contest, String message, int contestTime, EventImportance importance) {
+		this.id = nextEventId++;
+		this.contest = contest;
+		this.team = null;
+		this.time = contestTime;
+		this.message = message;
+		this.icatMessage = message;
+		this.importance = importance;
+		this.supplements = null;
+		this.submission = null;
+	}
 
 	private static String replaceMarkup(String source, String tag, String replacement) {
 		return source.replaceAll("\\{"+tag+"\\}", Matcher.quoteReplacement(replacement));

@@ -60,7 +60,9 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 	private SimpleMessage createFeedMessageFromEvent(LoggableEvent event) {
 		SimpleMessage eventMessage = new SimpleMessage("analystmsg");
 		eventMessage.put("id", Integer.toString(event.id));
-		eventMessage.put("team", Integer.toString(event.team.getTeamNumber()));
+		if (event.team != null) {
+			eventMessage.put("team", Integer.toString(event.team.getTeamNumber()));
+		}
 		eventMessage.put("time", Integer.toString(event.time));
 		if (event.submission != null) {
 			InitialSubmission submission = event.submission;
