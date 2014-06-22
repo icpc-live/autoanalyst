@@ -1,8 +1,6 @@
 <?php
 
-date_default_timezone_set("Europe/Warsaw");
-
-require_once "edit_activity.php";
+require_once "icat.php";
 
 $db = init_db();
 
