@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, inspect, subprocess, yaml, tempfile, time, urllib, sys
+import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib, sys
 from datetime import datetime
 import httplib2
 
@@ -103,6 +103,10 @@ class GitHomes:
     def pullBackups( self ):
         os.chdir( self.gitdir )
 
+        # right now, we're making a new cache directory every time
+        # we pull down a batch of team backups. This doesn't seem to
+        # make sense.  I'm not sure we want a cache, and, if we do, 
+        # don't we want it to persist across all connections?
         d = tempfile.mkdtemp(prefix='githomes')
         # is it a problem to make this object over and over?
         h = httplib2.Http(os.path.join(d,".cache"))
@@ -139,6 +143,7 @@ class GitHomes:
             else:
                 print("error %s" % responseHeader)
 
+        shutil.rmtree(d)
         os.chdir( self.origin )
 
     # Repeatedly download and commit fresh team backups.

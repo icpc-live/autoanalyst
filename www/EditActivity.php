@@ -4,10 +4,11 @@ require_once "icat.php";
 
 $db = init_db();
 
+
 $from=0;
-if ( $_GET["from"] ) $from = $_GET["from"];
+if ( array_key_exists("from", $_GET ) ) $from = $_GET["from"];
 $to=999999;
-if ( $_GET["to"] ) $to = $_GET["to"];
+if ( array_key_exists("id", $_GET ) ) $to = $_GET["to"];
 
 $to = min(240,$to);
 

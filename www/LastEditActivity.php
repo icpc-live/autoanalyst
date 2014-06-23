@@ -5,7 +5,7 @@ require_once "icat.php";
 $db = init_db();
 
 $min = 5;
-if ( $_GET["min"] ) $min = $_GET["min"];
+if ( array_key_exists("min", $_GET) ) $min = $_GET["min"];
 
 $from=0;
 $to=$min;
