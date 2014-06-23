@@ -16,17 +16,15 @@ function init_db()
     if (isset($SQL_CACHE)) {
         return "";
     } else {
-        $db = mysql_connect($dbhost, $dbuser, $dbpassword);
-        echo mysql_error();
-        mysql_select_db($dbname, $db);
-        echo mysql_error();
-        mysql_set_charset("utf8");
-        echo mysql_error();
+        $db = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
+        echo mysqli_connect_error();
+        mysqli_set_charset($db,"utf8");
+        echo mysqli_error($db);
         return $db;
     }
 }
 
-function mysql_query_cacheable($sql) {
+function mysql_query_cacheable($db, $sql) {
     global $SQL_CACHE;
     if (isset($SQL_CACHE)) {
         $sql = strtolower($sql);
@@ -37,9 +35,9 @@ function mysql_query_cacheable($sql) {
     }
 
     # non-cached version
-    $result = mysql_query($sql);
+    $result = mysqli_query($db, $sql);
     $rows = array();
-    while ($result && ($row = mysql_fetch_assoc($result))) {
+    while ($result && ($row = mysqli_fetch_assoc($result))) {
         $rows[] = $row;
     }
     return $rows;
@@ -49,7 +47,7 @@ function get_times_in_wf($db, $pid)
 {
   $sql = "SELECT COUNT(pid) AS times_in_wf FROM history_attendees WHERE pid='$pid' AND (role_type LIKE 'Contestant%' OR role_type LIKE 'Coach%')";
   $times_in_wf = '';
-  $rows = mysql_query_cacheable($sql);
+  $rows = mysql_query_cacheable($db, $sql);
   foreach ($rows as $row) {
       $times_in_wf = $row["times_in_wf"];
   }
@@ -59,7 +57,7 @@ function get_times_in_wf($db, $pid)
 function gen_facts($db, $team_id, $type)
 {
   $facts_sql = "SELECT * FROM facts WHERE type='$type' AND team_id=$team_id";
-  $rows = mysql_query_cacheable($facts_sql);
+  $rows = mysql_query_cacheable($db, $facts_sql);
   if ($rows) {
       printf("<table id='%s_fact'>", $type);
       foreach ($rows as $facts_row) {
@@ -171,7 +169,7 @@ function navigation_container($additional_links = '') {
 <?php
 }
 
-function add_entry_container() {
+function add_entry_container($db) {
     $tags = array();
     if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
         $problem_ids = preg_replace("/[^a-z]+/i", ' ', $_GET["problem_id"]);
@@ -190,7 +188,7 @@ function add_entry_container() {
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
             <?php
-            $rows = mysql_query_cacheable("SELECT MAX(contest_time) AS last_submission FROM submissions");
+            $rows = mysql_query_cacheable($db, "SELECT MAX(contest_time) AS last_submission FROM submissions");
             $last_submission = 0;
             if ($rows) {
                 $row = $rows[0];

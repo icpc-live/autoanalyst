@@ -60,9 +60,9 @@ function feed(div, properties) {
     }
 
     if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '+0400';
+        this.tz_offset = '+0600';
         // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2013 IS +0400)
+        // STORES DATA IN LOCALTIME (WHICH IN 2014 IS +0600)
     }
 
     // set up the methods for this object
@@ -196,7 +196,7 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
-                var gitweb_url = 'http://192.168.0.50/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
+                var gitweb_url = '/gitweb/?p=teambackups;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 

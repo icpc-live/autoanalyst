@@ -1,5 +1,7 @@
 <?php
 require_once 'icat.php';
+
+$db = init_db();
 ?>
 <!doctype html>
 <html>
@@ -47,7 +49,7 @@ $(document).ready(function() {
     <div id="first_solution_feed"></div>
 </div>
 
-<?php add_entry_container(); ?>
+<?php add_entry_container($db); ?>
 
 <div id="all_codalyzer_feed"></div>
 </body>

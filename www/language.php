@@ -1,6 +1,6 @@
 <?php
 require_once 'icat.php';
-init_db();
+$db = init_db();
 $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : null;
 $problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : null;
 ?>
@@ -56,7 +56,7 @@ if ($team_id || $problem_id) {
     $where_description = "(" . implode(" and ", $descriptions) . ") (<a href='language.php'>see all teams, all problems</a>)";
 }
 $sql = "SELECT lang_id, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id";
-$rows = mysql_query_cacheable($sql);
+$rows = mysql_query_cacheable($db, $sql);
 foreach ($rows as $row) {
     $count_per_language[$row['lang_id']] = $row['count'];
 }
@@ -64,7 +64,7 @@ foreach ($rows as $row) {
 $flot_count_data = array();
 
 $sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
-$rows = mysql_query_cacheable($sql);
+$rows = mysql_query_cacheable($db, $sql);
 
 $language_location = array("C" => 0, "C++" => 1, "Java" => 2);
 foreach ($rows as $row) {

@@ -5,9 +5,8 @@
 
 require_once 'config.php';
 
-mysql_connect($dbhost, $dbuser, $dbpassword);
-mysql_select_db($dbname);
-mysql_set_charset("utf8");
+$db = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
+mysqli_set_charset($db,"utf8");
 
 $COMMON_DATA = array();
 
@@ -27,9 +26,9 @@ function sort_judgement_data(&$arr) {
     });
 }
 
-$result = mysql_query("SELECT id, team_name, school_name, school_short, country FROM teams ORDER BY id");
+$result = mysqli_query($db, "SELECT id, team_name, school_name, school_short, country FROM teams ORDER BY id");
 $COMMON_DATA['TEAMS'] = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
     $COMMON_DATA['TEAMS'][$row['id']] = $row;
 }
 

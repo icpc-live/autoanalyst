@@ -10,7 +10,7 @@ function query_language($team_id, $problem_id, $lang_id, $result) {
     $fields = array("problem_id" => $problem_id, "team_id" => $team_id, "lang_id" => $lang_id, "result" => $result);
     foreach ($fields as $name => $value) {
         if (isset($value)) {
-            $where_conditions[] = $name . " = '" . mysql_escape_string($value) . "'";
+            $where_conditions[] = $name . " = '" . mysqli_escape_string($db, $value) . "'";
             $response[$name] = $value;
         }
     }
@@ -21,7 +21,7 @@ function query_language($team_id, $problem_id, $lang_id, $result) {
     }
 
     $sql = "SELECT * FROM submissions $where_conditions ORDER BY team_id, id";
-    $rows = mysql_query_cacheable($sql);
+    $rows = mysql_query_cacheable($db, $sql);
 
     foreach ($rows as $row) {
         $response['submissions'][$row['team_id']][] = array('submission_id' => $row['submission_id'], 'problem_id' => $row['problem_id']);

@@ -24,6 +24,7 @@ function success($data) { return array("result" => "success", "data" => $data); 
 
 
 function feed_query($table, $conditions, $id, $limit) {
+    global $db;
 
     # Only allow certain queries. Add a query here that you would like to use. This 
     # table is given as "table" => array(query1, query2, ...), where the query is a
@@ -93,12 +94,12 @@ function feed_query($table, $conditions, $id, $limit) {
 
     // construct the query; do the query
     $query = sprintf("select * from %s %s", $table, $sql_conditions);
-    $results = mysql_query($query);
+    $results = mysqli_query($db, $query);
 
     // grab the results
     $toReturn = array();
     if ($results) {
-        while ($row = mysql_fetch_assoc($results)) {
+        while ($row = mysqli_fetch_assoc($results)) {
             $toReturn[] = $row;
         }
     }
