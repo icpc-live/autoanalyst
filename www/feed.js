@@ -60,9 +60,9 @@ function feed(div, properties) {
     }
 
     if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '+0400';
+        this.tz_offset = '+0600';
         // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2013 IS +0400)
+        // STORES DATA IN LOCALTIME (WHICH IN 2014 IS +0600)
     }
 
     // set up the methods for this object
