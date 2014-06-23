@@ -21,10 +21,10 @@ if (preg_match("/^[a-zA-Z0-9.]+/", $query)) {
         } else {
             $query = "select * from teams where school_name like '%$query%' or school_short like '%$query%' or country like '%$query%' order by school_name";
         }
-        $result = mysql_query($query, $db);
+        $result = mysqli_query($db, $query);
 
         $location = array();
-        while ($result && ($row = mysql_fetch_assoc($result))) {
+        while ($result && ($row = mysqli_fetch_assoc($result))) {
             $school_name = $row["school_name"] . " (" . $row["country"] . ")";
             $location[] = array("school_name" => $school_name, "url" => "team.php?team_id=" .  $row["id"]);
         }

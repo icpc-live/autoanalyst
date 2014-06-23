@@ -16,11 +16,11 @@ require_once 'icat.php';
 $db = init_db();
 
 // get the region/super region names
-$result = mysql_query("select * from team_regions where $query", $db);
+$result = mysqli_query($db, "select * from team_regions where $query");
 
 $team_ids = array();
 $name = "(unknown)";
-while ($result && $row = mysql_fetch_assoc($result)) {
+while ($result && $row = mysqli_fetch_assoc($result)) {
     $team_ids[] = $row["team_id"];
     $name = $row[$name_field];
 }
@@ -88,13 +88,13 @@ function all_superregions() {
 
     <ul>
     <?php
-    $result = mysql_query("select super_region_name, super_region_id, count(*) as team_count from team_regions group by super_region_id order by super_region_name", $db);
+    $result = mysqli_query($db, "select super_region_name, super_region_id, count(*) as team_count from team_regions group by super_region_id order by super_region_name");
 
-    while ($result && $row = mysql_fetch_assoc($result)) {
+    while ($result && $row = mysqli_fetch_assoc($result)) {
         printf("<li><a href='region.php?super_region_id=%d'>%s</a> (%s teams)\n", $row["super_region_id"], $row["super_region_name"], $row["team_count"]);
         printf("<ul>\n");
-        $region_result = mysql_query(sprintf("select region_name, region_id, count(*) as team_count from team_regions where super_region_id=%d group by region_id order by region_name", $row["super_region_id"]), $db);
-        while ($region_result && $region_row = mysql_fetch_assoc($region_result)) {
+        $region_result = mysqli_query($db, sprintf("select region_name, region_id, count(*) as team_count from team_regions where super_region_id=%d group by region_id order by region_name", $row["super_region_id"]));
+        while ($region_result && $region_row = mysqli_fetch_assoc($region_result)) {
             printf("<li><a href='region.php?region_id=%d'>%s</a> (%s teams)\n", $region_row["region_id"], $region_row["region_name"], $region_row["team_count"]);
         }
         print("</ul>\n");
@@ -156,9 +156,9 @@ function single_region_or_superregion($db, $team_ids, $name) {
     Teams:
     <ul>
     <?php
-    $result = mysql_query(sprintf("select * from teams where id in (%s) order by id", implode(",", $team_ids)), $db);
+    $result = mysqli_query($db, sprintf("select * from teams where id in (%s) order by id", implode(",", $team_ids)));
 
-    while ($result && $row = mysql_fetch_assoc($result)) {
+    while ($result && $row = mysqli_fetch_assoc($result)) {
         $tid = $row["id"];
         $school_name = $row["school_name"];
         $country = $row["country"];

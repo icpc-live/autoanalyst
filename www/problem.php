@@ -125,48 +125,46 @@ Statistics about the problem:
 <ul>
         <?php
         #########################################
-        $result = mysql_query("select count(distinct team_id) as num_solutions, "
+        $result = mysqli_query($db, "select count(distinct team_id) as num_solutions, "
             . " avg(distinct contest_time) as avg_time_to_soln, min(contest_time) as first_solution_time "
-            . " from submissions where problem_id = '$problem_id' and result = 'AC'",
-            $db);
-        $row = mysql_fetch_assoc($result);
+            . " from submissions where problem_id = '$problem_id' and result = 'AC'");
+        $row = mysqli_fetch_assoc($result);
         $num_solutions = $row['num_solutions'];
         $avg_time_to_soln = intval($row['avg_time_to_soln']);
         $first_solution_time = $row['first_solution_time'];
 
         #########################################
-        $result = mysql_query(
+        $result = mysqli_query($db,
             "select avg(c) as avg_num_incorrect_submissions from "
             . " (select count(*) - 1 as c from submissions where team_id in "
             . " (select distinct(team_id) from submissions where problem_id = '$problem_id' and result = 'AC') "
-            . " and problem_id = '$problem_id' group by team_id) as arbitrary_table_name",
-           $db); 
-        $row = mysql_fetch_assoc($result);
+            . " and problem_id = '$problem_id' group by team_id) as arbitrary_table_name"); 
+        $row = mysqli_fetch_assoc($result);
         $avg_num_incorrect_submissions = sprintf("%0.2f", $row['avg_num_incorrect_submissions']);
 
         #########################################
-        $result = mysql_query(
+        $result = mysqli_query($db,
             "select min(contest_time) as first_submission_time, count(*) as count "
-            . " from submissions where problem_id = '$problem_id'", $db);
-        $row = mysql_fetch_assoc($result);
+            . " from submissions where problem_id = '$problem_id'");
+        $row = mysqli_fetch_assoc($result);
         $first_submission_time = $row["first_submission_time"];
         $num_submissions = $row["count"];
 
         
         #########################################
-        $result = mysql_query("select distinct team_id as team_id from submissions "
-            . " where problem_id = '$problem_id' and contest_time = $first_submission_time order by team_id", $db);
+        $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
+            . " where problem_id = '$problem_id' and contest_time = $first_submission_time order by team_id");
         $first_teams_to_submit = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $first_teams_to_submit[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
         }
         $first_teams_to_submit = $first_teams_to_submit ? sprintf("(Team %s)", implode(", ", $first_teams_to_submit)) : "";
 
         #########################################
-        $result = mysql_query("select distinct team_id as team_id from submissions "
-            . " where problem_id = '$problem_id' and result = 'AC' and contest_time = $first_solution_time order by team_id", $db);
+        $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
+            . " where problem_id = '$problem_id' and result = 'AC' and contest_time = $first_solution_time order by team_id");
         $first_teams_to_solve = array();
-        while ($row = mysql_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $first_teams_to_solve[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
         }
         $first_teams_to_solve = $first_teams_to_solve ? sprintf("(Team %s)", implode(", ", $first_teams_to_solve)) : "";
@@ -174,54 +172,50 @@ Statistics about the problem:
         #########################################
         $submissions_by_language = array();
         $solutions_by_language = array();
-        $result = mysql_query("select count(*) as cnt, lang_id from submissions where problem_id = '$problem_id' group by lang_id", $db);
-        while ($row = mysql_fetch_assoc($result)) {
+        $result = mysqli_query($db, "select count(*) as cnt, lang_id from submissions where problem_id = '$problem_id' group by lang_id");
+        while ($row = mysqli_fetch_assoc($result)) {
             $submissions_by_language[] = sprintf("%s: %d", $row["lang_id"], $row["cnt"]);
         }
-        $result = mysql_query("select count(*) as cnt, lang_id from submissions where problem_id = '$problem_id' and result = 'AC' group by lang_id", $db);
-        while ($row = mysql_fetch_assoc($result)) {
+        $result = mysqli_query($db, "select count(*) as cnt, lang_id from submissions where problem_id = '$problem_id' and result = 'AC' group by lang_id");
+        while ($row = mysqli_fetch_assoc($result)) {
             $solutions_by_language[] = sprintf("%s: %d", $row["lang_id"], $row["cnt"]);
         }
         $submissions_by_language = implode(", ", $submissions_by_language);
         $solutions_by_language = implode(", ", $solutions_by_language);
 
         #########################################
-       #$result = mysql_query("select count(*) as num_started_problem from "
+       #$result = mysqli_query($db, "select count(*) as num_started_problem from "
        #    . " (select *, count(*) as c from edit_activity_problem "
-       #    . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name",
-       #    $db);
-       #$row = mysql_fetch_assoc($result);
+       #    . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name");
+       #$row = mysqli_fetch_assoc($result);
        #$num_started_problem = $row["num_started_problem"];
 
         #########################################
-        $result = mysql_query("select count(*) as count_one_edit from "
+        $result = mysqli_query($db, "select count(*) as count_one_edit from "
             . " (select *, count(*) as c from edit_activity_problem "
-            . " where problem_id = '$problem_id' group by team_id having c = 1) as arbitrary_table_name",
-            $db);
+            . " where problem_id = '$problem_id' group by team_id having c = 1) as arbitrary_table_name");
         if ($result) {
-            $row = mysql_fetch_assoc($result);
+            $row = mysqli_fetch_assoc($result);
             $count_one_edit = $row["count_one_edit"];
         } else {
             $count_one_edit = 0;
         }
 
         #########################################
-        $result = mysql_query("select count(*) as count_two_plus_edits from "
+        $result = mysqli_query($db, "select count(*) as count_two_plus_edits from "
             . " (select *, count(*) as c from edit_activity_problem "
-            . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name",
-            $db);
+            . " where problem_id = '$problem_id' group by team_id having c > 1) as arbitrary_table_name");
         if ($result) {
-            $row = mysql_fetch_assoc($result);
+            $row = mysqli_fetch_assoc($result);
             $count_two_plus_edits = $row["count_two_plus_edits"];
         } else {
             $count_two_plus_edits = 0;
         }
 
         #########################################
-        $result = mysql_query("select count(distinct team_id) as num_submitted_problem "
-            . " from submissions where problem_id = '$problem_id'",
-            $db);
-        $row = mysql_fetch_assoc($result);
+        $result = mysqli_query($db, "select count(distinct team_id) as num_submitted_problem "
+            . " from submissions where problem_id = '$problem_id'");
+        $row = mysqli_fetch_assoc($result);
         $num_submitted_problem = $row["num_submitted_problem"];
 
         ?>
@@ -242,7 +236,7 @@ Statistics about the problem:
     <li>Teams that solved this problem (in order of solution):
             do {
                 printf("<a href='team.php?team_id=%d'>%d</a>, ", $row['team_id'], $row['team_id']);
-            } while ($row = mysql_fetch_assoc($result));
+            } while ($row = mysqli_fetch_assoc($result));
             */
         ?>
 </ul>

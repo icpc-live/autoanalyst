@@ -7,9 +7,9 @@ $db = init_db();
 
 $team_row = null;
 if ($team_id) {
-    $result = mysql_query("select * from teams where id = $team_id", $db);
+    $result = mysqli_query($db, "select * from teams where id = $team_id");
     if ($result) {
-        $team_row = mysql_fetch_array($result);
+        $team_row = mysqli_fetch_array($result);
     }
 }
 
@@ -106,9 +106,9 @@ if (! $team_row) {
 <?php
 $school_name = $team_row["school_name"];
 
-$result = mysql_query("select count(*) as cnt, lang_id from submissions where team_id = $team_id group by lang_id", $db);
+$result = mysqli_query($db, "select count(*) as cnt, lang_id from submissions where team_id = $team_id group by lang_id");
 $language_counts = array();
-while ($row = mysql_fetch_assoc($result)) {
+while ($row = mysqli_fetch_assoc($result)) {
     $language_counts[$row["lang_id"]] = $row["cnt"];
 }
 ?>
@@ -130,12 +130,12 @@ while ($row = mysql_fetch_assoc($result)) {
     <a href="vlc://192.168.1.142:59<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
-        $result = mysql_query("select submission_id, contest_time from submissions where team_id = $team_id and has_video order by submission_id");
+        $result = mysqli_query($db, "select submission_id, contest_time from submissions where team_id = $team_id and has_video order by submission_id");
         $counter = 0;
-        if (mysql_num_rows($result) > 0) {
+        if (mysqli_num_rows($result) > 0) {
             print "Auto-recorded video (contest time): ";
         }
-        while ($result && ($row = mysql_fetch_assoc($result))) {
+        while ($result && ($row = mysqli_fetch_assoc($result))) {
             $counter++;
             if ($counter > 1) { print ", "; }
             printf("<a href='http://192.168.0.52/?id=%d'>%d</a>", $row['submission_id'], $row['contest_time']);
@@ -183,8 +183,8 @@ while ($row = mysql_fetch_assoc($result)) {
                 <?php
                     $tc_sql = "SELECT * FROM top_coder WHERE university_name LIKE '${school_name}%'";
                     $tc_row = array(); $tc_url = "";
-                    if ($result = mysql_query($tc_sql, $db)) {
-                        $tc_row = mysql_fetch_array($result);
+                    if ($result = mysqli_query($db, $tc_sql)) {
+                        $tc_row = mysqli_fetch_array($result);
                         $tc_url = "<a href='http://www.topcoder.com/tc?module=MemberProfile&tab=alg&cr=%s'>%s</a>";
                     }
                     $members = array("coach", "contestant1", "contestant2", "contestant3");
@@ -208,10 +208,10 @@ while ($row = mysql_fetch_assoc($result)) {
           $start_year = 1999;
           $end_year = 2012;
           $results_sql = "SELECT * FROM history_results WHERE year <= $end_year AND university_name LIKE '${school_name}%'";
-          $results = mysql_query($results_sql, $db);
+          $results = mysqli_query($db, $results_sql);
           $p = array();
           $total_times_in_wf = 0;
-          while ($results && ($row = mysql_fetch_array($results))) {
+          while ($results && ($row = mysqli_fetch_array($results))) {
               if ($row["solved"] == 0) { $row["solved"] = "";   }
               if ($row["place"]  == 0) { $row["place"]  = "hm"; }
               if ($row["time"]   == 0) { $row["time"]   = "";   }

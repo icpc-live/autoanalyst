@@ -15,7 +15,7 @@ $_SESSION['entry_username'] = $user;
 $result = mysqli_query($db,
     "insert into entries (contest_time, user, priority, text) values " .
     sprintf("(%d, '%s', %d, '%s')",
-    $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text))
+    $contest_time, mysqli_escape_string($user), $priority, mysqli_escape_string($text))
 );
 
 if ($result) {

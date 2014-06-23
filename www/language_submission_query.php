@@ -10,7 +10,7 @@ function query_language($team_id, $problem_id, $lang_id, $result) {
     $fields = array("problem_id" => $problem_id, "team_id" => $team_id, "lang_id" => $lang_id, "result" => $result);
     foreach ($fields as $name => $value) {
         if (isset($value)) {
-            $where_conditions[] = $name . " = '" . mysql_escape_string($value) . "'";
+            $where_conditions[] = $name . " = '" . mysqli_escape_string($value) . "'";
             $response[$name] = $value;
         }
     }
