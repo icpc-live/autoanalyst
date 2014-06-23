@@ -253,7 +253,7 @@ Statistics about the problem:
 <div id='submission_feed_container'></div>
 </div>
 
-<?php add_entry_container(); ?>
+<?php add_entry_container($db); ?>
 
 </body>
 </html>

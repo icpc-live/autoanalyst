@@ -169,7 +169,7 @@ function navigation_container($additional_links = '') {
 <?php
 }
 
-function add_entry_container() {
+function add_entry_container($db) {
     $tags = array();
     if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
         $problem_ids = preg_replace("/[^a-z]+/i", ' ', $_GET["problem_id"]);

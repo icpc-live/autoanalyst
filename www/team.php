@@ -170,7 +170,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div id='submissions_feed_container'></div>
 </div>
 
-<?php add_entry_container(); ?>
+<?php add_entry_container($db); ?>
 
 <!-- Information that is more or less static (does not change during the contest) -->
 
