@@ -172,7 +172,7 @@ function single_region_or_superregion($db, $team_ids, $name) {
     </div>
 
     <?php
-    printf("<div class='teamscore' data-source='http://192.168.3.6:8079' data-filter=\"score.team.id in {%s}\"></div>", 
+    printf("<div class='teamscore' data-source='http://192.168.1.215:8099' data-filter=\"score.team.id in {%s}\"></div>", 
         implode(",", array_map(function($id) { return "$id:1"; }, $team_ids ))
     );
     ?>
