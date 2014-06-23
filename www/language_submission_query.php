@@ -21,7 +21,7 @@ function query_language($team_id, $problem_id, $lang_id, $result) {
     }
 
     $sql = "SELECT * FROM submissions $where_conditions ORDER BY team_id, id";
-    $rows = mysql_query_cacheable($sql);
+    $rows = mysql_query_cacheable($db, $sql);
 
     foreach ($rows as $row) {
         $response['submissions'][$row['team_id']][] = array('submission_id' => $row['submission_id'], 'problem_id' => $row['problem_id']);

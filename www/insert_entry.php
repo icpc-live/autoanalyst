@@ -12,17 +12,16 @@ $db = init_db();
 
 $_SESSION['entry_username'] = $user;
 
-$result = mysql_query(
+$result = mysqli_query($db,
     "insert into entries (contest_time, user, priority, text) values " .
     sprintf("(%d, '%s', %d, '%s')",
-    $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text)),
-    $db
+    $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text))
 );
 
 if ($result) {
     print("okay");
 } else {
-    print("error: " . mysql_error());
+    print("error: " . mysqli_error($db));
 }
 
 ?>
