@@ -117,7 +117,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <div id="title">
     <div id="schoolname"> <?php
-        printf("<a href='contest/logos/%d.png'><img class='university_logo' src='contest/logos/%d.png'></a>", $team_id, $team_id);
+        //printf("<a href='contest/logos/%d.png'><img class='university_logo' src='contest/logos/%d.png'></a>", $team_id, $team_id);
         printf("%s (Id: %d)", $school_name, $team_id);
      ?> </div>
     <div id="teamname">Team: <?php echo $team_row["team_name"]; ?></div>
