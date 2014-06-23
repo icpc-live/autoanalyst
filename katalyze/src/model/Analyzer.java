@@ -23,6 +23,8 @@ public class Analyzer implements NotificationTarget {
 	List<LifeCycleAware> lifeCycleAwareObjects = new ArrayList<LifeCycleAware>();
 	
 	JudgingOutcomes judgingOutcomes = new JudgingOutcomes();
+	HashtagFinder hashtagFinder = new HashtagFinder();
+
 	
 	int lastHookTime = -1;
 	int videoCaptureTreshold;
@@ -33,23 +35,51 @@ public class Analyzer implements NotificationTarget {
 		this.videoCaptureTreshold = videoCaptureTreshold;
 	}
 	
+	private LoggableEvent buildEventFromAnalystMsg(AnalystMessage msg) {
+		// Find team id
+		
+		String message = msg.text;
+		Team firstTeam = null;
+		
+		List<String> teamsInMessage = hashtagFinder.teams(message);
+		for (String teamTag : teamsInMessage) {
+			Team team = hashtagFinder.getTeam(contest, teamTag);
+			if (team != null) {
+				if (firstTeam == null) {
+					firstTeam = team;
+				}
+				message = message.replace(teamTag, team.getName());
+			}
+		}
+		
+		List<String> problemsInMessage = hashtagFinder.problems(message);
+		for (String problemTag : problemsInMessage) {
+			Problem problem = hashtagFinder.getProblem(contest, problemTag);
+			if (problem != null) {
+				message = message.replace(problemTag, problem.getName());
+			}
+		}
+		
+		LoggableEvent newEvent = new LoggableEvent(
+				contest,
+				firstTeam,
+				message,
+				msg.contestTime,
+				EventImportance.Normal);
+
+		return newEvent;
+		
+	}
+	
 	public void forwardAnalystMessages() {
 		if (analystMsgSource == null) {
 			return;
 		}
 		
 		try {
-			List<AnalystMessage> newMessages = analystMsgSource.getNewMessages(contest.getMinutesFromStart());
-			
+			List<AnalystMessage> newMessages = analystMsgSource.getNewMessages(contest.getMinutesFromStart());			
 			for (AnalystMessage msg : newMessages) {
-
-				LoggableEvent newEvent = new LoggableEvent(
-						contest,
-						msg.text,
-						msg.contestTime,
-						EventImportance.Normal);
-				notify(newEvent);
-				
+				notify(buildEventFromAnalystMsg(msg));				
 			}
 			
 		}
