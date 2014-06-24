@@ -67,7 +67,7 @@ function feed(div, properties) {
 
     // figure out if we have any interesting teams, provided as sets of ranges
     this.interesting_teams = null;
-    var teams_regexp = /\bteams=((?:[0-9]+(?:-[0-9]+)?,)*(?:[0-9]+(?:-[0-9]+)?))/;
+    var teams_regexp = /\?.*\bteams=((?:[0-9]+(?:-[0-9]+)?,)*(?:[0-9]+(?:-[0-9]+)?))/;
     var m = window.location.search.match(teams_regexp);
     if (m) {
         this.interesting_teams = [];
@@ -249,12 +249,12 @@ function _feed_updateWith(rows) {
 
             var interesting_team_class = '';
             if (this.interesting_teams) {
-                var team_id_match = row.text.match(/#t([0-9]+)/);
-                if (team_id_match) {
-                    if (this.interesting_teams.indexOf(team_id_match[1]) >= 0) {
+                var team_matches = row.text.match(/#t[0-9]+/g);
+                interesting_team_class = ' uninteresting_team ';
+                for (i = 0; team_matches && i < team_matches.length; ++i) {
+                    if (this.interesting_teams.indexOf(team_matches[i].substr(2)) >= 0) {
                         interesting_team_class = ' interesting_team ';
-                    } else {
-                        interesting_team_class = ' uninteresting_team ';
+                        break;
                     }
                 }
             }
