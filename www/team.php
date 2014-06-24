@@ -147,7 +147,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <!-- Dynamic content (things that change during the contest) -->
 
 <div id='team_scoreboard_container'>
-<div class='teamscore' data-source='http://<?php echo $_SERVER['SERVER_ADDR']; ?>:8099' data-filter="score.team.id=='<?php echo $team_id; ?>'"></div>
+<div class='teamscore' data-source='' data-filter="score.team.id=='<?php echo $team_id; ?>'"></div>
 </div>
 <div id='team_submission_info'>
     Number of submissions by <a href="language.php?team_id=<?php echo $team_id; ?>">language</a>:

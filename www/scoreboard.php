@@ -23,7 +23,7 @@ h1 { text-align: center; margin: 0; }
 <?php navigation_container() ?>
 <h1>Scoreboard</h1>
 <!--<div class='teamscore' data-source='http://<?php echo $_SERVER['SERVER_ADDR']; ?>:8099' data-filter="">(Katalyzer must be running for this to work)</div>-->
-<div class='teamscore' data-source='http://192.168.1.215:8099' data-filter="">(Katalyzer must be running for this to work)</div>
+<div class='teamscore' data-source='' data-filter="">(Katalyzer must be running for this to work)</div>
 <script type='text/javascript' src='katalyze/web/scores.js'></script>
 </body>
 </html>
