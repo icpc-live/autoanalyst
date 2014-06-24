@@ -100,7 +100,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
   `contest_time` int(11) NOT NULL,
   `submission_id` int(11) NOT NULL,
   `has_video` boolean DEFAULT false,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `avoid_dups` (`submission_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 

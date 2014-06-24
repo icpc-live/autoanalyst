@@ -148,3 +148,9 @@
 /* for results of the submissions feed */
 span.kattis_result_accepted { color: green; font-weight: bold; }
 span.kattis_result_not_accepted { color: red; }
+
+.feed_container .feed_row.interesting_team { background: #aaffaa; }
+.feed_container .feed_row.uninteresting_team { background: #aaaaaa; }
+
+
+div#hide_uninteresting_teams_container { visibility: visible; }

@@ -164,6 +164,7 @@ function navigation_container($additional_links = '') {
         <a href='region.php'>Regions</a>
         <?php if ($additional_links) { print $additional_links; } ?>
     </div>
+    <div id='hide_uninteresting_teams_container'><input type='checkbox' id='hide_uninteresting_teams_checkbox'><label for='hide_uninteresting_teams_checkbox'>Hide uninteresting teams</label></div>
 </div>
 <div id='searchbox_chooser'></div>
 <?php
