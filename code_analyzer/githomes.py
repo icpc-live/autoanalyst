@@ -153,6 +153,9 @@ class GitHomes:
             exit( 1 )
         
         while ( True ):
+            # Track how long it takes us to process files.
+            beforeTime = datetime.now()
+
             self.pullBackups()
 
             os.chdir( self.gitdir )
@@ -173,8 +176,17 @@ class GitHomes:
                 
             print "Checking in %s at %s" % ( tag, datetime.now().strftime( "%a %b %d %H:%M:%S %Y") )
             subprocess.call( [ "python", self.analystTop + "/code_analyzer/analyzer.py", tag ] )
-            
-            time.sleep( self.interval )
+
+            # Rest up to the end of the minute (or whatever the interval is), or zero if it's too late.
+            afterTime = datetime.now()
+
+            delay = ( afterTime - beforeTime ).total_seconds()
+            sleeptime = self.interval - delay
+            if sleeptime < 0:
+                sleeptime = 0;
+
+            print "Sleeping: until next pull %f" % ( sleeptime )
+            time.sleep( sleeptime )
 
 if __name__ == '__main__':
     gitHomes = GitHomes()
