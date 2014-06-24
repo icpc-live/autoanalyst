@@ -54,7 +54,7 @@ if cursor.fetchone() == None:
     extension = extension.lstrip( '.' )
     lang = 'none'
     if extension in analyzer.extensionMap:
-        lang = extensionMap[ extension ]
+        lang = analyzer.extensionMap[ extension ]
 
     cmd = "insert into file_to_problem ( team_id, path, problem_id, lang_id, override ) values ( '%s', '%s', 'none', '%s', 1 )" % ( team, path, lang )
     cursor.execute( cmd )
