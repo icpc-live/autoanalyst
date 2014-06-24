@@ -29,7 +29,7 @@ public class EventFeedStreamer implements WebHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException{
 		Headers responseHeaders = exchange.getResponseHeaders();
-		responseHeaders.set("Content-Type", "text/plain");
+		responseHeaders.set("Content-Type", "text/xml; charset=utf-8");
 		responseHeaders.set("Access-Control-Allow-Origin", "*");
 		responseHeaders.set("Transfer-Encoding", "chunked");
 		exchange.sendResponseHeaders(200, 0);

@@ -3,7 +3,6 @@ package icat;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.PreparedStatement;
 
@@ -12,7 +11,7 @@ import katalyzeapp.DatabaseNotificationConfig;
 public class AnalystMessageSource {
 	DatabaseNotificationConfig config;
 	Connection db;
-	
+	final String NoExportHashTag = "#int";
 	int lastReadMessageId = -1;
 	
 	
@@ -21,24 +20,37 @@ public class AnalystMessageSource {
 	}
 	
 	public void open() throws Exception {
-		db = config.createConnection();
+
 	}
 	
-	public ArrayList<AnalystMessage> getNewMessages(int contestTime) throws SQLException {
-		PreparedStatement s = db.prepareStatement("select * from entries where user <> 'katalyzer' and contest_time <= ? and id > ?");
-		s.setInt(1, contestTime);
-		s.setInt(2, lastReadMessageId);
-		ResultSet results = s.executeQuery();
-		
-		ArrayList<AnalystMessage> messages = new ArrayList<AnalystMessage>();
-		while (results.next()) {
-			AnalystMessage message = AnalystMessage.fromSQL(results);
-			if (message.id > lastReadMessageId) {
-				lastReadMessageId = message.id;
+	public ArrayList<AnalystMessage> getNewMessages(int contestTime) throws Exception {
+		db = config.createConnection();
+		try {
+			PreparedStatement s = db.prepareStatement("select * from entries where user <> 'katalyzer' and contest_time <= ? and id > ?");
+			s.setInt(1, contestTime);
+			s.setInt(2, lastReadMessageId);
+			ResultSet results = s.executeQuery();
+
+			ArrayList<AnalystMessage> messages = new ArrayList<AnalystMessage>();
+			while (results.next()) {
+				AnalystMessage message = AnalystMessage.fromSQL(results);
+				if (message.id > lastReadMessageId) {
+					lastReadMessageId = message.id;
+				}
+				
+				// Don't export if the message is only for internal analyst use
+				String lowerCaseMessageText = message.text.toLowerCase();				
+				if (lowerCaseMessageText.contains(NoExportHashTag)) {
+					continue;
+				}
+				
+				messages.add(message);
 			}
-			messages.add(message);
+			return messages;
 		}
-		return messages;
+		finally {
+			db.close();
+		}
 	}
 
 }
