@@ -185,23 +185,15 @@ function add_entry_container($db) {
 <div id='add_entry_container'>
     <form class='add_entry_form' action=''>
     <table>
-        <tr> <th></th> <th>contest_time</th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
+        <tr> <th></th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
             <?php
-            $rows = mysql_query_cacheable($db, "SELECT MAX(contest_time) AS last_submission FROM submissions");
-            $last_submission = 0;
-            if ($rows) {
-                $row = $rows[0];
-                $last_submission = $row['last_submission'];
-            }
-
             $entry_username = "frehe";
             if (isset($_SESSION['entry_username'])) {
                 $entry_username = $_SESSION['entry_username'];
             }
             ?>
-            <td><input type="text"   name="contest_time"  size="8" value="<?php echo $last_submission; ?>"></td>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
             <td><input type="text"   name="priority"      size="8" value="0"></td>
             <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>"></td>
