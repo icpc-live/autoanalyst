@@ -43,6 +43,10 @@ public class AnalystMessageSource {
 				if (lowerCaseMessageText.contains(NoExportHashTag)) {
 					continue;
 				}
+	
+				if (message.contestTime == 0) {
+					continue;
+				}
 				
 				messages.add(message);
 			}
