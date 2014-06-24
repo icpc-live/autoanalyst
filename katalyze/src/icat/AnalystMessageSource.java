@@ -48,6 +48,11 @@ public class AnalystMessageSource {
 					continue;
 				}
 				
+				// Don't replicate any messages when the scoreboard is frozen
+				if (message.contestTime >= 240) {
+					continue;
+				}
+				
 				messages.add(message);
 			}
 			return messages;

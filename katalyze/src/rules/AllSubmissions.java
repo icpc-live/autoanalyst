@@ -42,7 +42,14 @@ public class AllSubmissions implements StandingsUpdatedEvent {
 
             logger.debug("inserted into db: " + s);
         } catch (Exception e) {
-            logger.error("exception in sql insert: " + e.getMessage());
+        	String message = e.getMessage();
+        	String logMessage = "Error adding submission to database: "+message;
+        	
+        	if (message.contains("Duplicate entry")) {
+        		logger.debug(logMessage);
+        	} else {
+        		logger.error(logMessage);
+        	}
         }
     }
 }
