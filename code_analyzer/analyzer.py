@@ -215,10 +215,12 @@ class Analyzer:
         for line in statFile:
             fields = line.rstrip().split( "\t" )
             # Git still tracks binary files, but it doesn't report lines
-            # changed.  Looks like it just reports a dash instead, so we
-            # don't create result entries for these.
-            if fields[ 0 ] != "-":
+            # changed.  Looks like it just reports a dash instead, but
+            # we ignore anything that's not an int.
+            try:
                 result[ fields[ 2 ] ] = ( int( fields[ 0 ] ), int( fields[ 1 ] ) )
+            except ValueError:
+                pass
 
         os.chdir( origin )
 
