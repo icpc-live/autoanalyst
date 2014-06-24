@@ -19,7 +19,7 @@ for ($i = 5; $i >= 1; --$i) {
 --------------------------------------------------------
 MAKE SURE WE CAN CONNECT TO THE DATABASE
 <?php
-set_include_path("/home/icpclive/autoanalyst/www"); # FIXME -- this may change year to year
+set_include_path(dirname(__FILE__) . "/../www");
 require_once 'icat.php';
 $db = init_db();
 if (! $db) {
