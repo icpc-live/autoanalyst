@@ -2,7 +2,6 @@
 
 
 $date          =& $_GET["date"];
-$contest_time  =& $_GET["contest_time"];
 $user          =& $_GET["user"];
 $priority      =& $_GET["priority"];
 $text          =& $_GET["text"];
@@ -12,17 +11,16 @@ $db = init_db();
 
 $_SESSION['entry_username'] = $user;
 
-$result = mysql_query(
+$result = mysqli_query($db,
     "insert into entries (contest_time, user, priority, text) values " .
-    sprintf("(%d, '%s', %d, '%s')",
-    $contest_time, mysql_escape_string($user), $priority, mysql_escape_string($text)),
-    $db
+    sprintf("((SELECT MAX(contest_time) AS last_submission FROM submissions), '%s', %d, '%s')",
+    mysqli_escape_string($db, $user), $priority, mysqli_escape_string($db, $text))
 );
 
 if ($result) {
     print("okay");
 } else {
-    print("error: " . mysql_error());
+    print("error: " . mysqli_error($db));
 }
 
 ?>

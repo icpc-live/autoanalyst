@@ -29,10 +29,10 @@ public class LoggableEvent {
 		this.supplements = supplements;
 	}
 	
-	public LoggableEvent(Contest contest, String message, int contestTime, EventImportance importance) {
+	public LoggableEvent(Contest contest, Team team, String message, int contestTime, EventImportance importance) {
 		this.id = nextEventId++;
 		this.contest = contest;
-		this.team = null;
+		this.team = team;
 		this.time = contestTime;
 		this.message = message;
 		this.icatMessage = message;

@@ -98,6 +98,9 @@ class Analyzer:
         # Time of the latest current backup, in the local filesystem time.
         self.latestBackupTime = None
 
+        # index of the last team in the competition.
+        self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
+
         # Strings to strip from the filename before we try to guess
         self.commonStrips = [ 'problem', 'prob', '_', '-' ]
 
@@ -113,9 +116,13 @@ class Analyzer:
         # map from problem ID to a list of keywords to look for.
         self.probKeywords = {}
 
-        # Contest start time, in UTC seconds, tentitative value for
-        # now, overwritten by the database as script executes.
-        self.contestStart = time.time()
+        # List of problems.  We use this mostly as the offficial
+        # list of problem letters, from the configuration.
+        self.problemList = config['problems']
+
+        # Contest start time, in UTC seconds, from the configuration.
+        t = config['analyzer']['contestStart']
+        self.contestStart = int( calendar.timegm( time.strptime( t, "%Y-%m-%d %H:%M:%S" ) ) )
 
         # For each team, a list of team-specific strips from filenames.
         self.teamStrips = {}
@@ -155,10 +162,6 @@ class Analyzer:
                 self.probKeywords[ row[ 0 ] ] = [ row[ 1 ].lower() ]
 
             row = cursor.fetchone()
-
-        # get the contest time and turn it into a number of seconds.
-        t = config['analyzer']['contestStart']
-        self.contestStart = int( calendar.timegm( time.strptime( t, "%Y-%m-%d %H:%M:%S" ) ) )
 
         # get latest known edit times for every team/path
         cursor.execute( "SELECT id, team_id, path, modify_time_utc FROM file_modtime" )
@@ -211,7 +214,13 @@ class Analyzer:
         statFile.seek( 0 )
         for line in statFile:
             fields = line.rstrip().split( "\t" )
-            result[ fields[ 2 ] ] = ( int( fields[ 0 ] ), int( fields[ 1 ] ) )
+            # Git still tracks binary files, but it doesn't report lines
+            # changed.  Looks like it just reports a dash instead, but
+            # we ignore anything that's not an int.
+            try:
+                result[ fields[ 2 ] ] = ( int( fields[ 0 ] ), int( fields[ 1 ] ) )
+            except ValueError:
+                pass
 
         os.chdir( origin )
 
@@ -296,7 +305,7 @@ class Analyzer:
                 
         # Here, we try to match against arbitrarily many occurrences of the problem
         # letter.  Some teams are using names like aaa.c for their third attempt.
-        for problem_id, keywords in self.probKeywords.iteritems():
+        for problem_id in self.problemList:
             # a.cpp -> a or aaa.cpp -> a
             if repeatedString( shortName, problem_id.lower() ):
                 return problem_id
@@ -314,7 +323,7 @@ class Analyzer:
                         if shortDirName == keyword:
                             return problem_id
                         
-                for problem_id, keywords in self.probKeywords.iteritems():
+                for problem_id in self.problemList:
                     # a/code.cpp -> a or aaa/code.cpp -> a
                     if repeatedString( shortDirName, problem_id.lower() ):
                         return problem_id
@@ -328,7 +337,7 @@ class Analyzer:
 
         # Then, the problem letter attached to some other word with a
         # non-alpha character.
-        for problem_id, keywords in self.probKeywords.iteritems():
+        for problem_id in self.problemList:
             letter = problem_id.lower()
 
             # b_2.c -> b

@@ -48,7 +48,14 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 
 			logger.debug("inserted into db: " + s);
 		} catch (Exception e) {
-			logger.error("exception in sql insert: " + e.getMessage());
+			String errorMessage = e.getMessage();
+			String logMessage = "Error adding message to entries table: "+errorMessage;
+			
+			if (errorMessage.contains("Duplicate entry")) {
+				logger.debug(logMessage);
+			} else {
+				logger.error(logMessage);
+			}
 		}
 	}
 

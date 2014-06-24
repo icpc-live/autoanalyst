@@ -48,7 +48,7 @@ function get_activity_data($team_id, $problem_id) {
 
     # Grab the edit_activity_problem rows aggregated by time, binning by every $G_BIN_MINUTES 
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
-    $rows = mysql_query_cacheable(
+    $rows = mysql_query_cacheable($db,
         /*
         // This query gives all edits (even if a single team makes many edits)
         "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
@@ -91,7 +91,7 @@ function get_activity_data($team_id, $problem_id) {
     # get the number of submissions of each problem per minute
     $sql = "select concat(problem_id, '_', contest_time) as problem_minute, count(*) as num_at_problem_minute " .
            " from submissions $where_clause_submissions group by problem_id, contest_time";
-    $rows = mysql_query_cacheable($sql); # grab the submission activity
+    $rows = mysql_query_cacheable($db, $sql); # grab the submission activity
     $num_at_problem_minute = array();
     foreach ($rows as $row) {
         $num_at_problem_minute[$row["problem_minute"]] = intval($row["num_at_problem_minute"] * 1.4); # scale so that we don't hit the ceiling
@@ -101,7 +101,7 @@ function get_activity_data($team_id, $problem_id) {
         . "$where_clause_submissions "
         . "ORDER BY contest_time ASC, result ASC ";
 
-    $rows = mysql_query_cacheable($sql); # grab the submission activity
+    $rows = mysql_query_cacheable($db, $sql); # grab the submission activity
     $submissions = array();
     foreach ($rows as $row) {
         $submissions[$row["result"]][] = array(

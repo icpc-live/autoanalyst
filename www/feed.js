@@ -60,9 +60,30 @@ function feed(div, properties) {
     }
 
     if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '+0400';
+        this.tz_offset = '+0600';
         // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2013 IS +0400)
+        // STORES DATA IN LOCALTIME (WHICH IN 2014 IS +0600)
+    }
+
+    // figure out if we have any interesting teams, provided as sets of ranges
+    this.interesting_teams = null;
+    var teams_regexp = /\?.*\bteams=((?:[0-9]+(?:-[0-9]+)?,)*(?:[0-9]+(?:-[0-9]+)?))/;
+    var m = window.location.search.match(teams_regexp);
+    if (m) {
+        this.interesting_teams = [];
+        var ranges = m[1].split(',');
+        for (i = 0; i < ranges.length; ++i) {
+            var rm = ranges[i].match('([0-9]+)-([0-9]+)');
+            if (rm) {
+                var start = parseInt(rm[1]);
+                var end = parseInt(rm[2]);
+                for (j = start; j <= end; ++j) {
+                    this.interesting_teams.push(j.toString());
+                }
+            } else {
+                this.interesting_teams.push(ranges[i]);
+            }
+        }
     }
 
     // set up the methods for this object
@@ -196,7 +217,7 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
-                var gitweb_url = 'http://192.168.0.50/gitweb/?p=homedirs/.git;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
+                var gitweb_url = '/gitweb/?p=teambackups;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
@@ -226,7 +247,19 @@ function _feed_updateWith(rows) {
                 }
             }
 
-            var htmlDescription = $("<div class='feed_row feed_row_recent'>" +
+            var interesting_team_class = '';
+            if (this.interesting_teams) {
+                var team_matches = row.text.match(/#t[0-9]+/g);
+                interesting_team_class = ' uninteresting_team ';
+                for (i = 0; team_matches && i < team_matches.length; ++i) {
+                    if (this.interesting_teams.indexOf(team_matches[i].substr(2)) >= 0) {
+                        interesting_team_class = ' interesting_team ';
+                        break;
+                    }
+                }
+            }
+
+            var htmlDescription = $("<div class='feed_row feed_row_recent " + interesting_team_class + "'>" +
                     "<div class='feed_row_description'>" + description + "</div>" +
                     "<div class='feed_row_controls'>" +
                     "<div class='feed_row_pin_control' title='Pin this event'><i class='icon-pushpin'></i></div>" +

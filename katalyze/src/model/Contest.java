@@ -129,6 +129,15 @@ public class Contest {
 		}
 		throw new InvalidKeyException(String.format("%s is not a known problem", problemId));
 	}
+
+	public Problem getProblemByAbbreviation(String problemId) throws InvalidKeyException {
+		for (Problem problem : problems) {
+			if (problemId.equalsIgnoreCase(problem.getLetter())) {
+				return problem;
+			}
+		}
+		throw new InvalidKeyException(String.format("%s is not a known problem", problemId));
+	}	
 	
 	
 

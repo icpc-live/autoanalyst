@@ -16,17 +16,15 @@ function init_db()
     if (isset($SQL_CACHE)) {
         return "";
     } else {
-        $db = mysql_connect($dbhost, $dbuser, $dbpassword);
-        echo mysql_error();
-        mysql_select_db($dbname, $db);
-        echo mysql_error();
-        mysql_set_charset("utf8");
-        echo mysql_error();
+        $db = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
+        echo mysqli_connect_error();
+        mysqli_set_charset($db,"utf8");
+        echo mysqli_error($db);
         return $db;
     }
 }
 
-function mysql_query_cacheable($sql) {
+function mysql_query_cacheable($db, $sql) {
     global $SQL_CACHE;
     if (isset($SQL_CACHE)) {
         $sql = strtolower($sql);
@@ -37,9 +35,9 @@ function mysql_query_cacheable($sql) {
     }
 
     # non-cached version
-    $result = mysql_query($sql);
+    $result = mysqli_query($db, $sql);
     $rows = array();
-    while ($result && ($row = mysql_fetch_assoc($result))) {
+    while ($result && ($row = mysqli_fetch_assoc($result))) {
         $rows[] = $row;
     }
     return $rows;
@@ -49,7 +47,7 @@ function get_times_in_wf($db, $pid)
 {
   $sql = "SELECT COUNT(pid) AS times_in_wf FROM history_attendees WHERE pid='$pid' AND (role_type LIKE 'Contestant%' OR role_type LIKE 'Coach%')";
   $times_in_wf = '';
-  $rows = mysql_query_cacheable($sql);
+  $rows = mysql_query_cacheable($db, $sql);
   foreach ($rows as $row) {
       $times_in_wf = $row["times_in_wf"];
   }
@@ -59,7 +57,7 @@ function get_times_in_wf($db, $pid)
 function gen_facts($db, $team_id, $type)
 {
   $facts_sql = "SELECT * FROM facts WHERE type='$type' AND team_id=$team_id";
-  $rows = mysql_query_cacheable($facts_sql);
+  $rows = mysql_query_cacheable($db, $facts_sql);
   if ($rows) {
       printf("<table id='%s_fact'>", $type);
       foreach ($rows as $facts_row) {
@@ -83,9 +81,9 @@ function edit_activity($db, $from, $to)
   #  "team_id": 56, "problem_id": "A", 
   #  "language": "C++", "line_count": 49, "diff_line_count": 10, "file_size_bytes": 4277
   #}
-  #$sql = "SELECT id, modify_time AS time, team_id, path AS problem_id, language, line_count, diff_line_count, file_size_bytes FROM icpc2014_edit_activity_tmp WHERE $from <= modify_time AND modify_time <= $to";
+  #$sql = "SELECT id, modify_time AS time, team_id, path AS problem_id, language, line_count, diff_line_count, file_size_bytes FROM edit_activity_tmp WHERE $from <= modify_time AND modify_time <= $to";
 
-  $sql = "SELECT icpc2014_edit_activity.id, icpc2014_edit_activity.modify_time AS time, icpc2014_edit_activity.team_id, icpc2014_file_to_problem.problem_id AS problem_id, icpc2014_file_to_problem.lang_id AS language, icpc2014_edit_activity.line_count, icpc2014_edit_activity.lines_changed AS diff_line_count, icpc2014_edit_activity.file_size_bytes FROM icpc2014_edit_activity JOIN icpc2014_file_to_problem ON (icpc2014_edit_activity.team_id = icpc2014_file_to_problem.team_id AND icpc2014_edit_activity.path = icpc2014_file_to_problem.path) WHERE $from <= icpc2014_edit_activity.modify_time AND icpc2014_edit_activity.modify_time <= $to ORDER BY icpc2014_edit_activity.modify_time";
+  $sql = "SELECT edit_activity.id, edit_activity.modify_time AS time, edit_activity.team_id, file_to_problem.problem_id AS problem_id, file_to_problem.lang_id AS language, edit_activity.line_count, edit_activity.lines_changed AS diff_line_count, edit_activity.file_size_bytes FROM edit_activity JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path) WHERE $from <= edit_activity.modify_time AND edit_activity.modify_time <= $to ORDER BY edit_activity.modify_time";
 
   if ( $res=mysqli_query($db, $sql) ) {
     $arr = array();
@@ -166,12 +164,13 @@ function navigation_container($additional_links = '') {
         <a href='region.php'>Regions</a>
         <?php if ($additional_links) { print $additional_links; } ?>
     </div>
+    <div id='hide_uninteresting_teams_container'><input type='checkbox' id='hide_uninteresting_teams_checkbox'><label for='hide_uninteresting_teams_checkbox'>Hide uninteresting teams</label></div>
 </div>
 <div id='searchbox_chooser'></div>
 <?php
 }
 
-function add_entry_container() {
+function add_entry_container($db) {
     $tags = array();
     if (isset($_GET["problem_id"]) && $_GET["problem_id"] != "") {
         $problem_ids = preg_replace("/[^a-z]+/i", ' ', $_GET["problem_id"]);
@@ -186,23 +185,15 @@ function add_entry_container() {
 <div id='add_entry_container'>
     <form class='add_entry_form' action=''>
     <table>
-        <tr> <th></th> <th>contest_time</th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
+        <tr> <th></th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
             <?php
-            $rows = mysql_query_cacheable("SELECT MAX(contest_time) AS last_submission FROM submissions");
-            $last_submission = 0;
-            if ($rows) {
-                $row = $rows[0];
-                $last_submission = $row['last_submission'];
-            }
-
             $entry_username = "frehe";
             if (isset($_SESSION['entry_username'])) {
                 $entry_username = $_SESSION['entry_username'];
             }
             ?>
-            <td><input type="text"   name="contest_time"  size="8" value="<?php echo $last_submission; ?>"></td>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
             <td><input type="text"   name="priority"      size="8" value="0"></td>
             <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>"></td>

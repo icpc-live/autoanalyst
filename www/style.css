@@ -150,3 +150,7 @@ div#searchbox_chooser div.search_query_result {
 div.flot_plot_container { position: relative; }
 div.flot_plot_x_axis_label { text-align: center; }
 div.flot_plot_title { text-align: center; }
+
+/* Enable this on selected pages */
+div#hide_uninteresting_teams_container { display: inline-block; visibility: hidden; }
+

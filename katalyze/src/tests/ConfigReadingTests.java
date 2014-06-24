@@ -2,8 +2,7 @@ package tests;
 
 import java.io.StringReader;
 
-import junit.framework.Assert;
-
+import static org.junit.Assert.*;
 import model.Analyzer;
 import model.Contest;
 
@@ -31,13 +30,13 @@ public class ConfigReadingTests {
 	@Test public void readsAProperty() throws Exception {
 
 		Analyzer analyzer = getAnalyzerFromConfig(testConfigWithGraphs);
-		Assert.assertEquals(2, analyzer.getOutputHooks().size());
+		assertEquals(2, analyzer.getOutputHooks().size());
 		
 	}
 	
 	@Test public void emptyConfigProducesNoGraphs() throws Exception {
 		Analyzer analyzer = getAnalyzerFromConfig(emptyConfig);
-		Assert.assertEquals(0, analyzer.getOutputHooks().size());
+		assertEquals(0, analyzer.getOutputHooks().size());
 		
 	}
 

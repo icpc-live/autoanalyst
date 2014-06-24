@@ -72,6 +72,7 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                 left: x + 10,
                 border: '1px solid green',
                 padding: '2px',
+                'white-space': 'normal',
                 'background-color': '#efe',
                 'z-index': 100,
                 opacity: 0.90,
@@ -127,8 +128,10 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                                 + school_name +
                                   " problem " + item.series.submissionInfo[item.dataIndex].problem_id +
                                   " at time " + item.datapoint[0] +
-                                  " (" + item.series.submissionInfo[item.dataIndex].lang_id + ")." +
-                                  " Click to " + self.clickableURL(item.series.submissionInfo[item.dataIndex]).message + ".";
+                                  " (" + item.series.submissionInfo[item.dataIndex].lang_id + ").";
+                        if (self.clickable) {
+                            content += " Click to " + self.clickableURL(item.series.submissionInfo[item.dataIndex]).message + ".";
+                        }
                     } else {
                         // for the edits
                         var numEdits = item.datapoint[1] - item.datapoint[2];
@@ -144,12 +147,12 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
 
         self.target.bind("plotclick",
             function(evt, pos, item) {
-                if (item && item.series && item.series.submissionInfo) {
-                    var msg_url = self.clickableURL(item.series.submissionInfo[item.dataIndex]);
-                    if (msg_url.url) {
-                        window.location.assign(msg_url.url);
-                    }
-                }
+               if (item && item.series && item.series.submissionInfo) {
+                   var msg_url = self.clickableURL(item.series.submissionInfo[item.dataIndex]);
+                   if (msg_url.url) {
+                       window.location.assign(msg_url.url);
+                   }
+               }
             }
         );
     }

@@ -20,7 +20,7 @@ public class SimpleMessage {
 	}
 	
 	private static String dropWhiteSpace(String source) {
-		return source.replaceAll("\\s", "");
+		return (source == null) ? null : source.replaceAll("\\s", "");
 	}
 	
 	public int getInt(String attribute) {

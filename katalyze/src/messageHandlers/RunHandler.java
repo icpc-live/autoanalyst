@@ -2,6 +2,8 @@ package messageHandlers;
 
 import java.security.InvalidKeyException;
 
+import org.jfree.util.Log;
+
 import model.InitialSubmission;
 import model.Problem;
 import model.Team;
@@ -37,7 +39,7 @@ public class RunHandler extends SingleMessageHandler {
 		team.freshSubmission(newSubmission);
 	}
 	
-	private void processJudgedSubmission(SimpleMessage message) {
+	private void processFinalizedSubmission(SimpleMessage message) {
 		double secondsFromStart = message.getDouble("time");
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
@@ -48,6 +50,7 @@ public class RunHandler extends SingleMessageHandler {
 		boolean penalty = message.getBool("penalty");
 		int teamNumber = message.getInt("team");
         String language = message.get("language");
+		Boolean isJudged = message.getBool("judged");
 		
 		Team team;
 		Problem problem;
@@ -59,7 +62,13 @@ public class RunHandler extends SingleMessageHandler {
 			return;
 		}
 		
-		team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty, language);
+		if (isJudged) {
+			team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty, language);
+		} else {
+			Log.info(String.format("%s submission of %s has been judged. Outcome is not disclosed",
+					team, problem));
+		}	
+		
 	}
 	
 	@Override
@@ -72,7 +81,7 @@ public class RunHandler extends SingleMessageHandler {
 		}
 		
 		if ("done".equals(status)) {
-			processJudgedSubmission(message);
+			processFinalizedSubmission(message);
 		}
 		
 	}
