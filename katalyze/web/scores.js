@@ -13,9 +13,13 @@
 		var problems = [];
 		
 		dataSourceUrl = target.first().attr("data-Source");
+	    if (!dataSourceUrl || dataSourceUrl == "") {
+			dataSourceUrl = window.location.protocol+"//"+window.location.host;
+	    }
+		
 		
 		that.dataSource = function() {
-			return dataSourceUrl;
+		    return dataSourceUrl;
 		}
 		
 		var makeFilterPredicate = function(filter) {
@@ -145,8 +149,8 @@
             var name = "<a href='team.php?team_id=" + data.team.id + "'>" + data.team.name + "</a>";
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
-            var videoLinks = "<a href='https://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
-                             "<a href='https://192.168.1.207/video/screen/" + padded_id + "'>Screen</a>";
+            var videoLinks = "<a href='http://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
+                             "<a href='http://192.168.1.207/video/screen/" + padded_id + "'>Screen</a>";
 			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks, data.mainLang]);
 			
 			 $.each(data.problems, function(i, problemData) {
