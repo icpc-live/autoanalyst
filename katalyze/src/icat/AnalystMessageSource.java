@@ -11,7 +11,7 @@ import katalyzeapp.DatabaseNotificationConfig;
 public class AnalystMessageSource {
 	DatabaseNotificationConfig config;
 	Connection db;
-	
+	final String NoExportHashTag = "#int";
 	int lastReadMessageId = -1;
 	
 	
@@ -37,6 +37,13 @@ public class AnalystMessageSource {
 				if (message.id > lastReadMessageId) {
 					lastReadMessageId = message.id;
 				}
+				
+				// Don't export if the message is only for internal analyst use
+				String lowerCaseMessageText = message.text.toLowerCase();				
+				if (lowerCaseMessageText.contains(NoExportHashTag)) {
+					continue;
+				}
+				
 				messages.add(message);
 			}
 			return messages;
