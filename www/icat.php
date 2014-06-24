@@ -81,9 +81,9 @@ function edit_activity($db, $from, $to)
   #  "team_id": 56, "problem_id": "A", 
   #  "language": "C++", "line_count": 49, "diff_line_count": 10, "file_size_bytes": 4277
   #}
-  #$sql = "SELECT id, modify_time AS time, team_id, path AS problem_id, language, line_count, diff_line_count, file_size_bytes FROM icpc2014_edit_activity_tmp WHERE $from <= modify_time AND modify_time <= $to";
+  #$sql = "SELECT id, modify_time AS time, team_id, path AS problem_id, language, line_count, diff_line_count, file_size_bytes FROM edit_activity_tmp WHERE $from <= modify_time AND modify_time <= $to";
 
-  $sql = "SELECT icpc2014_edit_activity.id, icpc2014_edit_activity.modify_time AS time, icpc2014_edit_activity.team_id, icpc2014_file_to_problem.problem_id AS problem_id, icpc2014_file_to_problem.lang_id AS language, icpc2014_edit_activity.line_count, icpc2014_edit_activity.lines_changed AS diff_line_count, icpc2014_edit_activity.file_size_bytes FROM icpc2014_edit_activity JOIN icpc2014_file_to_problem ON (icpc2014_edit_activity.team_id = icpc2014_file_to_problem.team_id AND icpc2014_edit_activity.path = icpc2014_file_to_problem.path) WHERE $from <= icpc2014_edit_activity.modify_time AND icpc2014_edit_activity.modify_time <= $to ORDER BY icpc2014_edit_activity.modify_time";
+  $sql = "SELECT edit_activity.id, edit_activity.modify_time AS time, edit_activity.team_id, file_to_problem.problem_id AS problem_id, file_to_problem.lang_id AS language, edit_activity.line_count, edit_activity.lines_changed AS diff_line_count, edit_activity.file_size_bytes FROM edit_activity JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path) WHERE $from <= edit_activity.modify_time AND edit_activity.modify_time <= $to ORDER BY edit_activity.modify_time";
 
   if ( $res=mysqli_query($db, $sql) ) {
     $arr = array();
