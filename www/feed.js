@@ -67,7 +67,7 @@ function feed(div, properties) {
 
     // figure out if we have any interesting teams, provided as sets of ranges
     this.interesting_teams = null;
-    var teams_regexp = /\bteams=((?:[0-9]+(?:-[0-9]+),)*(?:[0-9]+(?:-[0-9]+)))/;
+    var teams_regexp = /\bteams=((?:[0-9]+(?:-[0-9]+)?,)*(?:[0-9]+(?:-[0-9]+)?))/;
     var m = window.location.search.match(teams_regexp);
     if (m) {
         this.interesting_teams = [];
