@@ -19,6 +19,14 @@ $(document).ready(function() {
 
         return false;
     });
+
+    $("#hide_uninteresting_teams_checkbox").change(function() {
+        if ($(this).is(":checked")) {
+            $(".feed_row.uninteresting_team").hide();
+        } else {
+            $(".feed_row.uninteresting_team").show();
+        }
+    });
 });
 
 function get_json_synchronous(url) {

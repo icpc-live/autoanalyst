@@ -8,8 +8,8 @@ $db = init_db();
 <head>
 <title>iCAT overview</title>
 
-<link rel="stylesheet" type="text/css" href="feed.css" />
 <link rel="stylesheet" type="text/css" href="style.css" />
+<link rel="stylesheet" type="text/css" href="feed.css" />
 <meta charset="utf-8">
 <style type="text/css">
 div#leftColumn, div#rightColumn {

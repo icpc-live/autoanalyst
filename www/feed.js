@@ -65,6 +65,27 @@ function feed(div, properties) {
         // STORES DATA IN LOCALTIME (WHICH IN 2014 IS +0600)
     }
 
+    // figure out if we have any interesting teams, provided as sets of ranges
+    this.interesting_teams = null;
+    var teams_regexp = /\bteams=((?:[0-9]+(?:-[0-9]+),)*(?:[0-9]+(?:-[0-9]+)))/;
+    var m = window.location.search.match(teams_regexp);
+    if (m) {
+        this.interesting_teams = [];
+        var ranges = m[1].split(',');
+        for (i = 0; i < ranges.length; ++i) {
+            var rm = ranges[i].match('([0-9]+)-([0-9]+)');
+            if (rm) {
+                var start = parseInt(rm[1]);
+                var end = parseInt(rm[2]);
+                for (j = start; j <= end; ++j) {
+                    this.interesting_teams.push(j.toString());
+                }
+            } else {
+                this.interesting_teams.push(ranges[i]);
+            }
+        }
+    }
+
     // set up the methods for this object
     this.togglePause = _feed_togglePause;
     this.update      = _feed_update;
@@ -226,7 +247,19 @@ function _feed_updateWith(rows) {
                 }
             }
 
-            var htmlDescription = $("<div class='feed_row feed_row_recent'>" +
+            var interesting_team_class = '';
+            if (this.interesting_teams) {
+                var team_id_match = row.text.match(/#t([0-9]+)/);
+                if (team_id_match) {
+                    if (this.interesting_teams.indexOf(team_id_match[1]) >= 0) {
+                        interesting_team_class = ' interesting_team ';
+                    } else {
+                        interesting_team_class = ' uninteresting_team ';
+                    }
+                }
+            }
+
+            var htmlDescription = $("<div class='feed_row feed_row_recent " + interesting_team_class + "'>" +
                     "<div class='feed_row_description'>" + description + "</div>" +
                     "<div class='feed_row_controls'>" +
                     "<div class='feed_row_pin_control' title='Pin this event'><i class='icon-pushpin'></i></div>" +
