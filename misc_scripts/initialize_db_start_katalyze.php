@@ -1,8 +1,7 @@
 --------------------------------------------------------
-THIS SCRIPT RESETS AND INITIALIZES ICAT AND STARTS KATALYZER
+THIS SCRIPT RESETS AND INITIALIZES ICAT
 
-IN A FEW SECONDS IT WILL EMPTY SQL TABLES, 
-REMOVE GRAPHS, START KATALYZE, ETC.
+IN A FEW SECONDS IT WILL EMPTY SQL TABLES 
 
 IF YOU DON'T WANT TO DO THIS, *KILL IT NOW*
 
@@ -18,13 +17,9 @@ for ($i = 5; $i >= 1; --$i) {
 ?>
 
 --------------------------------------------------------
-LINK TO THIS YEAR'S FILES
-<?php system("rm icpc"); ?>
-<?php system("ln -s icpc2013 icpc"); ?>
-
---------------------------------------------------------
 MAKE SURE WE CAN CONNECT TO THE DATABASE
 <?php
+set_include_path("/home/icpclive/autoanalyst/www"); # FIXME -- this may change year to year
 require_once 'icat.php';
 $db = init_db();
 if (! $db) {
@@ -35,30 +30,18 @@ if (! $db) {
 --------------------------------------------------------
 DUMP THE ICAT DATABASE
 <?php
-   require_once 'icpc/config.php';
+   require_once 'config.php';
    $date=date('dMY_hi');
-   system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --database icat > icat_$date.sql");
+   system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --database icat > icat_backup_$date.sql");
 ?>
 
 --------------------------------------------------------
 TRUNCATING ALL THE RELEVANT TABLES
 <?php
-$to_truncate = array('icpc2013_entries', 'icpc2013_submissions');
+$to_truncate = array('entries', 'submissions');
 foreach ($to_truncate as $table) {
-   $sql = "TRUNCATE TABLE $table";
-   print("TRUNCATING TABLE $table\n");
-   $qr = mysql_query($sql, $db);
+   $sql = "CLEARING TABLE $table";
+   print("DELETE FROM TABLE $table\n");
+   $qr = mysqli_query($db, $sql);
 }
 ?>
-
---------------------------------------------------------
-UPDATING THE REPOSITORY
-<?php system("git pull"); ?>
-
---------------------------------------------------------
-BUILDING KATALYZE
-<?php system("cd katalyze && ant"); ?>
-
---------------------------------------------------------
-STARTING KATALYZE
-<?php system("/bin/bash start_all_katalyzers.sh"); ?>
