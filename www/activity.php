@@ -7,11 +7,21 @@ function which_view() {
     global $team_id, $problem_id;
     global $COMMON_DATA;
     if (isset($team_id) && $team_id != "") {
+        $team_id_ranges = explode(",", $team_id);
+        $team_id = array();
+        foreach ($team_id_ranges as $range) {
+            $range_bounds = explode("-", $range);
+            for ($i = $range_bounds[0]; $i <= $range_bounds[count($range_bounds)-1]; ++$i) {
+                $team_id[] = $i;
+            }
+        }
+    /*
         if (preg_match('/,/', $team_id)) {
             $team_ids = explode(",", $team_id);
         } else {
             $team_ids = array($team_id);
         }
+        */
         print("Team: " . 
             implode(", ", 
                 array_map(function($tid) {
