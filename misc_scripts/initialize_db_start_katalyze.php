@@ -40,8 +40,11 @@ TRUNCATING ALL THE RELEVANT TABLES
 <?php
 $to_truncate = array('entries', 'submissions');
 foreach ($to_truncate as $table) {
-   $sql = "CLEARING TABLE $table";
-   print("DELETE FROM TABLE $table\n");
+   $sql = "DELETE FROM $table;\n";
+   print("CLEARING TABLE $table;\n");
    $qr = mysqli_query($db, $sql);
+   if (mysqli_error($db)) {
+       print("ERROR: " . mysqli_error($db) . "\n");
+   } 
 }
 ?>

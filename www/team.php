@@ -126,11 +126,11 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <div id="video_container">
     <?php $padded_team_id = sprintf("%03d", $team_id); ?>
-    <a href="https://192.168.1.207/video/camera/<?php echo $padded_team_id; ?>">Camera</a>
-    <a href="https://192.168.1.207/video/screen/<?php echo $padded_team_id; ?>">Screen</a>
+    <a href="vlc://192.168.1.207/video/camera/<?php echo $padded_team_id; ?>">Camera</a>
+    <a href="vlc://192.168.1.207/video/screen/<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
-        $result = mysqli_query($db, "select submission_id, contest_time from submissions where team_id = $team_id and has_video order by submission_id");
+        $result = mysqli_query($db, "select submission_id, contest_time from submissions where team_id = $team_id order by submission_id");
         $counter = 0;
         if (mysqli_num_rows($result) > 0) {
             print "Auto-recorded video (contest time): ";
@@ -138,7 +138,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         while ($result && ($row = mysqli_fetch_assoc($result))) {
             $counter++;
             if ($counter > 1) { print ", "; }
-            printf("<a href='http://192.168.1.207/video/reaction/%d'>%d</a>", $row['submission_id'], $row['contest_time']);
+            printf("<a href='vlc://192.168.1.207/video/reaction/%d'>%d</a>", $row['submission_id'], $row['contest_time']);
         }
     ?>
 </div>
