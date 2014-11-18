@@ -2,21 +2,32 @@
 require_once 'icat.php';
 $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : "";
 $problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : "";
+$team_ids = array();
 
-function which_view() {
+function parse_team_ids() {
     global $team_id, $problem_id;
+    global $team_ids;
     global $COMMON_DATA;
     if (isset($team_id) && $team_id != "") {
-        if (preg_match('/,/', $team_id)) {
-            $team_ids = explode(",", $team_id);
-        } else {
-            $team_ids = array($team_id);
+        $team_id_ranges = explode(",", $team_id);
+        foreach ($team_id_ranges as $range) {
+            $range_bounds = explode("-", $range);
+            for ($i = $range_bounds[0]; $i <= $range_bounds[count($range_bounds)-1]; ++$i) {
+                $team_ids[] = $i;
+            }
         }
+        printf("\n\n<!-- team_ids: %s -->\n\n", print_r($team_ids, true));
+    }
+}
+
+function which_view() {
+    global $team_ids;
+    if ($team_ids) {
         print("Team: " . 
             implode(", ", 
                 array_map(function($tid) {
                     global $COMMON_DATA;
-                    return "<a href='team.php?team_id=$tid'>" . $COMMON_DATA['TEAMS'][$tid]['school_name'] . "</a>";
+                    return "<a href='team.php?team_id=$tid'>$tid</a>";//" . $COMMON_DATA['TEAMS'][$tid]['school_name'] . "</a>";
                 }, $team_ids)
             )
         );
@@ -25,6 +36,9 @@ function which_view() {
         print("all teams");
     }
 }
+
+parse_team_ids();
+
 ?>
 <html>
 <head>
@@ -47,10 +61,10 @@ div#activity_plot div.ticklabel { font-size: 150%; }
 <script type="text/javascript" src="activity.js"></script>
 <script type="text/javascript">
 $(function() {
-    new ActivityPlot($("#activity_plot"), '<?php echo $team_id; ?>', '<?php echo $problem_id; ?>', true);
+    new ActivityPlot($("#activity_plot"), '<?php echo implode(",", $team_ids); ?>', '<?php echo $problem_id; ?>', true);
 });
 </script>
-<title>Activity<?php if (isset($team_id) && $team_id != "") { print(" (for $team_id)"); } ?></title>
+<title>Activity</title>
 </head>
 <body>
 <?php navigation_container() ?>

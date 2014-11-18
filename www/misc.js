@@ -14,6 +14,7 @@ $(document).ready(function() {
         });
         console.log('query_str = ' + query_str);
         $.ajax({url: "insert_entry.php?" + query_str }).done(function(response) {
+            $('#txtEntry').val('');
             alert("Got this response on insert: " + response);
         });
 
