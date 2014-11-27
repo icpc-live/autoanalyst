@@ -10,16 +10,20 @@ database:
 
 timezone: Europe/Moscow
 
-# root of the CDS server.
-CDSRoot:      "https://192.168.1.207/"
+# CDS server
+CDS:
+    baseurl:   "https://192.168.1.207/"
+    user:      user
+    pass:      THISISNOTAPASSWORD
 
 # Configuration for the backup/githomes script
 teambackup:
     gitdir:    /home/icpclive/githomes
+    backupdir: /home/icpclive/backup
+# Method to retrieve backups, use 'CDS' or 'copy' (from backupdir)
+    method:    CDS
     interval:  120
     lastTeam:  119
-    CDSUser:   user
-    CDSPass:   THISISNOTAPASSWORD
 
 # Code analyzer parameters.
 analyzer:
