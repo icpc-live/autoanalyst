@@ -1,6 +1,23 @@
 (function() {
 	
 
+ 	var entityMap = {
+	    "&": "&amp;",
+	    "<": "&lt;",
+ 	   ">": "&gt;",
+ 	   '"': '&quot;',
+ 	   "'": '&#39;',
+ 	   "/": '&#x2F;'
+  };
+
+  function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+
+
+
 	function ScoreUpdater(target, teamIDs) {
 		var that = this;
 		
@@ -146,7 +163,7 @@
 				});
 			}
 
-            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + data.team.name + "</a>";
+            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + escapeHtml(data.team.name) + "</a>";
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
@@ -179,7 +196,7 @@
 		}
 		
 		refreshData();
-		window.setInterval(refreshData, 2000);
+		window.setInterval(refreshData, 10000);
 		
 	
 	});
