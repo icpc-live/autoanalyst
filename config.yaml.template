@@ -27,7 +27,7 @@ teambackup:
 
 # Code analyzer parameters.
 analyzer:
-    # Start time for the contest.  We must have this somewhere else, right?
+    # Start time for the contest in UTC.  We must have this somewhere else, right?
     contestStart: "2014-03-11 10:00:00"
 
 problems:
