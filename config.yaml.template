@@ -54,3 +54,7 @@ judgements:
     MLE:  { label: MLE, label_long: "Memory Limit Exceeded", color: "#ffffaa", sortOrder: 7 }
     OLE:  { label: OLE, label_long: "Output Limit Exceeded", color: "#ff00ff", sortOrder: 8 }
     PE:   { label: PE , label_long: "Presentation Error"   , color: "#aaaaaa", sortOrder: 9 }
+
+codeActivity:
+    scoreboardFreezeMinutes:   240
+    defaultGranularityMinutes: 5

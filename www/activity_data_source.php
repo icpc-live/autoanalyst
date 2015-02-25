@@ -1,9 +1,8 @@
 <?php
 require_once "icat.php";
 
-function where_clause($team_ids, $problem_ids) {
+function where_clause($team_ids, $problem_ids, $conditions = array()) {
     // determine if we should limit this to one team
-    $conditions = array();
     $team_ids = array_unique(array_map('intval', $team_ids));
     if (!empty($team_ids)) {
         $conditions[] = "team_id in (" . implode(',', $team_ids) . ")";
@@ -24,7 +23,7 @@ function where_clause($team_ids, $problem_ids) {
 # Edit activity
 ##########################################################
 
-function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes) {
+function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes, $until_minutes) {
     # where clause for edit_activity_problem
     $where_clause_edit_activity_problem = where_clause($team_ids, $problem_ids);
 
@@ -38,6 +37,7 @@ function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes) {
         . "FROM edit_activity_problem "
         . "$where_clause_edit_activity_problem "
         . "GROUP BY problem_id, contest_time_binned "
+        . (isset($until_minutes) ? (" HAVING contest_time_binned < " . intval($until_minutes) . " ") : "")
         . "ORDER BY problem_id, contest_time_binned "
         */
         // This query gives per-problem counts, grouped by team
@@ -48,6 +48,7 @@ function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes) {
         . $where_clause_edit_activity_problem
         . " GROUP BY problem_id, contest_time_binned, team_id "
         . " HAVING contest_time_binned >= 0 and contest_time_binned <= 300 "
+        . (isset($until_minutes) ? (" AND contest_time_binned < " . intval($until_minutes) . " ") : "")
         . " ORDER BY problem_id, contest_time_binned, team_id "
         . " ) as FOO "
         . " group by problem_id, contest_time_binned "
@@ -73,9 +74,14 @@ function get_max_problems_per_bin($edit_bins) {
 # Submission activity
 ##########################################################
 
-function get_num_at_problem_minute($db, $team_ids, $problem_ids) {
+function get_num_at_problem_minute($db, $team_ids, $problem_ids, $until_minutes) {
     # where clause for submissions
-    $where_clause_submissions = where_clause($team_ids, $problem_ids);
+    if (isset($until_minutes)) {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids,
+                                                 array('contest_time < ' . intval($until_minutes)));
+    } else {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids);
+    }
 
     # get the number of submissions of each problem per minute
     $sql = "select concat(problem_id, '_', contest_time) as problem_minute, count(*) as num_at_problem_minute " .
@@ -88,9 +94,14 @@ function get_num_at_problem_minute($db, $team_ids, $problem_ids) {
     return $num_at_problem_minute;
 }
 
-function get_submission_activity($db, $team_ids, $problem_ids) {
+function get_submission_activity($db, $team_ids, $problem_ids, $until_minutes) {
     # where clause for submissions
-    $where_clause_submissions = where_clause($team_ids, $problem_ids);
+    if (isset($until_minutes)) {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids,
+                                                 array('contest_time < ' . intval($until_minutes)));
+    } else {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids);
+    }
 
     $sql ="SELECT * FROM submissions "
         . "$where_clause_submissions "
