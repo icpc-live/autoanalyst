@@ -1,8 +1,5 @@
 <?php
 
-define('SCOREBOARD_FREEZE', 240);
-define('DEFAULT_GRANULARITY', 5);
-
 require_once 'common_data.php';
 require_once 'activity_data_source.php';
 
