@@ -1,6 +1,6 @@
 <?php
 
-require_once "icat.php";
+require_once("../icat.php");
 
 $db = init_db();
 

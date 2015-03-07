@@ -1,7 +1,7 @@
 <?php
 
-require_once 'common_data.php';
-require_once 'activity_data_source.php';
+require_once('../common_data.php');
+require_once('../activity_data_source.php');
 
 $db = init_db();
 
