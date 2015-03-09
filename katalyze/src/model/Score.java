@@ -126,8 +126,25 @@ public class Score implements ScoreTableEntry {
 		ProblemSubmissions problemSubmissions = submissions.get(problem);
 		return problemSubmissions.toArray();
 	}
-	
-	
+
+    public int lastSubmissionTime(Problem problem) {
+        int lastRelevantTime = 0;
+
+        ProblemSubmissions problemSubmissions = submissions.get(problem);
+        if (problemSubmissions != null) {
+
+            for (Submission s : problemSubmissions) {
+                if (s.isAccepted()) {
+                    return s.getMinutesFromStart();
+                }
+                lastRelevantTime = s.getMinutesFromStart();
+            }
+        }
+
+        return lastRelevantTime;
+
+    }
+
 	
 	
 
