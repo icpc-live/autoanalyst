@@ -37,6 +37,11 @@ body {
 	font-size: 75%;
 }
 
+.recentlyChanged {
+    border-color: magenta;
+    border-style: solid;
+}
+
 .problemSolved {
 	background-color: #99FF99;
 }

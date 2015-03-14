@@ -345,7 +345,6 @@ function _feed_updateTimestamps() {
             e.text(msg);
         }
     });
-    setTimeout(function() { self.updateTimestamps(); }, 60 * 1000);
 }
 
 // create the relevant DOM objects that will contain the feed and its controls

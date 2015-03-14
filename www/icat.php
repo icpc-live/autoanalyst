@@ -196,7 +196,7 @@ function add_entry_container($db) {
             ?>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
             <td><input type="text"   name="priority"      size="8" value="0"></td>
-            <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>"></td>
+            <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>" id="txtEntry"></td>
         </tr>
     </table>
     </form>

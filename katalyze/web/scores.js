@@ -1,7 +1,24 @@
 (function() {
 	
 
-	function ScoreUpdater(target, teamIDs) {
+ 	var entityMap = {
+	    "&": "&amp;",
+	    "<": "&lt;",
+ 	   ">": "&gt;",
+ 	   '"': '&quot;',
+ 	   "'": '&#39;',
+ 	   "/": '&#x2F;'
+  };
+
+  function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+
+
+
+	function ScoreUpdater(target) {
 		var that = this;
 		
 		var dataSourceUrl = "";
@@ -13,6 +30,8 @@
 		var problems = [];
 		
 		dataSourceUrl = target.first().attr("data-Source");
+		var highlightWindow = 10;
+
 	    if (!dataSourceUrl || dataSourceUrl == "") {
 			dataSourceUrl = window.location.protocol+"//"+window.location.host;
 	    }
@@ -21,7 +40,8 @@
 		that.dataSource = function() {
 		    return dataSourceUrl;
 		}
-		
+
+
 		var makeFilterPredicate = function(filter) {
 			if (!filter) {
 				return function() {return true;};
@@ -64,10 +84,25 @@
 			addTableHeader(boardTable, contestStatus.contestInfo);
 					
 			var filterPredicate = makeFilterPredicate(targetDiv.attr("data-filter"));
+
+			var contestTime = contestStatus.contestInfo.time;
+			// Set up the highlighting function.
+			var highlighting = function(cell) {
+			    var lastUpdate = cell.lastUpd;
+			    if (lastUpdate) {
+			        return lastUpdate + highlightWindow > contestTime;
+			    } else {
+			        return false;
+			    }
+			}
+
+
+
+
 			
 			$.each(contestStatus.scoreBoard, function(i, scoreData) {
 				if (filterPredicate(scoreData)) { 
-					that.addRow(boardTable, scoreData);
+					that.addRow(boardTable, scoreData, highlighting);
 				}
 			});
 			
@@ -101,7 +136,7 @@
 		}		
 		
 	
-		that.addRow = function(scoreBoard, data) {
+		that.addRow = function(scoreBoard, data, highlighting) {
 			var rowToAdd = $('<tr class="scoreRow" />');
 			var cellNumber = 0;
 
@@ -118,6 +153,9 @@
 					} else {
 						time.text("\u00A0");
 					}
+				}
+				if (highlighting(problemStatus)) {
+				    result.addClass("recentlyChanged");
 				}
 				
 				result.append(time);
@@ -146,11 +184,11 @@
 				});
 			}
 
-            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + data.team.name + "</a>";
+            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + escapeHtml(data.team.name) + "</a>";
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
-            var videoLinks = "<a href='http://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
-                             "<a href='http://192.168.1.207/video/screen/" + padded_id + "'>Screen</a>";
+            var videoLinks = "<a href='vlc://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
+                             "<a href='vlc://192.168.1.207/video/screen/" + padded_id + "'>Screen</a>";
 			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks, data.mainLang]);
 			
 			 $.each(data.problems, function(i, problemData) {
@@ -165,7 +203,7 @@
 	$(function() {
 	
 		
-		var updater = new ScoreUpdater($(".teamscore"),[104,24]);
+		var updater = new ScoreUpdater($(".teamscore"));
 
 		var refreshData = function() {
 			$.ajax({
@@ -179,7 +217,7 @@
 		}
 		
 		refreshData();
-		window.setInterval(refreshData, 2000);
+		window.setInterval(refreshData, 10000);
 		
 	
 	});

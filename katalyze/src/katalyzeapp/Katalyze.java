@@ -60,18 +60,19 @@ public class Katalyze {
 			katalyzer = new Katalyzer(config);
 			katalyzer.start();
 			katalyzer.process(input);
-			
-			logger.info("Done. Press enter to stop the application");
-			
-			int c = System.in.read();
-			while (c != 10) {
-				c = System.in.read();
-			}
+
 
 		} catch (Exception e) {
 			logger.error(e,e);
 		}
 		finally {
+            logger.info("Done. Press enter to stop the application");
+
+            int c = System.in.read();
+            while (c != 10) {
+                c = System.in.read();
+            }
+
 			if (katalyzer != null) {
 				katalyzer.stop();
 			}

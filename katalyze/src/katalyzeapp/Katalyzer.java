@@ -34,9 +34,9 @@ public class Katalyzer {
 	}
 	
 	
-	private void updateScoreboards() {
+	private void updateScoreboards(boolean force) {
 		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastUpdate > updateInterval) {
+		if (force || currentTime - lastUpdate > updateInterval) {
 			contest.getAnalyzer().publishStandings();
 			contest.getAnalyzer().forwardAnalystMessages();
 			lastUpdate = currentTime;
@@ -60,9 +60,11 @@ public class Katalyzer {
 					contest.updateTime(contestTime);
 				}
 				handlers.process(message);
-				updateScoreboards();
+				updateScoreboards(false);
 			}						
 		}
+		// Ok, we're done. Push the final standings.
+		updateScoreboards(true);
 		
 	}
 	

@@ -1,7 +1,7 @@
 The MIT License (MIT)
 
-Copyright (c) 2012-2013 Fredrik Niemelä, Fredrik Heintz, Stein Norheim, Jaap
-Eldering, Tobias Werth, Greg Hamerly, David Sturgill.
+Copyright (c) 2012-2015 Fredrik Niemelä, Fredrik Heintz, Stein Norheim, Jaap
+Eldering, Tobias Werth, Greg Hamerly, David Sturgill, Anders Sjöqvist.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

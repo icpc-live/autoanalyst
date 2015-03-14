@@ -51,6 +51,12 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 					.element("solved", isSolved)
 					.element("attempts", score.submissionCount(p))
 					.element("time", score.scoreContribution(p));
+
+                int lastSubmissionTime = score.lastSubmissionTime(p);
+                if (lastSubmissionTime != 0) {
+                    problemInfo = problemInfo.element("lastUpd", lastSubmissionTime);
+                }
+
 				if (!isSolved) {
 					ScoreTableEntry fake = FakeScore.PretendProblemSolved(score, p, minutesFromStart);
 					JSONObject potential = calcFictiousRank(scoresAbove, fake);
@@ -93,9 +99,10 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		
 		private JSONObject getContestInfo(Contest contest) {
 			return new JSONObject()
-				.element("length", contest.getLengthInMinutes())
+                    .element("length", contest.getLengthInMinutes())
 				.element("problems", getProblems(contest))
-				.element("submissions", contest.getSubmissionCount());
+				.element("submissions", contest.getSubmissionCount())
+                .element("time", contest.getMinutesFromStart());
 		}
 		
 		public String execute() {

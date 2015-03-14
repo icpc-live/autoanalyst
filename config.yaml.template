@@ -10,20 +10,24 @@ database:
 
 timezone: Europe/Moscow
 
-# root of the CDS server.
-CDSRoot:      "https://192.168.1.207/"
+# CDS server
+CDS:
+    baseurl:   "https://192.168.1.207/"
+    user:      user
+    pass:      THISISNOTAPASSWORD
 
 # Configuration for the backup/githomes script
 teambackup:
     gitdir:    /home/icpclive/githomes
+    backupdir: /home/icpclive/backup
+# Method to retrieve backups, use 'CDS' or 'copy' (from backupdir)
+    method:    CDS
     interval:  120
     lastTeam:  119
-    CDSUser:   user
-    CDSPass:   THISISNOTAPASSWORD
 
 # Code analyzer parameters.
 analyzer:
-    # Start time for the contest.  We must have this somewhere else, right?
+    # Start time for the contest in UTC.  We must have this somewhere else, right?
     contestStart: "2014-03-11 10:00:00"
 
 problems:
@@ -50,3 +54,7 @@ judgements:
     MLE:  { label: MLE, label_long: "Memory Limit Exceeded", color: "#ffffaa", sortOrder: 7 }
     OLE:  { label: OLE, label_long: "Output Limit Exceeded", color: "#ff00ff", sortOrder: 8 }
     PE:   { label: PE , label_long: "Presentation Error"   , color: "#aaaaaa", sortOrder: 9 }
+
+codeActivity:
+    scoreboardFreezeMinutes:   240
+    defaultGranularityMinutes: 5

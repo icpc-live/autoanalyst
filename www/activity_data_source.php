@@ -1,92 +1,87 @@
 <?php
 require_once "icat.php";
 
-function get_activity_data($team_id, $problem_id) {
-    global $COMMON_DATA;
-    $db = init_db();
-
-    // IDEAS:
-    //  - turn on/off certain result types
-
-    // the resolution of the time-based bins -- FIXME -- make this a parameter
-    $G_BIN_MINUTES = 5;
-
+function where_clause($team_ids, $problem_ids, $conditions = array()) {
     // determine if we should limit this to one team
-    $where_conditions = array();
-    if (isset($team_id) && $team_id != "") {
-        # FIXME -- check that this SQL is safe. Written on a plane without php references. Should be simpler.
-        $team_ids = array_unique(preg_split("/,/", $team_id));
-        $team_ids_safe = array();
-        foreach ($team_ids as $tid) {
-            if (preg_match("/^[0-9]+$/", $tid)) {
-                $team_ids_safe[] = $tid;
-            }
-        }
-        $team_ids_safe = implode(",", $team_ids_safe);
-        $where_conditions[] = "team_id in (" . $team_ids_safe . ")";
+    $team_ids = array_unique(array_map('intval', $team_ids));
+    if (!empty($team_ids)) {
+        $conditions[] = "team_id in (" . implode(',', $team_ids) . ")";
     }
 
-    if (isset($problem_id) && $problem_id != "") {
-        # FIXME -- IMPROVE THIS TERRIBLE PHP -- WRITTEN ON A PLANE WITHOUT AN API REFERENCE
-        $problem_id = preg_split("//", preg_replace("/[^a-z]/i", "", $problem_id));
-        array_pop($problem_id);
-        array_shift($problem_id);
-        $problem_id = array_unique($problem_id);
-        $problem_id = implode(",", $problem_id);
-        $where_conditions[] = 'problem_id IN ("' . preg_replace('/,/', '","', $problem_id) . '")';
+    // remove everything from the array but single upper case chars A-Z
+    $problem_ids = array_values(array_filter($problem_ids, function ($elem) {
+                return preg_match('/^[A-Z]$/', $elem);
+            }));
+    if (!empty($problem_ids)) {
+        $conditions[] = 'problem_id IN ("' . preg_replace('/,/', '","', implode(',', $problem_ids)) . '")';
     }
+    return $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
+}
 
-    # where clause for submissions
-    $where_clause_submissions = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
+##########################################################
+# Edit activity
+##########################################################
+
+function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes, $until_minutes) {
     # where clause for edit_activity_problem
-    $where_clause_edit_activity_problem = $where_conditions ? "WHERE " . implode(" AND ", $where_conditions) : "";
+    $where_clause_edit_activity_problem = where_clause($team_ids, $problem_ids);
 
-    ##########################################################
-    # Edit activity
-    ##########################################################
-
-    # Grab the edit_activity_problem rows aggregated by time, binning by every $G_BIN_MINUTES 
+    # Grab the edit_activity_problem rows aggregated by time, binning by every $bin_minutes
     # seconds. Convert to contest time (i.e. minutes between 1-300). 
     $rows = mysql_query_cacheable($db,
         /*
         // This query gives all edits (even if a single team makes many edits)
-        "SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned "
+        "SELECT FLOOR(modify_time / $bin_minutes) * $bin_minutes AS contest_time_binned "
         . ", problem_id, COUNT(*) AS count "
         . "FROM edit_activity_problem "
         . "$where_clause_edit_activity_problem "
         . "GROUP BY problem_id, contest_time_binned "
+        . (isset($until_minutes) ? (" HAVING contest_time_binned < " . intval($until_minutes) . " ") : "")
         . "ORDER BY problem_id, contest_time_binned "
         */
         // This query gives per-problem counts, grouped by team
         "SELECT contest_time_binned, problem_id, count(*) as count FROM "
-        . " (SELECT FLOOR(modify_time / $G_BIN_MINUTES) * $G_BIN_MINUTES AS contest_time_binned, "
+        . " (SELECT FLOOR(modify_time / $bin_minutes) * $bin_minutes AS contest_time_binned, "
         . " problem_id, team_id, COUNT(*) AS count "
         . " FROM edit_activity_problem "
         . $where_clause_edit_activity_problem
         . " GROUP BY problem_id, contest_time_binned, team_id "
         . " HAVING contest_time_binned >= 0 and contest_time_binned <= 300 "
+        . (isset($until_minutes) ? (" AND contest_time_binned < " . intval($until_minutes) . " ") : "")
         . " ORDER BY problem_id, contest_time_binned, team_id "
         . " ) as FOO "
         . " group by problem_id, contest_time_binned "
     );
 
-    # go through all the rows, save each, and determine the maximum counts (for 
-    # scaling of the plot)
     $edit_bins = array();
-    $max_problems_per_bin = 0; // need to know how many problems are solved in any one binned time interval
     foreach ($rows as $row) {
         $count = intval($row["count"]);
         $edit_bins[strtoupper($row["problem_id"])][intval($row["contest_time_binned"])] = $count;
-        $max_problems_per_bin = max($max_problems_per_bin, $count);
     }
-    if ($max_problems_per_bin == 0) {
-        $max_problems_per_bin = 1;
-    }
+    return $edit_bins;
+}
 
-    ##########################################################
-    # Submission activity
-    ##########################################################
+function get_max_problems_per_bin($edit_bins) {
+    // need to know how many problems are solved in any one binned time interval
+    if (empty($edit_bins))
+        return 1;
+    else
+        return max(array_map('max', $edit_bins));
+}
+
+##########################################################
+# Submission activity
+##########################################################
+
+function get_num_at_problem_minute($db, $team_ids, $problem_ids, $until_minutes) {
+    # where clause for submissions
+    if (isset($until_minutes)) {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids,
+                                                 array('contest_time < ' . intval($until_minutes)));
+    } else {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids);
+    }
 
     # get the number of submissions of each problem per minute
     $sql = "select concat(problem_id, '_', contest_time) as problem_minute, count(*) as num_at_problem_minute " .
@@ -94,7 +89,18 @@ function get_activity_data($team_id, $problem_id) {
     $rows = mysql_query_cacheable($db, $sql); # grab the submission activity
     $num_at_problem_minute = array();
     foreach ($rows as $row) {
-        $num_at_problem_minute[$row["problem_minute"]] = intval($row["num_at_problem_minute"] * 1.4); # scale so that we don't hit the ceiling
+        $num_at_problem_minute[$row["problem_minute"]] = intval($row["num_at_problem_minute"] * 1.4); // scale so that we don't hit the ceiling
+    }
+    return $num_at_problem_minute;
+}
+
+function get_submission_activity($db, $team_ids, $problem_ids, $until_minutes) {
+    # where clause for submissions
+    if (isset($until_minutes)) {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids,
+                                                 array('contest_time < ' . intval($until_minutes)));
+    } else {
+        $where_clause_submissions = where_clause($team_ids, $problem_ids);
     }
 
     $sql ="SELECT * FROM submissions "
@@ -112,6 +118,21 @@ function get_activity_data($team_id, $problem_id) {
             'submission_id' => $row['submission_id']
             );
     }
+    return $submissions;
+}
+
+function get_activity_data($team_id, $problem_id, $bin_minutes) {
+    global $COMMON_DATA;
+    $db = init_db();
+
+    // IDEAS:
+    //  - turn on/off certain result types
+
+    $edit_bins = get_edit_activity($db, $team_id, $problem_id, $bin_minutes);
+    $max_problems_per_bin = get_max_problems_per_bin($edit_bins);
+
+    $num_at_problem_minute = get_num_at_problem_minute($db, $team_id, $problem_id);
+    $submissions = get_submission_activity($db, $team_id, $problem_id);
 
     ##########################################################
     # Create the datasets in javascript
@@ -122,8 +143,8 @@ function get_activity_data($team_id, $problem_id) {
     // Create the histograms of edit_activity_problem
     $baseline_counter = 0;
     $baseline_per_problem = array();
-    if (isset($problem_id) && $problem_id != "") {
-        $problems_used = array_map(function($s) { return strtoupper($s); }, explode(",", $problem_id));
+    if (!empty($problem_id)) {
+        $problems_used = $problem_id;
     } else {
         $problems_used = array();
         for ($problem_ndx = 0; $problem_ndx < count($COMMON_DATA['PROBLEM_ID_TO_NAME']); ++$problem_ndx) {
@@ -135,7 +156,7 @@ function get_activity_data($team_id, $problem_id) {
     foreach ($problems_used as $problem_id) {
         $problem_bins = isset($edit_bins[$problem_id]) ? $edit_bins[$problem_id] : array();
         $dataset = array();
-        $dataset["bars"] = array("show" => true, "fill" => 1, "fillColor" => false, "barWidth" => intval($G_BIN_MINUTES * 0.9));
+        $dataset["bars"] = array("show" => true, "fill" => 1, "fillColor" => false, "barWidth" => intval($bin_minutes * 0.9));
         $dataset["legend"] = array("show" => false);
         $dataset["data"] = array();
         foreach ($problem_bins as $time => $count) {
@@ -174,7 +195,9 @@ function get_activity_data($team_id, $problem_id) {
             $scale = max(10, $n);
             $dataset["data"][] = array(
                 $sub["contest_time"],
-                $baseline_per_problem[$problem_id] + $problem_minute_counter[$problem_minute] * $max_problems_per_bin / $scale
+                // avoid problems with misconfigurations by not assuming that we know all IDs
+                (isset($baseline_per_problem[$problem_id]) ? $baseline_per_problem[$problem_id] : 0)
+                + $problem_minute_counter[$problem_minute] * $max_problems_per_bin / $scale
             );
             $problem_minute_counter[$problem_minute]++;
         }
@@ -196,13 +219,22 @@ function get_activity_data($team_id, $problem_id) {
     return $response;
 }
 
+function csv_to_string_array($csv) {
+    return array_filter(explode(',', $csv));
+}
+
+function string_to_alpha_array($string) {
+    return preg_split('//', strtoupper($string));
+}
 
 if (preg_match('/\/activity_data_source.php$/', $_SERVER["SCRIPT_FILENAME"])) {
-    $team_id = isset($_GET["team_id"]) ? $_GET["team_id"] : null;
-    $problem_id = isset($_GET["problem_id"]) ? $_GET["problem_id"] : null;
-    $response = get_activity_data($team_id, $problem_id);
+    $team_id = isset($_GET["team_id"]) ? csv_to_string_array($_GET["team_id"]) : array();
+    $problem_id = isset($_GET["problem_id"]) ? string_to_alpha_array($_GET["problem_id"]) : array();
+    // the resolution of the time-based bins -- FIXME -- make this parameter work from the interface
+    $bin_minutes = 5;
+    if (isset($_GET['bin_minutes']) && intval($_GET['bin_minutes']) > 0)
+      $bin_minutes = intval($_GET['bin_minutes']);
+    $response = get_activity_data($team_id, $problem_id, $bin_minutes);
     header('Content-type: application/json');
     print json_encode($response);
 }
-
-?>

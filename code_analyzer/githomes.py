@@ -21,15 +21,19 @@ class GitHomes:
         # location for the repository of team backup snapshots
         self.gitdir = config[ "teambackup" ][ "gitdir" ]
 
+        # location where to rsync backups from when using 'copy' method
+        self.backupdir = config[ "teambackup" ][ "backupdir" ]
+
+        # Method to retrieve backups.
+        self.pullmethod = config[ "teambackup" ][ "method" ]
+
         # index of the last team in the competition.
         self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
 
-        # base URL for the CDS
-        self.CDSRoot = config[ "CDSRoot" ]
-
-        # user and password for CDS access
-        self.CDSUser = config[ "teambackup" ][ "CDSUser" ]
-        self.CDSPass = config[ "teambackup" ][ "CDSPass" ]
+        # CDS config: base URL and credentials
+        self.CDSRoot = config[ "CDS" ][ "baseurl" ]
+        self.CDSUser = config[ "CDS" ][ "user" ]
+        self.CDSPass = config[ "CDS" ][ "pass" ]
 
         # figure out a start time in the format we will get from the CDS.
         startTime = time.strptime( config['analyzer']['contestStart'], "%Y-%m-%d %H:%M:%S" )
@@ -100,7 +104,19 @@ class GitHomes:
 
         os.chdir( self.origin )
 
-    def pullBackups( self ):
+    def pullBackupsCopy( self ):
+        os.chdir( self.gitdir )
+
+        # Make sure that source path ends with a '/' to sync its contents,
+        # but not the directory itself into the target directory.
+        os.system('rsync -a --delete --exclude=.git %s/ .' % self.backupdir)
+
+        # Make sure that permissions are OK for apache/gitweb.
+        os.system('chmod 755 %s' % self.gitdir)
+
+        os.chdir( self.origin )
+
+    def pullBackupsCDS( self ):
         os.chdir( self.gitdir )
 
         # right now, we're making a new cache directory every time
@@ -156,7 +172,13 @@ class GitHomes:
             # Track how long it takes us to process files.
             beforeTime = datetime.now()
 
-            self.pullBackups()
+            if self.pullmethod == 'CDS':
+                self.pullBackupsCDS()
+            elif self.pullmethod == 'copy':
+                self.pullBackupsCopy()
+            else:
+                print "Unknown method '" + self.pullmethod + "' to acquire backups."
+                exit( 1 )
 
             os.chdir( self.gitdir )
 

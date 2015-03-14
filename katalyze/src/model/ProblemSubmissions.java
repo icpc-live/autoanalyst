@@ -2,7 +2,7 @@ package model;
 
 import java.util.*;
 
-public class ProblemSubmissions {
+public class ProblemSubmissions implements Iterable<Submission>{
 
 	final Problem problem;
 	List<Submission> submissions = new ArrayList<Submission>();
@@ -104,7 +104,11 @@ public class ProblemSubmissions {
 		}		
 	
 		submissions.add(submission);		
-	}	
-	
+	}
 
+
+    @Override
+    public Iterator<Submission> iterator() {
+        return submissions.iterator();
+    }
 }

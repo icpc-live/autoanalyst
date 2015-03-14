@@ -32,6 +32,8 @@ while ($row = mysqli_fetch_assoc($result)) {
     $COMMON_DATA['TEAMS'][$row['id']] = $row;
 }
 
+$COMMON_DATA["CODEACTIVITY"] = $config['codeActivity'];
+
 /*
 If this script was called (executed) from another source, return a JSON
 encoding of the data. Otherwise, assume it was included in another PHP file and

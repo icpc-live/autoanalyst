@@ -1,10 +1,10 @@
 <?php
 
 
-$date          =& $_GET["date"];
-$user          =& $_GET["user"];
-$priority      =& $_GET["priority"];
-$text          =& $_GET["text"];
+$date          =& $_REQUEST["date"];
+$user          =& $_REQUEST["user"];
+$priority      =& $_REQUEST["priority"];
+$text          =& $_REQUEST["text"];
 
 require_once 'icat.php';
 $db = init_db();
