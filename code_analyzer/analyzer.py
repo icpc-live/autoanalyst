@@ -9,7 +9,7 @@ if cmd_folder not in sys.path:
 
 from common import dbConn, DEFAULT_TAG, BACKUP_TOP, config
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import itertools
 import time
 import calendar
@@ -95,11 +95,12 @@ class Analyzer:
         # path to the top of the backup directory.
         self.basePath = basePath
 
-        # Time of the latest current backup, in the local filesystem time.
-        self.latestBackupTime = None
-
         # index of the last team in the competition.
         self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
+
+        # interval for updating team backups, used in this script to freshen stale modification
+        # times, if it looks like there's a reason.
+        self.backupInterval = config[ "teambackup" ][ "interval" ]
 
         # Strings to strip from the filename before we try to guess
         self.commonStrips = [ 'problem', 'prob', '_', '-' ]
@@ -120,7 +121,8 @@ class Analyzer:
         # list of problem letters, from the configuration.
         self.problemList = config['problems']
 
-        # Contest start time, in UTC seconds, from the configuration.
+        # Contest start time, in UTC seconds, from the configuration, convert to
+        # unix seconds (in local time) while comparing times.
         t = config['analyzer']['contestStart']
         self.contestStart = int( calendar.timegm( time.strptime( t, "%Y-%m-%d %H:%M:%S" ) ) )
 
@@ -397,6 +399,9 @@ class Analyzer:
         """Scan the given backup dir and generate reports of the state of
         files believed to correspond to various problems in the problem set."""
 
+        # Time when this script started running.
+        scriptStartTime = int( time.time() )
+
         self.loadConfiguration()
 
         # Get diff reports from git.
@@ -422,13 +427,20 @@ class Analyzer:
                 if extension in self.extensionMap:
                     fobj = File( fname, os.path.getmtime( f ) )
 
-                    # Get lines changed, etc.  We need to consult the
-                    # git diff output.
+                    # Get lines changed, etc.  We need to consult the git diff output.
+                    # The tag is to make sure we only record lines changed on an analysis
+                    # pass that's paired to a git commit.  Independent analysis passes
+                    # don't get this, since that could infate the appearance of how
+                    # much editing is being done.
                     gitPath = f[len(bdir) + 1:]
                     if gitPath in gitDiffs and tag != DEFAULT_TAG:
                         fobj.linesChanged = gitDiffs[ gitPath ][ 0 ] + gitDiffs[ gitPath ][ 1 ];
-                    mappingRec = None;
-                    lastEditRec = None;
+
+                    mappingRec = None
+                    lastEditRec = None
+
+                    # Files with completely implausible modification times can get ignored.
+                    ignoreEdit = False
 
                     # see if there's a mapping for this file.
                     if ( team, fname ) in self.fileMappings:
@@ -456,15 +468,32 @@ class Analyzer:
                     if ( autoTime != None and autoTime > fobj.time ):
                         fobj.time = autoTime
 
-                    # Is this newer than our last known edit?  Or, did
-                    # we just do a commit and git thinks the file has
-                    # changed.  These may not always agree if, say, an
-                    # editor auto-save thinks a file has changed, but
-                    # git hasn't seen the change yet.  We record both
-                    # types of changes, but we don't want to log git's changed
-                    # lines multiple times.
-                    if ( lastEditRec == None or lastEditRec[ 1 ] + 10 < fobj.time or
-                         fobj.linesChanged > 0 ):
+                    # Try to gurad against anomalous file edit times. These are unlikely to happen,
+                    # but they could look strange in the report or even suppress tracking of files
+                    # if they have a modification time in the future.
+
+                    # No edits should happen before the start of the contest or after right now.
+                    if fobj.time < self.contestStart:
+                        fobj.time = self.contestStart
+                   
+                    # If the file really changes, we definitely want to record it, possibly with
+                    # a sane-ified modification time.
+                    if fobj.time < scriptStartTime - 2 * self.backupInterval:
+                        if fobj.linesChanged > 0:
+                            fobj.time = int( scriptStartTime - self.backupInterval / 2 )
+
+                    # If the file looks like it changed in the future, ignore it unless git agrees it's changing.
+                    if fobj.time > scriptStartTime + self.backupInterval:
+                        print "Future Modification: ", fobj.path, " changed ", fobj.linesChanged
+                        if fobj.linesChanged > 0:
+                            fobj.time = scriptStartTime
+                        else:
+                            ignoreEdit = True
+
+                    # Is this newer than our last known edit?
+                    # We don't just depend on git for this, since we can
+                    # also watch auto-saves.
+                    if not ignoreEdit and ( lastEditRec == None or lastEditRec[ 1 ] + 10 < fobj.time ):
                         if lastEditRec == None:
                             lastEditRec = [ None, None, None ]
                             self.lastEditTimes[ ( team, fname ) ] = lastEditRec
