@@ -57,8 +57,11 @@ if ($team_id || $problem_id) {
 }
 $sql = "SELECT lang_id, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id";
 $rows = mysql_query_cacheable($db, $sql);
+$language_location = array();
+$i = 0;
 foreach ($rows as $row) {
     $count_per_language[$row['lang_id']] = $row['count'];
+	$language_location[$row['lang_id']] = $i++;
 }
 
 $flot_count_data = array();
@@ -66,7 +69,6 @@ $flot_count_data = array();
 $sql = "SELECT lang_id, result, COUNT(*) AS count FROM submissions $where_clause GROUP BY lang_id, result";
 $rows = mysql_query_cacheable($db, $sql);
 
-$language_location = array("C" => 0, "C++" => 1, "Java" => 2);
 foreach ($rows as $row) {
     $submission_result = $row['result'];
     $lang_id = $row['lang_id'];
