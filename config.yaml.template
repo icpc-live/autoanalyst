@@ -28,6 +28,15 @@ teambackup:
     interval:  120
     lastTeam:  119
 
+codeActivity:
+    scoreboardFreezeMinutes:   240
+    defaultGranularityMinutes: 5
+
+# FIXME: the stuff below is not really configuration and should be
+# obtained from e.g. the CDS via REST API calls 'contest' for contest
+# start time and 'problems'. Not clear from where the judgements data
+# should come from.
+
 # Code analyzer parameters.
 analyzer:
     # Start time for the contest in UTC.  We must have this somewhere else, right?
@@ -57,7 +66,3 @@ judgements:
     MLE:  { label: MLE, label_long: "Memory Limit Exceeded", color: "#ffffaa", sortOrder: 7 }
     OLE:  { label: OLE, label_long: "Output Limit Exceeded", color: "#ff00ff", sortOrder: 8 }
     PE:   { label: PE , label_long: "Presentation Error"   , color: "#aaaaaa", sortOrder: 9 }
-
-codeActivity:
-    scoreboardFreezeMinutes:   240
-    defaultGranularityMinutes: 5

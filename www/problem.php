@@ -117,7 +117,7 @@ $(document).ready(function() {
 
 <?php navigation_container(); ?>
 
-<h1>Problem <?php echo $problem_id; ?> &mdash; <?php echo $COMMON_DATA['PROBLEM_ID_TO_NAME'][$problem_id]; ?> </h1>
+<h1>Problem <?php echo $problem_id; ?> &mdash; <?php echo $common_data['problems'][$problem_id]['name']; ?> </h1>
 
 <div id="statistics_activity_container">
 <div id='problem_statistics'>

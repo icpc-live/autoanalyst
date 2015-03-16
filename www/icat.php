@@ -140,7 +140,7 @@ function scrape_kattis_scoreboard_for_team($team_id)
 
 
 function navigation_container($additional_links = '') {
-    global $COMMON_DATA;
+    global $common_data;
 ?>
 <div id="navigation_container">
     <div id='searchbox_container' title="Search by school name, team number, problem letter, or three-letter country">
@@ -149,8 +149,7 @@ function navigation_container($additional_links = '') {
     
     <div id='problem_list_container'>
     <?php
-    for ($i = 0; $i < count($COMMON_DATA['PROBLEM_ID_TO_NAME']); ++$i) {
-        $c = chr(ord('A') + $i);
+    foreach ($common_data['problems'] as $c => $data) {
         print("<a href='problem.php?problem_id=$c'>$c</a>&nbsp;");
     }
     ?>

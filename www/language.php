@@ -40,8 +40,8 @@ if ($team_id || $problem_id) {
         $clauses[] = "team_id IN (" . implode(",", $ids) . ")";
         $team = (count($ids) > 1) ? "teams" : "team";
         $ids = array_map(function ($id) {
-            global $COMMON_DATA;
-            return "<a href='team.php?team_id=$id'>" . $COMMON_DATA["TEAMS"][$id]["school_short"] . "</a>";
+            global $common_data;
+            return "<a href='team.php?team_id=$id'>" . $common_data["teams"][$id]["school_short"] . "</a>";
         }, $ids);
         $descriptions[] = "$team: " . implode(", ", $ids);
     }
@@ -74,8 +74,8 @@ foreach ($rows as $row) {
 
     if (! array_key_exists($submission_result, $flot_count_data)) {
         $new_row = array(
-            "label" => $COMMON_DATA['JUDGEMENTS'][$submission_result]['label_long'],
-            "color" => $COMMON_DATA['JUDGEMENTS'][$submission_result]['color'],
+            "label" => $common_data['judgements'][$submission_result]['label_long'],
+            "color" => $common_data['judgements'][$submission_result]['color'],
             "data" => array(),
         );
         $flot_count_data[$submission_result] = $new_row;
@@ -91,7 +91,7 @@ foreach ($rows as $row) {
 
 $flot_count_data_ordered = array();
 $flot_percent_data_ordered = array();
-foreach ($COMMON_DATA['JUDGEMENTS'] as $short => $data) {
+foreach ($common_data['judgements'] as $short => $data) {
     if (array_key_exists($short, $flot_count_data)) {
         $flot_count_data_ordered[] = $flot_count_data[$short];
         $flot_percent_data_ordered[] = $flot_percent_data[$short];
@@ -106,7 +106,7 @@ $xticks = json_encode($xticks);
 ?>
 
 <script type="text/javascript">
-var COMMON_DATA = get_json_synchronous("common_data.php");
+var common_data = get_json_synchronous("common_data.php");
 $(document).ready(
     function() {
         var series_common = {
@@ -188,7 +188,7 @@ function displaySubmissions(result) {
         var school_name = t_ndx;
         try {
             // FIXME -- shouldn't need this try/catch if all the school names are properly in the database
-            school_name = COMMON_DATA['TEAMS'][t_ndx]['school_name'];
+            school_name = common_data['teams'][t_ndx]['school_name'];
         } catch (e) {}
 
         var team_submissions = [];

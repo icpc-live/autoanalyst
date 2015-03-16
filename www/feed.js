@@ -47,8 +47,8 @@ function feed(div, properties) {
     GLOBAL_FEED_ID_COUNTER++;
 
     var data = get_json_synchronous("common_data.php");
-    this.TEAMS = data['TEAMS'];
-    this.JUDGEMENTS = data['JUDGEMENTS'];
+    this.teams = data['teams'];
+    this.judgements = data['judgements'];
     this.tz_offset = "+0000"; // assume UTC timestamps
 
     this.div = $(div);
@@ -213,7 +213,7 @@ function _feed_updateWith(rows) {
                         function(match, contents, offset, s) {
                             var link = contents;
                             try { // FIXME: QUICK FIX FOR DATABASE WITH NOT ENOUGH TEAMS IN IT
-                                link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a> (#t" + contents + ")";
+                                link = "<a href='team.php?team_id=" + contents + "'>" + self.teams[contents]['school_short'] + "</a> (#t" + contents + ")";
                             } catch (e) { }
                             return link;
                         });
@@ -228,19 +228,19 @@ function _feed_updateWith(rows) {
                 // FIXME: remove hardcoded URL
                 var gitweb_url = '/gitweb/?p=teambackups;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
+                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.teams[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
                               row.modify_time + 
                               "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
             } else if (this.table == 'submissions') {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
-                var result = "<span class='" + is_accepted + "'>" + self.JUDGEMENTS[row.result].label_long + "</span>";
+                var result = "<span class='" + is_accepted + "'>" + self.judgements[row.result].label_long + "</span>";
 
                 var school_name = "Team " + row.team_id;
                 try {
                     // FIXME -- this protection is only here if the school_name
                     // is not in the databases
-                    school_name = self.TEAMS[row.team_id]['school_short'];
+                    school_name = self.teams[row.team_id]['school_short'];
                 } catch (e) {}
                 description = row_contest_time + ': ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +

@@ -4,11 +4,11 @@ require_once 'icat.php';
 $db = init_db();
 
 function result_per_problem($problem_id, $db) {    
-    global $COMMON_DATA;
+    global $common_data;
     $result = mysqli_query($db, "select result, count(*) as count from submissions where problem_id = '" . $problem_id . "' group by result");
     $proportion_data = array();
     while ($result && ($row = mysqli_fetch_assoc($result))) {
-        $judgement_info = $COMMON_DATA['JUDGEMENTS'][$row['result']];
+        $judgement_info = $common_data['judgements'][$row['result']];
         $count = (int)$row['count'];
         $proportion_data[] = array(
             "label" => $judgement_info['label'] . " ($count)",

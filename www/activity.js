@@ -11,8 +11,8 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
     self.target.data("activity_plot", self);
     self.update_interval = 5 * 1000;
     var data = get_json_synchronous("common_data.php");
-    self.BALLOON_COLORS = data['BALLOON_COLORS'];
-    self.TEAMS= data['TEAMS'];
+    self.problems = data['problems'];
+    self.teams = data['teams'];
 
     self.plot = function(response) {
         var problems_used = response.problems_used;
@@ -29,7 +29,7 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
             var pid = problems_used[i].toUpperCase();
             var href = set_query_field(window.location.href, 'problem_id', pid);
             ticks.push([i * problem_height, '<a href="' + href + '">' + pid + '</a>']);
-            colors.push(self.BALLOON_COLORS[pid]);
+            colors.push(self.problems[pid]['color']);
         }
 
         var options = {
@@ -123,7 +123,7 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
                         // for the submissions
                         var school_name = 'UNKNOWN';
                         try {
-                            school_name = self.TEAMS[item.series.submissionInfo[item.dataIndex].team_id]['school_name'];
+                            school_name = self.teams[item.series.submissionInfo[item.dataIndex].team_id]['school_name'];
                         } catch (e) {}
                         content = item.series.label + ": " 
                                 + school_name +

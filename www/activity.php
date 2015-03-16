@@ -7,7 +7,6 @@ $team_ids = array();
 function parse_team_ids() {
     global $team_id, $problem_id;
     global $team_ids;
-    global $COMMON_DATA;
     if (isset($team_id) && $team_id != "") {
         $team_id_ranges = explode(",", $team_id);
         foreach ($team_id_ranges as $range) {
@@ -26,8 +25,7 @@ function which_view() {
         print("Team: " . 
             implode(", ", 
                 array_map(function($tid) {
-                    global $COMMON_DATA;
-                    return "<a href='team.php?team_id=$tid'>$tid</a>";//" . $COMMON_DATA['TEAMS'][$tid]['school_name'] . "</a>";
+                    return "<a href='team.php?team_id=$tid'>$tid</a>";
                 }, $team_ids)
             )
         );

@@ -92,7 +92,7 @@ $(document).ready(function() {
 
 <?php
 $prev_next = sprintf("<a href='team.php?team_id=%d'>Previous team</a>", max($team_id - 1, 1))
-           . sprintf("<a href='team.php?team_id=%d'>Next team</a>", min($team_id + 1, count($COMMON_DATA['TEAMS'])));
+           . sprintf("<a href='team.php?team_id=%d'>Next team</a>", min($team_id + 1, count($common_data['teams'])));
 navigation_container($prev_next);
  ?>
 

@@ -7,7 +7,7 @@ $db = init_db();
 
 $team_ids = isset($_GET['team_id']) ? csv_to_string_array($_GET['team_id']) : array();
 $problem_ids = isset($_GET['problem_id']) ? string_to_alpha_array($_GET['problem_id']) : array();
-$granularity = isset($_GET['granularity']) ? intval($_GET['granularity']) : $COMMON_DATA['CODEACTIVITY']['defaultGranularityMinutes'];
+$granularity = isset($_GET['granularity']) ? intval($_GET['granularity']) : $config['codeActivity']['defaultGranularityMinutes'];
 $granularity = max($granularity, 1);
 
 $response = array();
@@ -15,7 +15,7 @@ $response['granularity'] = $granularity;
 
 $problems = array();
 
-$submissions = get_submission_activity($db, $team_ids, $problem_ids, $COMMON_DATA['CODEACTIVITY']['scoreboardFreezeMinutes']);
+$submissions = get_submission_activity($db, $team_ids, $problem_ids, $config['codeActivity']['scoreboardFreezeMinutes']);
 $sub = array();
 foreach ($submissions as $judgment => $submission_list) {
     foreach ($submission_list as $submission) {
@@ -33,7 +33,7 @@ foreach ($submissions as $judgment => $submission_list) {
     }
 }
 
-$edit_activity = get_edit_activity($db, $team_ids, $problem_ids, $granularity, $COMMON_DATA['CODEACTIVITY']['scoreboardFreezeMinutes']);
+$edit_activity = get_edit_activity($db, $team_ids, $problem_ids, $granularity, $config['codeActivity']['scoreboardFreezeMinutes']);
 foreach ($edit_activity as $problem => $raw_activity) {
     $activity = array();
     foreach ($raw_activity as $minute => $edits) {

@@ -122,7 +122,7 @@ function get_submission_activity($db, $team_ids, $problem_ids, $until_minutes) {
 }
 
 function get_activity_data($team_id, $problem_id, $bin_minutes) {
-    global $COMMON_DATA;
+    global $common_data;
     $db = init_db();
 
     // IDEAS:
@@ -146,10 +146,7 @@ function get_activity_data($team_id, $problem_id, $bin_minutes) {
     if (!empty($problem_id)) {
         $problems_used = $problem_id;
     } else {
-        $problems_used = array();
-        for ($problem_ndx = 0; $problem_ndx < count($COMMON_DATA['PROBLEM_ID_TO_NAME']); ++$problem_ndx) {
-            $problems_used[] = chr(ord('A') + $problem_ndx);
-        }
+        $problems_used = array_keys($common_data['problems']);
     }
 
 
@@ -168,7 +165,7 @@ function get_activity_data($team_id, $problem_id, $bin_minutes) {
     }
 
     // Create series of points for submissions, one per type of result
-    $point_options_by_result = $COMMON_DATA['JUDGEMENTS'];
+    $point_options_by_result = $common_data['judgements'];
     foreach (array_keys($point_options_by_result) as $result) {
         $point_options_by_result[$result]["shadowSize"] = 0;
         $point_options_by_result[$result]["points"] = array("show" => true, "radius" => 2,  "fillColor" => false, "fill" => 1);

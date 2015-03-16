@@ -8,17 +8,10 @@ require_once 'config.php';
 $db = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 mysqli_set_charset($db,"utf8");
 
-$COMMON_DATA = array();
+$common_data = array();
 
-$COMMON_DATA["BALLOON_COLORS"] = array();
-$COMMON_DATA["PROBLEM_ID_TO_NAME"] = array();
-
-foreach ( $config['problems'] as $key => $data ) {
-	$COMMON_DATA["BALLOON_COLORS"][$key] = $data['color'];
-	$COMMON_DATA["PROBLEM_ID_TO_NAME"][$key] = $data['name'];
-}
-
-$COMMON_DATA["JUDGEMENTS"] = $config['judgements'];
+// Expose configuration here to make it accessible to JavaScript code.
+$common_data['config'] = $config;
 
 function sort_judgement_data(&$arr) {
     @usort($arr, function($a, $b) {
@@ -26,13 +19,17 @@ function sort_judgement_data(&$arr) {
     });
 }
 
-$result = mysqli_query($db, "SELECT id, team_name, school_name, school_short, country FROM teams ORDER BY id");
-$COMMON_DATA['TEAMS'] = array();
-while ($row = mysqli_fetch_assoc($result)) {
-    $COMMON_DATA['TEAMS'][$row['id']] = $row;
-}
+// Expose non-configuration elements directly instead of in $config.
+$common_data['problems']   = $config['problems'];
+$common_data['judgements'] = $config['judgements'];
 
-$COMMON_DATA["CODEACTIVITY"] = $config['codeActivity'];
+unset($config['problems'],$config['judgements']);
+
+$result = mysqli_query($db, "SELECT id, team_name, school_name, school_short, country FROM teams ORDER BY id");
+$common_data['teams'] = array();
+while ($row = mysqli_fetch_assoc($result)) {
+    $common_data['teams'][$row['id']] = $row;
+}
 
 /*
 If this script was called (executed) from another source, return a JSON
@@ -41,7 +38,7 @@ print nothing.
 */
 if (preg_match('/\/common_data.php$/', $_SERVER["SCRIPT_FILENAME"])) {
     header('Content-type: application/json');
-    print json_encode($COMMON_DATA);
+    print json_encode($common_data);
 }
 
 ?>
