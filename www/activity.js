@@ -85,8 +85,7 @@ function ActivityPlot(target, team_id, problem_id, update, clickable) {
         var msg, url;
         if (self.team_id && /^[0-9]+$/.test(self.team_id)) {
             msg = 'View Submission';
-            // FIXME: remove hardcoded URL
-            url = '/domjudge/jury/submission.php?ext_id=' + clicked_item.submission_id;
+            url = submission_url(clicked_item.submission_id,data['config']);
         } else {
             msg = 'View Team Activity';
             url = set_query_field(window.location.href, 'team_id', clicked_item.team_id);

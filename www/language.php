@@ -196,7 +196,7 @@ function displaySubmissions(result) {
         var team_submissions = [];
         for (s_ndx in submissions[t_ndx]) {
             var sub = submissions[t_ndx][s_ndx];
-            team_submissions.push("<a href='/domjudge/jury/submission.php?ext_id=" + sub.submission_id + "'>" + sub.problem_id + "</a>");
+            team_submissions.push("<a href='" + submission_url(sub.submission_id,common_data['config']) + "'>" + sub.problem_id + "</a>");
         }
         text.push("<a href='team.php?team_id=" + t_ndx + "'>" + school_name + "</a>: (" + team_submissions.join(", ") + ")");
     }

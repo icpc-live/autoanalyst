@@ -180,6 +180,7 @@ function _feed_update() {
 // Update the feed with results returned by the ajax query.
 function _feed_updateWith(rows) {
     var self = this;
+    var data = get_json_synchronous("common_data.php");
 
     // update the select box the first time we see a row with the column titles
     // of the row
@@ -203,7 +204,7 @@ function _feed_updateWith(rows) {
             var description = '';
             var row_contest_time = row.contest_time;
             if (row.submission_id) {
-                row_contest_time = "<a href='/domjudge/jury/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>';
+                row_contest_time = "<a href='" + submission_url(row.submission_id,data['config']) + "'>" + row.contest_time + '</a>';
             }
             if (this.formatter) {
                 description = this.formatter(row);
