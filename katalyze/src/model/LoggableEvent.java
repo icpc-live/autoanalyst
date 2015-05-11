@@ -29,7 +29,7 @@ public class LoggableEvent {
 		this.supplements = supplements;
 	}
 	
-	public LoggableEvent(Contest contest, Team team, String message, int contestTime, EventImportance importance) {
+	public LoggableEvent(Contest contest, Team team, String message, int contestTime, EventImportance importance, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = team;
@@ -37,7 +37,7 @@ public class LoggableEvent {
 		this.message = message;
 		this.icatMessage = message;
 		this.importance = importance;
-		this.supplements = null;
+		this.supplements = supplements;
 		this.submission = null;
 	}
 

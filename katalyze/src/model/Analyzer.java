@@ -59,13 +59,16 @@ public class Analyzer implements NotificationTarget {
 				message = message.replace(problemTag, problem.getName());
 			}
 		}
-		
-		LoggableEvent newEvent = new LoggableEvent(
+
+        Map supplements = new HashMap<String, String>();
+        supplements.put("category", "human");
+
+        LoggableEvent newEvent = new LoggableEvent(
 				contest,
 				firstTeam,
 				message,
 				msg.contestTime,
-				EventImportance.Normal);
+				EventImportance.Normal, supplements);
 
 		return newEvent;
 		

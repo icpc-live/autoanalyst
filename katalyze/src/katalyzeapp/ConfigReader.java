@@ -27,6 +27,8 @@ import model.ShellNotificationTarget;
 import model.TwitterNotificationTarget;
 import model.WebNotificationTarget;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 public class ConfigReader {
 	static Logger logger = Logger.getLogger(ConfigReader.class);
 	

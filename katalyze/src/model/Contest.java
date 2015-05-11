@@ -89,11 +89,6 @@ public class Contest {
 		submissions.add(newSubmission);
 		analyzer.notifySubmission(newSubmission);
 	}
-
-	public Standings getPreviousStandings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public void addProblem(Problem newProblem) {
 		problems.add(newProblem);

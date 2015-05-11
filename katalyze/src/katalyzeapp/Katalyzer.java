@@ -60,8 +60,8 @@ public class Katalyzer {
 					contest.updateTime(contestTime);
 				}
 				handlers.process(message);
-				updateScoreboards(false);
-			}						
+			}
+            updateScoreboards(false);
 		}
 		// Ok, we're done. Push the final standings.
 		updateScoreboards(true);

@@ -5,9 +5,10 @@ import java.util.HashMap;
 import web.Publisher;
 
 
+
 public class WebNotificationTarget implements NotificationTarget {
-	
-	final Publisher publisher;
+
+    final Publisher publisher;
 	
 	PublishableEventList allEvents;
 	HashMap<Team, PublishableEventList> teamEvents = new HashMap<Team, PublishableEventList>();
@@ -26,7 +27,7 @@ public class WebNotificationTarget implements NotificationTarget {
 	@Override
 	public void notify(LoggableEvent event) {
 		allEvents.add(event);
-		
+
 		if (event.team != null) {
 			PublishableEventList teamList = teamEvents.get(event.team);
 			if (teamList == null) {
