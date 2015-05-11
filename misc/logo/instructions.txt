@@ -1,0 +1,38 @@
+Building the logo requires a few steps, depending on how much you want
+to change.  If you're doing all the steps, you'll need to first render
+texture images in gimp, then use these in blender to render some foreground
+and background images.  Finally, you'll combine the blender output images
+using gimp again.
+
+We'll look at how to build the rectangular logo first.
+
+Under rectangle are two gimp files, code.xcf for what you can see
+through the magnifying glass, and background.xcf for what you see
+everywhere else.  These would be a good place to change the text
+position, size, etc.  You can export these as png files under the
+same name, e.g., background.xcf --export-to--> background.png
+
+Then, to build the logos, we render up to three different images in blender.
+Open the magnify.blend file and render what's in layer 1 to get the
+main images.  There's a background plane with a texture map set to
+either background.png or code.png.  I just change this to point to each
+background image and render it each time.  Then (if you need to move
+the magnifying glass), you may need to also render the sphere in layer
+11.  Save each of these to a file  background_render.png, code_render.png
+or mask_render.png.
+
+Once these blender rendered images are in good shape, you can use the
+logo.xcf to combine them into the final logo.  The background_render.png
+is in the bottom later, the code_render.png is in the upper layer, and the
+mask_render.png is a layer mask for code_render.png.  As it comes out of
+blender, the colors in mask_render.png won't be quite right.  You'll need
+to fill the circle with solid white and fill the background with solid
+black before using it as a layer mask.
+
+Finally, you can export a png for the resulting logo.
+
+Instructions are similar for the square version of the logo, but there
+aren't xcf files for the foreground and background images.  I just built
+these from the xcf files under rectangular for this.  I included
+the resulting png files to simplify building, in case no changes to the
+texture images are required.
