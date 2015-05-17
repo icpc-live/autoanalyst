@@ -57,6 +57,8 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
     private int getEventImportanceNumber(EventImportance src) {
         switch (src) {
             case Breaking:
+                return 0;
+            case AnalystMessage:
                 return 1;
             case Normal:
                 return 2;

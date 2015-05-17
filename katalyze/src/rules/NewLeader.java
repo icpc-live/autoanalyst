@@ -8,17 +8,19 @@ import model.Team;
 
 public class NewLeader extends StateComparingRuleBase implements StandingsUpdatedEvent {
 
-	private int numberOfPositionsToMonitor;
+    private int breakingPrioRanks;
+    private int normalPrioRanks;
 	
-	public NewLeader(int numberOfPositionsToMonitor) {
-		this.numberOfPositionsToMonitor = numberOfPositionsToMonitor;
-	}
+	public NewLeader(int breakingPrioRanks, int normalPrioRanks) {
+        this.breakingPrioRanks = breakingPrioRanks;
+        this.normalPrioRanks = normalPrioRanks;
+    }
 	
 	private EventImportance fromRank(int rank) {
-		if (rank <= 4) {
+		if (rank <= breakingPrioRanks) {
 			return EventImportance.Breaking;
 		}
-		if (rank < numberOfPositionsToMonitor) {
+		if (rank <= normalPrioRanks) {
 			return EventImportance.Normal;
 		}
 		return EventImportance.Whatever;
@@ -55,7 +57,7 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 		Score score = transition.after.scoreOf(team);
 		
 		int solvedProblemCount = score.solvedProblemCount();
-		EventImportance defaultImportance = fromRank(rankAfter);
+		EventImportance importance = fromRank(rankAfter);
 
 		String solvedProblemsText = problemsAsText(solvedProblemCount);
 		
@@ -63,17 +65,17 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 		
 		
 		if (solvedProblemCount == 1) {
-			event = transition.createEvent(String.format("{team} solves its first problem: {problem}"), EventImportance.Normal);
+			event = transition.createEvent(String.format("{team} solves its first problem: {problem}"), importance);
 		} else if (rankAfter == 1 && rankBefore == 1) {
-			event = transition.createEvent(String.format("{team} extends its lead by solving {problem}. It has now solved %s", solvedProblemsText),  EventImportance.Breaking);
+			event = transition.createEvent(String.format("{team} extends its lead by solving {problem}. It has now solved %s", solvedProblemsText),  importance);
 		} else if (rankAfter < rankBefore) {
 			if (rankAfter == 1) {
-				event = transition.createEvent(String.format("{team} now leads the competition after solving {problem}. It has now solved %s", solvedProblemsText),  EventImportance.Breaking);
+				event = transition.createEvent(String.format("{team} now leads the competition after solving {problem}. It has now solved %s", solvedProblemsText),  importance);
 			} else {
-				event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s and is at rank %d (%d)", solvedProblemsText, rankAfter, rankBefore), defaultImportance);
+				event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s and is at rank %d (%d)", solvedProblemsText, rankAfter, rankBefore), importance);
 			}
 		} else if (rankAfter == rankBefore) {
-			event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s, but is still at rank %d", solvedProblemsText, rankAfter), defaultImportance);
+			event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s, but is still at rank %d", solvedProblemsText, rankAfter), importance);
 		} else {
 			assert rankAfter <= rankBefore;
 		}

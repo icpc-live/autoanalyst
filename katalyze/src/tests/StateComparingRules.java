@@ -29,7 +29,7 @@ public class StateComparingRules extends ContestSimulatorTest {
 		Accepted(teams[0], problems[0], 5);
 		Accepted(teams[1], problems[1], 6);
 
-		analyzer.addRule(new NewLeader(3));
+		analyzer.addRule(new NewLeader(3, 8));
 		Accepted(teams[5], problems[2], 8);		
 		Accepted(teams[5], problems[1], 11);
 		assertTrue(notifier.containsFragment("Team 5 now leads"));

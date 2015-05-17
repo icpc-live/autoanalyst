@@ -123,7 +123,7 @@ public class ConfigReader {
 	
 	private void setupRules(Analyzer analyzer) {
 		addRuleIfEnabled(analyzer, "problemFirstSolved", new ProblemFirstSolved());
-		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("rule.newLeader.ranks", 10)));
+		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("rule.newLeader.breakingRanks",4), config.getInt("rule.newLeader.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("rule.RejectedSubmission.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("rule.rankPredictor.ranks", 10)));
 	}

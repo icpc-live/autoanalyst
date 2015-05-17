@@ -63,12 +63,16 @@ public class Analyzer implements NotificationTarget {
         Map supplements = new HashMap<String, String>();
         supplements.put("category", "human");
 
+        // Ensure breaking events get treated as such. Treat all other events that come from here as
+        // being manually entered by an analyst.
+        EventImportance importance = (msg.priority == 0) ? EventImportance.Breaking : EventImportance.AnalystMessage;
+
         LoggableEvent newEvent = new LoggableEvent(
 				contest,
 				firstTeam,
 				message,
 				msg.contestTime,
-				EventImportance.Normal, supplements);
+				importance, supplements);
 
 		return newEvent;
 		

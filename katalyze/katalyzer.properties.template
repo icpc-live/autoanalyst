@@ -34,6 +34,11 @@ twitter.hashtag = "#katalyzer"
 eventStream.enable = true
 eventStream.target = /Users/Stein/Dev/icat/bin/eventstream.xml
 
+# The eventStream.target file needs to be writable by the katalyzer process in order for
+# the event stream to be available. This also applies if you are only accessing the event
+# stream using http
+
+
 # ---- RULES ---------------------------------------------------------------------------
 
 # ProblemFirstSolved - whenever a problem is solved for the first time
@@ -42,6 +47,7 @@ rule.problemFirstSolved.enable = true
 # NewLeader - when a team takes the lead, or gets into the top n positions
 rule.newLeader.enable = true
 rule.newLeader.ranks = 10
+rule.newLeader.breakingRanks = 5
 
 # RejectedSubmission - when the judges reject a submission from one of the
 # top n teams
