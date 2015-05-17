@@ -116,6 +116,18 @@ class GitHomes:
 
         os.chdir( self.origin )
 
+    def pullBackupsSimulate( self ):
+        os.chdir( self.gitdir )
+
+        # Check out the next revision in the existing repository
+        # instead of trying to import anything.
+        os.system('git checkout $(git rev-list HEAD..master | tail -n1)')
+
+        # Make sure that permissions are OK for apache/gitweb.
+        os.system('chmod 755 %s' % self.gitdir)
+
+        os.chdir( self.origin )
+
     def pullBackupsCDS( self ):
         os.chdir( self.gitdir )
 
@@ -176,6 +188,8 @@ class GitHomes:
                 self.pullBackupsCDS()
             elif self.pullmethod == 'copy':
                 self.pullBackupsCopy()
+            elif self.pullmethod == 'simulate':
+                self.pullBackupsSimulate()
             else:
                 print "Unknown method '" + self.pullmethod + "' to acquire backups."
                 exit( 1 )
