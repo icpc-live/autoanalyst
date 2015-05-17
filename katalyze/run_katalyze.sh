@@ -3,7 +3,7 @@
 
 # construct the colon-separated classpath of jar files in the lib directory,
 # plus the src directory 
-CP=`find lib/*.jar | tr '\n' ':'`src
+CP=`find lib/*.jar | tr '\n' ':'`bin
 
 echo $CP
 
