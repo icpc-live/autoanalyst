@@ -185,7 +185,7 @@ function add_entry_container($db) {
 <div id='add_entry_container'>
     <form class='add_entry_form' action=''>
     <table>
-        <tr> <th></th> <th>user</th> <th>priority</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
+        <tr> <th></th> <th>user</th> <th>priority (0=highest)</th> <th>text (use #tN and #pX to indicate team/problem tags)</th> </tr>
         <tr>
             <td><input type="submit" value="Add entry"    class="add_entry_button"></td>
             <?php
@@ -195,7 +195,7 @@ function add_entry_container($db) {
             }
             ?>
             <td><input type="text"   name="user"          size="8" value="<?php echo $entry_username; ?>"></td>
-            <td><input type="text"   name="priority"      size="8" value="0"></td>
+            <td><input type="text"   name="priority"      size="8" value="1"></td>
             <td><input type="text"   name="text"          size="80" value="<?php echo $tags; ?>" id="txtEntry"></td>
         </tr>
     </table>

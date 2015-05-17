@@ -142,6 +142,7 @@
 .feed_container .feed_row span.priority_0 { font-size: 120%; font-weight: bold; }
 .feed_container .feed_row span.priority_1 { font-size: 100%; }
 .feed_container .feed_row span.priority_2 { font-size: 75%; }
+.feed_container .feed_row span.priority_lowest { font-size: 60%; }
 
 .feed_container .feed_row.feed_row_recent { background: yellow; }
 

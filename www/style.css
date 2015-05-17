@@ -154,3 +154,23 @@ div.flot_plot_title { text-align: center; }
 /* Enable this on selected pages */
 div#hide_uninteresting_teams_container { display: inline-block; visibility: hidden; }
 
+/* ----------------------- */
+/* ADD ENTRY CONTAINER     */
+/* ----------------------- */
+div#add_entry_container {
+    position: fixed;
+    bottom: 0px;
+    width: 90%;
+    left: 5%;
+    background: white;
+    border: thin solid black;
+}
+
+div#add_entry_container table{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body {
+    margin-bottom: 5em; /* to make room for the add_entry_container */
+}
