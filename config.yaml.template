@@ -20,7 +20,10 @@ CDS:
 teambackup:
     gitdir:    /home/icpclive/githomes
     backupdir: /home/icpclive/backup
-# Method to retrieve backups, use 'CDS' or 'copy' (from backupdir)
+    # Method to retrieve backups, options:
+    # - CDS       import from CDS
+    # - copy      copy from 'backupdir'
+    # - simulate  replay from existing git repository
     method:    CDS
     interval:  120
     lastTeam:  119
