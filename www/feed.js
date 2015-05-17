@@ -213,7 +213,11 @@ function _feed_updateWith(rows) {
                             } catch (e) { }
                             return link;
                         });
-                description = "<span class='priority_" + row.priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
+                var priority = row.priority;
+                if (priority > 2) { // really low priority -- saturate below this
+                    priority = 'lowest';
+                }
+                description = "<span class='priority_" + priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
