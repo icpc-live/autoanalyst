@@ -61,7 +61,7 @@ public class Katalyzer {
 				}
 				handlers.process(message);
 			}
-            updateScoreboards(false);
+			updateScoreboards(false);
 		}
 		// Ok, we're done. Push the final standings.
 		updateScoreboards(true);
