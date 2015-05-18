@@ -1,6 +1,11 @@
 <?php
 
 
+if (isset($_REQUEST["contest_time"])) {
+    $ctime     =  intval($_REQUEST["contest_time"]);
+} else {
+    $ctime     =  null;
+}
 $date          =& $_REQUEST["date"];
 $user          =& $_REQUEST["user"];
 $priority      =& $_REQUEST["priority"];
@@ -16,9 +21,14 @@ $db = init_db();
 
 $_SESSION['entry_username'] = $user;
 
-$stmt = mysqli_prepare($db, 'INSERT INTO entries (contest_time, user, priority, text, submission_id) VALUES ((SELECT MAX(contest_time) AS last_submission FROM submissions), ?, ?, ?, ?)');
+// when picking contest_time:
+// 1. choose the contest_time parameter if present
+// 2. choose the maximum of contest_time in submissions if present
+// 3. otherwise choose 0
 
-mysqli_stmt_bind_param($stmt, 'sisi', $user, $priority, $text, $sid);
+$stmt = mysqli_prepare($db, 'INSERT INTO entries (contest_time, user, priority, text, submission_id) VALUES ((SELECT COALESCE(?, MAX(contest_time), 0) AS last_submission FROM submissions), ?, ?, ?, ?)');
+
+mysqli_stmt_bind_param($stmt, 'isisi', $ctime, $user, $priority, $text, $sid);
 
 mysqli_stmt_execute($stmt);
 
