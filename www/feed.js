@@ -201,6 +201,10 @@ function _feed_updateWith(rows) {
         var row = rows[key];
         if (! (row.id in this.ids_seen)) {
             var description = '';
+            var row_contest_time = row.contest_time;
+            if (row.submission_id) {
+                row_contest_time = "<a href='/domjudge/jury/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>';
+            }
             if (this.formatter) {
                 description = this.formatter(row);
             } else if (this.table == 'entries') {
@@ -209,7 +213,7 @@ function _feed_updateWith(rows) {
                         function(match, contents, offset, s) {
                             var link = contents;
                             try { // FIXME: QUICK FIX FOR DATABASE WITH NOT ENOUGH TEAMS IN IT
-                                link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a>";
+                                link = "<a href='team.php?team_id=" + contents + "'>" + self.TEAMS[contents]['school_short'] + "</a> (#t" + contents + ")";
                             } catch (e) { }
                             return link;
                         });
@@ -217,14 +221,14 @@ function _feed_updateWith(rows) {
                 if (priority > 2) { // really low priority -- saturate below this
                     priority = 'lowest';
                 }
-                description = "<span class='priority_" + priority + "'>" + row.contest_time + ': ' + text + "</span>" + 
+                description = "<span class='priority_" + priority + "'>" + row_contest_time + ': ' + text + "</span>" + 
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
                 // FIXME: remove hardcoded URL
                 var gitweb_url = '/gitweb/?p=teambackups;a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> &mdash; " +
+                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
                               row.modify_time + 
                               "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
@@ -238,9 +242,9 @@ function _feed_updateWith(rows) {
                     // is not in the databases
                     school_name = self.TEAMS[row.team_id]['school_short'];
                 } catch (e) {}
-                description = "<a href='/domjudge/jury/submission.php?ext_id=" + row.submission_id + "'>" + row.contest_time + '</a>: ' + 
+                description = row_contest_time + ': ' + 
                              "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                             "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> &mdash; " +
+                             "<a href='team.php?team_id=" + row.team_id + "'>" + school_name + "</a> (#t" + row.team_id + ") &mdash; " +
                              row.lang_id + " &mdash; " +
                              result +
                              "<span class='feed_timestamp' timestamp='" + row.date + "'></span>";
