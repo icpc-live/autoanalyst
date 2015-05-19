@@ -75,10 +75,10 @@ while ($row = fgetcsv($f, 0, "\t")) {
     $country         =  $row[$team_tsv_mapping['country']];
     $institution_id  =  preg_replace('/INST-/', '', $row[$team_tsv_mapping['institution_id']]);
 
-    $stmt = mysqli_prepare($db, "INSERT INTO teams (team_id, team_name, school_name, school_short, country, institution_id) "
-        . " VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = mysqli_prepare($db, "INSERT INTO teams (id, team_id, team_name, school_name, school_short, country, institution_id) "
+        . " VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
-    mysqli_stmt_bind_param($stmt, "dssssd", $team_id, $team_name, $school_name, $school_short, $country, $institution_id);
+    mysqli_stmt_bind_param($stmt, "ddssssd", $team_id, $team_id, $team_name, $school_name, $school_short, $country, $institution_id);
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
     mysqli_stmt_execute($stmt);
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN EXECUTE: %s\n", mysqli_stmt_error($stmt)); }
