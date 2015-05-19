@@ -25,7 +25,7 @@ $submissions = get_submission_activity($db, array($team_id), array(), $COMMON_DA
 $accepted_submissions = isset($submissions['AC']) ? $submissions['AC'] : array();
 $accepted_problems = problem_id_column($accepted_submissions);
 
-$edit_activity = get_edit_activity($db, array($team_id), array(), 1, $COMMON_DATA['CODEACTIVITY']['scoreboardFreezeMinutes']);
+$edit_activity = get_edit_activity($db, array($team_id), array(), 1, null);
 
 // remove solved problems from the list
 foreach ($accepted_problems as $problem) {
