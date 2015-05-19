@@ -510,7 +510,7 @@ class Analyzer:
         for k, v in self.fileMappings.iteritems():
             if v.new_problem_id != None:
                 if v.db_id == None:
-                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( '%s', '%s', '%s', '%s', '0' )" % ( k[ 0 ], k[ 1 ], v.new_problem_id, v.lang_id )
+                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( '%s', '%s', '%s', '%s', '0' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), v.new_problem_id, v.lang_id )
                 
                     cursor.execute( update )
                 else:
@@ -525,7 +525,7 @@ class Analyzer:
                 tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 2 ].time ) )
 
                 if v[ 0 ] == None:
-                    update = "INSERT INTO file_modtime (team_id, path, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], k[ 1 ], tstr )
+                    update = "INSERT INTO file_modtime (team_id, path, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), tstr )
                 
                     cursor.execute( update )
                 else:
@@ -535,7 +535,7 @@ class Analyzer:
                 # Compute time since start of contest.
                 cmin = ( v[ 2 ].time - self.contestStart ) / 60
 
-                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], k[ 1 ], tstr, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
+                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), tstr, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
                 
                 cursor.execute( update )
                 
