@@ -99,7 +99,7 @@ class GitHomes:
         subprocess.call( [ "git", "add", "-f", "--all", "--ignore-errors", "." ] )
 
         # Set git user name/email to suppress warnings.
-        if subprocess.call( [ "git", "config", "--get", "user.name" ] ) != 0 or
+        if subprocess.call( [ "git", "config", "--get", "user.name" ] ) != 0 or \
            subprocess.call( [ "git", "config", "--get", "user.email" ] ) != 0:
             subprocess.call( [ "git", "config", "user.name", "ICPC Analytics" ] )
             subprocess.call( [ "git", "config", "user.email", "analyst@example.com" ] )
