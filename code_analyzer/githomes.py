@@ -96,8 +96,17 @@ class GitHomes:
         # Create an initial repository witht just the listings in it.
         subprocess.call( [ "git", "init", "-q", "." ] )
         self.genListing()
-        subprocess.call( [ "git", "add", "-f", "--all", 
-                           "--ignore-errors", "." ] )
+        subprocess.call( [ "git", "add", "-f", "--all", "--ignore-errors", "." ] )
+
+        # Set git user name/email to suppress warnings.
+        if subprocess.call( [ "git", "config", "--get", "user.name" ] ) != 0 or
+           subprocess.call( [ "git", "config", "--get", "user.email" ] ) != 0:
+            subprocess.call( [ "git", "config", "user.name", "ICPC Analytics" ] )
+            subprocess.call( [ "git", "config", "user.email", "analyst@example.com" ] )
+
+        # Set gitweb description of this repository.
+        os.system("echo 'Homedirectories for ICPC analytics' > .git/description")
+
         subprocess.call( [ "git", "commit", "-q", "--all", "--allow-empty", "-m",
                            "Initialization of ICPC homedirs at '%s'." % self.gitdir ] )
         subprocess.call( [ "git", "gc", "--aggressive" ] )
