@@ -30,4 +30,4 @@ for notification in data:
 
     tweet += str(" #NWERC")
     
-    subprocess.call(['echo', tweet])
+    subprocess.call(['t', 'update', tweet])
