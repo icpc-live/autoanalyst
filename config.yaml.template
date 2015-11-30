@@ -27,11 +27,15 @@ CDS:
 teambackup:
     gitdir:    /home/icpclive/githomes
     backupdir: /home/icpclive/backup
+    # The base gitweb URL including git project name, can be a full
+    # URL or relative to the autoanalyst webserver:
+    gitweburl: "/gitweb/?p=teambackups"
     # Method to retrieve backups, options:
     # - CDS       import from CDS
     # - copy      copy from 'backupdir'
     # - simulate  replay from existing git repository
     method:    CDS
+    # Interval between retrieving backups, in seconds:
     interval:  120
     lastTeam:  119
 
