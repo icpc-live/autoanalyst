@@ -15,16 +15,16 @@ On a Debian/Ubuntu-like system the following set of packages has to be
 installed:
 ```
 sudo apt-get install \
-         git gitk gitweb apache2 phpmyadmin mariadb-server mariadb-client \
-	 php5-cli ntp rsync make curl python-yaml php-pear php5-dev \
-	 libyaml-dev openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
+       git gitk gitweb apache2 phpmyadmin mariadb-server mariadb-client \
+       php5-cli ntp rsync make curl python-yaml php-pear php5-dev \
+       libyaml-dev openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
 
 Then install the PECL YAML extension:
 ```
 sudo pecl install yaml
 ```
-and enable it by adding "extension=yaml.so" to the PHP config. This is
+and enable it by adding `extension=yaml.so` to the PHP config. This is
 best done by adding it to a new file
 ```
 /etc/php5/mods-available/yaml.ini
@@ -44,6 +44,10 @@ ProxyPass        /icat/api/Standings http://localhost:8099/Standings
 ProxyPassReverse /icat/api/Standings http://localhost:8099/Standings
 ```
 or as a configuration snippet in
+```
+/etc/apache2/conf-available/icat.conf
+```
+and enable this with `a2enconf`.
 
 On Ubuntu (not Debian) you should also run
 ```
