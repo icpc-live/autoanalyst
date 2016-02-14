@@ -1,5 +1,5 @@
-The ICPC AutoAnalyst Project
-Fredrik Heintz (fredrik.heintz@liu.se), Fredrik Niemel‰ and Stein Norheim
+# The ICPC AutoAnalyst Project
+Fredrik Heintz (fredrik.heintz@liu.se), Fredrik Niemel√§ and Stein Norheim
 
 The goal of the project is to automatically analyze ICPC style contests in real time and make the result of the analysis available in a machine readable form. The underlying purpose is to enhance the contest experience of the audience through fascinating insights and exciting news. The analysis includes extracting important events such as first team to solve a problem and significant changes in the scoreboard, estimating what problems the different teams are working on, and computing when a team must solve its next problem in order to advance in the ranking. This type of analysis is currently provided by human analysts at the ICPC World Finals. This project makes that type of analysis available to other ICPC style contests with a minimum effort.
 
