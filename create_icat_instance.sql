@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `problems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL COMMENT 'The label (typically a single letter) within the contest.',
   `problem_name` varchar(255) NOT NULL,
+  `color` varchar(10) DEFAULT NULL COMMENT 'Hex RGB color specification of the problem.',
   `submissions` int(11) NOT NULL DEFAULT '0',
   `first_solved_at` int(11) NOT NULL DEFAULT '0',
   `first_solved_by` int(11) NOT NULL DEFAULT '0',
