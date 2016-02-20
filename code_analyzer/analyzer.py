@@ -7,7 +7,7 @@ cmd_folder = os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from common import dbConn, DEFAULT_TAG, BACKUP_TOP, config
+from common import dbConn, DEFAULT_TAG, BACKUP_TOP, config, problems
 
 from datetime import datetime
 import itertools
@@ -119,12 +119,17 @@ class Analyzer:
 
         # List of problems.  We use this mostly as the offficial
         # list of problem letters, from the configuration.
-        self.problemList = config['problems']
+        self.problemList = problems
 
-        # Contest start time, in UTC seconds, from the configuration, convert to
-        # unix seconds (in local time) while comparing times.
-        t = config['analyzer']['contestStart']
-        self.contestStart = int( calendar.timegm( time.strptime( t, "%Y-%m-%d %H:%M:%S" ) ) )
+        # Contest start time in Unix seconds from the database.
+        cursor = dbConn.cursor()
+        cursor.execute( "SELECT UNIX_TIMESTAMP(start_time) FROM contests ORDER BY start_time DESC LIMIT 1" )
+        row = cursor.fetchone()
+        if ( row == None ):
+            print("Error: no contest found in the database.")
+            exit(1)
+
+        self.contestStart = row[0]
 
         # For each team, a list of team-specific strips from filenames.
         self.teamStrips = {}

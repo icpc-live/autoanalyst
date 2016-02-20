@@ -9,7 +9,7 @@ cmd_folder = os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from common import config, dbConn, BACKUP_TOP
+from common import config, problems, dbConn, BACKUP_TOP
 from analyzer import Analyzer
 
 import re
@@ -43,7 +43,7 @@ path = path[ len(team)+1:]
 cursor = dbConn.cursor()
 
 # Make sure this is a legal problem_id.
-if prob not in config['problems']:
+if prob not in problems:
     print "Bad problem id: %s" % prob
     usage()
 

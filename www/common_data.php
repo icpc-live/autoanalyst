@@ -20,10 +20,14 @@ function sort_judgement_data(&$arr) {
 }
 
 // Expose non-configuration elements directly instead of in $config.
-$common_data['problems']   = $config['problems'];
 $common_data['judgements'] = $config['judgements'];
+unset($config['judgements']);
 
-unset($config['problems'],$config['judgements']);
+$result = mysqli_query($db, "SELECT problem_id AS id, problem_name AS name, color FROM problems ORDER BY problem_id");
+$common_data['problems'] = array();
+while ($row = mysqli_fetch_assoc($result)) {
+	$common_data['problems'][$row['id']] = $row;
+}
 
 $result = mysqli_query($db, "SELECT id, team_name, school_name, school_short, country FROM teams ORDER BY id");
 $common_data['teams'] = array();

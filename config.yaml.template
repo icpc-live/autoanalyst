@@ -48,24 +48,6 @@ codeActivity:
 # start time and 'problems'. Not clear from where the judgements data
 # should come from.
 
-# Code analyzer parameters.
-analyzer:
-    # Start time for the contest in UTC.  We must have this somewhere else, right?
-    contestStart: "2014-03-11 10:00:00"
-
-problems:
-    A: { name: "Self-Assembly",           color: \#FF0000 } # Red
-    B: { name: "Hey, Better Bettor",      color: \#000000 } # Black
-    C: { name: "Surely You Congest",      color: \#40E0D0 } # Turquoise
-    D: { name: "Factors",                 color: \#FFFF00 } # Yellow
-    E: { name: "Harvard",                 color: \#FF1493 } # Dark Pink
-    F: { name: "Low Power",               color: \#0000FF } # Blue
-    G: { name: "Map Tiles",               color: \#800020 } # Burgundy
-    H: { name: "Maтрëшкa",                color: \#00FF00 } # Green
-    I: { name: "Pirate Chest",            color: \#FFA500 } # Orange
-    J: { name: "Pollution Solution",      color: \#FFC0CB } # Pink
-    K: { name: "Up a Tree",               color: \#008080 } # Teal
-
 judgements:
     AC:   { label: AC,  label_long: "Accepted"             , color: "#10a010", sortOrder: 1 }
     WA:   { label: WA,  label_long: "Wrong Answer"         , color: "#333333", sortOrder: 2 }

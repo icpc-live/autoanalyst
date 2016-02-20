@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib, sys
+from common import dbConn, config
 from datetime import datetime
 import httplib2
 
@@ -9,11 +10,6 @@ class GitHomes:
     def __init__( self ):
         # Find the top-level directory for the analyzer
         self.analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( inspect.currentframe()))))
-        
-        # Use top-level directory to load the config file.
-        f = open( self.analystTop + "/config.yaml" )
-        config = yaml.load( f )
-        f.close()
 
         # interval for updating team backups.
         self.interval = config[ "teambackup" ][ "interval" ]
@@ -36,8 +32,14 @@ class GitHomes:
         self.CDSPass = config[ "CDS" ][ "pass" ]
 
         # figure out a start time in the format we will get from the CDS.
-        startTime = time.strptime( config['analyzer']['contestStart'], "%Y-%m-%d %H:%M:%S" )
-        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", startTime )
+        cursor = dbConn.cursor()
+        cursor.execute( "SELECT UNIX_TIMESTAMP(start_time) FROM contests ORDER BY start_time DESC LIMIT 1" )
+        row = cursor.fetchone()
+        if ( row == None ):
+            print("Error: no contest found in the database.")
+            exit(1)
+
+        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", row[0] )
         self.teamLastModified = {};
         for teamIdx in range( 1, self.lastTeam + 1 ):
             self.teamLastModified[ teamIdx ] = startTime;
