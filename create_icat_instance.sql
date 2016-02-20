@@ -1,5 +1,3 @@
--- USAGE: Search and replace icpc2014 with the name of the contest
-
 -- Host: gedrix.ida.liu.se
 -- Server version: 5.1.49
 -- PHP Version: 5.3.9
@@ -14,11 +12,11 @@
 --
 
 --
--- Table structure for table `icpc2014_teams`
+-- Table structure for table `teams`
 --
 
-DROP TABLE IF EXISTS `icpc2014_teams`;
-CREATE TABLE IF NOT EXISTS `icpc2014_teams` (
+DROP TABLE IF EXISTS `teams`;
+CREATE TABLE IF NOT EXISTS `teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reservation_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -39,14 +37,12 @@ CREATE TABLE IF NOT EXISTS `icpc2014_teams` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `icpc2014_entries`
+-- Table structure for table `entries`
 --
 
-DROP TABLE IF EXISTS `icpc2014_entries`;
-CREATE TABLE IF NOT EXISTS `icpc2014_entries` (
+DROP TABLE IF EXISTS `entries`;
+CREATE TABLE IF NOT EXISTS `entries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
@@ -59,17 +55,11 @@ CREATE TABLE IF NOT EXISTS `icpc2014_entries` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Dumping data for table `icpc2014_entries`
+-- Table structure for table `facts`
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `icpc2014_facts`
---
-
-DROP TABLE IF EXISTS `icpc2014_facts`;
-CREATE TABLE IF NOT EXISTS `icpc2014_facts` (
+DROP TABLE IF EXISTS `facts`;
+CREATE TABLE IF NOT EXISTS `facts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `type` varchar(10) NOT NULL,
@@ -78,19 +68,11 @@ CREATE TABLE IF NOT EXISTS `icpc2014_facts` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Dumping data for table `icpc2014_facts`
+-- Table structure for table `submissions`
 --
 
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `icpc2014_submissions`
---
-
-DROP TABLE IF EXISTS `icpc2014_submissions`;
-CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
+DROP TABLE IF EXISTS `submissions`;
+CREATE TABLE IF NOT EXISTS `submissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -105,14 +87,12 @@ CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `icpc2014_problems`
+-- Table structure for table `problems`
 --
 
-DROP TABLE IF EXISTS `icpc2014_problems`;
-CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
+DROP TABLE IF EXISTS `problems`;
+CREATE TABLE IF NOT EXISTS `problems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL COMMENT 'The label (typically a single letter) within the contest.',
   `problem_name` varchar(255) NOT NULL,
@@ -131,14 +111,12 @@ CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `icpc2014_team_regions`
+-- Table structure for table `team_regions`
 --
 
-DROP TABLE IF EXISTS `icpc2014_team_regions`;
-CREATE TABLE `icpc2014_team_regions` (
+DROP TABLE IF EXISTS `team_regions`;
+CREATE TABLE `team_regions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `region_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -149,14 +127,12 @@ CREATE TABLE `icpc2014_team_regions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `icpc2014_top_coder`
+-- Table structure for table `top_coder`
 --
 
-DROP TABLE IF EXISTS `icpc2014_top_coder`;
-CREATE TABLE IF NOT EXISTS `icpc2014_top_coder` (
+DROP TABLE IF EXISTS `top_coder`;
+CREATE TABLE IF NOT EXISTS `top_coder` (
   `university_name` varchar(150) NOT NULL,
   `coach_tcname` varchar(50) NOT NULL,
   `contestant1_tcname` varchar(50) NOT NULL,
@@ -186,25 +162,6 @@ CREATE TABLE IF NOT EXISTS `icpc2014_top_coder` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 
--- --------------------------------------------------------
-
--- 
--- Create views for the current contest
-DROP VIEW IF EXISTS entries;
-CREATE VIEW entries AS SELECT * FROM icpc2014_entries;
-DROP VIEW IF EXISTS facts;
-CREATE VIEW facts AS SELECT * FROM icpc2014_facts;
-DROP VIEW IF EXISTS submissions;
-CREATE VIEW submissions AS SELECT * FROM icpc2014_submissions;
-DROP VIEW IF EXISTS teams;
-CREATE VIEW teams AS SELECT * FROM icpc2014_teams;
-DROP VIEW IF EXISTS team_regions;
-CREATE VIEW team_regions AS SELECT * FROM icpc2014_team_regions;
-DROP VIEW IF EXISTS top_coder;
-CREATE VIEW top_coder AS SELECT * FROM icpc2014_top_coder;
-
-
-
 --
 -- Mapping from file, team id and path name to problem id and
 -- language.  This records any decisions the code analyzer makes about
@@ -221,8 +178,8 @@ CREATE VIEW top_coder AS SELECT * FROM icpc2014_top_coder;
 -- won't change it.
 --
 
-DROP TABLE IF EXISTS `icpc2014_file_to_problem`;
-CREATE TABLE IF NOT EXISTS `icpc2014_file_to_problem` (
+DROP TABLE IF EXISTS `file_to_problem`;
+CREATE TABLE IF NOT EXISTS `file_to_problem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -249,8 +206,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_file_to_problem` (
 -- added, compared to the last revision, as reported by git.
 --
 
-DROP TABLE IF EXISTS `icpc2014_edit_activity`;
-CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
+DROP TABLE IF EXISTS `edit_activity`;
+CREATE TABLE IF NOT EXISTS `edit_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -271,8 +228,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_edit_activity` (
 -- has changed more recently.
 --
 
-DROP TABLE IF EXISTS `icpc2014_file_modtime`;
-CREATE TABLE IF NOT EXISTS `icpc2014_file_modtime` (
+DROP TABLE IF EXISTS `file_modtime`;
+CREATE TABLE IF NOT EXISTS `file_modtime` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256),
@@ -288,8 +245,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_file_modtime` (
 --
 -- modify_time_utc is the modification time, in utc.
 
-DROP TABLE IF EXISTS `icpc2014_edit_latest`;
-CREATE TABLE IF NOT EXISTS `icpc2014_edit_latest` (
+DROP TABLE IF EXISTS `edit_latest`;
+CREATE TABLE IF NOT EXISTS `edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
@@ -301,8 +258,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_edit_latest` (
 -- Map from problem id to a list of keywords for the problem.
 --
 
-DROP TABLE IF EXISTS `icpc2014_problem_keywords`;
-CREATE TABLE IF NOT EXISTS `icpc2014_problem_keywords` (
+DROP TABLE IF EXISTS `problem_keywords`;
+CREATE TABLE IF NOT EXISTS `problem_keywords` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `problem_id` varchar(10) NOT NULL,
   `keyword` varchar(45) NOT NULL,
@@ -314,8 +271,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_problem_keywords` (
 -- or more special strings as part of their filenames.
 --
 
-DROP TABLE IF EXISTS `icpc2014_team_strips`;
-CREATE TABLE IF NOT EXISTS `icpc2014_team_strips` (
+DROP TABLE IF EXISTS `team_strips`;
+CREATE TABLE IF NOT EXISTS `team_strips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `str` varchar(30),
@@ -323,22 +280,9 @@ CREATE TABLE IF NOT EXISTS `icpc2014_team_strips` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
--- Create views for the current contest
+-- Create views
 --
 
-DROP VIEW IF EXISTS file_to_problem;
-CREATE VIEW file_to_problem AS SELECT * FROM icpc2014_file_to_problem;
-DROP VIEW IF EXISTS edit_activity;
-CREATE VIEW edit_activity AS SELECT * FROM icpc2014_edit_activity;
-DROP VIEW IF EXISTS file_modtime;
-CREATE VIEW file_modtime AS SELECT * FROM icpc2014_file_modtime;
-DROP VIEW IF EXISTS edit_latest;
-CREATE VIEW edit_latest AS SELECT * FROM icpc2014_edit_latest;
-DROP VIEW IF EXISTS problem_keywords;
-CREATE VIEW problem_keywords AS SELECT * FROM icpc2014_problem_keywords;
-DROP VIEW IF EXISTS team_strips;
-CREATE VIEW team_strips AS SELECT * FROM icpc2014_team_strips;
-DROP VIEW IF EXISTS edit_activity_problem;
 CREATE VIEW edit_activity_problem AS SELECT edit_activity.*, file_to_problem.problem_id
     FROM edit_activity LEFT JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path)
     WHERE file_to_problem.problem_id IS NOT NULL AND file_to_problem.problem_id != 'none';
