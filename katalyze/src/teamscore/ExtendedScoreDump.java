@@ -102,10 +102,10 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 		private JSONObject getContestInfo(Contest contest) {
 			return new JSONObject()
-                    .element("length", contest.getLengthInMinutes())
+				.element("length", contest.getLengthInMinutes())
 				.element("problems", getProblems(contest))
 				.element("submissions", contest.getSubmissionCount())
-                .element("time", contest.getMinutesFromStart());
+				.element("time", contest.getMinutesFromStart());
 		}
 
 		public String execute() {
