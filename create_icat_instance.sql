@@ -70,10 +70,10 @@ CREATE TABLE IF NOT EXISTS `icpc2014_entries` (
 
 DROP TABLE IF EXISTS `icpc2014_facts`;
 CREATE TABLE IF NOT EXISTS `icpc2014_facts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `type` varchar(10) NOT NULL,
   `text` varchar(500) NOT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `icpc2014_facts` (
 DROP TABLE IF EXISTS `icpc2014_submissions`;
 CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `problem_id` char(1) NOT NULL,
+  `problem_id` varchar(10) NOT NULL,
   `team_id` int(11) NOT NULL,
   `lang_id` varchar(11) NOT NULL,
   `result` varchar(10) NOT NULL,
@@ -113,9 +113,9 @@ CREATE TABLE IF NOT EXISTS `icpc2014_submissions` (
 
 DROP TABLE IF EXISTS `icpc2014_problems`;
 CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
-  `problem_id` int(11) NOT NULL,
-  `problem_letter` char(10) NOT NULL, 
-  `problem_name` char(255) NOT NULL, 
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `problem_id` varchar(10) NOT NULL COMMENT 'The label (typically a single letter) within the contest.',
+  `problem_name` varchar(255) NOT NULL,
   `submissions` int(11) NOT NULL DEFAULT '0',
   `first_solved_at` int(11) NOT NULL DEFAULT '0',
   `first_solved_by` int(11) NOT NULL DEFAULT '0',
@@ -127,7 +127,8 @@ CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
   `pe` int(11) NOT NULL DEFAULT '0',
   `rte` int(11) NOT NULL DEFAULT '0',
   `tle` int(11) NOT NULL DEFAULT '0',
-  `wa` int(11) NOT NULL DEFAULT '0'
+  `wa` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
@@ -138,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `icpc2014_problems` (
 
 DROP TABLE IF EXISTS `icpc2014_team_regions`;
 CREATE TABLE `icpc2014_team_regions` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `region_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
   `region_name` varchar(100) NOT NULL,
