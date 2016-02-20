@@ -40,8 +40,8 @@ sudo a2enmod proxy proxy_http cgi
 ```
 and add the following lines to the relevant apache site configuration
 ```
-ProxyPass        /icat/api/Standings http://localhost:8099/Standings
-ProxyPassReverse /icat/api/Standings http://localhost:8099/Standings
+ProxyPass        /icat/api/Scoreboard http://localhost:8099/Scoreboard
+ProxyPassReverse /icat/api/Scoreboard http://localhost:8099/Scoreboard
 ```
 or as a configuration snippet in
 ```
