@@ -177,6 +177,13 @@ function _feed_update() {
     });
 }
 
+// Zero-pad a number to size.
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
 // Update the feed with results returned by the ajax query.
 function _feed_updateWith(rows) {
     var self = this;
@@ -226,7 +233,7 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
-                var gitweb_url = config['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
+                var gitweb_url = config['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + pad(row.team_id,3) + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
