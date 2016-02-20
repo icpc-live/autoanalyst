@@ -49,9 +49,10 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 			for (Problem p : contest.getProblems()) {
 				boolean isSolved = score.isSolved(p);
 				JSONObject problemInfo = new JSONObject()
-					.element("id", p.getLetter())
+					.element("label", p.getLetter())
+					.element("num_judged", score.submissionCount(p))
+// FIXME:			.element("num_pending", score.submissionCount(p))
 					.element("solved", isSolved)
-					.element("attempts", score.submissionCount(p))
 					.element("time", score.scoreContribution(p));
 
                 int lastSubmissionTime = score.lastSubmissionTime(p);
@@ -75,13 +76,11 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			JSONObject target = new JSONObject()
 				.element("rank", standings.rankOf(team))
-				.element("team", new JSONObject()
-					.element("id", team.getTeamNumber())
-					.element("tag", team.toString())
-					.element("name", team.getName()))
-				.element("nSolved", score.getNumberOfSolvedProblems())
-				.element("totalTime", score.getTimeIncludingPenalty())
-				.element("mainLang", team.getMainLanguage())
+				.element("team", team.getTeamNumber())
+				.element("main_lang", team.getMainLanguage())
+				.element("score", new JSONObject()
+					.element("num_solved", score.getNumberOfSolvedProblems())
+					.element("total_time", score.getTimeIncludingPenalty()))
 				.element("problems", problems);
 
 			return target;
@@ -121,13 +120,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			resultArray.addAll(jsonScores);
 
-			JSONObject contestInfo = getContestInfo(standings.getContest());
-
-			JSONObject contestStatus = new JSONObject()
-				.element("scoreBoard", resultArray)
-				.element("contestInfo", contestInfo);
-
-			return contestStatus.toString();
+			return resultArray.toString();
 		}
 
 		private int calcFictiousRank(ArrayList<Score> scoresAbove,
@@ -170,7 +163,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
 		log.debug("publishing Standings... " + minutesFromStart);
-		publisherTarget.publish("/Standings", scoreDoc);
+		publisherTarget.publish("/Scoreboard", scoreDoc);
 	}
 
 
@@ -185,8 +178,8 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
 		log.debug("publishing Standings... " + minutesFromStart);
-		publisherTarget.publish("/Standings", scoreDoc);
-		publisherTarget.publish(String.format("/Standings.%03d", minutesFromStart), scoreDoc);
+		publisherTarget.publish("/Scoreboard", scoreDoc);
+		publisherTarget.publish(String.format("/Scoreboard.%03d", minutesFromStart), scoreDoc);
 		log.debug("done publishing Standings... " + minutesFromStart);
 
 	}
