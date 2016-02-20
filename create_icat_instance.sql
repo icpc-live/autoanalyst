@@ -12,6 +12,22 @@
 --
 
 --
+-- Table structure for table `contests`
+--
+
+-- NOTE: currently the database scheme does not support multiple
+-- contests yet, so this table should contain only a single contest.
+DROP TABLE IF EXISTS `contests`;
+CREATE TABLE IF NOT EXISTS `contests` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `contest_name` varchar(150) NOT NULL,
+  `start_time` timestamp COMMENT 'Contest start time in UTC.',
+  `length` int(11) COMMENT 'Contest length in seconds.',
+  `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+--
 -- Table structure for table `teams`
 --
 
