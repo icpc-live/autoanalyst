@@ -1,6 +1,7 @@
 package model;
 
 public class Submission {
+	// FIXME: this should be read from contest configuration.
 	public static final int CostOfFailedSubmission = 20;
 	
 	final InitialSubmission initialSubmission;
