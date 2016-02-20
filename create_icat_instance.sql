@@ -132,6 +132,8 @@ CREATE TABLE `team_regions` (
 -- Table structure for table `top_coder`
 --
 
+-- FIXME: university_name is not a good primary key, nor does it
+-- uniquely identify a team in contests other than ICPC WFs.
 DROP TABLE IF EXISTS `top_coder`;
 CREATE TABLE IF NOT EXISTS `top_coder` (
   `university_name` varchar(150) NOT NULL,
