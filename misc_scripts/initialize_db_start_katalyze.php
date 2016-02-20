@@ -51,6 +51,64 @@ foreach ($to_truncate as $table) {
 ?>
 
 --------------------------------------------------------
+GRABBING THE CONTEST INFO FROM THE CDS AND STORING IT IN THE DATABASE
+<?php
+
+system(sprintf("curl --insecure -u %s:%s %s/config/contest.yaml > contest.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
+$contest = yaml_parse_file("contest.yaml");
+
+// Use Unix timestamp to work around unknown MySQL server timezone.
+$contest_start = date_create_from_format('Y-m-d G:i?', $contest['start-time'],
+                                         new DateTimeZone('UTC'))::getTimestamp();
+
+function parse_duration($str)
+{
+	sscanf($str, '%d:%d:%d', $h, $m, $s);
+	return 3600*$h + 60*$m + $s;
+}
+
+$stmt = mysqli_prepare($db, "INSERT INTO contests (contest_name, start_time, length, freeze) "
+                       . " VALUES (?, FROM_UNIXTIME(?), ?, ?)");
+if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
+
+mysqli_stmt_bind_param($stmt, "ssdd", $contest['name'], $contest_start,
+                       parse_duration($contest['duration']),
+                       parse_duration($contest['scoreboard-freeze']));
+
+if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
+mysqli_stmt_execute($stmt);
+if (mysqli_stmt_error($stmt)) { printf("ERROR IN EXECUTE: %s\n", mysqli_stmt_error($stmt)); }
+mysqli_stmt_close($stmt);
+
+);
+?>
+
+--------------------------------------------------------
+GRABBING THE PROBLEMS FROM THE CDS AND POPULATING THE PROBLEMS TABLE IN THE DATABASE
+<?php
+
+system(sprintf("curl --insecure -u %s:%s %s/config/problemset.yaml > problemset.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
+$problems = yaml_parse_file("problemset.yaml");
+
+// FIXME: problemset.yaml only has the problem short names, not the
+// full names. For this we should query the JSON scoreboard API call,
+// but this may only be available after contest start.
+
+foreach ( $problems['problems'] as $problem ) {
+
+    $stmt = mysqli_prepare($db, "INSERT INTO problems (problem_id, problem_name, color) "
+	                       . " VALUES (?, ?, ?");
+    if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
+    mysqli_stmt_bind_param($stmt, "sss", $problem['letter'], $problem['short-name'], $problem['rgb']);
+    if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
+    mysqli_stmt_execute($stmt);
+    if (mysqli_stmt_error($stmt)) { printf("ERROR IN EXECUTE: %s\n", mysqli_stmt_error($stmt)); }
+    mysqli_stmt_close($stmt);
+}
+
+?>
+
+--------------------------------------------------------
 GRABBING THE TEAMS FROM THE CDS AND POPULATING THE TEAMS TABLE IN THE DATABASE
 <?php
 
