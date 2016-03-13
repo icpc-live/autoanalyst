@@ -78,6 +78,11 @@ $EDITOR katalyzer/katalyzer.properties
 ```
 TODO: merge Katalyzer properties into the global configuration.
 
+Build the Katalyzer code:
+```
+make -C katalyzer
+```
+
 Create some symlinks:
 - Symlink the homedir backup git repo to /var/lib/git/
 - Symlink autoanalyst/www to /var/www/html/icat
