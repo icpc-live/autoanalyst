@@ -302,6 +302,7 @@ CREATE TABLE IF NOT EXISTS `team_strips` (
 -- Create views
 --
 
+DROP VIEW IF EXISTS `edit_activity_problem`;
 CREATE VIEW edit_activity_problem AS SELECT edit_activity.*, file_to_problem.problem_id
     FROM edit_activity LEFT JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path)
     WHERE file_to_problem.problem_id IS NOT NULL AND file_to_problem.problem_id != 'none';
