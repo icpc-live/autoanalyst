@@ -1,7 +1,8 @@
-package teamscore;
+package clics;
 
 import java.util.ArrayList;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -107,7 +108,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 				.element("time", contest.getMinutesFromStart());
 		}
 
-		public String execute() {
+		public JSONArray execute() {
 			scoresAbove.clear();
 
 			JSONArray resultArray = new JSONArray();
@@ -120,7 +121,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			resultArray.addAll(jsonScores);
 
-			return resultArray.toString();
+			return resultArray;
 		}
 
 		private int calcFictiousRank(ArrayList<Score> scoresAbove,
@@ -154,16 +155,26 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		this.publisherTarget = target;
 	}
 
+
+	private JSONObject teamAsJson(Team team) {
+		JSONObject target = new JSONObject();
+		target.put("id", team.getTeamNumber());
+		target.put("name", team.getName());
+
+		return target;
+	}
+
+	public JSONArray getAllTeams() {
+		JSONArray target = new JSONArray();
+		Team[] allTeams = contest.getTeams();
+		for (Team team : allTeams) {
+			target.add(teamAsJson(team));
+		}
+		return target;
+	}
+
 	public void publishStandings() {
-		int minutesFromStart = contest.getMinutesFromStart();
-		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
-
-		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
-		String scoreTable = scoreDumper.execute();
-
-		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
-		log.debug("publishing Standings... " + minutesFromStart);
-		publisherTarget.publish("/Scoreboard", scoreDoc);
+		execute(contest.getMinutesFromStart());
 	}
 
 
@@ -173,14 +184,12 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
 
 		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
-		log.debug("dumping Standings... " + minutesFromStart);
-		String scoreTable = scoreDumper.execute();
+		JSON scoreTable = scoreDumper.execute();
 
-		StaticWebDocument scoreDoc = new StaticWebDocument("application/json", scoreTable);
 		log.debug("publishing Standings... " + minutesFromStart);
-		publisherTarget.publish("/Scoreboard", scoreDoc);
-		publisherTarget.publish(String.format("/Scoreboard.%03d", minutesFromStart), scoreDoc);
-		log.debug("done publishing Standings... " + minutesFromStart);
+
+		publisherTarget.publish("/scoreboard", new StaticWebDocument(scoreTable));
+		publisherTarget.publish("/teams", new StaticWebDocument(getAllTeams()));
 
 	}
 

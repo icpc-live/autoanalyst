@@ -104,7 +104,7 @@ public class Contest {
 	}
 
 	public void addTeam(Team newTeam) {
-		teams.add(newTeam);	
+		teams.add(newTeam);
 	}
 	
 	public Team getTeam(int teamNumber) throws InvalidKeyException {

@@ -75,7 +75,6 @@ public class Analyzer implements NotificationTarget {
 				importance, supplements);
 
 		return newEvent;
-		
 	}
 	
 	public void forwardAnalystMessages() {

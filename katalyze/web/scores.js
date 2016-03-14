@@ -17,7 +17,6 @@
   }
 
 
-
 	function ScoreUpdater(target) {
 		var that = this;
 		
@@ -28,6 +27,7 @@
 		var columnHeaders = [];
 		
 		var problems = [];
+		var teams = {};
 		
 		dataSourceUrl = target.first().attr("data-Source");
 		var highlightWindow = 10;
@@ -49,12 +49,13 @@
 				return eval("(function(score) {return ("+filter+");})");
 			}
 		}
-		
-		var addTableHeader = function(boardTable, contestInfo) {
+
+
+		var addTableHeader = function(boardTable, problemLabels) {
 			
 			var headerColumns = ["Rank", "Team", "Solved", "Time", "Video", "Language" ];
-			$.each(contestInfo.problems, function(i, problem) {
-				headerColumns.push(problem.tag);
+			$.each(problemLabels, function(i, label) {
+				headerColumns.push(label);
 			});
 			
 			var header = $('<tr />');
@@ -75,32 +76,52 @@
 			}
 		}
 
-		var createScoreBoardDiv = function(targetDiv, contestStatus) {
+		var getProblemLabels = function(scoreRow) {
+			var result = [];
+
+			$.each(scoreRow.problems, function(i, problem) {
+				result.push(problem.label)
+			});
+			return result;
+		}
+
+
+		var createScoreBoardDiv = function(targetDiv, standings, contestInfo) {
 
 			var scoreBoard = $('<div />');
 			var boardTable = $('<table class="scoreTable" />');
 			scoreBoard.append(boardTable);
 
-			addTableHeader(boardTable, contestStatus.contestInfo);
+
+			var firstTeamScore = standings[0];
+
+			addTableHeader(boardTable,getProblemLabels(firstTeamScore));
 					
 			var filterPredicate = makeFilterPredicate(targetDiv.attr("data-filter"));
 
-			var contestTime = contestStatus.contestInfo.time;
-			// Set up the highlighting function.
-			var highlighting = function(cell) {
-			    var lastUpdate = cell.lastUpd;
-			    if (lastUpdate) {
-			        return lastUpdate + highlightWindow > contestTime;
-			    } else {
-			        return false;
-			    }
+
+			// If there is a contestinfo entry, we can highlight the last changes
+			var highlighting;
+
+			if (contestInfo) {
+				var contestTime = contestInfo.time;
+
+				// Set up the highlighting function.
+				highlighting = function (cell) {
+					var lastUpdate = cell.lastUpd;
+					if (lastUpdate) {
+						return lastUpdate + highlightWindow > contestTime;
+					} else {
+						return false;
+					}
+				}
+			} else {
+				highlighting = function () { return false;}
 			}
 
 
-
-
 			
-			$.each(contestStatus.scoreBoard, function(i, scoreData) {
+			$.each(standings, function(i, scoreData) {
 				if (filterPredicate(scoreData)) { 
 					that.addRow(boardTable, scoreData, highlighting);
 				}
@@ -117,11 +138,12 @@
 			});
 			
 			boards = [];
+			var contestInfo = null;
 			
 			$.each(target, function(i, div) {
 				var divTarget = $(div);
 				var scoreBoard = (contestStatus) ? 
-						createScoreBoardDiv(divTarget, contestStatus) : notAvailable();
+						createScoreBoardDiv(divTarget, contestStatus, contestInfo) : notAvailable();
 				
 				divTarget.append(scoreBoard);
 				boards.push(scoreBoard);
@@ -133,9 +155,9 @@
 			scoreBoard.text("Scoreboard is currently not available");
 			
 			return scoreBoard;
-		}		
-		
-	
+		}
+
+
 		that.addRow = function(scoreBoard, data, highlighting) {
 			var rowToAdd = $('<tr class="scoreRow" />');
 			var cellNumber = 0;
@@ -145,11 +167,11 @@
 				var time = $('<div />');
 				if (problemStatus.solved == true) {
 					result.addClass("problemSolved");
-					time.text(problemStatus.attempts+" ("+problemStatus.time+")");
+					time.text(problemStatus.num_judged+" ("+problemStatus.time+")");
 				} else {
-					if (problemStatus.attempts>0) {
+					if (problemStatus.num_judged>0) {
 						result.addClass("problemAttempted");
-						time.text(problemStatus.attempts);
+						time.text(problemStatus.num_judged);
 					} else {
 						time.text("\u00A0");
 					}
@@ -184,12 +206,15 @@
 				});
 			}
 
-            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + escapeHtml(data.team.name) + "</a>";
+			var teamInfo = teams[data.team];
+			var teamName = (teamInfo) ? teamInfo.name : "Team "+data.team;
+
+            var name = "<a href='team.php?team_id=" + data.team.id + "'>" + escapeHtml(teamName) + "</a>";
             var padded_id = "" + data.team.id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.207/video/camera/" + padded_id + "'>Camera</a>, " +
                              "<a href='vlc://192.168.1.207/video/screen/" + padded_id + "'>Screen</a>";
-			addCells([data.rank, name, data.nSolved, data.totalTime, videoLinks, data.mainLang]);
+			addCells([data.rank, name, data.score.num_solved, data.score.total_time, videoLinks, data.main_lang]);
 			
 			 $.each(data.problems, function(i, problemData) {
 				 rowToAdd.append(scoreCell(problemData));
@@ -197,7 +222,17 @@
 			 		
 			scoreBoard.append(rowToAdd);
 			
-		}				
+		}
+
+
+		that.updateTeams = function(data) {
+			teams = {}
+			$.each(data, function(i, team) {
+				teams[team.id] = team;
+			});
+		}
+
+
 	}
 
 	$(function() {
@@ -207,13 +242,19 @@
 
 		var refreshData = function() {
 			$.ajax({
-				url: updater.dataSource()+"/Standings",
+				url: updater.dataSource()+"/teams",
+				success: updater.updateTeams,
+				dataType: "json"
+			});
+
+			$.ajax({
+				url: updater.dataSource()+"/scoreboard",
 				success: updater.update,
 				data: {},
 				dataType: "json",
 				error: updater.notAvailable
 					
-				});
+			});
 		}
 		
 		refreshData();

@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import config.TwitterConfig;
 import rules.*;
-import teamscore.ExtendedScoreDump;
+import clics.ExtendedScoreDump;
 import web.EventFeedStreamer;
 import web.FileWebPublisher;
 import web.WebPublisher;
@@ -26,8 +26,6 @@ import model.ModelDumperHook;
 import model.ShellNotificationTarget;
 import model.TwitterNotificationTarget;
 import model.WebNotificationTarget;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 public class ConfigReader {
 	static Logger logger = Logger.getLogger(ConfigReader.class);

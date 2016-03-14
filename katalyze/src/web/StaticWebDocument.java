@@ -1,5 +1,9 @@
 package web;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +36,12 @@ public class StaticWebDocument implements WebDocument {
 		fis.close();
 		
 		return new StaticWebDocument(contentType, contents);	
+	}
+
+	public StaticWebDocument(JSON json) {
+		this.contentType = "application/json";
+		String jsonAsString = json.toString();
+		this.contents = jsonAsString.getBytes(Charset.forName("UTF-8"));
 	}
 
 	public static StaticWebDocument FromResource(String contentType, java.lang.Object mainObject, String fileName) throws IOException{
