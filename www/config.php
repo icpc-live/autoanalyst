@@ -1,6 +1,7 @@
 <?php
 
-$config = yaml_parse_file(dirname(__FILE__) . "/../config.yaml");
+require_once(dirname(__FILE__) . "/../spyc/spyc.php");
+$config = Spyc::YAMLLoad(dirname(__FILE__) . "/../config.yaml");
 
 if ( $config===FALSE ) {
 	echo "Error: could not read configuration file.";
@@ -14,5 +15,3 @@ $dbhost = $config['database']['host'];
 $dbname = $config['database']['name'];
 $dbuser = $config['database']['user'];
 $dbpassword = $config['database']['password'];
-
-?>

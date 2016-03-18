@@ -16,22 +16,8 @@ installed:
 ```
 sudo apt-get install \
        git gitk gitweb apache2 phpmyadmin mariadb-server mariadb-client \
-       php5-cli ntp rsync make curl python-yaml php-pear php5-dev \
-       libyaml-dev openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
-```
-
-Then install the PECL YAML extension:
-```
-sudo pecl install yaml
-```
-and enable it by adding `extension=yaml.so` to the PHP config. This is
-best done by adding it to a new file
-```
-/etc/php5/mods-available/yaml.ini
-```
-and then symlinking it as follows:
-```
-sudo ln -s ../mods-available/yaml.ini /etc/php5/conf.d/99-yaml.ini
+       php5-cli ntp rsync make curl python-yaml \
+       openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
 
 Then enable some Apache modules:

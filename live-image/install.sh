@@ -83,7 +83,7 @@ apt-get install -q -y \
 	openssh-server mysql-server apache2 phpmyadmin php5-cli \
 	openjdk-6-jdk openjdk-6-jre-headless gcc g++ ntp debootstrap \
 	sudo git gitweb rsync make curl python-yaml python-mysqldb \
-	php-pear php5-dev libyaml-dev resolvconf
+	resolvconf
 
 # Do not have stuff listening that we don't use:
 apt-get remove -q -y --purge portmap nfs-common rpcbind
@@ -99,10 +99,6 @@ ln -s /home/icpclive/autoanalyst/www /var/www/icpc
 
 # Make git repository of team homedirs available:
 ln -s /home/icpclive/githomes/.git /var/lib/git/teambackups
-
-# Build PHP PECL yaml extension (pass <enter> to interactive request
-# for autodetection of libyaml install path):
-printf '\n' | pecl -q install yaml
 
 # Do some cleanup to prepare for creating a releasable image:
 echo "Doing final cleanup, this can take a while..."
