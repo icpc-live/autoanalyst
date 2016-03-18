@@ -81,7 +81,7 @@ EOF
 
 apt-get install -q -y \
 	openssh-server mysql-server apache2 phpmyadmin php5-cli \
-	openjdk-6-jdk openjdk-6-jre-headless gcc g++ ntp debootstrap \
+	openjdk-7-jdk openjdk-7-jre-headless gcc g++ ntp debootstrap \
 	sudo git gitweb rsync make curl python-yaml python-mysqldb \
 	resolvconf
 
