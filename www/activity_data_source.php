@@ -42,7 +42,7 @@ function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes, $until_mi
         */
         // This query gives per-problem counts, grouped by team
         "SELECT contest_time_binned, problem_id, count(*) as count FROM "
-        . " (SELECT FLOOR(modify_time / $bin_minutes) * $bin_minutes AS contest_time_binned, "
+        . " (SELECT FLOOR(modify_time / $bin_minutes) * " . intval($bin_minutes) . " AS contest_time_binned, "
         . " problem_id, team_id, COUNT(*) AS count "
         . " FROM edit_activity_problem "
         . $where_clause_edit_activity_problem
