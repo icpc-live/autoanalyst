@@ -20,28 +20,12 @@ sudo apt-get install \
        openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
 
-Then enable some Apache modules:
+Add the included `apache.conf` configuration to `/etc/apache2/conf-available/icat.conf`;
+enable required modules and reload:
 ```
-sudo a2enmod proxy proxy_http cgi
-```
-and add the following lines to the relevant apache site configuration
-```
-ProxyPass        /icat/api/Scoreboard http://localhost:8099/Scoreboard
-ProxyPassReverse /icat/api/Scoreboard http://localhost:8099/Scoreboard
-```
-or as a configuration snippet in
-```
-/etc/apache2/conf-available/icat.conf
-```
-and enable this with `a2enconf`.
-
-On Ubuntu (not Debian) you should also run
-```
-sudo ln -s /etc/apache2/{conf.d/gitweb,conf-enabled/gitweb.conf}
-```
-Finally, restart Apache to make the changes take effect:
-```
-sudo service apache2 restart
+sudo a2enmod proxy_http rewrite
+sudo a2enconf icat gitweb
+sudo service apache2 reload
 ```
 
 Create a user and database `icat` in MySQL/MariaDB.
