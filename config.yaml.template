@@ -35,6 +35,11 @@ teambackup:
     # - copy      copy from 'backupdir'
     # - simulate  replay from existing git repository
     method:    CDS
+
+    # Parameters for method == simulate
+    sourceRepo:    /home/icpclive/history
+    simulationRate: 1
+
     # Interval between retrieving backups, in seconds:
     interval:  120
     lastTeam:  119

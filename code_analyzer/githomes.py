@@ -2,14 +2,19 @@
 
 import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib, sys
 from common import dbConn, config
-from datetime import datetime
+from datetime import datetime, timedelta
 import httplib2
+import re
 
 # Just an object wrapping up the githomes functioanlity.
 class GitHomes:
     def __init__( self ):
         # Find the top-level directory for the analyzer
         self.analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( inspect.currentframe()))))
+
+        # remember where we were when the program was run.  We keep returning to here
+        # after temporarily working in the gitdir.
+        self.origin = os.getcwd()
 
         # interval for updating team backups.
         self.interval = config[ "teambackup" ][ "interval" ]
@@ -20,9 +25,9 @@ class GitHomes:
         # location where to rsync backups from when using 'copy' method
         self.backupdir = config[ "teambackup" ][ "backupdir" ]
 
-        # Method to retrieve backups.
         self.pullmethod = config[ "teambackup" ][ "method" ]
 
+        # Method to retrieve backups.
         # index of the last team in the competition.
         self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
 
@@ -30,6 +35,63 @@ class GitHomes:
         self.CDSRoot = config[ "CDS" ][ "baseurl" ]
         self.CDSUser = config[ "CDS" ][ "user" ]
         self.CDSPass = config[ "CDS" ][ "pass" ]
+
+        # read additional configuration parameters, depending on method.
+        if self.pullmethod == 'CDS':
+            self.pullBackupsCDS()
+        elif self.pullmethod == 'simulate':
+            self.initSimulation()
+
+        # files listing modification times, etc for the contents of the repository.
+        self.LISTINGFULL = "listing_full.txt"
+        self.LISTINGSHORT = "listing.txt"
+
+    def initSimulation( self ):
+        """Initialization that just needs to be done for simulation runs"""
+
+        # location the source repo lives for the 'simulate' method.
+        self.sourceRepo = config[ "teambackup" ][ "sourceRepo" ]
+        self.simulationRate = 1
+        if "simulationRate" in config[ "teambackup" ]:
+            self.simulationRate = config[ "teambackup" ][ "simulationRate" ]
+
+        os.chdir( self.sourceRepo )
+
+        # figure out the first real, contest-time commit to this
+        # repo, I'm thinking it's the second commit, since (at
+        # least for repos made by this script), the first one will
+        # be the init when the repo is first created, maybe well
+        # before the contest starts.
+        t = tempfile.TemporaryFile()
+        subprocess.call( [ "git", "log", "--format=%ai", "--reverse" ], stdout=t )
+        t.seek( 0 );
+        lines = t.readlines()
+        t.close();
+
+        if len( lines ) < 2:
+            print("Error: Can't find start time from sourceRepo")
+            exit(1)
+            
+        # Ugly, but I can't get strptime() to recognize %z
+        match = re.compile( '(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) ([-+]\d{2}\d{2})' ).match( lines[ 1 ] )
+        if not match:
+            print("Error: can't parse simulation start time")
+            exit(1)
+        
+        # current simulation time, gets changed incrementally as we run the simulation.
+        self.sourceRepoStart = datetime.strptime( match.group( 1 ), '%Y-%m-%d %H:%M:%S' )
+        # Really, we should put this in the previous datetime object.
+        self.sourceRepoTzone = match.group( 2 )
+
+        # remember the wall clock time when the simulation started, so we can play back at
+        # an adjusted speed.
+        self.simulationStart = datetime.now()
+
+        os.chdir( self.origin )
+
+    def initCDS( self ):
+        """Initialization that just needs to be done for runs with backups from the CDS.
+        This is getting kind of ugly."""
 
         # figure out a start time in the format we will get from the CDS.
         cursor = dbConn.cursor()
@@ -44,13 +106,6 @@ class GitHomes:
         for teamIdx in range( 1, self.lastTeam + 1 ):
             self.teamLastModified[ teamIdx ] = startTime;
 
-        # files listing modification times, etc for the contents of the repository.
-        self.LISTINGFULL = "listing_full.txt"
-        self.LISTINGSHORT = "listing.txt"
-
-        # remember where we were when the program was run.  We keep returning to here
-        # after temporarily working in the gitdir.
-        self.origin = os.getcwd()
 
     # The copy of team directories obtained from the CDS preserves modification
     # times, but git doesn't.  Here, we generate two listing files (long and short)
@@ -127,15 +182,18 @@ class GitHomes:
 
         os.chdir( self.origin )
 
-    def pullBackupsSimulate( self ):
-        os.chdir( self.gitdir )
+    def pullBackupsSimulate( self, when ):
+        """Pass a datetime object for when the repo should be checked out.  Probably computed from
+        the start time for the repo"""
 
-        # Check out the next revision in the existing repository
-        # instead of trying to import anything.
-        os.system('git checkout $(git rev-list HEAD..master | tail -n1)')
+        os.chdir( self.sourceRepo )
 
-        # Make sure that permissions are OK for apache/gitweb.
-        os.system('chmod 755 %s' % self.gitdir)
+        timestr = when.strftime( '%Y-%m-%d %H:%M:%S' ) + " " + self.sourceRepoTzone
+        print 'git checkout $(git rev-list -n 1 --before="%s" master)' % timestr;
+        os.system('git checkout $(git rev-list -n 1 --before="%s" master)' % timestr )
+
+        # Copy everything over to the repo we're checking things into.
+        os.system('rsync -a --delete --exclude=.git . %s/' % self.gitdir )
 
         os.chdir( self.origin )
 
@@ -200,7 +258,9 @@ class GitHomes:
             elif self.pullmethod == 'copy':
                 self.pullBackupsCopy()
             elif self.pullmethod == 'simulate':
-                self.pullBackupsSimulate()
+                elapsed = ( beforeTime - self.simulationStart ).total_seconds()
+                delta = timedelta( seconds = ( elapsed * self.simulationRate ) )
+                self.pullBackupsSimulate( self.sourceRepoStart + delta )
             else:
                 print "Unknown method '" + self.pullmethod + "' to acquire backups."
                 exit( 1 )
