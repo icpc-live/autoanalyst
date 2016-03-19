@@ -105,7 +105,7 @@ function set_query_field(url, field, value) {
 }
 
 // Returns a link to the submission's page on an external CCS.
-function submission_url(submission_id, common_data) {
+function submission_url(submission_id, config) {
 	var url = config['CCS']['baseurl'] + config['CCS']['submissionurl'];
 
 	return url.replace('@ID@', submission_id);
