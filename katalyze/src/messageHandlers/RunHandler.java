@@ -76,11 +76,12 @@ public class RunHandler extends SingleMessageHandler {
 
 		// for now, only consider solved submissions
 		String status = message.get("status");
-		if ("fresh".equals(status)) {
+		String judged = message.get("judged");
+		if ("fresh".equals(status) || "False".equals(judged)) {
 			processFreshSubmission(message);
 		}
 		
-		if ("done".equals(status)) {
+		if ("done".equals(status) || "True".equals(judged)) {
 			processFinalizedSubmission(message);
 		}
 		
