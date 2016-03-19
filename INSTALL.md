@@ -60,3 +60,10 @@ Create some symlinks:
 
 ## TODO
 
+To run the katalyzer from the CDS use the script katalyze/run_katalyze.sh
+To run the katalyzer from the stored event feed ef.xml use the script katalyze/run_local.sh < ef.xml
+
+
+To initialize the GitHomes create the two directories githomes and backup, as configured in config.yaml and then run the script code_analyzer/prephomes.py.
+
+To get the team backups from the CDS and run the code analyzer run the script code_analyzer/githomes.py.
