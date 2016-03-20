@@ -15,8 +15,8 @@ On a Debian/Ubuntu-like system the following set of packages has to be
 installed:
 ```
 sudo apt-get install \
-       git gitk gitweb apache2 phpmyadmin mariadb-server mariadb-client \
-       php5-cli ntp rsync make curl python-yaml \
+       git gitk gitweb apache2 apache2-utils phpmyadmin mariadb-server
+       mariadb-client php5-cli ntp rsync make curl python-yaml php-pear \
        openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
 
