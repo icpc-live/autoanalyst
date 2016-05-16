@@ -184,6 +184,25 @@ function pad(num, size) {
     return s;
 }
 
+var escapeHtml = (function () {
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+        "/": "&#x2F;",
+    };
+
+    return function (string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s];
+        }
+        );
+    };
+} ());
+        
+
 // Update the feed with results returned by the ajax query.
 function _feed_updateWith(rows) {
     var self = this;
@@ -216,7 +235,8 @@ function _feed_updateWith(rows) {
             if (this.formatter) {
                 description = this.formatter(row);
             } else if (this.table == 'entries') {
-                var text = row.text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>problem $1</a>");
+                var text = escapeHtml(row.text);
+                text = text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>problem $1</a>");
                 text = text.replace(/#t([0-9]+)/g, 
                         function(match, contents, offset, s) {
                             var link = contents;
