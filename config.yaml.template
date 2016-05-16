@@ -15,7 +15,7 @@ CCS:
     # The base URL, can be a full URL or relative to the autoanalyst webserver:
     baseurl:   "/domjudge/"
     # URL to submission page, the string @ID@ is replaced by a submission ID.
-    submissionurl: "jury/submission?ext_id=@ID@"
+    submissionurl: "jury/submission.php?ext_id=@ID@"
 
 # CDS server
 CDS:
