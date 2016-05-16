@@ -58,8 +58,9 @@ system(sprintf("curl --insecure -u %s:%s %s/config/contest.yaml > contest.yaml",
 $contest = Spyc::YAMLLoad("contest.yaml");
 
 // Use Unix timestamp to work around unknown MySQL server timezone.
-$contest_start = date_create_from_format('Y-m-d G:i?', $contest['start-time'],
-                                         new DateTimeZone('UTC'))::getTimestamp();
+$contest_start = date_create_from_format('Y-m-d*G:i:sT', $contest['start-time'],
+                                         new DateTimeZone('UTC'));
+$contest_start = $contest_start->getTimestamp();
 
 function parse_duration($str)
 {
@@ -73,14 +74,13 @@ if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_err
 
 mysqli_stmt_bind_param($stmt, "ssdd", $contest['name'], $contest_start,
                        parse_duration($contest['duration']),
-                       parse_duration($contest['scoreboard-freeze']));
+                       parse_duration($contest['scoreboard-freeze-length']));
 
 if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
 mysqli_stmt_execute($stmt);
 if (mysqli_stmt_error($stmt)) { printf("ERROR IN EXECUTE: %s\n", mysqli_stmt_error($stmt)); }
 mysqli_stmt_close($stmt);
 
-);
 ?>
 
 --------------------------------------------------------
@@ -97,7 +97,7 @@ $problems = Spyc::YAMLLoad("problemset.yaml");
 foreach ( $problems['problems'] as $problem ) {
 
     $stmt = mysqli_prepare($db, "INSERT INTO problems (problem_id, problem_name, color) "
-	                       . " VALUES (?, ?, ?");
+	                       . " VALUES (?, ?, ?)");
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
     mysqli_stmt_bind_param($stmt, "sss", $problem['letter'], $problem['short-name'], $problem['rgb']);
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
@@ -122,7 +122,7 @@ $team_tsv_mapping = Array(
     'school_name'     => 4,
     'school_short'    => 5,
     'country'         => 6,
-    'institution_id'  => 7
+    #'institution_id'  => 7
 );
 
 while ($row = fgetcsv($f, 0, "\t")) {
@@ -131,12 +131,12 @@ while ($row = fgetcsv($f, 0, "\t")) {
     $school_name     =  $row[$team_tsv_mapping['school_name']];
     $school_short    =  $row[$team_tsv_mapping['school_short']];
     $country         =  $row[$team_tsv_mapping['country']];
-    $institution_id  =  preg_replace('/INST-/', '', $row[$team_tsv_mapping['institution_id']]);
+    #$institution_id  =  preg_replace('/INST-/', '', $row[$team_tsv_mapping['institution_id']]);
 
-    $stmt = mysqli_prepare($db, "INSERT INTO teams (id, team_id, team_name, school_name, school_short, country, institution_id) "
-        . " VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = mysqli_prepare($db, "INSERT INTO teams (id, team_id, team_name, school_name, school_short, country) "
+        . " VALUES (?, ?, ?, ?, ?, ?)");
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
-    mysqli_stmt_bind_param($stmt, "ddssssd", $team_id, $team_id, $team_name, $school_name, $school_short, $country, $institution_id);
+    mysqli_stmt_bind_param($stmt, "ddssss", $team_id, $team_id, $team_name, $school_name, $school_short, $country);
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN BIND: %s\n", mysqli_stmt_error($stmt)); }
     mysqli_stmt_execute($stmt);
     if (mysqli_stmt_error($stmt)) { printf("ERROR IN EXECUTE: %s\n", mysqli_stmt_error($stmt)); }
