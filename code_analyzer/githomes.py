@@ -38,7 +38,7 @@ class GitHomes:
 
         # read additional configuration parameters, depending on method.
         if self.pullmethod == 'CDS':
-            self.pullBackupsCDS()
+            self.initCDS()
         elif self.pullmethod == 'simulate':
             self.initSimulation()
 
