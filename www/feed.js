@@ -60,9 +60,9 @@ function feed(div, properties) {
     }
 
     if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '+0100';
+        this.tz_offset = '+0700';
         // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2015 IS +0100)
+        // STORES DATA IN LOCALTIME (WHICH IN 2016 IS +0700)
     }
 
     // figure out if we have any interesting teams, provided as sets of ranges
@@ -233,9 +233,9 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
-                var gitweb_url = config['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + pad(row.team_id,3) + "/" + row.path;
+                var gitweb_url = data['config']['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + pad(row.team_id,3) + "/" + row.path;
                 description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
-                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.TEAMS[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
+                              "<a href='team.php?team_id=" + row.team_id + "'>" + self.teams[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
                               row.modify_time + 
                               "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";

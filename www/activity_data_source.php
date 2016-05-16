@@ -221,7 +221,7 @@ function csv_to_string_array($csv) {
 }
 
 function string_to_alpha_array($string) {
-    return preg_split('//', strtoupper($string));
+    return preg_split('//', strtoupper($string), -1, PREG_SPLIT_NO_EMPTY);
 }
 
 if (preg_match('/\/activity_data_source.php$/', $_SERVER["SCRIPT_FILENAME"])) {
