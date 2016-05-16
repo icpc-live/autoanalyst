@@ -29,7 +29,7 @@ teambackup:
     backupdir: /home/icpclive/backup
     # The base gitweb URL including git project name, can be a full
     # URL or relative to the autoanalyst webserver:
-    gitweburl: "/gitweb/?p=teambackups"
+    gitweburl: "/gitweb/?p=githomes/.git"
     # Method to retrieve backups, options:
     # - CDS       import from CDS
     # - copy      copy from 'backupdir'
