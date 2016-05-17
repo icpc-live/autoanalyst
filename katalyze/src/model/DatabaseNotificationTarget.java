@@ -31,6 +31,12 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			return;
 		}
 
+		// If the event already came from the database, don't write it back again.
+		String category = event.supplements.get("category");
+		if ("human".equals(category)) {
+			return;
+		}
+
 		try {
 			PreparedStatement s;
 			s = conn.prepareStatement("insert into entries (contest_time, user, text, priority, submission_id) values (?, ?, ?, ?, ?)");
