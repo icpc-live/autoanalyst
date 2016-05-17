@@ -32,9 +32,11 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 		}
 
 		// If the event already came from the database, don't write it back again.
-		String category = event.supplements.get("category");
-		if ("human".equals(category)) {
-			return;
+		if (event.supplements != null) {
+			String category = event.supplements.get("category");
+			if ("human".equals(category)) {
+				return;
+			}
 		}
 
 		try {
