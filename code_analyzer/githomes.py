@@ -101,10 +101,10 @@ class GitHomes:
             print("Error: no contest found in the database.")
             exit(1)
 
-        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(row[0]) )
+#        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(row[0]) )
         self.teamLastModified = {};
         for teamIdx in range( 1, self.lastTeam + 1 ):
-            self.teamLastModified[ teamIdx ] = startTime;
+            self.teamLastModified[ teamIdx ] = 0;
 
 
     # The copy of team directories obtained from the CDS preserves modification
