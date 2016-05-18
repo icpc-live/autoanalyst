@@ -103,9 +103,9 @@
 			// If there is a contestinfo entry, we can highlight the last changes
 			var highlighting;
 
-			if (contestInfo) {
-				var contestTime = contestInfo.time;
-
+			var contestTime = standings[0].contestTime;
+			if (contestTime) {
+				
 				// Set up the highlighting function.
 				highlighting = function (cell) {
 					var lastUpdate = cell.lastUpd;

@@ -40,7 +40,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 			this.minutesFromStart = minutesFromStart;
 		}
 
-		public JSONObject DumpScore(Score score) {
+		public JSONObject dumpScore(Score score) {
 
 			Team team = score.getTeam();
 
@@ -110,13 +110,19 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 		public JSONArray execute() {
 			scoresAbove.clear();
+			boolean isFirstScore = true;
 
 			JSONArray resultArray = new JSONArray();
 			ArrayList<JSONObject> jsonScores = new ArrayList<JSONObject>();
 
 			for (Score score : standings) {
 				scoresAbove.add(score);
-				jsonScores.add(DumpScore(score));
+				JSONObject scoreRow = dumpScore(score);
+				if (isFirstScore) {
+					scoreRow.put("contestTime", contest.getMinutesFromStart());
+					isFirstScore = false;
+				}
+				jsonScores.add(scoreRow);
 			}
 
 			resultArray.addAll(jsonScores);
