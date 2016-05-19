@@ -3,7 +3,7 @@
 - Run the database reset scripts, and verify that there are no messages shown in iCat.
 	- Including the code_analyzer (wipe_tables.sql)
 - Delete all files in the githomes directory. Including the hidden .git directory.
-- Initialize the githomes direcotry by running the code_analyzer/prephomes.py script
+- Initialize the githomes directory by running the code_analyzer/prephomes.py script
 - Start the code analyzer.
 - Start Katalyzer, and verify that the scoreboard is working.
 - Test if the team camera video feeds work. Accesible from the scoreboard in iCat.
