@@ -23,7 +23,7 @@ function where_clause($team_ids, $problem_ids, $conditions = array()) {
 # Edit activity
 ##########################################################
 
-function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes, $until_minutes) {
+function get_edit_activity($db, $team_ids, $problem_ids, $bin_minutes, $until_minutes = null) {
     # where clause for edit_activity_problem
     $where_clause_edit_activity_problem = where_clause($team_ids, $problem_ids);
 
@@ -74,7 +74,7 @@ function get_max_problems_per_bin($edit_bins) {
 # Submission activity
 ##########################################################
 
-function get_num_at_problem_minute($db, $team_ids, $problem_ids, $until_minutes) {
+function get_num_at_problem_minute($db, $team_ids, $problem_ids, $until_minutes = null) {
     # where clause for submissions
     if (isset($until_minutes)) {
         $where_clause_submissions = where_clause($team_ids, $problem_ids,
@@ -94,7 +94,7 @@ function get_num_at_problem_minute($db, $team_ids, $problem_ids, $until_minutes)
     return $num_at_problem_minute;
 }
 
-function get_submission_activity($db, $team_ids, $problem_ids, $until_minutes) {
+function get_submission_activity($db, $team_ids, $problem_ids, $until_minutes = null) {
     # where clause for submissions
     if (isset($until_minutes)) {
         $where_clause_submissions = where_clause($team_ids, $problem_ids,
