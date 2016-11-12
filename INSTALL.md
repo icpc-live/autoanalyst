@@ -30,11 +30,11 @@ cd autoanalyst
 ```
 
 Add the included `apache.conf` configuration to `/etc/apache2/conf-available/icat.conf`;
-enable required modules and reload:
+enable required modules and restart:
 ```
-sudo a2enmod proxy_http rewrite
+sudo a2enmod cgi proxy_http rewrite
 sudo a2enconf icat gitweb
-sudo service apache2 reload
+sudo service apache2 restart
 ```
 
 Copy the configuration template and edit it:
