@@ -48,10 +48,11 @@ codeActivity:
     scoreboardFreezeMinutes:   240
     defaultGranularityMinutes: 5
 
-# FIXME: the stuff below is not really configuration and should be
-# obtained from e.g. the CDS via REST API calls 'contest' for contest
-# start time and 'problems'. Not clear from where the judgements data
-# should come from.
+# FIXME: not clear whether the judgements data below should be
+# considered configuration, or that it should come from some other
+# source (CDS?). Note that the proposed contest ontology [1] has a
+# 'Judgement Type' that contains the label and label_long data below.
+# [1] https://docs.google.com/document/d/12RVKS_u36WY9kU8iVIMzHtH5Df3WjK-mt-YmJu8j6ZI/edit
 
 judgements:
     AC:   { label: AC,  label_long: "Accepted"             , color: "#10a010", sortOrder: 1 }
