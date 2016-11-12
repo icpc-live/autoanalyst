@@ -1,13 +1,14 @@
 # Installation and setup
 
 These are instructions to setup the ICPC AutoAnalyst tools. These
-tools are meant run in conjuction with an ICPC-style programming
+tools are meant to run in conjuction with an ICPC-style programming
 contest and provide both automatic analysis and support for manual
 analysis of the contest. As such they require tight integration with
 the contest environment.
 
-Note that these instructions are work in progress and also, you may
-need to make additional changes depending on your contest environment.
+Note that these instructions are work in progress: they might be
+incomplete and depending on your contest environment, you may need to
+make additional changes.
 
 ## Instructions
 
@@ -20,20 +21,20 @@ sudo apt-get install \
        openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
 
-Add the included `apache.conf` configuration to `/etc/apache2/conf-available/icat.conf`;
-enable required modules and reload:
-```
-sudo a2enmod proxy_http rewrite
-sudo a2enconf icat gitweb
-sudo service apache2 reload
-```
-
 Create a user and database `icat` in MySQL/MariaDB.
 
 Get the AutoAnalyst repository:
 ```
 git clone https://github.com/icpc-live/autoanalyst.git
 cd autoanalyst
+```
+
+Add the included `apache.conf` configuration to `/etc/apache2/conf-available/icat.conf`;
+enable required modules and reload:
+```
+sudo a2enmod proxy_http rewrite
+sudo a2enconf icat gitweb
+sudo service apache2 reload
 ```
 
 Copy the configuration template and edit it:
