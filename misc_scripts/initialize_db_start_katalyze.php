@@ -1,12 +1,13 @@
+#!/usr/bin/env php
 --------------------------------------------------------
 THIS SCRIPT RESETS AND INITIALIZES ICAT
 
-IN A FEW SECONDS IT WILL EMPTY SQL TABLES 
+IN A FEW SECONDS IT WILL EMPTY SQL TABLES
 
 IF YOU DON'T WANT TO DO THIS, *KILL IT NOW*
 
 ALSO, REMEMBER TO UPDATE "config.yaml"
-WITH THE CORRECT INFORMATION FOR THIS CONTEST 
+WITH THE CORRECT INFORMATION FOR THIS CONTEST
 (IF YOU HAVEN'T ALREADY)
 --------------------------------------------------------
 <?php
@@ -46,7 +47,7 @@ foreach ($to_truncate as $table) {
    $qr = mysqli_query($db, $sql);
    if (mysqli_error($db)) {
        print("ERROR: " . mysqli_error($db) . "\n");
-   } 
+   }
 }
 ?>
 
