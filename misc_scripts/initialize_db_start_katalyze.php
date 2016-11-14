@@ -55,7 +55,11 @@ GRABBING THE CONTEST INFO FROM THE CDS AND STORING IT IN THE DATABASE
 <?php
 
 system(sprintf("curl --insecure -u %s:%s %s/config/contest.yaml > contest.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
-$contest = Spyc::YAMLLoad("contest.yaml");
+try {
+	$contest = Spyc::YAMLLoad("contest.yaml");
+} catch (Exception $e) {
+	print("ERROR: " . $e->getMessage() . "\n");
+}
 
 // Use Unix timestamp to work around unknown MySQL server timezone.
 $contest_start = date_create_from_format('Y-m-d*G:i:sT', $contest['start-time'],
@@ -88,7 +92,11 @@ GRABBING THE PROBLEMS FROM THE CDS AND POPULATING THE PROBLEMS TABLE IN THE DATA
 <?php
 
 system(sprintf("curl --insecure -u %s:%s %s/config/problemset.yaml > problemset.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
-$problems = Spyc::YAMLLoad("problemset.yaml");
+try {
+	$problems = Spyc::YAMLLoad("problemset.yaml");
+} catch (Exception $e) {
+	print("ERROR: " . $e->getMessage() . "\n");
+}
 
 // FIXME: problemset.yaml only has the problem short names, not the
 // full names. For this we should query the JSON scoreboard API call,
@@ -114,6 +122,7 @@ GRABBING THE TEAMS FROM THE CDS AND POPULATING THE TEAMS TABLE IN THE DATABASE
 
 system(sprintf("curl --insecure -u %s:%s %s/config/teams.tsv > teams.tsv", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
 $f = fopen("teams.tsv", "r");
+if ( $f===false ) print("ERROR: could not open file 'teams.tsv'\n");
 $header = fgetcsv($f, 0, "\t"); # ignore the header...
 
 $team_tsv_mapping = Array(
