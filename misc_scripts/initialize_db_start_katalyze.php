@@ -73,11 +73,12 @@ function parse_duration($str)
 	return 3600*$h + 60*$m + $s;
 }
 
+// Use DATE_ADD() to work around unknown MySQL server timezone.
 $stmt = mysqli_prepare($db, "INSERT INTO contests (contest_name, start_time, length, freeze) "
-                       . " VALUES (?, FROM_UNIXTIME(?), ?, ?)");
+                       . " VALUES (?, DATE_ADD('1970-01-01 00:00:00',INTERVAL ? SECOND), ?, ?)");
 if (mysqli_stmt_error($stmt)) { printf("ERROR IN PREPARE: %s\n", mysqli_stmt_error($stmt)); }
 
-mysqli_stmt_bind_param($stmt, "ssdd", $contest['name'], $contest_start,
+mysqli_stmt_bind_param($stmt, "sddd", $contest['name'], $contest_start,
                        parse_duration($contest['duration']),
                        parse_duration($contest['scoreboard-freeze-length']));
 
