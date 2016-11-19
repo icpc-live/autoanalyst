@@ -15,8 +15,8 @@ eval `grep -A4 '^CDS:' ../config.yaml | tail -n +2 | \
 # run!
 #cat data/kattislog_rehearsal_2011.txt | java -classpath $CP katalyzeapp.Katalyze $@
 #netcat 192.168.1.141 4714 | java -classpath $CP katalyzeapp.Katalyze $@
-curl --user analyst:cdswf998 --no-buffer --netrc --insecure --max-time 360000 \
-     https://192.168.1.207/events | java -classpath $CP katalyzeapp.Katalyze $@
+curl --user $user:$pass --no-buffer --netrc --insecure --max-time 360000 \
+     "${baseurl}/events" | java -classpath $CP katalyzeapp.Katalyze $@
 
 # wait until input
 read x
