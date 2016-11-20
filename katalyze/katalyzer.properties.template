@@ -11,7 +11,7 @@ input = tcp://192.168.1.1:4714
 #
 
 # --- Database export
-db.enable = false
+db.enable = true
 db.driver = com.mysql.jdbc.Driver
 db.connection = jdbc:mysql://localhost/icat?user=root&password=THISISNOTAPASSWORD
 
