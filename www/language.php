@@ -215,7 +215,8 @@ function hover(event, position, item) {
         target.find("div.hoverinfo").remove();
         var offset = target.offset();
         var value = item.series.data[item.dataIndex][1].toFixed(1);
-        var content = item.series.label + ": " + item.series.data[item.dataIndex][1].toFixed(1) + target.attr("suffix");
+        var decimals = ( target.attr("suffix")=='%' ? 1 : 0 );
+        var content = item.series.label + ": " + item.series.data[item.dataIndex][1].toFixed(decimals) + target.attr("suffix");
         $("<div class='hoverinfo'>" + content + "</div>").css(
         {
             position: 'absolute',
