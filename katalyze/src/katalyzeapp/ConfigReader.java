@@ -10,6 +10,8 @@ import java.io.Reader;
 import org.apache.commons.configuration.*;
 import org.apache.log4j.Logger;
 
+import com.github.mbredel.commons.configuration.*;
+
 import config.TwitterConfig;
 import rules.*;
 import clics.ExtendedScoreDump;
@@ -30,17 +32,17 @@ import model.WebNotificationTarget;
 public class ConfigReader {
 	static Logger logger = Logger.getLogger(ConfigReader.class);
 	
-	BaseConfiguration config;
+	Configuration config;
 	
 
 	public ConfigReader(Reader in) throws ConfigurationException {
 		
-		PropertiesConfiguration loadedConfig = new PropertiesConfiguration();
+		YAMLConfiguration loadedConfig = new YAMLConfiguration();
 		loadedConfig.load(in);
 		this.config = loadedConfig;
 	}
 	
-	public ConfigReader(BaseConfiguration config) {
+	public ConfigReader(Configuration config) {
 		this.config = config;
 	}
 	

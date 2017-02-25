@@ -8,7 +8,7 @@ import io.*;
 
 import java.io.*;
 
-import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
 public class Katalyzer {
@@ -19,7 +19,7 @@ public class Katalyzer {
 	Contest contest;
 	ContestMessages handlers;
 	
-	public Katalyzer(BaseConfiguration config) throws Exception {
+	public Katalyzer(Configuration config) throws Exception {
 		this.contest = new Contest();
 		this.handlers = new ContestMessages(contest);		
 		
