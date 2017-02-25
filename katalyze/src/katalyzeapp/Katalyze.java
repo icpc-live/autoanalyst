@@ -23,6 +23,7 @@ public class Katalyze {
 		logger.info("Katalyze started");
 
 		String fileName = null;
+		String configFileName = null;
 		BaseConfiguration config = null;
 		
 		for (int i = 0; i < args.length; ++i) {
@@ -30,23 +31,23 @@ public class Katalyze {
 				fileName = args[i+1];
 				i++;
 			} else if ("-config".equals(args[i]) && i<args.length-1) {
-				String configFileName = args[i+1];
-				try {
-					config = new PropertiesConfiguration(configFileName);
-				} catch (ConfigurationException e) {
-					logger.error(String.format("Unable to parse config file %s", configFileName));
-				}
+				configFileName = args[i+1];
 				i++;
 			} else {
 				logger.warn("I don't understand argument " + args[i]);
 			}
 		}
 
-		if (config == null) {
-			config = new PropertiesConfiguration("katalyzer.properties");
+		if (configFileName == null) {
+			configFileName = new String("katalyzer.properties");
 		}
-		
-		
+
+		try {
+			config = new PropertiesConfiguration(configFileName);
+		} catch (ConfigurationException e) {
+			logger.error(String.format("Unable to parse config file %s", configFileName));
+		}
+
 		Katalyzer katalyzer = null;
 		try {
 			InputStream input;
