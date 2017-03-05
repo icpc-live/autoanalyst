@@ -39,13 +39,13 @@ public class Katalyze {
 		}
 
 		if (configFileName == null) {
-			configFileName = new String("katalyzer.yaml");
+			configFileName = "katalyzer.yaml";
 		}
 
 		try {
 			config = new YAMLConfiguration(configFileName);
 		} catch (ConfigurationException e) {
-			logger.error(String.format("Unable to parse config file %s", configFileName));
+			logger.error(String.format("Error while parsing %s: %s.\nCause: %s", configFileName, e.getMessage(), e.getCause()));
 		}
 
 		Katalyzer katalyzer = null;
