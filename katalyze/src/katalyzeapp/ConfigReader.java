@@ -48,20 +48,29 @@ public class ConfigReader {
 	
 
 	private void setupDatabaseNotifier(Analyzer analyzer) {
-		if (!config.getBoolean("db.enable", false)) {
+		if (!config.getBoolean("katalyzer.db.enable", false)) {
 			return;
 		}
-		
+
+		String connection = "jdbc:mysql://"
+		                  + config.getString("database.host") + "/"
+		                  + config.getString("database.name") + "?user="
+		                  + config.getString("database.user") + "&password=";
+
+
+		logger.info("Connecting to database: "+connection+"????");
+
+		connection += config.getString("database.password");
+
 		DatabaseNotificationConfig dbConfig = new DatabaseNotificationConfig(
-				config.getString("db.driver", "com.mysql.jdbc.Driver"),
-				config.getString("db.connection"));
+				"com.mysql.jdbc.Driver", connection);
 		
 		try {
 			logger.info("Enabling database notifier");
 
-			if (config.getBoolean("db.exportMessages",true)) {
+			if (config.getBoolean("katalyzer.db.exportMessages",true)) {
 				DatabaseNotificationTarget notifier = new DatabaseNotificationTarget(dbConfig);
-				notifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+				notifier.suppressUntil(config.getInt("katalyzer.notifications.suppressUntil", 0));
 			
 				StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
 				analyzer.addNotifier(notifier);
@@ -79,30 +88,30 @@ public class ConfigReader {
 	}
 	
 	private void setupTwitterNotifier(Analyzer analyzer) {
-		if (!config.getBoolean("twitter.enable", false)) {
+		if (!config.getBoolean("katalyzer.twitter.enable", false)) {
 			return;
 		}
 		
 		logger.info("will export to twitter");
 		
 		TwitterConfig twitterConfig = new TwitterConfig(
-				config.getStringArray("twitter.oAuthConsumer"),
-				config.getStringArray("twitter.accessToken"),
-				config.getString("twitter.hashtag")
+				config.getStringArray("katalyzer.twitter.oAuthConsumer"),
+				config.getStringArray("katalyzer.twitter.accessToken"),
+				config.getString("katalyzer.twitter.hashtag")
 				);
 
 		TwitterNotificationTarget twitterNotifier = new TwitterNotificationTarget(twitterConfig);
-		twitterNotifier.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+		twitterNotifier.suppressUntil(config.getInt("katalyzer.notifications.suppressUntil", 0));
 
 		analyzer.addNotifier(twitterNotifier);
 	}
 	
 	private boolean ruleEnabled(String ruleName) {
-		return (config.getBoolean("rule."+ruleName+".enable", false));
+		return (config.getBoolean("katalyzer.rule."+ruleName+".enable", false));
 	}
 	
 	private boolean featureEnabled(String featureName) {
-		return (config.getBoolean(featureName+".enable", false));
+		return (config.getBoolean("katalyzer."+featureName+".enable", false));
 	}
 	
 	
@@ -112,26 +121,26 @@ public class ConfigReader {
 		}
 		
 		analyzer.addRule(newRule);
-		String execTemplate = config.getString("rule."+ruleName+".exec", "");
+		String execTemplate = config.getString("katalyzer.rule."+ruleName+".exec", "");
 		if (!"".equals(execTemplate)) {
 			logger.info(String.format("Adding trigger on rule %s: %s", newRule, execTemplate));
 			ShellNotificationTarget executer = new ShellNotificationTarget(execTemplate);
-			executer.suppressUntil(config.getInt("notifications.suppressUntil", 0));
+			executer.suppressUntil(config.getInt("katalyzer.notifications.suppressUntil", 0));
 			newRule.addNotificationTarget(executer);
 		}
 	}
 	
 	private void setupRules(Analyzer analyzer) {
 		addRuleIfEnabled(analyzer, "problemFirstSolved", new ProblemFirstSolved());
-		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("rule.newLeader.breakingRanks",4), config.getInt("rule.newLeader.ranks", 10)));
-		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("rule.RejectedSubmission.ranks", 10)));
-		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("rule.rankPredictor.ranks", 10)));
+		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("katalyzer.rule.newLeader.breakingRanks",4), config.getInt("katalyzer.rule.newLeader.ranks", 10)));
+		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("katalyzer.rule.RejectedSubmission.ranks", 10)));
+		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("katalyzer.rule.rankPredictor.ranks", 10)));
 	}
 	
 	private void setupCharts(Contest contest, Analyzer analyzer) {
-		if (config.getBoolean("charts.enable",false)) {
+		if (config.getBoolean("katalyzer.charts.enable",false)) {
 			logger.info("going to create charts");
-			String targetDirectory = config.getString("charts.directory", "output");
+			String targetDirectory = config.getString("katalyzer.charts.directory", "output");
 			ChartDumperHook chartDumperHook = new ChartDumperHook(contest, new File(targetDirectory));
 			analyzer.addOutputHook(chartDumperHook);
 			analyzer.addOutputHook(new ModelDumperHook(contest, chartDumperHook));			
@@ -140,7 +149,7 @@ public class ConfigReader {
 	
 	private EventFeedFile setupOutputStream(Analyzer analyzer, ContestMessages messageHandlers) {
 		if (featureEnabled("eventStream")) {
-			String target = config.getString("eventStream.target");
+			String target = config.getString("katalyzer.eventStream.target");
 		
 			
 			File f = new File(target);
@@ -168,8 +177,8 @@ public class ConfigReader {
 	public void setupWebPublisher(Contest contest, Analyzer analyzer, EventFeedFile augmentedEventFeed) {
 		KatalyzerHttpHandler httpHandler;
 		if (featureEnabled("web")) {
-			int port = config.getInteger("web.port", 8099);
-			boolean useCompression = config.getBoolean("web.compress", true);
+			int port = config.getInteger("katalyzer.web.port", 8099);
+			boolean useCompression = config.getBoolean("katalyzer.web.compress", true);
 			
 			WebPublisher webPublisher = new WebPublisher(useCompression);
 			
@@ -186,7 +195,7 @@ public class ConfigReader {
 	
 	public void setupFilePublisher(Contest contest, Analyzer analyzer) {
 		if (featureEnabled("file")) {
-			String targetDirectory = config.getString("file.targetDirectory");
+			String targetDirectory = config.getString("katalyzer.file.targetDirectory");
 			
 			try {
 				FileWebPublisher publisher = new FileWebPublisher(targetDirectory);

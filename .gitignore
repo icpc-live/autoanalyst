@@ -1,6 +1,5 @@
 config.yaml
 katalyze/bin
-katalyze/katalyzer.yaml
 .metadata
 *.class
 *~

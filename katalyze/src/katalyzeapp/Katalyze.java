@@ -39,7 +39,7 @@ public class Katalyze {
 		}
 
 		if (configFileName == null) {
-			configFileName = "katalyzer.yaml";
+			configFileName = "config.yaml";
 		}
 
 		try {

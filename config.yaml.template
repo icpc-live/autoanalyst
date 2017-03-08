@@ -44,6 +44,63 @@ teambackup:
     interval:  120
     lastTeam:  119
 
+# Configuration for the Katalyzer
+katalyzer:
+    # Database (main configuration is taken from common database config above)
+    db:
+        enable:     true
+
+    # Internal web server
+    web:
+        enable:     true
+        compress:   true
+        port:       8099
+
+    # File publisher
+    file:
+        enable:          false
+        targetDirectory: /home/icpclive/autoanalyst/output
+
+    # Twitter feed
+    twitter:
+        enable:         false
+        oAuthConsumer:  ["", ""]
+        accessToken:    ["", ""]
+        hashtag:        "#katalyzer"
+
+    # Event Stream
+    eventStream:
+        enable:     true
+        target:     /home/icpclive/autoanalyst/output/eventstream.xml
+    # The eventStream.target file needs to be writable by the
+    # katalyzer process in order for the event stream to be available.
+    # This also applies if you are only accessing the event stream
+    # using http
+
+    rule:
+        # ProblemFirstSolved - whenever a problem is solved for the first time
+        problemFirstSolved:
+            enable:   true
+
+        # NewLeader - when a team takes the lead, or gets into the top n positions
+        newLeader:
+            enable:   true
+            ranks:    10
+            breakingRanks: 5
+
+        # RejectedSubmission - when the judges reject a submission from
+        # one of the top n teams
+        rejectedSubmission:
+            enable:   true
+            ranks:    10
+
+        # RankPredictor - when a team submits a solution that would put
+        # the team among the top n teams
+        rankPredictor:
+            enable:   true
+            ranks:    10
+#           exec:     "./capture.sh {teamId} {time} {currentRank} {potentialRank}"
+
 codeActivity:
     scoreboardFreezeMinutes:   240
     defaultGranularityMinutes: 5
