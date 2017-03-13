@@ -1,11 +1,8 @@
-config.yaml
-katalyze/bin
+/config.yaml
+/katalyze/bin
+/output
 .metadata
 *.class
 *~
-output
 .idea
-
 .DS_Store
-
-katalyze/.DS_Store
