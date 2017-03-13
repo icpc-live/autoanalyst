@@ -16,7 +16,7 @@ On a Debian/Ubuntu-like system the following set of packages has to be
 installed:
 ```
 sudo apt-get install \
-       git gitk gitweb apache2 apache2-utils phpmyadmin mariadb-server
+       git gitk gitweb apache2 apache2-utils phpmyadmin mariadb-server \
        mariadb-client php5-cli ntp rsync make curl python-yaml \
        openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
 ```
@@ -42,12 +42,6 @@ Copy the configuration template and edit it:
 cp config.yaml.template config.yaml
 $EDITOR config.yaml
 ```
-and do the same for the Katalyzer configuration:
-```
-cp katalyzer/katalyzer.properties.template katalyzer/katalyzer.properties
-$EDITOR katalyzer/katalyzer.properties
-```
-TODO: merge Katalyzer properties into the global configuration.
 
 Build the Katalyzer code:
 ```
