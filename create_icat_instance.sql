@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `submissions` (
   `team_id` int(11) NOT NULL,
   `lang_id` varchar(11) NOT NULL,
   `result` varchar(10) NOT NULL,
-  `date` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
   `submission_id` int(11) NOT NULL,
   `has_video` boolean DEFAULT '0',
