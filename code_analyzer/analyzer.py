@@ -474,7 +474,7 @@ class Analyzer:
                     if ( autoTime != None and autoTime > fobj.time ):
                         fobj.time = autoTime
 
-                    # Try to gurad against anomalous file edit times. These are unlikely to happen,
+                    # Try to guard against anomalous file edit times. These are unlikely to happen,
                     # but they could look strange in the report or even suppress tracking of files
                     # if they have a modification time in the future.
 
@@ -490,7 +490,7 @@ class Analyzer:
 
                     # If the file looks like it changed in the future, ignore it unless git agrees it's changing.
                     if fobj.time > scriptStartTime + self.backupInterval:
-                        print "Future Modification: ", fobj.path, " changed ", fobj.linesChanged
+                        print "Future Modification: ", fobj.path, " changed ", fobj.linesChanged, " lines, ", (fobj.time - scriptStartTime), " seconds in the future"
                         if fobj.linesChanged > 0:
                             fobj.time = scriptStartTime
                         else:
