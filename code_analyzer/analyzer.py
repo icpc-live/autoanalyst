@@ -106,12 +106,13 @@ class Analyzer:
         self.commonStrips = [ 'problem', 'prob', '_', '-' ]
 
         # Valid source file extensions, and what each one says
-        # about the soruce file.
+        # about the source language.
         self.extensionMap = { 
             'cc': "C++",
             'cpp': "C++",
             'c': "C",
-            'java': "Java"
+            'java': "Java",
+            'py': "Python" # FIXME: do we want to discern between Python 2/3?
             }
 
         # map from problem ID to a list of keywords to look for.
