@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
-  `modify_timestamp` int(110 NOT NULL,
+  `modify_timestamp` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
