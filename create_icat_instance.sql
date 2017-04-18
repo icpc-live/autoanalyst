@@ -1,6 +1,15 @@
--- Host: gedrix.ida.liu.se
--- Server version: 5.1.49
--- PHP Version: 5.3.9
+-- phpMyAdmin SQL Dump
+-- version 4.2.12deb2+deb8u2
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Apr 11, 2017 at 01:28 AM
+-- Server version: 10.0.30-MariaDB-0+deb8u1
+-- PHP Version: 5.6.30-0+deb8u1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -10,6 +19,18 @@
 --
 -- Database: `icat`
 --
+
+--
+-- Table structure for table `analyzer_parameters`
+--
+
+DROP TABLE IF EXISTS `analyzer_parameters`;
+CREATE TABLE IF NOT EXISTS `analyzer_parameters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `value` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Table structure for table `contests`
@@ -22,10 +43,14 @@ CREATE TABLE IF NOT EXISTS `contests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contest_name` varchar(150) NOT NULL,
   `start_time` timestamp COMMENT 'Contest start time in UTC.',
-  `length` int(11) COMMENT 'Contest length in seconds.',
+  `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
   `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+--
+-- Table structure for table `edit_activity`
+--
 
 --
 -- Just a record of the modification times for files in team's
@@ -47,16 +72,20 @@ DROP TABLE IF EXISTS `edit_activity`;
 CREATE TABLE IF NOT EXISTS `edit_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
-  `path` varchar(256),
-  `modify_time_utc` timestamp,
-  `modify_time` int(11),
-  `line_count` int(11),
-  `file_size_bytes` int(11),
-  `lines_changed` int(11),
-  `git_tag` varchar(30),
+  `path` varchar(256) DEFAULT NULL,
+  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modify_time` int(11) DEFAULT NULL,
+  `line_count` int(11) DEFAULT NULL,
+  `file_size_bytes` int(11) DEFAULT NULL,
+  `lines_changed` int(11) DEFAULT NULL,
+  `git_tag` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `team_path_ea_index` (`team_id`, `path`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+--
+-- Table structure for table `edit_latest`
+--
 
 --
 -- Summary of edit activity, by problem ID.  It's a map from team id and
@@ -71,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
-  `modify_time_utc` timestamp,
+  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -87,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `entries` (
   `priority` int(11) NOT NULL,
   `user` varchar(10) NOT NULL,
   `text` text NOT NULL,
-  `submission_id` int(11),
+  `submission_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `avoid_dups` (`contest_time`,`text`(300))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
@@ -106,6 +135,10 @@ CREATE TABLE IF NOT EXISTS `facts` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
+-- Table structure for table `file_modtime`
+--
+
+--
 -- Mapping from file team id and path name to last utc modification
 -- time.  This really just exists to make updating the previous table
 -- efficient.  We only write a new record for a particular file if it
@@ -116,10 +149,14 @@ DROP TABLE IF EXISTS `file_modtime`;
 CREATE TABLE IF NOT EXISTS `file_modtime` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
-  `path` varchar(256),
-  `modify_time_utc` timestamp,
+  `path` varchar(256) DEFAULT NULL,
+  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+--
+-- Table structure for table `file_to_problem`
+--
 
 --
 -- Mapping from file, team id and path name to problem id and
@@ -141,10 +178,10 @@ DROP TABLE IF EXISTS `file_to_problem`;
 CREATE TABLE IF NOT EXISTS `file_to_problem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
-  `path` varchar(256),
-  `problem_id` varchar(10),
-  `lang_id` varchar(11),
-  `override` tinyint(1),
+  `path` varchar(256) DEFAULT NULL,
+  `problem_id` varchar(10) DEFAULT NULL,
+  `lang_id` varchar(11) DEFAULT NULL,
+  `override` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `team_path_ftp_index` (`team_id`, `path`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
@@ -175,6 +212,10 @@ CREATE TABLE IF NOT EXISTS `problems` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 --
+-- Table structure for table `problem_keywords`
+--
+
+--
 -- Map from problem id to a list of keywords for the problem.
 --
 
@@ -187,28 +228,40 @@ CREATE TABLE IF NOT EXISTS `problem_keywords` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
+-- Table structure for table `problem_name`
+--
+
+DROP TABLE IF EXISTS `problem_name`;
+CREATE TABLE IF NOT EXISTS `problem_name` (
+  `id` int(11) NOT NULL,
+  `problem_id` varchar(10) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+
+--
 -- Table structure for table `teams`
 --
 
 DROP TABLE IF EXISTS `teams`;
 CREATE TABLE IF NOT EXISTS `teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `reservation_id` int(11) NOT NULL,
+  `reservation_id` int(11) DEFAULT NULL,
   `team_id` int(11) NOT NULL,
   `team_name` varchar(150) NOT NULL,
-  `institution_id` int(11) NOT NULL,
-  `site_id` int(11) NOT NULL,
+  `institution_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
   `school_name` varchar(150) NOT NULL,
-  `school_short` varchar(10) NOT NULL,
+  `school_short` varchar(32) NOT NULL,
   `country` varchar(50) NOT NULL,
-  `coach_id` int(11) NOT NULL,
-  `contestant1_id` int(11) NOT NULL,
-  `contestant2_id` int(11) NOT NULL,
-  `contestant3_id` int(11) NOT NULL,
-  `coach_name` varchar(150) NOT NULL,
-  `contestant1_name` varchar(50) NOT NULL,
-  `contestant2_name` varchar(50) NOT NULL,
-  `contestant3_name` varchar(50) NOT NULL,
+  `coach_id` int(11) DEFAULT NULL,
+  `contestant1_id` int(11) DEFAULT NULL,
+  `contestant2_id` int(11) DEFAULT NULL,
+  `contestant3_id` int(11) DEFAULT NULL,
+  `coach_name` varchar(150) DEFAULT NULL,
+  `contestant1_name` varchar(50) DEFAULT NULL,
+  `contestant2_name` varchar(50) DEFAULT NULL,
+  `contestant3_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -217,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `teams` (
 --
 
 DROP TABLE IF EXISTS `team_regions`;
-CREATE TABLE `team_regions` (
+CREATE TABLE IF NOT EXISTS `team_regions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `region_id` int(11) NOT NULL,
   `team_id` int(11) NOT NULL,
@@ -228,6 +281,10 @@ CREATE TABLE `team_regions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 --
+-- Table structure for table `team_strips`
+--
+
+--
 -- Per-team list of strings to strip, if a team is using one
 -- or more special strings as part of their filenames.
 --
@@ -236,7 +293,7 @@ DROP TABLE IF EXISTS `team_strips`;
 CREATE TABLE IF NOT EXISTS `team_strips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
-  `str` varchar(30),
+  `str` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -290,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `submissions` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
   `submission_id` int(11) NOT NULL,
-  `has_video` boolean DEFAULT '0',
+  `has_video` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `avoid_dups` (`submission_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
@@ -303,3 +360,7 @@ DROP VIEW IF EXISTS `edit_activity_problem`;
 CREATE VIEW edit_activity_problem AS SELECT edit_activity.*, file_to_problem.problem_id
     FROM edit_activity LEFT JOIN file_to_problem ON (edit_activity.team_id = file_to_problem.team_id AND edit_activity.path = file_to_problem.path)
     WHERE file_to_problem.problem_id IS NOT NULL AND file_to_problem.problem_id != 'none';
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
