@@ -258,7 +258,7 @@ function _feed_updateWith(rows) {
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.teams[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
                               row.modify_time + 
-                              "<span class='feed_timestamp' timestamp='" + row.modify_time_utc + "'></span>";
+                              "<span class='feed_timestamp' timestamp='" + row.modify_timestamp + "'></span>";
             } else if (this.table == 'submissions') {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
                 var result = "<span class='" + is_accepted + "'>" + self.judgements[row.result].label_long + "</span>";

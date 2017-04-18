@@ -45,7 +45,7 @@ DROP TABLE IF EXISTS `contests`;
 CREATE TABLE IF NOT EXISTS `contests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contest_name` varchar(150) NOT NULL,
-  `start_time` datetime COMMENT 'Contest start time in UTC.',
+  `start_time` int(11) DEFAULT NULL COMMENT 'Contest start time as Unix Epoch seconds.',
   `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
   `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
   PRIMARY KEY (`id`)
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `contests` (
 -- directories.  This will generally be restricted to source files,
 -- but I suppose this wouldn't be required.
 --
--- modify_time_utc is the modification time, in utc.
+-- modify_timestamp is the modification time, in Unix Epoch.
 -- modify_time is the minutes since the start of the contest.
 --
 -- there's a reason we're recording both of these, but I (DBS) don't
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `edit_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256) DEFAULT NULL,
-  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modify_timestamp` int(11) DEFAULT NULL,
   `modify_time` int(11) DEFAULT NULL,
   `line_count` int(11) DEFAULT NULL,
   `file_size_bytes` int(11) DEFAULT NULL,
@@ -96,14 +96,14 @@ CREATE TABLE IF NOT EXISTS `edit_activity` (
 -- This is intended to give a quick report of what each team is working
 -- on.
 --
--- modify_time_utc is the modification time, in utc.
+-- modify_timestamp is the modification time, in Unix Epoch.
 
 DROP TABLE IF EXISTS `edit_latest`;
 CREATE TABLE IF NOT EXISTS `edit_latest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `problem_id` varchar(10) NOT NULL,
-  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modify_timestamp` int(110 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS `facts` (
 --
 
 --
--- Mapping from file team id and path name to last utc modification
--- time.  This really just exists to make updating the previous table
+-- Mapping from file team id and path name to last modification
+-- timestamp.  This really just exists to make updating the previous table
 -- efficient.  We only write a new record for a particular file if it
 -- has changed more recently.
 --
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `file_modtime` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `team_id` int(11) NOT NULL,
   `path` varchar(256) DEFAULT NULL,
-  `modify_time_utc` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modify_timestamp` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 

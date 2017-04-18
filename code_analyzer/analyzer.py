@@ -124,7 +124,7 @@ class Analyzer:
 
         # Contest start time in Unix seconds from the database.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT UNIX_TIMESTAMP(start_time) FROM contests ORDER BY start_time DESC LIMIT 1" )
+        cursor.execute( "SELECT start_time FROM contests ORDER BY start_time DESC LIMIT 1" )
         row = cursor.fetchone()
         if ( row == None ):
             print("Error: no contest found in the database.")
@@ -172,11 +172,10 @@ class Analyzer:
             row = cursor.fetchone()
 
         # get latest known edit times for every team/path
-        cursor.execute( "SELECT id, team_id, path, modify_time_utc FROM file_modtime" )
+        cursor.execute( "SELECT id, team_id, path, modify_timestamp FROM file_modtime" )
         row = cursor.fetchone()
         while ( row != None ):
-            t = int( calendar.timegm( row[ 3 ].timetuple() ) )
-            self.lastEditTimes[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t, None ]
+            self.lastEditTimes[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], row[ 3 ], None ]
 
             row = cursor.fetchone()
         
@@ -528,20 +527,19 @@ class Analyzer:
         cursor = dbConn.cursor()
         for k, v in self.lastEditTimes.iteritems():
             if v[ 2 ] != None:
-                tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 2 ].time ) )
-
+                t = time.gmtime( v[ 2 ].time )
                 if v[ 0 ] == None:
-                    update = "INSERT INTO file_modtime (team_id, path, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), tstr )
+                    update = "INSERT INTO file_modtime (team_id, path, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), t )
                 
                     cursor.execute( update )
                 else:
-                    update = "UPDATE file_modtime SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
+                    update = "UPDATE file_modtime SET modify_time='%d' WHERE id='%d'" % ( t, v[ 0 ] )
                     cursor.execute( update )
 
                 # Compute time since start of contest.
                 cmin = ( v[ 2 ].time - self.contestStart ) / 60
 
-                update = "INSERT INTO edit_activity (team_id, path, modify_time_utc, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), tstr, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
+                update = "INSERT INTO edit_activity (team_id, path, modify_timestamp, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), t, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
                 
                 cursor.execute( update )
                 
@@ -556,11 +554,10 @@ class Analyzer:
         modLatest = {}
 
         # get latest known edit times for every team/problem.
-        cursor.execute( "SELECT id, team_id, problem_id, modify_time_utc FROM edit_latest" )
+        cursor.execute( "SELECT id, team_id, problem_id, modify_timestamp FROM edit_latest" )
         row = cursor.fetchone()
         while ( row != None ):
-            t = int( calendar.timegm( row[ 3 ].timetuple() ) )
-            modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], t, 0 ]
+            modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], row[ 3 ], 0 ]
             row = cursor.fetchone()
         
         for k, v in self.fileMappings.iteritems():
@@ -584,13 +581,13 @@ class Analyzer:
                         modLatest[ ( k[ 0 ], prob ) ] = [ None, t, 1 ]
 
         for k, v in modLatest.iteritems():
-            tstr = time.strftime( "%Y-%m-%d %H:%M:%S", time.gmtime( v[ 1 ] ) )
+            t = time.gmtime( v[ 1 ] )
             if v[ 0 ] == None:
-                update = "INSERT INTO edit_latest (team_id, problem_id, modify_time_utc ) VALUES ( '%s', '%s', '%s' )" % ( k[ 0 ], k[ 1 ], tstr )
+                update = "INSERT INTO edit_latest (team_id, problem_id, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], k[ 1 ], t )
                 
                 cursor.execute( update )
             elif v[ 2 ]:
-                update = "UPDATE edit_latest SET modify_time_utc='%s' WHERE id='%d'" % ( tstr, v[ 0 ] )
+                update = "UPDATE edit_latest SET modify_timestamp='%d' WHERE id='%d'" % ( t, v[ 0 ] )
                 cursor.execute( update )
             else:
                 update = "DELETE FROM edit_latest WHERE id='%d'" % ( v[ 0 ] )

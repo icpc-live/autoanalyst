@@ -95,7 +95,7 @@ class GitHomes:
 
         # figure out a start time in the format we will get from the CDS.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT UNIX_TIMESTAMP(start_time) FROM contests ORDER BY start_time DESC LIMIT 1" )
+        cursor.execute( "SELECT start_time FROM contests ORDER BY start_time DESC LIMIT 1" )
         row = cursor.fetchone()
         if ( row == None ):
             print("Error: no contest found in the database.")
