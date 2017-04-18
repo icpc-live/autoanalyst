@@ -20,6 +20,9 @@ SET time_zone = "+00:00";
 -- Database: `icat`
 --
 
+CREATE DATABASE IF NOT EXISTS `icat` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `icat`;
+
 --
 -- Table structure for table `analyzer_parameters`
 --
@@ -42,7 +45,7 @@ DROP TABLE IF EXISTS `contests`;
 CREATE TABLE IF NOT EXISTS `contests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contest_name` varchar(150) NOT NULL,
-  `start_time` timestamp COMMENT 'Contest start time in UTC.',
+  `start_time` datetime COMMENT 'Contest start time in UTC.',
   `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
   `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
   PRIMARY KEY (`id`)
