@@ -101,7 +101,7 @@ public class TokenStreamProcessor {
 	public void parse() throws Exception {
 		advanceIgnoringWhiteSpace();
 		assertCurrentIs(StartTag.class);
-		assert (current instanceof StartTag) && ((StartTag) current).getName() == "contest";
+		assert (current instanceof StartTag) && ((StartTag) current).getName().equals("contest");
 		output.send(controlMessage("beginStream"));
 
 		advanceIgnoringWhiteSpace();
