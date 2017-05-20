@@ -97,12 +97,11 @@ public class ConfigReader {
 		TwitterConfig twitterConfig = new TwitterConfig(
 				config.getStringArray("katalyzer.twitter.oAuthConsumer"),
 				config.getStringArray("katalyzer.twitter.accessToken"),
-				config.getString("katalyzer.twitter.hashtag")
+				config.getString("katalyzer.twitter.hashtag"),
+				config.getInt("katalyzer.notifications.suppressUntil", 0)
 				);
 
 		TwitterNotificationTarget twitterNotifier = new TwitterNotificationTarget(twitterConfig);
-		twitterNotifier.suppressUntil(config.getInt("katalyzer.notifications.suppressUntil", 0));
-
 		analyzer.addNotifier(twitterNotifier);
 	}
 	

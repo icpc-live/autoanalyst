@@ -30,7 +30,7 @@
         <pathelement location="lib/json-lib-2.4-jdk15.jar"/>
         <pathelement location="lib/log4j-1.2.16.jar"/>
         <pathelement location="lib/mysql-connector-java-5.0.8-bin.jar"/>
-        <pathelement location="lib/twitter4j-core-3.0.3.jar"/>
+        <pathelement location="lib/twitter4j-core-4.0.6.jar"/>
 	<pathelement location="lib/junit-4.11.jar"/>
     </path>
     <target name="init">

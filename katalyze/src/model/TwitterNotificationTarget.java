@@ -1,40 +1,36 @@
 package model;
 
-import org.apache.log4j.*;
-
 import config.TwitterConfig;
-
-import twitter4j.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import twitter4j.Twitter;
 
 public class TwitterNotificationTarget implements NotificationTarget {
 
-	static Logger logger = LogManager.getLogger(TwitterNotificationTarget.class);
-	String hashtag;
-	int suppressedMinutes = 0;
-	
-	Twitter twitter;
-	
+	private static final Logger logger = LogManager.getLogger(TwitterNotificationTarget.class);
+	private final String hashTag;
+	private final int suppressedMinutes;
+	private final Twitter twitter;
+
 	public TwitterNotificationTarget(TwitterConfig config) {
 		twitter = config.createTwitterInstance();
-		hashtag = config.getHashtag();
+		hashTag = config.getHashtag();
+		suppressedMinutes = config.getSuppressUntilMinutes();
 	}
-	
-	public void suppressUntil(int contestMinutes) {
-		this.suppressedMinutes = contestMinutes;
-	}
-	
+
 	@Override
 	public void notify(LoggableEvent event) {
 		if (event.time < suppressedMinutes) {
 			return;
 		}
+
 		try {
 			if (event.importance == EventImportance.Breaking) {
-				String fullMessage = event.message + " "+hashtag;
+				String fullMessage = event.message + " "+ hashTag;
 				if (fullMessage.length() > 140) {
-					int maxContentLength = 140 - hashtag.length() - 1 - 3;
+					int maxContentLength = 140 - hashTag.length() - 1 - 3;
 					
-					fullMessage = event.message.substring(0, maxContentLength-1) + "... "+hashtag;
+					fullMessage = event.message.substring(0, maxContentLength-1) + "... "+ hashTag;
 				}
 				logger.info(String.format("Tweeting: %s", fullMessage));
 				twitter.updateStatus(fullMessage);
