@@ -1,11 +1,11 @@
 package io;
 
+import org.apache.log4j.Logger;
+
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
-
-import org.apache.log4j.Logger;
 
 public class TokenStreamProcessor {
 	
@@ -90,7 +90,6 @@ public class TokenStreamProcessor {
 			advanceIgnoringWhiteSpace();
 		}
 		assertCurrentIs(EndTag.class);
-		advanceIgnoringWhiteSpace();
 		return target;
 	}
 	
@@ -110,6 +109,7 @@ public class TokenStreamProcessor {
 			if (current instanceof StartTag) {
 				SimpleMessage message = parseSimpleMessage();
 				output.send(message);
+				advanceIgnoringWhiteSpace();
 			} else if (current instanceof EndTag) {
 				output.send(controlMessage("endStream"));
 				break;
