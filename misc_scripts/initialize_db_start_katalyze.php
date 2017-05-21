@@ -33,7 +33,7 @@ DUMP THE ICAT DATABASE
 <?php
    require_once 'config.php';
    $date=date('dMY_hi');
-   system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --database icat > icat_backup_$date.sql");
+   system("mysqldump -h$dbhost -u$dbuser -p$dbpassword --databases icat > icat_backup_$date.sql");
 ?>
 
 
