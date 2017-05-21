@@ -527,7 +527,7 @@ class Analyzer:
         cursor = dbConn.cursor()
         for k, v in self.lastEditTimes.iteritems():
             if v[ 2 ] != None:
-                t = time.gmtime( v[ 2 ].time )
+                t = v[ 2 ].time
                 if v[ 0 ] == None:
                     update = "INSERT INTO file_modtime (team_id, path, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), t )
                 
@@ -581,7 +581,7 @@ class Analyzer:
                         modLatest[ ( k[ 0 ], prob ) ] = [ None, t, 1 ]
 
         for k, v in modLatest.iteritems():
-            t = time.gmtime( v[ 1 ] )
+            t = v[ 1 ]
             if v[ 0 ] == None:
                 update = "INSERT INTO edit_latest (team_id, problem_id, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], k[ 1 ], t )
                 
