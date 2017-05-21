@@ -55,7 +55,8 @@ foreach ($to_truncate as $table) {
 GRABBING THE CONTEST INFO FROM THE CDS AND STORING IT IN THE DATABASE
 <?php
 
-system(sprintf("curl --insecure -u %s:%s %s/config/contest.yaml > contest.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
+// Currently, this file isn't provided by the CDS and should be installed manually.
+//system(sprintf("curl --insecure -u %s:%s %s/contest/info > contest.json", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
 try {
 	$contest = Spyc::YAMLLoad("contest.yaml");
 } catch (Exception $e) {
@@ -105,7 +106,8 @@ mysqli_stmt_close($stmt);
 GRABBING THE PROBLEMS FROM THE CDS AND POPULATING THE PROBLEMS TABLE IN THE DATABASE
 <?php
 
-system(sprintf("curl --insecure -u %s:%s %s/config/problemset.yaml > problemset.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
+// Currently, this file isn't provided by the CDS and should be installed manually.
+//system(sprintf("curl --insecure -u %s:%s %s/config/problemset.yaml > problemset.yaml", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
 try {
 	$problems = Spyc::YAMLLoad("problemset.yaml");
 } catch (Exception $e) {
@@ -134,7 +136,8 @@ foreach ( $problems['problems'] as $problem ) {
 GRABBING THE TEAMS FROM THE CDS AND POPULATING THE TEAMS TABLE IN THE DATABASE
 <?php
 
-system(sprintf("curl --insecure -u %s:%s %s/config/teams.tsv > teams.tsv", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
+// Currently, this file isn't provided by the CDS and should be installed manually.
+//system(sprintf("curl --insecure -u %s:%s %s/config/teams.tsv > teams.tsv", $config['CDS']['user'], $config['CDS']['pass'], $config['CDS']['baseurl']));
 $f = fopen("teams.tsv", "r");
 if ( $f===false ) print("ERROR: could not open file 'teams.tsv'\n");
 $header = fgetcsv($f, 0, "\t"); # ignore the header...

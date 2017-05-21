@@ -52,6 +52,12 @@ Create some symlinks:
 - Symlink the homedir backup git repo to /var/lib/git/
 - Symlink autoanalyst/www to /var/www/html/icat
 
+Manually download and install the following files, which are not
+provided by the CDS anymore, before setting up the database.
+- `misc_scripts/contest.yaml`
+- `misc_scripts/problemset.yaml`
+- `misc_scripts/teams.tsv`
+
 
 ## TODO
 
