@@ -60,9 +60,9 @@ function feed(div, properties) {
     }
 
     if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '+0700';
+        this.tz_offset = '-0600';
         // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2016 IS +0700)
+        // STORES DATA IN LOCALTIME (WHICH IN 2017 IS -0600)
     }
 
     // figure out if we have any interesting teams, provided as sets of ranges
