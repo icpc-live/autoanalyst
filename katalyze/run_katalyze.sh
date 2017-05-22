@@ -8,9 +8,8 @@ CP=`find lib/*.jar | tr '\n' ':'`src
 echo $CP
 
 # Read CDS connection data from global config file, using
-# very hackish YAML parsing
-eval `grep -A4 '^CDS:' ../config.yaml | tail -n +2 | \
-	sed 's/^[[:space:]]*\([a-z]*\):[[:space:]]*\(.*\)/\1=\2/'`
+# some hackish YAML parsing.
+eval `cat ../config.yaml | sed -n '/^CDS:/,/^[[:space:]]*$/{/^[[:space:]]*\(user\|pass\):/{s/^[[:space:]]*\([a-z]*\):[[:space:]]*\(.*\)/\1=\2/;p}}'`
 
 # run!
 #cat data/kattislog_rehearsal_2011.txt | java -classpath $CP katalyzeapp.Katalyze $@
