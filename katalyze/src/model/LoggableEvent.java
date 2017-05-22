@@ -48,7 +48,7 @@ public class LoggableEvent {
 	private static String getCleartextMessage(String message, InitialSubmission submission) {
 		if (submission != null) {
 			message = replaceMarkup(message, "problem", submission.getProblem().getName());
-			message = replaceMarkup(message, "team", submission.getTeam().getName());
+			message = replaceMarkup(message, "team", submission.getTeam().getShortName());
 		}
 		return message;
 	}

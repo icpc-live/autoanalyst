@@ -1,9 +1,10 @@
 package model;
 
-import java.security.InvalidKeyException;
-import java.util.*;
-
 import stats.LanguageStats;
+
+import java.security.InvalidKeyException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Contest {
 	final List<Problem> problems;
@@ -27,7 +28,7 @@ public class Contest {
 	}
 	
 	public Team registerTeam(int teamNumber, String teamName) {
-		Team newTeam = new Team(this,teamNumber, teamName);
+		Team newTeam = new Team(this,teamNumber, teamName, teamName);
 		teams.add(newTeam);
 		return newTeam;
 	}

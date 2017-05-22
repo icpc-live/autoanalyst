@@ -1,10 +1,11 @@
 package messageHandlers;
 
-import model.Contest;
 import io.SimpleMessage;
-
-import java.util.*;
+import model.Contest;
 import org.apache.log4j.Logger;
+
+import java.sql.Connection;
+import java.util.ArrayList;
 
 public class ContestMessages {
 	static Logger logger = Logger.getLogger(ContestMessages.class);
@@ -23,14 +24,14 @@ public class ContestMessages {
 
 	}
 	
-	public void addStandardHandlers() throws Exception{
+	public void addStandardHandlers(Connection connection) throws Exception{
 		if (standardHandlersAdded) {
 			throw new IllegalStateException("Standard handlers may not be added twice!");
 		}
 		
 		add(new ProblemHandler());
 		add(new RunHandler());
-		add(new TeamHandler());
+		add(new TeamHandler(connection));
 		add(new TestCaseHandler());
 		add(new LanguageHandler());
 		add(new NullHandler("clar"));

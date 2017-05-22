@@ -1,15 +1,16 @@
 package katalyzeapp;
 
+import io.SimpleMessage;
+import io.TokenFeeder;
+import io.TokenQueue;
 import messageHandlers.ContestMessages;
 import model.Analyzer;
 import model.Contest;
 import model.LogNotificationTarget;
-import io.*;
-
-import java.io.*;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+
+import java.io.InputStream;
 
 public class Katalyzer {
 	static Logger logger = Logger.getLogger(Katalyzer.class);
@@ -29,8 +30,7 @@ public class Katalyzer {
 		configReader.SetupAnalyzer(contest, analyzer, handlers);
 
 		analyzer.addNotifier(new LogNotificationTarget(false));
-		handlers.addStandardHandlers();
-
+		handlers.addStandardHandlers(configReader.getConnection());
 	}
 	
 	
