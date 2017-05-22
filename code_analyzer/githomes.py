@@ -229,8 +229,12 @@ class GitHomes:
                 f.write( result )
                 f.close()
                 teamDir = "team%d" % teamIdx
-                if not os.path.exists( teamDir ):
-                    os.makedirs( teamDir )
+                # Delete a team dir if it existed to make sure that
+                # files that get deleted on the team backup also get
+                # deleted in the git repository.
+                if os.path.exists( teamDir ):
+                    shutil.rmtree( teamDir )
+                os.makedirs( teamDir )
                 subprocess.call( [ "tar", "xf", f.name, "--exclude-vcs", "-C", teamDir ] )
                 os.unlink( f.name )
 
