@@ -16,7 +16,8 @@ try:
     dbConn = MySQLdb.connect( host   = config['database']['host'],
                               user   = config['database']['user'],
                               passwd = config['database']['password'],
-                              db     = config['database']['name'] )
+                              db     = config['database']['name'],
+			      charset = 'utf8' )
 
 except MySQLdb.Error, e:
     print "Error %d: %s" % ( e.args[ 0 ], e.args[ 1 ])
