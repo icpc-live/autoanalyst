@@ -22,6 +22,9 @@ CDS:
     baseurl:   "https://192.168.1.207"
     user:      user
     pass:      THISISNOTAPASSWORD
+    # Credentials to access the full, unfiltered event feed.
+    userfull:  user2
+    passfull:  THISISNOTAPASSWORD
 
 # Configuration for the backup/githomes script
 teambackup:

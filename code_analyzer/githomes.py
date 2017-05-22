@@ -31,10 +31,11 @@ class GitHomes:
         # index of the last team in the competition.
         self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
 
-        # CDS config: base URL and credentials
+        # CDS config: base URL and credentials (with full access,
+        # needed for backups).
         self.CDSRoot = config[ "CDS" ][ "baseurl" ]
-        self.CDSUser = config[ "CDS" ][ "user" ]
-        self.CDSPass = config[ "CDS" ][ "pass" ]
+        self.CDSUser = config[ "CDS" ][ "userfull" ]
+        self.CDSPass = config[ "CDS" ][ "passfull" ]
 
         # read additional configuration parameters, depending on method.
         if self.pullmethod == 'CDS':
