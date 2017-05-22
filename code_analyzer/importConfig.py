@@ -10,7 +10,7 @@ from common import dbConn, config
 from datetime import datetime, timedelta
 import httplib2
 import re
-import json
+import json, collections
 
 # Just an object wrappin
 class ConfigImporter:
@@ -19,6 +19,8 @@ class ConfigImporter:
         self.CDSRoot = config[ "CDS" ][ "baseurl" ]
         self.CDSUser = config[ "CDS" ][ "user" ]
         self.CDSPass = config[ "CDS" ][ "pass" ]
+        self.peopleInTeam = collections.defaultdict(int)
+        self.contestants = 0
 
     def cleanTables(self):
         cursor = dbConn.cursor()
@@ -93,6 +95,23 @@ class ConfigImporter:
 	cursor = dbConn.cursor()
         cursor.execute(query, params)
 	
+    def importPerson(self, person):
+        p = person["person"]
+        if p["role"] == "Contestant":        
+            t = int(p["team-id"])
+            self.peopleInTeam[t] += 1
+            self.contestants += 1
+            query = "UPDATE teams SET contestant%d_id = %%s, contestant%d_name = %%s WHERE team_id = %%s" % (self.peopleInTeam[t],self.peopleInTeam[t])
+            params = (self.contestants, "%s %s" % (p["first-name"], p["last-name"]), int(p["team-id"]))
+            cursor = dbConn.cursor()
+            cursor.execute(query, params)
+	elif p["role"] == "Coach":
+            t = int(p["team-id"])
+            query = "UPDATE teams SET coach_name = %s WHERE team_id = %s"
+            params = ("%s %s" % (p["first-name"], p["last-name"]), int(p["team-id"]))
+            cursor = dbConn.cursor()
+            cursor.execute(query, params)
+      
 
 if __name__ == '__main__':
     imp = ConfigImporter()
@@ -100,3 +119,4 @@ if __name__ == '__main__':
     imp.performRequest("info", imp.importConfig)
     imp.performRequest("problem", imp.importProblem)
     imp.performRequest("team", imp.importTeam)
+    imp.performRequest("person", imp.importPerson)
