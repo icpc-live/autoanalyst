@@ -9,7 +9,7 @@ echo $CP
 
 # Read CDS connection data from global config file, using
 # some hackish YAML parsing.
-eval `cat ../config.yaml | sed -n '/^CDS:/,/^[[:space:]]*$/{/^[[:space:]]*\(user\|pass\):/{s/^[[:space:]]*\([a-z]*\):[[:space:]]*\(.*\)/\1=\2/;p}}'`
+eval `cat ../config.yaml | sed -n '/^CDS:/,/^[[:space:]]*$/{/^[[:space:]]*\(baseurl\|user\|pass\):/{s/^[[:space:]]*\([a-z]*\):[[:space:]]*\(.*\)/\1=\2/;p}}'`
 
 # run!
 #cat data/kattislog_rehearsal_2011.txt | java -classpath $CP katalyzeapp.Katalyze $@
