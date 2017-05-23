@@ -246,12 +246,16 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
+		// FIXME: this is a hacky timestamp conversion to local time, including hard coded tz offset
+		var d = new Date(0);
+		d.setUTCSeconds(row.modify_timestamp);
+		d.setTime(d.getTime() + (6*60*60*1000));
+
                 var gitweb_url = data['config']['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
-                description = "<a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
+                description = row.modify_time + ": <a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                               "<a href='team.php?team_id=" + row.team_id + "'>" + self.teams[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                               "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " + 
-                              row.modify_time + 
-                              "<span class='feed_timestamp' timestamp='" + row.modify_timestamp + "'></span>";
+                              "<span class='feed_timestamp' timestamp='" + d.toLocaleString() + "'></span>";
             } else if (this.table == 'submissions') {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
                 var result = "<span class='" + is_accepted + "'>" + self.judgements[row.result].label_long + "</span>";
