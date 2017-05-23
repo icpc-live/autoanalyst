@@ -1,24 +1,11 @@
 package katalyzeapp;
 
+import charts.ChartDumperHook;
+import clics.ExtendedScoreDump;
+import com.github.mbredel.commons.configuration.YAMLConfiguration;
+import config.TwitterConfig;
 import icat.AnalystMessageSource;
 import io.EventFeedFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-
-import org.apache.commons.configuration.*;
-import org.apache.log4j.Logger;
-
-import com.github.mbredel.commons.configuration.*;
-
-import config.TwitterConfig;
-import rules.*;
-import clics.ExtendedScoreDump;
-import web.EventFeedStreamer;
-import web.FileWebPublisher;
-import web.WebPublisher;
-import charts.ChartDumperHook;
 import messageHandlers.ContestMessages;
 import messageHandlers.PassthroughHandler;
 import model.Analyzer;
@@ -28,12 +15,31 @@ import model.ModelDumperHook;
 import model.ShellNotificationTarget;
 import model.TwitterNotificationTarget;
 import model.WebNotificationTarget;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.log4j.Logger;
+import rules.AllSubmissions;
+import rules.NewLeader;
+import rules.ProblemFirstSolved;
+import rules.RankPredictor;
+import rules.RejectedSubmission;
+import rules.StandingsUpdatedEvent;
+import rules.StateComparingRuleBase;
+import web.EventFeedStreamer;
+import web.FileWebPublisher;
+import web.WebPublisher;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Connection;
 
 public class ConfigReader {
 	static Logger logger = Logger.getLogger(ConfigReader.class);
 	
 	Configuration config;
-	
+	private DatabaseNotificationConfig dbConfig;
+
 
 	public ConfigReader(Reader in) throws ConfigurationException {
 		
@@ -62,7 +68,7 @@ public class ConfigReader {
 
 		connection += config.getString("database.password");
 
-		DatabaseNotificationConfig dbConfig = new DatabaseNotificationConfig(
+		dbConfig = new DatabaseNotificationConfig(
 				"com.mysql.jdbc.Driver", connection);
 		
 		try {
@@ -217,10 +223,9 @@ public class ConfigReader {
 		setupTwitterNotifier(analyzer);
 		setupWebPublisher(contest, analyzer, augmentedEventFeed);
 		setupFilePublisher(contest, analyzer);
-		
-
-		
-		
 	}
 
+	public Connection getConnection() throws Exception {
+		return dbConfig.createConnection();
+	}
 }

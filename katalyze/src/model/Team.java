@@ -5,12 +5,14 @@ public class Team {
 	private final int teamNumber;
 	private final TeamProgress progress;
 	private final Contest contest;
+	private final String shortName;
 
-	
-	public Team(Contest contest, int teamNumber, String name) {
+
+	public Team(Contest contest, int teamNumber, String name, String shortName) {
 		this.contest = contest;
 		this.teamNumber = teamNumber;
 		this.name = name;
+		this.shortName = shortName;
 		this.progress = new TeamProgress(this);
 	}
 	
@@ -64,7 +66,9 @@ public class Team {
 
 	public String getName() {
 		return this.name;
-	}	
-	
+	}
 
+	public String getShortName() {
+		return this.shortName;
+	}
 }
