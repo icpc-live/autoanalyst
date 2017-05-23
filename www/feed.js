@@ -246,10 +246,8 @@ function _feed_updateWith(rows) {
                               " (<span class='entry_user'>" + row.user + "</span>" +
                               '<span class="feed_timestamp" timestamp="' + row.date + '"></span>)';
             } else if (this.table == 'edit_activity_problem') {
-		// FIXME: this is a hacky timestamp conversion to local time, including hard coded tz offset
 		var d = new Date(0);
 		d.setUTCSeconds(row.modify_timestamp);
-		d.setTime(d.getTime() + (6*60*60*1000));
 
                 var gitweb_url = data['config']['teambackup']['gitweburl'] + ';a=blob;hb=' + row.git_tag + ';f=team' + row.team_id + "/" + row.path;
                 description = row.modify_time + ": <a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
