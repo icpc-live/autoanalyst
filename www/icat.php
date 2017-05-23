@@ -20,6 +20,8 @@ function init_db()
         echo mysqli_connect_error();
         mysqli_set_charset($db,"utf8");
         echo mysqli_error($db);
+        mysqli_query($db, "SET time_zone = '+00:00'");
+        echo mysqli_error($db);
         return $db;
     }
 }

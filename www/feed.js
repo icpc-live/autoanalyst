@@ -49,7 +49,6 @@ function feed(div, properties) {
     var data = get_json_synchronous("common_data.php");
     this.teams = data['teams'];
     this.judgements = data['judgements'];
-    this.tz_offset = "+0000"; // assume UTC timestamps
 
     this.div = $(div);
 
@@ -57,12 +56,6 @@ function feed(div, properties) {
     for (var attrname in properties) {
         if (! (attrname in this)) { console.warn("Alert: property '" + attrname + "' is unknown to the feed object"); }
         this[attrname] = properties[attrname];
-    }
-
-    if (this.table == 'entries' && ! properties.hasOwnProperty('tz_offset')) {
-        this.tz_offset = '-0600';
-        // FIXME: THIS IS A BIG HACK TO FIX THE FACT THAT THE ENTRIES TABLE
-        // STORES DATA IN LOCALTIME (WHICH IN 2017 IS -0600)
     }
 
     // figure out if we have any interesting teams, provided as sets of ranges
@@ -370,12 +363,11 @@ function _feed_updateTimer() {
 function _feed_updateTimestamps() {
     var timestamps = this.div.find('.feed_timestamp');
     var now = new Date();
-    var self = this;
     timestamps.each(function(ndx, element) {
         var e = $(element);
         var ts = e.attr('timestamp');
         if (ts) {
-            ts = new Date(ts.replace(/-/g, '/') + " " + self.tz_offset);
+            ts = Date.parse(ts.replace(/^([0-9-]*) ([0-9:]*)$/, '$1T$2Z'));
             var diff_minutes = Math.floor((now - ts) / (60 * 1000));
             var msg = diff_minutes + ' mins. ago';
             e.text(msg);
