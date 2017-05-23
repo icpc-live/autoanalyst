@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Contest {
-	final List<Problem> problems;
+	final Map<String, Problem> problems;
 	final List<Team> teams;
 	final Analyzer analyzer;
 	final List<Submission> submissions;
@@ -17,7 +17,7 @@ public class Contest {
 	int lengthInMinutes = 300;
 	
 	public Contest() {
-		this.problems = new ArrayList<Problem>();
+		this.problems = new TreeMap<>();
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
 		this.languages = new ArrayList<Language>();
@@ -92,7 +92,7 @@ public class Contest {
 	}
 	
 	public void addProblem(Problem newProblem) {
-		problems.add(newProblem);
+		problems.put(newProblem.getId(), newProblem);
 	}
 	
 	public void addLanguage(Language language) {
@@ -100,8 +100,8 @@ public class Contest {
 		stats.submissionsPerLanguage.addLanguage(language.getName());
 	}
 
-	public List<Problem> getProblems() {
-		return problems;
+	public Collection<Problem> getProblems() {
+		return problems.values();
 	}
 
 	public void addTeam(Team newTeam) {
@@ -118,21 +118,20 @@ public class Contest {
 	}
 
 	public Problem getProblem(String problemId) throws InvalidKeyException {
-		for (Problem problem : problems) {
-			if (problemId.equals(problem.getId())) {
-				return problem;
-			}
+		if (problems.containsKey(problemId)) {
+			return problems.get(problemId);
+		} else {
+			throw new InvalidKeyException(String.format("%s is not a known problem", problemId));
 		}
-		throw new InvalidKeyException(String.format("%s is not a known problem", problemId));
 	}
 
-	public Problem getProblemByAbbreviation(String problemId) throws InvalidKeyException {
-		for (Problem problem : problems) {
-			if (problemId.equalsIgnoreCase(problem.getLetter())) {
-				return problem;
+	public Problem getProblemByAbbreviation(String abbrev) throws InvalidKeyException {
+		for (Map.Entry<String, Problem> problem : problems.entrySet()) {
+			if (abbrev.equalsIgnoreCase(problem.getValue().getLetter())) {
+				return problem.getValue();
 			}
 		}
-		throw new InvalidKeyException(String.format("%s is not a known problem", problemId));
+		throw new InvalidKeyException(String.format("%s is not a known problem", abbrev));
 	}	
 	
 	
