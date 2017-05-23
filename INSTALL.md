@@ -52,19 +52,12 @@ Create some symlinks:
 - Symlink the homedir backup git repo to /var/lib/git/
 - Symlink autoanalyst/www to /var/www/html/icat
 
-Manually download and install the following files, which are not
-provided by the CDS anymore, before setting up the database.
-- `misc_scripts/contest.yaml`
-- `misc_scripts/problemset.yaml`
-- `misc_scripts/teams.tsv`
+
+_Please see [the procedure checklists](CHECKLIST.md) for further instructions._
 
 
 ## TODO
 
-To run the katalyzer from the CDS use the script katalyze/run_katalyze.sh
 To run the katalyzer from the stored event feed ef.xml use the script katalyze/run_local.sh < ef.xml
 
-
 To initialize the GitHomes create the two directories githomes and backup, as configured in config.yaml and then run the script code_analyzer/prephomes.py.
-
-To get the team backups from the CDS and run the code analyzer run the script code_analyzer/githomes.py.
