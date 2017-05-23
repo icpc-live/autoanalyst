@@ -124,7 +124,7 @@ class Analyzer:
 
         # Contest start time in Unix seconds from the database.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT start_time FROM contests ORDER BY start_time DESC LIMIT 1" )
+        cursor.execute( "SELECT start_time FROM contests ORDER BY id DESC LIMIT 1" )
         row = cursor.fetchone()
         if ( row == None ):
             print("Error: no contest found in the database.")
