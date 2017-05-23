@@ -13,9 +13,10 @@ import katalyzeapp.DatabaseNotificationConfig;
 
 
 public class AllSubmissions implements StandingsUpdatedEvent {
-    static Logger logger = Logger.getLogger(AllSubmissions.class);
+    private static Logger logger = Logger.getLogger(AllSubmissions.class);
+    private static DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    Connection conn = null;
+    private final Connection conn;
 
 	public AllSubmissions(DatabaseNotificationConfig dbConfig) throws Exception{
 		conn = dbConfig.createConnection();
@@ -31,10 +32,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
             s.setInt(2, submission.getTeam().getTeamNumber());
             s.setString(3, submission.getLanguage());
             s.setString(4, submission.getOutcome());
-            DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            df.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date d = new Date();
-            s.setString(5, df.format(d));
+            s.setString(5, df.format(new Date()));
             s.setInt(6, submission.getMinutesFromStart());
             s.setInt(7, submission.getInitialSubmission().id.intValue());
 
