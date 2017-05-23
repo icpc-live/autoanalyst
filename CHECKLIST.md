@@ -10,13 +10,11 @@
 - Make sure domjudge-green has Internet access. Possibly modify DNS server
   settings.
 - Make sure all computers are configured with the correct time zone.
-- Update the API password that MyICPC uses. The feed shouldn't be used for
-  testing, as it doesn't require a password.
 - Set up the `analystplus` account for retrieving the Git home directories
   from the CDS and `analyst` for everything else in order to avoid retrieving
   the unfiltered feed.
 - Set up the Twitter connection.
-    - Set `katalyzer.enable` to `true`.
+    - Set `katalyzer.twitter.enable` to `true`.
     - Update the credentials.
 
 ## Before start of contest
@@ -25,31 +23,34 @@
 - Run the database reset scripts, and verify that there are no messages shown in iCat.
   Since there's currently not a single script that will clear all the tables,
   carefully check that the database is empty.
-- Delete all files in the githomes directory. Including the hidden .git directory.
+- Delete all files in the `githomes` directory. Including the hidden `.git` directory.
   The exact location is determined by the `teambackup` configuration, but it's
   typically `~/githomes`. The entire directory can be removed. This shouldn't
   be cleared during a contest as the history won't be recreated.
 - Populate the database with information about contest, problem set, and teams
   through JSON from the CDS.
+  This is done with `code_analyzer/importConfig.py`, but you need to make sure
+  that we get the correct data.
+- Set the MyICPC and ICPC Live passwords to the same as their CDS passwords.
+  The feed shouldn't be used for testing whether the password is correctly set,
+  as it doesn't require a password.
 - Fill out `code_analyzer/populate.sql` with likely directory names for the
   different problems. Import it into the database.
 - Make sure that `katalyzer.notifications.suppressUntil` isn't set, or the
   Katalyzer won't tweet until it reaches that minute.
-- Initialize the githomes directory by running the code_analyzer/prephomes.py script
-- Set up screens for the Code Analyzer and the Katalyzer, using
-  `screen -S code-analyzer` and `screen -S katalyzer`. You can reconnect with
-  for example `screen -r katalyzer`.
+- Initialize the githomes directory by running the `code_analyzer/prephomes.py` script
 - Start the code analyzer.
   In the directory `code_analyzer`, run `./githomes.py`. It doesn't return
-  your shell, so make sure you run it inside the code-analyzer screen. Be
+  your shell, so make sure you create a screen with `screen -S code-analyzer`. Be
   aware that if the CDS connection is interrupted, the Code Analyzer might
   crash. Hence, start it just before the contest starts.
+  Use `screen -r code-analyzer` to reconnect to this screen.
 - Start Katalyzer, and verify that the scoreboard is working.
-  In the directory `katalyze`, run `./run_katalyze.sh`. Do this inside the
-  katalyzer screen. Be aware that if the CDS connection is interrupted, the
+  In the directory `katalyze`, run `./run_katalyze.sh` after creating a screen using
+  `screen -S katalyzer`. Be aware that if the CDS connection is interrupted, the
   Katalyzer might silently stop working. Hence, start it just before the
   contest starts.
-- Test if the team camera video feeds work. Accesible from the scoreboard in iCat.
+- Test if the team camera video feeds work. Accessible from the scoreboard in iCat.
 - Test if the team desktop video feeds work. Accessible from the scoreboard in iCat.
 - Check that DomJudge is reset
 
