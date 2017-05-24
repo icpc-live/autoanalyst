@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Note that this script assumes that there are backup files in the team
+# directories, which is not always the case.
+
+function git-list-all-files() {
+  git --no-pager log --pretty=format: --name-only --diff-filter=A
+}
+
+function team-ids() {
+  sed 's|^team\([0-9]*\)/.*$|\1|' | sort -nu
+}
+
+function number-of-teams() {
+  team-ids | wc -l
+}
+
+cd -- ~/githomes
+
+printf 'Eclipse\t%d\n' "$(git-list-all-files | grep '^team[0-9]*/workspace/' | number-of-teams)"
+printf 'Emacs\t%d\n' "$(git-list-all-files | grep -P '~$|#[^/]*#$' | number-of-teams)"
+printf 'Kate\t%d\n' "$(git-list-all-files | grep '\.kate-swp$' | number-of-teams)"
+printf 'Vim\t%d\n' "$(git-list-all-files | grep '\.swp$' | number-of-teams)"
