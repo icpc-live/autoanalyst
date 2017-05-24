@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 
 # Read configuration information from the CDS, and update what's in our database.
