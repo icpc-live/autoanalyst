@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Contest {
-	final Map<String, Problem> problems;
+	final Map<Integer, Problem> problems;
 	final List<Team> teams;
 	final Analyzer analyzer;
 	final List<Submission> submissions;
@@ -120,7 +120,7 @@ public class Contest {
 		throw new InvalidKeyException(String.format("%n is not a known team", teamNumber));
 	}
 
-	public Problem getProblem(String problemId) throws InvalidKeyException {
+	public Problem getProblem(int problemId) throws InvalidKeyException {
 		if (problems.containsKey(problemId)) {
 			return problems.get(problemId);
 		} else {
@@ -129,7 +129,7 @@ public class Contest {
 	}
 
 	public Problem getProblemByAbbreviation(String abbrev) throws InvalidKeyException {
-		for (Map.Entry<String, Problem> problem : problems.entrySet()) {
+		for (Map.Entry<Integer, Problem> problem : problems.entrySet()) {
 			if (abbrev.equalsIgnoreCase(problem.getValue().getLetter())) {
 				return problem.getValue();
 			}

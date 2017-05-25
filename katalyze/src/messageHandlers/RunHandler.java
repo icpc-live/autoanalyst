@@ -1,13 +1,12 @@
 package messageHandlers;
 
-import java.security.InvalidKeyException;
-
-import org.jfree.util.Log;
-
+import io.SimpleMessage;
 import model.InitialSubmission;
 import model.Problem;
 import model.Team;
-import io.SimpleMessage;
+import org.jfree.util.Log;
+
+import java.security.InvalidKeyException;
 
 public class RunHandler extends SingleMessageHandler {
 
@@ -20,7 +19,7 @@ public class RunHandler extends SingleMessageHandler {
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
 		int submissionId = message.getInt("id");
-		String problemId = message.get("problem");
+		int problemId = message.getInt("problem");
 		int teamNumber = message.getInt("team");
         String language = message.get("language");
 		
@@ -44,7 +43,7 @@ public class RunHandler extends SingleMessageHandler {
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
 		int submissionId = message.getInt("id");
-		String problemId = message.get("problem");
+		int problemId = message.getInt("problem");
 		String judgement = message.get("result");
 		boolean solved = message.getBool("solved");
 		boolean penalty = message.getBool("penalty");

@@ -1,12 +1,12 @@
 package model;
 
 public class Problem {
-	final String id;
+	final int id;
 	final String abbreviation;
 	final String name;
 	
 	public Problem(int id, String name) {
-		this.id = String.format("%d", id);
+		this.id = id;
 		this.abbreviation = ""+Character.toChars(64+id)[0];
 		this.name = name.trim();
 	}
@@ -16,7 +16,7 @@ public class Problem {
 		return String.format("#p%s", abbreviation);
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	
