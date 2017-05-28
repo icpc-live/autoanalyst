@@ -61,16 +61,16 @@ public class Katalyze {
 			katalyzer.start();
 			katalyzer.process(input);
 
+			logger.info("Katalyzer stream finished");
 
 		} catch (Exception e) {
-			logger.error(e,e);
+			logger.error("Katalyzer fatal error, terminating",e);
 		}
 		finally {
 			if (katalyzer != null) {
 				katalyzer.stop();
 			}
-			
-			logger.info("Katalyze terminated");
+
 		}
 		
 	}

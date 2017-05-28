@@ -4,6 +4,7 @@ import config.TwitterConfig;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class TwitterNotificationTarget implements NotificationTarget {
 
@@ -16,6 +17,12 @@ public class TwitterNotificationTarget implements NotificationTarget {
 		twitter = config.createTwitterInstance();
 		hashTag = config.getHashtag();
 		suppressedMinutes = config.getSuppressUntilMinutes();
+
+		try {
+			twitter.verifyCredentials();
+		} catch (TwitterException e) {
+			throw new RuntimeException(String.format("Failed to setup Twitter notifier: %s", e.getMessage()));
+		}
 	}
 
 	@Override

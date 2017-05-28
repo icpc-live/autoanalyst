@@ -25,6 +25,7 @@ import rules.RankPredictor;
 import rules.RejectedSubmission;
 import rules.StandingsUpdatedEvent;
 import rules.StateComparingRuleBase;
+import twitter4j.TwitterException;
 import web.EventFeedStreamer;
 import web.FileWebPublisher;
 import web.WebPublisher;
