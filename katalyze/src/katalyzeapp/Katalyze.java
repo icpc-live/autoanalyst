@@ -1,14 +1,13 @@
 package katalyzeapp;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
+import com.github.mbredel.commons.configuration.YAMLConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import com.github.mbredel.commons.configuration.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class Katalyze {
 	
@@ -67,13 +66,6 @@ public class Katalyze {
 			logger.error(e,e);
 		}
 		finally {
-            logger.info("Done. Press enter to stop the application");
-
-            int c = System.in.read();
-            while (c != 10) {
-                c = System.in.read();
-            }
-
 			if (katalyzer != null) {
 				katalyzer.stop();
 			}
