@@ -12,8 +12,8 @@ WITH THE CORRECT INFORMATION FOR THIS CONTEST
 --------------------------------------------------------
 <?php
 for ($i = 5; $i >= 1; --$i) {
-    sleep(1);
     print("starting in $i seconds...\n");
+    sleep(1);
 }
 ?>
 
