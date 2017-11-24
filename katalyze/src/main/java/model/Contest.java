@@ -20,7 +20,7 @@ public class Contest {
 	int lengthInMinutes = 300;
 	
 	public Contest() {
-		this.problems = new TreeMap<>();
+		this.problems = new TreeMap();
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
 		this.languages = new ArrayList<Language>();

@@ -8,6 +8,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class TokenQueue implements Sink<SimpleMessage> {
+
 	Logger log = LogManager.getLogger(TokenQueue.class);
 	
 	private TokenStreamProcessor feeder;

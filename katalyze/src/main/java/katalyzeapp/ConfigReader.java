@@ -2,8 +2,8 @@ package katalyzeapp;
 
 import charts.ChartDumperHook;
 import clics.ExtendedScoreDump;
-import com.github.mbredel.commons.configuration.YAMLConfiguration;
 import config.TwitterConfig;
+import config.YAMLConfiguration;
 import icat.AnalystMessageSource;
 import io.EventFeedFile;
 import messageHandlers.ContestMessages;
