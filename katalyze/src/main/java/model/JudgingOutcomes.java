@@ -4,14 +4,14 @@ import java.util.HashMap;
 
 public class JudgingOutcomes {
 	
-	HashMap<Integer, InitialSubmission> initialSubmissions = new HashMap<Integer, InitialSubmission>();
+	HashMap<String, InitialSubmission> initialSubmissions = new HashMap<String, InitialSubmission>();
 	HashMap<InitialSubmission, TestCaseExecution> failedCase = new HashMap<InitialSubmission, TestCaseExecution>();
 	
 	public void newSubmission(InitialSubmission sub) {
 		initialSubmissions.put(sub.id, sub);
 	}
 	
-	public InitialSubmission getSubmission(Integer id) {
+	public InitialSubmission getSubmission(String id) {
 		return initialSubmissions.get(id);
 	}
 	

@@ -47,7 +47,7 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			s.setString(3, event.icatMessage);
 			s.setInt(4, event.importance.ordinal());
 			if (event.submission != null) {
-				s.setInt(5, event.submission.id.intValue());
+				s.setString(5, event.submission.id);
 			} else {
 				s.setNull(5, java.sql.Types.INTEGER);
 			}

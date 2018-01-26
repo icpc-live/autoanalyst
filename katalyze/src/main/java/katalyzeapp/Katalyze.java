@@ -18,8 +18,6 @@ public class Katalyze {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("Katalyzer Started");
-
 		DOMConfigurator.configure("log4j.xml");
 		logger.info("Katalyze started");
 

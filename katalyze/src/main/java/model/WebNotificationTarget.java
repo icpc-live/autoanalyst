@@ -31,7 +31,7 @@ public class WebNotificationTarget implements NotificationTarget {
 		if (event.team != null) {
 			PublishableEventList teamList = teamEvents.get(event.team);
 			if (teamList == null) {
-				teamList = new PublishableEventList(publisher, "/TeamNotifications/"+Integer.toString(event.team.getTeamNumber()));
+				teamList = new PublishableEventList(publisher, "/TeamNotifications/"+event.team.getTeamId());
 				teamEvents.put(event.team,teamList);
 			}
 			teamList.add(event);	

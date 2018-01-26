@@ -1,13 +1,13 @@
 package model;
 
 public class InitialSubmission {
-	public final Integer id;
+	public final String id;
 	public final Team team;
 	public final Problem problem;
 	public final int minutesFromStart;
 	public final String language;
 	
-	public InitialSubmission(int id, int minutesFromStart, Team team, Problem problem, String language) {
+	public InitialSubmission(String id, int minutesFromStart, Team team, Problem problem, String language) {
 		this.id = id;
 		this.minutesFromStart = minutesFromStart;
 		this.team = team;
@@ -27,7 +27,7 @@ public class InitialSubmission {
 		return language;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	

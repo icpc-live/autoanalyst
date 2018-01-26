@@ -1,6 +1,7 @@
 package tests;
 
 import model.Contest;
+import model.InitialSubmission;
 import model.Problem;
 import model.Team;
 
@@ -14,12 +15,12 @@ public abstract class ContestSimulatorTest {
 		
 		contest = new Contest();
 		for (int i=0; i<nProblems; i++) {
-			Problem p = new Problem(i+1, String.format("Problem %n", i));
+			Problem p = new Problem(Integer.toString(i+1), String.format("Problem %n", i), String.format("P%n",i));
 			contest.addProblem(p);
 		}
 		
 		for (int i=0; i<nTeams; i++) {
-			contest.registerTeam(i, String.format("Team %d", i));
+			contest.registerTeam(Integer.toString(i), String.format("Team %d", i));
 		}
 		
 		teams = contest.getTeams();
@@ -28,11 +29,21 @@ public abstract class ContestSimulatorTest {
 		
 	
 	public static void Accepted(Team team, Problem problem, int minutesFromStart) {
-		team.submit(submissionId++, problem, minutesFromStart, "AC", true, false, "unknown");
+		String subId =Integer.toString(submissionId++);
+
+		InitialSubmission newSubmission = new InitialSubmission(subId,minutesFromStart, team, problem, "Fortran");
+		team.freshSubmission(newSubmission);
+
+		team.submit(subId, problem, minutesFromStart, "AC", true, false);
 	}
 	
 	public static void WrongAnswer(Team team, Problem problem, int minutesFromStart) {
-		team.submit(submissionId++, problem, minutesFromStart, "WA", false, true, "unknown");
+		String subId =Integer.toString(submissionId++);
+		InitialSubmission newSubmission = new InitialSubmission(subId,minutesFromStart, team, problem, "Fortran");
+
+		team.freshSubmission(newSubmission);
+
+		team.submit(subId, problem, minutesFromStart, "WA", false, true);
 	}	
 
 }

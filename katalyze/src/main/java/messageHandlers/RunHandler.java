@@ -18,15 +18,15 @@ public class RunHandler extends SingleMessageHandler {
 		double secondsFromStart = message.getDouble("time");
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
-		int submissionId = message.getInt("id");
-		int problemId = message.getInt("problem");
-		int teamNumber = message.getInt("team");
+		String submissionId = message.get("id");
+		String problemId = message.get("problem");
+		String teamId = message.get("team");
         String language = message.get("language");
 		
 		Team team;
 		Problem problem;
 		try {
-			team = contest.getTeam(teamNumber);
+			team = contest.getTeam(teamId);
 			problem = contest.getProblem(problemId);
 		} catch (InvalidKeyException e) {
 			error(String.format("Unable to process message %s. Reason: %s", message, e.getMessage()));
@@ -42,19 +42,19 @@ public class RunHandler extends SingleMessageHandler {
 		double secondsFromStart = message.getDouble("time");
 		
 		int minutesFromStart = (int) (secondsFromStart / 60.0);
-		int submissionId = message.getInt("id");
-		int problemId = message.getInt("problem");
+		String submissionId = message.get("id");
+		String problemId = message.get("problem");
 		String judgement = message.get("result");
 		boolean solved = message.getBool("solved");
 		boolean penalty = message.getBool("penalty");
-		int teamNumber = message.getInt("team");
+		String teamId = message.get("team");
         String language = message.get("language");
 		Boolean isJudged = message.getBool("judged");
 		
 		Team team;
 		Problem problem;
 		try {
-			team = contest.getTeam(teamNumber);
+			team = contest.getTeam(teamId);
 			problem = contest.getProblem(problemId);
 		} catch (InvalidKeyException e) {
 			error(String.format("Unable to process message %s. Reason: %s", message, e.getMessage()));
@@ -62,7 +62,7 @@ public class RunHandler extends SingleMessageHandler {
 		}
 		
 		if (isJudged) {
-			team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty, language);
+			team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty);
 		} else {
 			Log.info(String.format("%s submission of %s has been judged. Outcome is not disclosed",
 					team, problem));

@@ -36,8 +36,7 @@ public class HashtagFinder {
 	public Team getTeam(Contest contest, String tag) {
 		try {
 			String teamNumberString = tag.replace("#t", "");
-			int teamNumber = Integer.parseInt(teamNumberString);
-			return contest.getTeam(teamNumber);			
+			return contest.getTeam(teamNumberString);
 		}
 		catch (Exception e) {
 			return null;

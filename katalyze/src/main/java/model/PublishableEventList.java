@@ -36,7 +36,7 @@ public class PublishableEventList {
 		.element("importance", event.importance.ordinal());
 		
 		if (event.team != null) {
-			eventInfo =  eventInfo.element("team", event.team.getTeamNumber());
+			eventInfo =  eventInfo.element("team", event.team.getTeamId());
 		}
 		
 		if (event.submission != null) {

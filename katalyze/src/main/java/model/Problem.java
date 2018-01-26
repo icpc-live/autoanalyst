@@ -1,13 +1,25 @@
 package model;
 
 public class Problem {
-	final int id;
+	final String id;
 	final String abbreviation;
 	final String name;
 	
-	public Problem(int id, String name) {
+	public Problem(String id, String name, String label) {
 		this.id = id;
-		this.abbreviation = ""+Character.toChars(64+id)[0];
+		if (label == null || label.isEmpty()) {
+			String fakeLabel;
+			try {
+				int problemNumber = Integer.parseInt(id);
+				fakeLabel = "" + Character.toChars(64 + problemNumber)[0];
+			}
+			catch (NumberFormatException e) {
+				fakeLabel = id;
+			}
+			abbreviation = fakeLabel;
+		} else {
+			this.abbreviation = label;
+		}
 		this.name = name.trim();
 	}
 	
@@ -16,7 +28,7 @@ public class Problem {
 		return String.format("#p%s", abbreviation);
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	

@@ -76,14 +76,19 @@ public class TeamProgress {
 	
 	public String getMainLanguage() {
 		return mainLanguage;
-		
 	}
+
+
+
+	public void registerInitialSubmission(InitialSubmission initialSubmission) {
+		languages.put(initialSubmission.getProblem(), initialSubmission.language);
+		mainLanguage = calculateMainLanguage();
+	}
+
 
 	public void register(Submission newSubmission) {
 		ProblemSubmissions submissions = getSubmissionsFor(newSubmission.getProblem());
 		submissions.add(newSubmission);
-		languages.put(newSubmission.getProblem(), newSubmission.language);
-		mainLanguage = calculateMainLanguage();
 	}
 	
 	

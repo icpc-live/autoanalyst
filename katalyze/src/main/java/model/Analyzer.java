@@ -179,7 +179,7 @@ public class Analyzer implements NotificationTarget {
 		notifyHooks(newSubmission.minutesFromStart);
 	}
 	
-	public InitialSubmission submissionById(int id) {
+	public InitialSubmission submissionById(String id) {
 		return judgingOutcomes.getSubmission(id);
 	}
 	

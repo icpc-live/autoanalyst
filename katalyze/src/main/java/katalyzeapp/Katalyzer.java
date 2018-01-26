@@ -21,12 +21,12 @@ public class Katalyzer {
 	ContestMessages handlers;
 	
 	public Katalyzer(Configuration config) throws Exception {
+		ConfigReader configReader = new ConfigReader(config);
 		this.contest = new Contest();
 		this.handlers = new ContestMessages(contest);		
 		
 		Analyzer analyzer = contest.getAnalyzer();
 		
-		ConfigReader configReader = new ConfigReader(config);
 		configReader.SetupAnalyzer(contest, analyzer, handlers);
 
 		analyzer.addNotifier(new LogNotificationTarget(false));
@@ -71,6 +71,7 @@ public class Katalyzer {
 	public Contest getContest() {
 		return this.contest;
 	}
+
 	
 	public void start() {
 		contest.getAnalyzer().start();

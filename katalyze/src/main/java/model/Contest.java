@@ -3,14 +3,11 @@ package model;
 import stats.LanguageStats;
 
 import java.security.InvalidKeyException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Contest {
-	final Map<Integer, Problem> problems;
+	final Map<String, Problem> problems;
+	final Map<String, JudgementType> judgementTypes;
 	final List<Team> teams;
 	final Analyzer analyzer;
 	final List<Submission> submissions;
@@ -18,20 +15,30 @@ public class Contest {
 	final LanguageStats stats;
 	double contestTime = 0;
 	int lengthInMinutes = 300;
+	private String name;
+	private int penaltyTime = 20;
 	
 	public Contest() {
-		this.problems = new TreeMap();
+		this.problems = new TreeMap<>();
+		this.judgementTypes = new HashMap<>();
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
 		this.languages = new ArrayList<Language>();
 		this.submissions = new ArrayList<Submission>();
 		this.stats = new LanguageStats();
+		this.name = name;
+		this.penaltyTime = penaltyTime;
 		
 		analyzer.addRule(stats.submissionsPerLanguage);
 	}
+
+	public void init(String name, int penaltyTime) {
+		this.name = name;
+		this.penaltyTime = penaltyTime;
+	}
 	
-	public Team registerTeam(int teamNumber, String teamName) {
-		Team newTeam = new Team(this,teamNumber, teamName, teamName);
+	public Team registerTeam(String teamId, String teamName) {
+		Team newTeam = new Team(this,teamId, teamName, teamName);
 		teams.add(newTeam);
 		return newTeam;
 	}
@@ -97,6 +104,14 @@ public class Contest {
 	public void addProblem(Problem newProblem) {
 		problems.put(newProblem.getId(), newProblem);
 	}
+
+	public void addJudgementType(JudgementType judgementType) {
+		judgementTypes.put(judgementType.getId(), judgementType);
+	}
+
+	public JudgementType getJudgementType(String id) {
+		return judgementTypes.get(id);
+	}
 	
 	public void addLanguage(Language language) {
 		languages.add(language);
@@ -111,16 +126,16 @@ public class Contest {
 		teams.add(newTeam);
 	}
 	
-	public Team getTeam(int teamNumber) throws InvalidKeyException {
+	public Team getTeam(String teamNumber) throws InvalidKeyException {
 		for (Team candidate : teams) {
-			if (teamNumber == candidate.getTeamNumber()) {
+			if (teamNumber.equals(candidate.getTeamId())) {
 				return candidate;
 			}
 		}
-		throw new InvalidKeyException(String.format("%n is not a known team", teamNumber));
+		throw new InvalidKeyException(String.format("%s is not a known team", teamNumber));
 	}
 
-	public Problem getProblem(int problemId) throws InvalidKeyException {
+	public Problem getProblem(String problemId) throws InvalidKeyException {
 		if (problems.containsKey(problemId)) {
 			return problems.get(problemId);
 		} else {
@@ -129,7 +144,7 @@ public class Contest {
 	}
 
 	public Problem getProblemByAbbreviation(String abbrev) throws InvalidKeyException {
-		for (Map.Entry<Integer, Problem> problem : problems.entrySet()) {
+		for (Map.Entry<String, Problem> problem : problems.entrySet()) {
 			if (abbrev.equalsIgnoreCase(problem.getValue().getLetter())) {
 				return problem.getValue();
 			}

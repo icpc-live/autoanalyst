@@ -13,7 +13,7 @@ public class LanguageHandler extends SingleMessageHandler {
 	public void process(SimpleMessage message) {
 		int id = message.getInt("id");
 		String languageName = message.get("name").trim();
-	    Language language = new Language(id, languageName);
+	    Language language = new Language(Integer.toString(id), languageName);
 		contest.addLanguage(language);
 	}
 

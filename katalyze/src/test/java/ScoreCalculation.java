@@ -14,25 +14,29 @@ public class ScoreCalculation {
 	int submissionId = 0;
 	
 	@Before public void Setup() {
-		problemA = new Problem(1, "Problem A");
-		problemB = new Problem(2, "Problem B");
+		problemA = new Problem("1", "Problem A", "A");
+		problemB = new Problem("2", "Problem B", "B");
 
 		contest = new Contest();
 		contest.addProblem(problemA);
 		contest.addProblem(problemB);
-		teamA = contest.registerTeam(1, "Foo");
+		teamA = contest.registerTeam("1", "Foo");
 	}
-	
+
+	private String makeSubmissionId() {
+		return Integer.toString(submissionId++);
+	}
+
 	private void fail(Problem problem, int time) {
-		teamA.submit(submissionId++, problem, time, "WA", false, true, "unknown");
+		teamA.submit(makeSubmissionId(), problem, time, "WA", false, true);
 	}
 	
 	private void compilationError(Problem problem, int time) {
-		teamA.submit(submissionId++, problem, time, "CE", false, false, "unknown");
+		teamA.submit(makeSubmissionId(), problem, time, "CE", false, false);
 	}
 	
 	private void solve(Problem problem, int time) {
-		teamA.submit(submissionId++, problem, time,"AC", true, false, "unknown");
+		teamA.submit(makeSubmissionId(), problem, time,"AC", true, false);
 	}
 	
 	private void assertScore(int score, Problem... problems) {

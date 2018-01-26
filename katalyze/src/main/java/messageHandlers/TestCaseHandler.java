@@ -31,7 +31,7 @@ public class TestCaseHandler extends SingleMessageHandler {
 	@Override
 	public void process(SimpleMessage message) {
 		
-		int submissionId = message.getInt("run-id");
+		String submissionId = message.get("run-id");
 		int caseNumber = message.getInt("i");
 		int totalCaseCount = message.getInt("n");
 		String result = message.get("result");

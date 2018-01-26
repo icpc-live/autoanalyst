@@ -12,10 +12,9 @@ public class Submission {
 	final boolean penalty;
 	final String outcome;
 	final Problem problem;
-	final String language;
 	final TestCaseExecution failingCase;
 
-	public Submission(InitialSubmission initialSubmission, int serialNumber, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, String language, TestCaseExecution failingCase) {
+	public Submission(InitialSubmission initialSubmission, int serialNumber, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
 		this.initialSubmission = initialSubmission;
 		this.serialNumber = serialNumber;
 		this.team = team;
@@ -24,7 +23,6 @@ public class Submission {
 		this.penalty = penalty;
 		this.outcome = outcome;
 		this.problem = problem;
-        this.language = language;
         this.failingCase = failingCase;
 	}
 	
@@ -59,10 +57,6 @@ public class Submission {
 		return team;
 	}
 
-	public String getLanguage() {
-		return language;
-	}
-	
 	public int getMinutesFromStart() {
 		return minutesFromStart;
 	}

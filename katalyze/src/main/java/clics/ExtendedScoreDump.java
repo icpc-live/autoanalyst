@@ -77,7 +77,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			JSONObject target = new JSONObject()
 				.element("rank", standings.rankOf(team))
-				.element("team", team.getTeamNumber())
+				.element("team", team.getTeamId())
 				.element("main_lang", team.getMainLanguage())
 				.element("score", new JSONObject()
 					.element("num_solved", score.getNumberOfSolvedProblems())
@@ -164,7 +164,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 	private JSONObject teamAsJson(Team team) {
 		JSONObject target = new JSONObject();
-		target.put("id", team.getTeamNumber());
+		target.put("id", team.getTeamId());
 		target.put("name", team.getName());
 
 		return target;

@@ -21,7 +21,7 @@ public class TeamHandler extends SingleMessageHandler {
 	}
 	
 	public void process(SimpleMessage message) {
-		int teamNumber = Integer.parseInt(message.get("id"));
+		String teamNumber = message.get("id");
 		String teamName = message.get("name");
 		String shortName = getTeamShortName(teamNumber);
 		if (StringUtils.isEmpty(shortName)) {
@@ -31,19 +31,28 @@ public class TeamHandler extends SingleMessageHandler {
 		contest.addTeam(newTeam);
 	}
 
-	private String getTeamShortName(int teamId) {
+	private String getTeamShortName(String teamId) {
+		if (connection == null) {
+			return "";
+		}
+
 		try {
+			int teamNumber = Integer.parseInt(teamId);
+
 			PreparedStatement s = connection.prepareStatement("select school_short from teams where team_id = ?");
-			s.setInt(1, teamId);
+			s.setInt(1, teamNumber);
 			ResultSet results = s.executeQuery();
 
 			if (results.next()) {
 				return results.getString("school_short");
 			} else {
-				logger.warn(String.format("Team with id %d not in database", teamId));
+				logger.warn(String.format("Team with id %s not in database", teamId));
 				return "";
 			}
-		} catch (SQLException e) {
+		} catch (NumberFormatException e) {
+			return "";
+		}
+		catch (SQLException e) {
 			logger.error(String.format("Unable to retrieve team id %d information", e.getMessage()));
 			return "";
 		}

@@ -40,6 +40,7 @@ public class ConfigReader {
 	
 	Configuration config;
 	private DatabaseNotificationConfig dbConfig;
+	private boolean isDbEnabled = false;
 
 
 	public ConfigReader(Reader in) throws ConfigurationException {
@@ -55,7 +56,9 @@ public class ConfigReader {
 	
 
 	private void setupDatabaseNotifier(Analyzer analyzer) {
-		if (!config.getBoolean("katalyzer.db.enable", false)) {
+		isDbEnabled =config.getBoolean("katalyzer.db.enable", false);
+
+		if (!isDbEnabled) {
 			return;
 		}
 
@@ -227,6 +230,11 @@ public class ConfigReader {
 	}
 
 	public Connection getConnection() throws Exception {
-		return dbConfig.createConnection();
+		if (isDbEnabled) {
+			return dbConfig.createConnection();
+		} else {
+			return null;
+		}
+
 	}
 }

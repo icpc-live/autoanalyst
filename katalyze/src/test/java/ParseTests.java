@@ -55,8 +55,13 @@ public class ParseTests {
 			
 			public void send(Token token) {
 				if (index < expectedTokens.length) {
-					assertEquals(expectedTokens[index], token);
-					index++;
+
+					if (token instanceof TagValue && ((TagValue) token).isWhiteSpace()) {
+						return;
+					} else {
+						assertEquals(expectedTokens[index], token);
+						index++;
+					}
 				}
 			}
 		};
@@ -84,8 +89,8 @@ public class ParseTests {
 		TokenStreamProcessor messageBuilder = new TokenStreamProcessor(tokenQueue, simpleMessageSink);
 		messageBuilder.parse();
 		
-		SimpleMessage reset = result.get(0);
-		SimpleMessage info = result.get(1);
+		SimpleMessage reset = result.get(1);
+		SimpleMessage info = result.get(2);
 		
 		assertEquals("Reset message has no members", 0, reset.size());
 		assertEquals("Info message contains title", title, info.get("title"));
