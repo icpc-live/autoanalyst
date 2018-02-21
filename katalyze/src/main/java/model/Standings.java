@@ -7,16 +7,14 @@ public class Standings implements Iterable<Score> {
 	
 	private Contest contest;
 	private List<Score> scores;
-	private int submissionCount;
 
 	@Override
 	public Iterator<Score> iterator() {
 		return scores.iterator();
 	}
 	
-	public Standings(Contest contest, Collection<Score> teamScores, int submissionCount) {
+	public Standings(Contest contest, Collection<Score> teamScores) {
 		this.contest = contest;
-		this.submissionCount = submissionCount;
 		scores = new ArrayList<Score>(teamScores);
 		Collections.sort(scores, comparator);
 	}
@@ -33,11 +31,7 @@ public class Standings implements Iterable<Score> {
 	public Contest getContest() {
 		return this.contest;
 	}
-	
-	public int getSubmissionCount() {
-		return this.submissionCount;
-	}
-	
+
 	public int rankOf(Team team) {
 		ScoreTableEntry previousScore = null;
 		int rank = 0;

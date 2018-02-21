@@ -8,7 +8,7 @@ import model.*;
 import java.util.*;
 
 
-public class ScoreOrdering extends ContestSimulatorTest {
+public class ScoreOrdering extends tests.ContestSimulatorTest {
 
 	
 	private Set<Problem> problems(Problem... problems) {
@@ -25,9 +25,9 @@ public class ScoreOrdering extends ContestSimulatorTest {
 		InitContest(3,2);
 		Map<Problem, ProblemSubmissions> noSubmissions = new HashMap<Problem, ProblemSubmissions>();
 		
-		Score scoreA = new Score(teams[0], 100, problems(problems[0]), noSubmissions, 0);
-		Score scoreB = new Score(teams[1], 130, problems(problems[0], problems[1]), noSubmissions, 0);
-		
+		Score scoreA = new Score(teams[0], 100, problems(problems[0]), noSubmissions);
+		Score scoreB = new Score(teams[1], 130, problems(problems[0], problems[1]), noSubmissions);
+
 		Assert.assertTrue(comparator.compare(scoreA,scoreB) == 1);
 
 	}

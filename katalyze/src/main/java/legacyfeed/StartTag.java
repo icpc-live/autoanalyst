@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 public class StartTag implements Token {
 	final String tagName;

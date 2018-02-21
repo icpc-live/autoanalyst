@@ -2,7 +2,7 @@ package messageHandlers;
 
 import org.apache.log4j.Logger;
 
-import io.SimpleMessage;
+import legacyfeed.SimpleMessage;
 
 public class NullHandler extends SingleMessageHandler {
 	static Logger logger = Logger.getLogger(SingleMessageHandler.class);

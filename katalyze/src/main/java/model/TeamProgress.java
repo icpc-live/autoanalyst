@@ -12,20 +12,20 @@ public class TeamProgress {
 		this.team = team;
 	}
 	
-	public Score calculateScore(int submissionsToConsider) {
+	public Score calculateScore() {
 		HashSet<Problem> solvedProblems = new HashSet<Problem>();
 		
 		int timeIncludingPenalty = 0;
 		
 		for (Problem p : submissions.keySet()) {
 			ProblemSubmissions submissionsForProblem = submissions.get(p);
-			if (submissionsForProblem.isSolvedByFirstSubmissions(submissionsToConsider)) {
+			if (submissionsForProblem.isSolved()) {
 				solvedProblems.add(p);				
-				timeIncludingPenalty += submissionsForProblem.scoreContribution(submissionsToConsider);
+				timeIncludingPenalty += submissionsForProblem.scoreContribution();
 			}
 		}
 		
-		return new Score(team, timeIncludingPenalty, solvedProblems, submissions, submissionsToConsider);
+		return new Score(team, timeIncludingPenalty, solvedProblems, submissions);
 	}
 	
 	private ProblemSubmissions getSubmissionsFor(Problem problem) {

@@ -1,6 +1,10 @@
 package katalyzeapp;
 
 import config.YAMLConfiguration;
+import io.HttpFeedClient;
+import io.InputStreamConfigurator;
+import io.InputStreamProvider;
+import jsonfeed.JsonEventReader;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -8,11 +12,15 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Katalyze {
 	
 	static Logger logger = Logger.getLogger(Katalyze.class);
-	
+
+
+
+
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -48,32 +56,40 @@ public class Katalyze {
 		}
 
 		Katalyzer katalyzer = null;
+		katalyzer = new Katalyzer(config);
+		katalyzer.start();
+
+		InputStreamConfigurator configSource = new InputStreamConfigurator(config);
+
+		InputStreamProvider isp;
+		if (fileName == null) {
+			isp = configSource.getInputFromConfig();
+		} else {
+			isp = configSource.createFileReader(fileName);
+		}
+
 		try {
-			InputStream input;
-		
-			if (fileName == null) {
-				input = System.in;
+
+			if (config.getString("CDS.protocol", "contestapi").equalsIgnoreCase("contestapi")) {
+				JsonEventReader reader = new JsonEventReader();
+				reader.processStream(new InputStreamReader(isp.getInputStream()), katalyzer::processEvent);
 			} else {
-				input = new FileInputStream(fileName);
+				katalyzer.processLegacyFeed(isp.getInputStream());
 			}
-			
-			katalyzer = new Katalyzer(config);
-			katalyzer.start();
-			katalyzer.process(input);
 
 			logger.info("Katalyzer stream finished");
 
 		} catch (Exception e) {
 			logger.error("Katalyzer fatal error, terminating",e);
 		}
-		finally {
-			if (katalyzer != null) {
-				katalyzer.stop();
-			}
 
+
+		if (katalyzer != null) {
+			katalyzer.stop();
 		}
 		
 	}
+
 
 }
 

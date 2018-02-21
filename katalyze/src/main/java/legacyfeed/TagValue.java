@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 public class TagValue implements Token {
 	final String value;

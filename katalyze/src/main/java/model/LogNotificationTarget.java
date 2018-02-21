@@ -14,8 +14,11 @@ public class LogNotificationTarget implements NotificationTarget {
 	@Override
 	public void notify(LoggableEvent event) {
 		String messageText = useHashTags ? event.icatMessage : event.message;
-		
-		String fullMessage = String.format("[%d] %s", event.time, messageText);
+
+		InitialSubmission submission = event.submission;
+		String submissionId = (submission != null) ? submission.id : "-";
+
+		String fullMessage = String.format("[%d][%s] %s", event.time, submissionId, messageText);
 		if (event.importance.ordinal() <= EventImportance.Normal.ordinal()) {
 			logger.info(fullMessage);
 		} else {

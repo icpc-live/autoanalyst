@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import io.Sink;
 import org.xml.sax.SAXException;
 
 public class TokenFeeder implements Sink<Token> {

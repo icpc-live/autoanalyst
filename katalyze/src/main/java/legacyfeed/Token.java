@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 public interface Token {
 

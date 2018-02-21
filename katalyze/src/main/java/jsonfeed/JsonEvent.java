@@ -1,7 +1,9 @@
 package jsonfeed;
 
 import net.sf.json.JSONObject;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
+import java.io.InvalidObjectException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,15 +14,19 @@ public class JsonEvent {
     private String op;
     private String time;
     private JSONObject data;
-    static SimpleDateFormat timespanFormat = new SimpleDateFormat("H:mm:ss.SSS");
+    private static TimeConverter converter = new TimeConverter();
 
-    public static JsonEvent from(JSONObject src) {
+    public static JsonEvent from(JSONObject src) throws InvalidObjectException {
         JsonEvent target = new JsonEvent();
         target.id = src.getString("id");
         target.type = src.getString("type");
         target.op = src.getString("op");
         target.time = src.getString("time");
         target.data =src.getJSONObject("data");
+
+        if (target.data == null || target.data.isNullObject()) {
+            throw new InvalidObjectException(String.format("Event %s does not contain a data element", src));
+        }
         return target;
 
     }
@@ -33,18 +39,15 @@ public class JsonEvent {
         return data.getInt(key);
     }
 
+    public boolean getBoolean(String key) {
+        return data.getBoolean(key);
+    }
+
+
+
     public long getTimespan(String key) {
-        try {
         String timeString = data.getString(key);
-        if (timeString == null) {
-            return -1;
-        }
-            Date result = timespanFormat.parse(timeString);
-            return result.toInstant().toEpochMilli();
-        }
-        catch (ParseException e) {
-            return -1;
-        }
+        return converter.parseContestTimeMillis(timeString);
     }
 
     public String getId() {

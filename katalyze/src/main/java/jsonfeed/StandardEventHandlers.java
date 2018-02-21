@@ -29,6 +29,10 @@ public class StandardEventHandlers {
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
         handlers.put("problems", (contest, src) -> contest.addProblem(
                 new Problem(src.getString("id"), src.getString("name"), src.getString("label"))));
+        handlers.put("judgement-types", (contest, src) -> {
+            JudgementType newJudgementType = new JudgementType(src.getString("id"), src.getBoolean("solved"), src.getBoolean("penalty"));
+            contest.addJudgementType(newJudgementType);
+        });
         handlers.put("submissions", (contest, src) -> {
             String submissionId = src.getString("id");
             String teamId = src.getString("team_id");
@@ -61,7 +65,7 @@ public class StandardEventHandlers {
                 } else {
                     int contestTime = submission.minutesFromStart;
                     // Only submit if there is a verdict.
-                    submission.team.submit(judgementId, submission.problem, contestTime, verdict.getId(), verdict.isAccepted(), verdict.hasPenalty());
+                    submission.team.submit(submission, judgementId, submission.problem, contestTime, verdict.getId(), verdict.isAccepted(), verdict.hasPenalty());
                 }
             }
 

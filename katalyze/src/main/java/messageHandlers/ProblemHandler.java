@@ -1,8 +1,8 @@
 package messageHandlers;
 
+import legacyfeed.SimpleMessage;
 import org.apache.log4j.Logger;
 import model.*;
-import io.*;
 
 public class ProblemHandler extends SingleMessageHandler {
 

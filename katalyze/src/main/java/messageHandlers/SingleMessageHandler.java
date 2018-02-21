@@ -1,7 +1,7 @@
 package messageHandlers;
 
 import model.Contest;
-import io.SimpleMessage;
+import legacyfeed.SimpleMessage;
 
 public abstract class SingleMessageHandler implements MessageHandler {
 	String tag;
@@ -20,7 +20,7 @@ public abstract class SingleMessageHandler implements MessageHandler {
 	}
 	
 	/* (non-Javadoc)
-	 * @see messageHandlers.MessageHandler#supports(io.SimpleMessage)
+	 * @see messageHandlers.MessageHandler#supports(legacyfeed.SimpleMessage)
 	 */
 	@Override
 	public Boolean supports(SimpleMessage message) {
@@ -28,7 +28,7 @@ public abstract class SingleMessageHandler implements MessageHandler {
 	}
 	
 	/* (non-Javadoc)
-	 * @see messageHandlers.MessageHandler#process(io.SimpleMessage)
+	 * @see messageHandlers.MessageHandler#process(legacyfeed.SimpleMessage)
 	 */
 	@Override
 	public abstract void process(SimpleMessage message);

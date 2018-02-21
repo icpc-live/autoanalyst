@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 import java.util.HashMap;
 import java.util.Map;

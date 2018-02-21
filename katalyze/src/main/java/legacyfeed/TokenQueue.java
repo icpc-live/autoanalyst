@@ -1,9 +1,10 @@
-package io;
+package legacyfeed;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import io.Sink;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 

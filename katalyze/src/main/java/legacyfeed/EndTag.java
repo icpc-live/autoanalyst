@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 public class EndTag implements Token {
 	String tagName;

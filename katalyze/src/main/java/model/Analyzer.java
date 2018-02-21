@@ -164,21 +164,14 @@ public class Analyzer implements NotificationTarget {
 
 	
 	
-	private void processRules(Standings before, Standings after, Submission submission) {
+	public void processRules(Standings before, Standings after, Submission submission) {
 		StandingsTransition transition = new StandingsTransition(this, before, after, submission);
 		for (StandingsUpdatedEvent rule : stateRules) {
 			rule.onStandingsUpdated(transition);
 		}
 	}
 
-	public void notifySubmission(Submission newSubmission) {
-		int submissionSerial = newSubmission.getSerialNumber();
-		Standings before = contest.getStandings(submissionSerial);
-		Standings after = contest.getStandings(submissionSerial+1);
-		processRules(before, after, newSubmission);
-		notifyHooks(newSubmission.minutesFromStart);
-	}
-	
+
 	public InitialSubmission submissionById(String id) {
 		return judgingOutcomes.getSubmission(id);
 	}
@@ -215,7 +208,7 @@ public class Analyzer implements NotificationTarget {
 		}
 	}
 
-	private void notifyHooks(int minutesFromStart) {
+	public void notifyHooks(int minutesFromStart) {
 		while (lastHookTime < minutesFromStart) {
 			lastHookTime++;
 			

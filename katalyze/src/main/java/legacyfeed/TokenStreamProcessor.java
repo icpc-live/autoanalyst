@@ -1,5 +1,6 @@
-package io;
+package legacyfeed;
 
+import io.Sink;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;

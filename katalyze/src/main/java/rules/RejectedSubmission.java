@@ -26,7 +26,10 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 		Score teamScore = transition.before.scoreOf(submission.getTeam());
 		Submission[] previousSubmissions = teamScore.submissionsFor(submission.getProblem());
 
-		
+		if (teamScore.isSolved(submission.getProblem())) {
+			return;
+		}
+
 		
 		if (previousSubmissions.length == 1) {
 		

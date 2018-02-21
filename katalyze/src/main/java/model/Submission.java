@@ -5,7 +5,7 @@ public class Submission {
 	public static final int CostOfFailedSubmission = 20;
 	
 	final InitialSubmission initialSubmission;
-	final int serialNumber;
+	final String judgementId;
 	final Team team;
 	final int minutesFromStart;
 	final boolean accepted;
@@ -14,9 +14,9 @@ public class Submission {
 	final Problem problem;
 	final TestCaseExecution failingCase;
 
-	public Submission(InitialSubmission initialSubmission, int serialNumber, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
+	public Submission(InitialSubmission initialSubmission, String judgementId, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
 		this.initialSubmission = initialSubmission;
-		this.serialNumber = serialNumber;
+		this.judgementId = judgementId;
 		this.team = team;
 		this.minutesFromStart = minutesFromStart;
 		this.accepted = accepted;
@@ -61,10 +61,7 @@ public class Submission {
 		return minutesFromStart;
 	}
 	
-	public int getSerialNumber() {
-		return serialNumber;
-	}
-	
+
 	public InitialSubmission getInitialSubmission() {
 		return initialSubmission;
 	}

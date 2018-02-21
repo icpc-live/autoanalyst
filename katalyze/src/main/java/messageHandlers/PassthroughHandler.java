@@ -7,9 +7,9 @@ import javax.xml.stream.XMLStreamException;
 import model.*;
 import org.apache.log4j.Logger;
 
-import io.EventFeedFile;
-import io.MessageXmlSerializer;
-import io.SimpleMessage;
+import legacyfeed.EventFeedFile;
+import legacyfeed.MessageXmlSerializer;
+import legacyfeed.SimpleMessage;
 
 public class PassthroughHandler implements MessageHandler, NotificationTarget {
 	static Logger logger = Logger.getLogger(PassthroughHandler.class);

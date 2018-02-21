@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import static org.junit.Assert.*;
 import io.*;
 
+import legacyfeed.*;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 import java.io.File;
 import java.io.FileInputStream;

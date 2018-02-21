@@ -1,8 +1,11 @@
 package katalyzeapp;
 
-import io.SimpleMessage;
-import io.TokenFeeder;
-import io.TokenQueue;
+import legacyfeed.SimpleMessage;
+import legacyfeed.TokenFeeder;
+import legacyfeed.TokenQueue;
+import jsonfeed.JsonEvent;
+import jsonfeed.JsonEventHandler;
+import jsonfeed.StandardEventHandlers;
 import messageHandlers.ContestMessages;
 import model.Analyzer;
 import model.Contest;
@@ -13,9 +16,12 @@ import org.apache.log4j.Logger;
 import java.io.InputStream;
 
 public class Katalyzer {
-	static Logger logger = Logger.getLogger(Katalyzer.class);
+	private static Logger logger = Logger.getLogger(Katalyzer.class);
 	int updateInterval = 2000;
+	StandardEventHandlers eventHandlers;
 	long lastUpdate = 0;
+
+
 	
 	Contest contest;
 	ContestMessages handlers;
@@ -26,6 +32,7 @@ public class Katalyzer {
 		this.handlers = new ContestMessages(contest);		
 		
 		Analyzer analyzer = contest.getAnalyzer();
+		eventHandlers = new StandardEventHandlers();
 		
 		configReader.SetupAnalyzer(contest, analyzer, handlers);
 
@@ -44,7 +51,7 @@ public class Katalyzer {
 	}
 	
 	
-	public void process(InputStream stream) throws Exception {
+	public void processLegacyFeed(InputStream stream) throws Exception {
 		logger.info(String.format("Processing stream of type %s", stream.getClass()));
 		TokenFeeder feeder = new TokenFeeder(stream);
 		
@@ -66,6 +73,16 @@ public class Katalyzer {
 		// Ok, we're done. Push the final standings.
 		updateScoreboards(true);
 		
+	}
+
+	public void processEvent(JsonEvent event)  {
+		JsonEventHandler eventHandler = eventHandlers.getHandlerFor(event);
+		try {
+			eventHandler.process(contest, event);
+		}
+		catch (Exception e) {
+			logger.error(String.format("Error %s while processing event %s",e, event), e);
+		}
 	}
 	
 	public Contest getContest() {

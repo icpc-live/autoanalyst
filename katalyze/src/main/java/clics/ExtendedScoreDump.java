@@ -186,13 +186,12 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 	@Override
 	public void execute(int minutesFromStart) {
-		log.debug("preparing Standings... " + minutesFromStart);
-		int submissionsAtTime = contest.getSubmissionsAtTime(minutesFromStart);
+		log.debug("preparing Standings... ");
 
-		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(submissionsAtTime), minutesFromStart);
+		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(), minutesFromStart);
 		JSON scoreTable = scoreDumper.execute();
 
-		log.debug("publishing Standings... " + minutesFromStart);
+		log.debug("publishing Standings... ");
 
 		publisherTarget.publish("/scoreboard", new StaticWebDocument(scoreTable));
 		publisherTarget.publish("/teams", new StaticWebDocument(getAllTeams()));

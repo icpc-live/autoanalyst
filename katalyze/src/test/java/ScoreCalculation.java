@@ -12,6 +12,7 @@ public class ScoreCalculation {
 	Problem problemB;
 	Contest contest;
 	int submissionId = 0;
+	String language = "java";
 	
 	@Before public void Setup() {
 		problemA = new Problem("1", "Problem A", "A");
@@ -28,20 +29,23 @@ public class ScoreCalculation {
 	}
 
 	private void fail(Problem problem, int time) {
-		teamA.submit(makeSubmissionId(), problem, time, "WA", false, true);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
+		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "WA", false, true);
 	}
 	
 	private void compilationError(Problem problem, int time) {
-		teamA.submit(makeSubmissionId(), problem, time, "CE", false, false);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
+		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "CE", false, false);
 	}
 	
 	private void solve(Problem problem, int time) {
-		teamA.submit(makeSubmissionId(), problem, time,"AC", true, false);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
+		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "AC", true, false);
 	}
 	
 	private void assertScore(int score, Problem... problems) {
 		
-		ScoreTableEntry teamScore = teamA.getScore();
+		ScoreTableEntry teamScore = teamA.getCurrentScore();
 		
 		assertEquals(score, teamScore.getTimeIncludingPenalty());
 		assertEquals(problems.length, teamScore.getNumberOfSolvedProblems());

@@ -1,6 +1,6 @@
 package web;
 
-import io.EventFeedFile;
+import legacyfeed.EventFeedFile;
 
 import java.io.IOException;
 import java.io.InputStream;

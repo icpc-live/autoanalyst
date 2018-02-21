@@ -25,19 +25,20 @@ public class Team {
 		return String.format("#t%s", teamId);
 	}
 	
-	public Submission submit(String submissionId, Problem problem, int minutesFromStart, String judgement, Boolean accepted, Boolean penalty) {
+	public Submission submit(InitialSubmission initialSubmission, String judgementId, Problem problem, int minutesFromStart, String judgement, Boolean accepted, Boolean penalty) {
 		
 		Analyzer analyzer = contest.getAnalyzer();
-		InitialSubmission initialSubmission = analyzer.submissionById(submissionId);
 		TestCaseExecution judgeOutcome = analyzer.getFailureInfo(initialSubmission);
 		
-		
-		Submission newSubmission = new Submission(initialSubmission, contest.getSubmissionCount(), this, minutesFromStart, problem, judgement, accepted, penalty, judgeOutcome);
-
-		progress.register(newSubmission);
+		Submission newSubmission = new Submission(initialSubmission, judgementId, this, minutesFromStart, problem, judgement, accepted, penalty, judgeOutcome);
 		contest.processSubmission(newSubmission);
 		
 		return newSubmission;
+	}
+
+
+	public void registerJudgement(Submission judgement) {
+		progress.register(judgement);
 	}
 	
 	public void freshSubmission(InitialSubmission submission) {
@@ -45,16 +46,12 @@ public class Team {
 		contest.getAnalyzer().freshSubmission(submission);
 	}
 	
-	public Score getScore(int submissionCount) {
-		return progress.calculateScore(submissionCount);
+	public Score getCurrentScore() {
+		return progress.calculateScore();
 	}
 	
 	public Contest getContest() {
 		return this.contest;
-	}
-	
-	public ScoreTableEntry getScore() {
-		return progress.calculateScore(contest.getSubmissionCount());
 	}
 	
 	public String languageFor(Problem problem) {

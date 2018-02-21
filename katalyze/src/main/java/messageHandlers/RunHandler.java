@@ -1,6 +1,6 @@
 package messageHandlers;
 
-import io.SimpleMessage;
+import legacyfeed.SimpleMessage;
 import model.InitialSubmission;
 import model.Problem;
 import model.Team;
@@ -29,7 +29,7 @@ public class RunHandler extends SingleMessageHandler {
 			team = contest.getTeam(teamId);
 			problem = contest.getProblem(problemId);
 		} catch (InvalidKeyException e) {
-			error(String.format("Unable to process message %s. Reason: %s", message, e.getMessage()));
+			error(String.format("Unable to processLegacyFeed message %s. Reason: %s", message, e.getMessage()));
 			return;
 		}
 		
@@ -57,12 +57,13 @@ public class RunHandler extends SingleMessageHandler {
 			team = contest.getTeam(teamId);
 			problem = contest.getProblem(problemId);
 		} catch (InvalidKeyException e) {
-			error(String.format("Unable to process message %s. Reason: %s", message, e.getMessage()));
+			error(String.format("Unable to processLegacyFeed message %s. Reason: %s", message, e.getMessage()));
 			return;
 		}
 		
 		if (isJudged) {
-			team.submit(submissionId, problem, minutesFromStart, judgement, solved, penalty);
+			InitialSubmission submission = contest.getAnalyzer().submissionById(submissionId);
+			team.submit(submission, submissionId, problem, minutesFromStart, judgement, solved, penalty);
 		} else {
 			Log.info(String.format("%s submission of %s has been judged. Outcome is not disclosed",
 					team, problem));

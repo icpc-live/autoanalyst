@@ -7,15 +7,13 @@ public class Score implements ScoreTableEntry {
 	final int points;
 	final Set<Problem> solvedProblems;
 	final Map<Problem,ProblemSubmissions> submissions;
-	final int consideredSubmissionCount;
 	int lastAcceptedSubmission = Integer.MIN_VALUE;
 
-	public Score(Team team, int points, Set<Problem> solvedProblems, Map<Problem,ProblemSubmissions> submissions, int consideredSubmissionCount) {
+	public Score(Team team, int points, Set<Problem> solvedProblems, Map<Problem,ProblemSubmissions> submissions) {
 		this.team = team;
 		this.points = points;
 		this.solvedProblems = new HashSet<Problem>(solvedProblems);
 		this.submissions = submissions;
-		this.consideredSubmissionCount = consideredSubmissionCount;
 	}
 	
 	public int getNumberOfSolvedProblems() {
@@ -107,7 +105,7 @@ public class Score implements ScoreTableEntry {
 			return 0;
 		}
 		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.scoreContribution(consideredSubmissionCount);
+		return problemSubmissions.scoreContribution();
 	}
 	
 	public int penaltyIfSolved(Problem problem) {
@@ -115,7 +113,7 @@ public class Score implements ScoreTableEntry {
 			return 0;
 		}
 		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.penalty(consideredSubmissionCount);
+		return problemSubmissions.penalty();
 	}
 	
 	public Submission[] submissionsFor(Problem problem) {

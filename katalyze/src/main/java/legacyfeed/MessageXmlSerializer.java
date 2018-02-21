@@ -1,4 +1,4 @@
-package io;
+package legacyfeed;
 
 import java.io.PrintStream;
 import java.util.Map;

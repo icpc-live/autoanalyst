@@ -1,6 +1,6 @@
 package messageHandlers;
 
-import io.SimpleMessage;
+import legacyfeed.SimpleMessage;
 import model.Team;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

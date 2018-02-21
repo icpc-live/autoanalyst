@@ -20,17 +20,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		return false;
 	}
 	
-	public boolean isSolvedByFirstSubmissions(int submissionCount) {
-		for(Submission s : submissions) {
-			if (s.getSerialNumber() < submissionCount) {
-				if (s.isAccepted()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
+
 	public Submission[] toArray() {
 		return submissions.toArray(new Submission[0]);
 	}
@@ -55,32 +45,28 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		return 0;
 	}
 	
-	public int penalty(int submissionCount) {
+	public int penalty() {
 		int cumulativeScore = 0;
 		
 		for (Submission s : submissions) {
-			if (s.getSerialNumber() < submissionCount) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
 				}
-			}
 		}
 		
 		return cumulativeScore;
 	}
 	
-	public int scoreContribution(int submissionCount) {
+	public int scoreContribution() {
 		
 		int cumulativeScore = 0;
 		
 		for (Submission s : submissions) {
-			if (s.getSerialNumber() < submissionCount) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
 				}
-			}
 		}
 		
 		// No cost if no solution was accepted

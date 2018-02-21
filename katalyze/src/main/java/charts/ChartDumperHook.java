@@ -24,8 +24,7 @@ public class ChartDumperHook implements OutputHook {
 		// For now, hard-code the chart types
 		chartDumper.add(new ProblemSubmissionsPerMinute());
 		chartDumper.add(new SubmissionsPerProblem());
-		chartDumper.add(new TeamsHavingSolvedProblem());
-		
+
 		return chartDumper;
 	}
 	

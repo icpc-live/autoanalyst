@@ -34,7 +34,7 @@ public abstract class ContestSimulatorTest {
 		InitialSubmission newSubmission = new InitialSubmission(subId,minutesFromStart, team, problem, "Fortran");
 		team.freshSubmission(newSubmission);
 
-		team.submit(subId, problem, minutesFromStart, "AC", true, false);
+		team.submit(newSubmission, subId, problem, minutesFromStart, "AC", true, false);
 	}
 	
 	public static void WrongAnswer(Team team, Problem problem, int minutesFromStart) {
@@ -43,7 +43,7 @@ public abstract class ContestSimulatorTest {
 
 		team.freshSubmission(newSubmission);
 
-		team.submit(subId, problem, minutesFromStart, "WA", false, true);
+		team.submit(newSubmission, subId, problem, minutesFromStart, "WA", false, true);
 	}	
 
 }

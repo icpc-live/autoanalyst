@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import model.Analyzer;
 import model.InitialSubmission;
 import model.TestCaseExecution;
-import io.SimpleMessage;
+import legacyfeed.SimpleMessage;
 
 public class TestCaseHandler extends SingleMessageHandler {
 	static Logger logger = Logger.getLogger(TestCaseHandler.class);

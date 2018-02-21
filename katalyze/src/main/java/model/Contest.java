@@ -48,15 +48,11 @@ public class Contest {
 	}
 
 	public Standings getStandings() {
-		return getStandings(getSubmissionCount());
-	}
-	
-	public Standings getStandings(int submissionCount) {
 		List<Score> teamScores = new ArrayList<Score>();
 		for (Team team : teams) {
-			teamScores.add(team.getScore(submissionCount));
+			teamScores.add(team.getCurrentScore());
 		}
-		return new Standings(this, teamScores, submissionCount);
+		return new Standings(this, teamScores);
 	}
 	
 	public int getSubmissionCount() {
@@ -97,8 +93,15 @@ public class Contest {
 	}
 
 	public void processSubmission(Submission newSubmission) {
+
+		Standings before = getStandings();
+
+		newSubmission.getTeam().registerJudgement(newSubmission);
 		submissions.add(newSubmission);
-		analyzer.notifySubmission(newSubmission);
+		Standings after = getStandings();
+
+		analyzer.processRules(before, after, newSubmission);
+		analyzer.notifyHooks(newSubmission.minutesFromStart);
 	}
 	
 	public void addProblem(Problem newProblem) {
