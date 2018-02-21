@@ -45,7 +45,7 @@ $EDITOR config.yaml
 
 Build the Katalyzer code:
 ```
-make -C katalyzer
+make -C katalyze
 ```
 
 Create some symlinks:

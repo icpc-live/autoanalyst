@@ -76,7 +76,7 @@ public class EventParsingTests {
         Assert.assertEquals(46331, result);
 
     }
-    
+
 
 
 }
