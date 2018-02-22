@@ -1,13 +1,10 @@
 package model;
 
-import javafx.collections.transformation.SortedList;
-
 import java.util.*;
 
 public class ProblemSubmissions implements Iterable<Submission>{
 
 	final Problem problem;
-
 
 	TreeSet<Submission> submissions = new TreeSet(Submission.compareBySubmissionTime);
 
