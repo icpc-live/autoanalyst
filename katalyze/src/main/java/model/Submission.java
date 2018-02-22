@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Comparator;
+
 public class Submission {
 	// FIXME: this should be read from contest configuration.
 	public static final int CostOfFailedSubmission = 20;
@@ -25,6 +27,8 @@ public class Submission {
 		this.problem = problem;
         this.failingCase = failingCase;
 	}
+
+	public static final Comparator<Submission> compareBySubmissionTime = (o1, o2) -> Integer.compare(o1.minutesFromStart, o2.minutesFromStart);
 	
 	public boolean isAccepted() {
 		return accepted;
@@ -78,8 +82,8 @@ public class Submission {
 		}
 	}
 	
-	public boolean isNewerThan(Submission other) {
-		return (minutesFromStart > other.minutesFromStart);
+	public boolean isNotOlderThan(Submission other) {
+		return (minutesFromStart >= other.minutesFromStart);
 	}
 	
 }

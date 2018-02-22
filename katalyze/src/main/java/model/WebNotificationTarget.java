@@ -23,6 +23,10 @@ public class WebNotificationTarget implements NotificationTarget {
 		allEvents.clear();
 		teamEvents.clear();
 	}
+
+	public PublishableEventList getAllEvents() {
+		return allEvents;
+	}
 	
 	@Override
 	public void notify(LoggableEvent event) {

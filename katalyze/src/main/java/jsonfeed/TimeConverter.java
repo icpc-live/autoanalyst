@@ -2,6 +2,7 @@ package jsonfeed;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -26,5 +27,10 @@ public class TimeConverter {
         } catch (ParseException e) {
             return -1;
         }
+    }
+
+    public String toContestTime(long millis) {
+        Date input = Date.from(Instant.ofEpochMilli(millis));
+        return timespanFormat.format(input);
     }
 }

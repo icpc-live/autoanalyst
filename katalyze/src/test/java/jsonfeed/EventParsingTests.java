@@ -74,7 +74,12 @@ public class EventParsingTests {
 
         long result = new TimeConverter().parseContestTimeMillis("0:00:46.331");
         Assert.assertEquals(46331, result);
+    }
 
+    @Test
+    public void testContestTimeGenerating() {
+        String result = new TimeConverter().toContestTime(2*60000+46331);
+        Assert.assertEquals("0:02:46.331", result);
     }
 
 

@@ -79,6 +79,8 @@ public class Katalyze {
 
 			logger.info("Katalyzer stream finished");
 
+			System.in.read();
+
 		} catch (Exception e) {
 			logger.error("Katalyzer fatal error, terminating",e);
 		}

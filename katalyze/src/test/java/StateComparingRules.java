@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import rules.*;
 import model.*;
 
-public class StateComparingRules extends ContestSimulatorTest {
+public class StateComparingRules extends tests.ContestSimulatorTest {
 
 	TestNotifier notifier = new TestNotifier();
 	

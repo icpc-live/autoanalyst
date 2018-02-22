@@ -1,12 +1,16 @@
 package model;
 
+import javafx.collections.transformation.SortedList;
+
 import java.util.*;
 
 public class ProblemSubmissions implements Iterable<Submission>{
 
 	final Problem problem;
-	List<Submission> submissions = new ArrayList<Submission>();
-	
+
+
+	TreeSet<Submission> submissions = new TreeSet(Submission.compareBySubmissionTime);
+
 	public ProblemSubmissions(Problem problem) {
 		this.problem = problem;
 	}
@@ -74,22 +78,12 @@ public class ProblemSubmissions implements Iterable<Submission>{
 	}
 	
 	private Submission getLastSubmission() {
-		if (submissions.size()>0) {
-			return submissions.get(submissions.size()-1);
-		} else {
-			return null;
-		}
+		return submissions.last();
 	}
 	
 	public void add(Submission submission) {
 		assert submission.getProblem() == problem;
-		
-		Submission last = getLastSubmission();
-		if (last != null) {
-			assert submission.isNewerThan(last);
-		}		
-	
-		submissions.add(submission);		
+		submissions.add(submission);
 	}
 
 

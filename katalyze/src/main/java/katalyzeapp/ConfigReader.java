@@ -8,13 +8,7 @@ import icat.AnalystMessageSource;
 import legacyfeed.EventFeedFile;
 import messageHandlers.ContestMessages;
 import messageHandlers.PassthroughHandler;
-import model.Analyzer;
-import model.Contest;
-import model.DatabaseNotificationTarget;
-import model.ModelDumperHook;
-import model.ShellNotificationTarget;
-import model.TwitterNotificationTarget;
-import model.WebNotificationTarget;
+import model.*;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -25,9 +19,7 @@ import rules.RankPredictor;
 import rules.RejectedSubmission;
 import rules.StandingsUpdatedEvent;
 import rules.StateComparingRuleBase;
-import web.EventFeedStreamer;
-import web.FileWebPublisher;
-import web.WebPublisher;
+import web.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -192,10 +184,16 @@ public class ConfigReader {
 			
 			httpHandler = new KatalyzerHttpHandler(contest, webPublisher, port);
 		    
-			httpHandler.addHandler(new EventFeedStreamer(augmentedEventFeed));
-			
+			httpHandler.addHandler(new EventFeedStreamer(augmentedEventFeed, "/eventfeed"));
+
+
+			WebNotificationTarget commentaryMessages = new WebNotificationTarget(webPublisher);
+			PublishableEventList events = commentaryMessages.getAllEvents();
+			httpHandler.addHandler(new JsonEventStreamer(events, new LoggableEventSerializer(), "/commentary-messages"));
+
+
 			analyzer.addOutputHook(new ExtendedScoreDump(contest, webPublisher));
-			analyzer.addNotifier(new WebNotificationTarget(webPublisher));
+			analyzer.addNotifier(commentaryMessages);
 			analyzer.manageLifeCycle(httpHandler);
 		
 		}

@@ -10,6 +10,7 @@ public class LoggableEvent {
 	public final Contest contest;
 	public final int id;
 	public final Team team;
+	public final Problem problem;
 	public final int time;
 	public final String message;
 	public final String icatMessage;
@@ -22,11 +23,18 @@ public class LoggableEvent {
 		this.contest = contest;
 		this.team = submission.getTeam();
 		this.time = submission.minutesFromStart;
-		this.message = getCleartextMessage(message, submission);
-		this.icatMessage = getICatMessage(message, submission);
 		this.importance = importance;
 		this.submission = submission;
+		if (this.submission != null) {
+			this.problem = this.submission.problem;
+		} else {
+			this.problem = null;
+		}
 		this.supplements = supplements;
+
+		this.message = getCleartextMessage(message);
+		this.icatMessage = getICatMessage(message);
+
 	}
 	
 	public LoggableEvent(Contest contest, Team team, String message, int contestTime, EventImportance importance, Map<String,String> supplements) {
@@ -39,24 +47,29 @@ public class LoggableEvent {
 		this.importance = importance;
 		this.supplements = supplements;
 		this.submission = null;
+		this.problem = null;
 	}
 
 	private static String replaceMarkup(String source, String tag, String replacement) {
 		return source.replaceAll("\\{"+tag+"\\}", Matcher.quoteReplacement(replacement));
 	}
 	
-	private static String getCleartextMessage(String message, InitialSubmission submission) {
-		if (submission != null) {
-			message = replaceMarkup(message, "problem", submission.getProblem().getName());
+	private String getCleartextMessage(String message) {
+		if (problem != null) {
+			message = replaceMarkup(message, "problem", problem.getName());
+		}
+		if (team != null) {
 			message = replaceMarkup(message, "team", submission.getTeam().getShortName());
 		}
 		return message;
 	}
 	
-	private static String getICatMessage(String message, InitialSubmission submission) {
-		if (submission != null) {
-			message = replaceMarkup(message, "problem", submission.getProblem().toString());
-			message = replaceMarkup(message, "team", submission.getTeam().toString());
+	private String getICatMessage(String message) {
+		if (problem != null) {
+			message = replaceMarkup(message, "problem", problem.toString());
+		}
+		if (team != null) {
+			message = replaceMarkup(message, "team", team.toString());
 		}
 		return message;
 	}

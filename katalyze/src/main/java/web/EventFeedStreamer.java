@@ -15,15 +15,18 @@ import com.sun.net.httpserver.HttpExchange;
 public class EventFeedStreamer implements WebHandler {
 	
 	final EventFeedFile eventDump;
+	final String path;
 	
-	public EventFeedStreamer(EventFeedFile eventDump) {
+	public EventFeedStreamer(EventFeedFile eventDump, String path) {
+
 		this.eventDump = eventDump;
+		this.path = path;
 	}
 
 	@Override
 	public boolean matches(HttpExchange exchange) {
-		return (exchange.getRequestMethod().compareToIgnoreCase("GET")==0) &&
-		exchange.getRequestURI().getPath().compareToIgnoreCase("/eventFeed")==0;
+		return (exchange.getRequestMethod().equalsIgnoreCase("GET")) &&
+		exchange.getRequestURI().getPath().equalsIgnoreCase(path);
 	}
 
 	@Override
