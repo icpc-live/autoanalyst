@@ -11,6 +11,6 @@ public class ConsoleNotifier implements NotificationTarget {
 	public void notify(LoggableEvent event) {
 		String message = (useHashTags) ? event.icatMessage : event.message;
 		
-		System.out.println(String.format("%s, [%n] %s", event.team, event.time, message));
+		System.out.println(String.format("%s, [%n] %s", event.team, event.contestTimeMinutes(), message));
 	}
 }

@@ -34,7 +34,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
             s.setString(3, initialSubmission.getLanguage());
             s.setString(4, submission.getOutcome());
             s.setString(5, df.format(new Date()));
-            s.setInt(6, submission.getMinutesFromStart());
+            s.setInt(6, submission.getInitialSubmission().minutesFromStart);
             s.setString(7, initialSubmission.id);
 
             s.executeUpdate();

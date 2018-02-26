@@ -132,10 +132,11 @@ public class Score implements ScoreTableEntry {
         if (problemSubmissions != null) {
 
             for (Submission s : problemSubmissions) {
+            	InitialSubmission initialSubmission = s.getInitialSubmission();
                 if (s.isAccepted()) {
-                    return s.getMinutesFromStart();
+                    return initialSubmission.minutesFromStart;
                 }
-                lastRelevantTime = s.getMinutesFromStart();
+                lastRelevantTime = initialSubmission.minutesFromStart;
             }
         }
 

@@ -29,7 +29,7 @@ public class JsonEventReader {
                 target.send(event);
             }
             catch (Exception e) {
-                log.error(String.format("Failed to processLegacyFeed event. Error: %s, Source: %s", e, trimmedLine));
+                log.error(String.format("Failed to process event. Error: %s, Source: %s", e, trimmedLine));
             }
         }
     }

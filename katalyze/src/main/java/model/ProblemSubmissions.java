@@ -4,11 +4,11 @@ import java.util.*;
 
 public class ProblemSubmissions implements Iterable<Submission>{
 
-	final Problem problem;
+	private final Problem problem;
 
-	TreeSet<Submission> submissions = new TreeSet(Submission.compareBySubmissionTime);
+	private TreeSet<Submission> submissions = new TreeSet<>(Submission.compareBySubmissionTime);
 
-	public ProblemSubmissions(Problem problem) {
+	ProblemSubmissions(Problem problem) {
 		this.problem = problem;
 	}
 	
@@ -40,7 +40,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 	public int getSolutionTime() {
 		for (Submission s : submissions) {
 			if (s.isAccepted()) {
-				return s.getMinutesFromStart();
+				return s.initialSubmission.minutesFromStart;
 			}
 		}
 		return 0;
@@ -73,11 +73,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		// No cost if no solution was accepted
 		return 0;
 	}
-	
-	private Submission getLastSubmission() {
-		return submissions.last();
-	}
-	
+
 	public void add(Submission submission) {
 		assert submission.getProblem() == problem;
 		submissions.add(submission);

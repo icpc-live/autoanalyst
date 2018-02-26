@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.util.List;
 
 import model.Contest;
+import model.InitialSubmission;
 import model.Problem;
 import model.Submission;
 
@@ -28,7 +29,8 @@ public class SubmissionsPerProblem implements ContestChart {
 			int total = 0;
 			int accepted = 0;
 			for (Submission s : submissions) {
-				if (s.getProblem() == p && s.getMinutesFromStart()+cutoff > currentTime && s.getMinutesFromStart()<=currentTime) {
+				InitialSubmission initialSubmission = s.getInitialSubmission();
+				if (s.getProblem() == p && initialSubmission.minutesFromStart+cutoff > currentTime && initialSubmission.minutesFromStart<=currentTime) {
 					if (s.isAccepted()) {
 						accepted++;
 					}

@@ -25,12 +25,12 @@ public class Team {
 		return String.format("#t%s", teamId);
 	}
 	
-	public Submission submit(InitialSubmission initialSubmission, String judgementId, Problem problem, int minutesFromStart, String judgement, Boolean accepted, Boolean penalty) {
+	public Submission submit(InitialSubmission initialSubmission, int judgementContestTime, String judgementId, Problem problem, String judgement, Boolean accepted, Boolean penalty) {
 		
 		Analyzer analyzer = contest.getAnalyzer();
 		TestCaseExecution judgeOutcome = analyzer.getFailureInfo(initialSubmission);
 		
-		Submission newSubmission = new Submission(initialSubmission, judgementId, this, minutesFromStart, problem, judgement, accepted, penalty, judgeOutcome);
+		Submission newSubmission = new Submission(initialSubmission, judgementContestTime, judgementId, this, problem, judgement, accepted, penalty, judgeOutcome);
 		contest.processSubmission(newSubmission);
 		
 		return newSubmission;

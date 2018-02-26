@@ -7,7 +7,7 @@ public class TestNotifier implements NotificationTarget {
 
 	@Override
 	public void notify(LoggableEvent event) {
-		String stringToAdd = String.format("%s %d %s", event.team.toString(), event.time, event.message.toString());
+		String stringToAdd = String.format("%s %d %s", event.team.toString(), event.contestTimeMinutes(), event.message.toString());
 		items.add(stringToAdd);
 	}
 	

@@ -11,18 +11,18 @@ public class LoggableEvent {
 	public final int id;
 	public final Team team;
 	public final Problem problem;
-	public final int time;
+	public final int contestTimeMillis;
 	public final String message;
 	public final String icatMessage;
 	public final EventImportance importance;
 	public final InitialSubmission submission;
 	public final Map<String, String> supplements;
 	
-	public LoggableEvent(Contest contest, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
+	public LoggableEvent(Contest contest, int contestTimeMillis, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = submission.getTeam();
-		this.time = submission.minutesFromStart;
+		this.contestTimeMillis = contestTimeMillis;
 		this.importance = importance;
 		this.submission = submission;
 		if (this.submission != null) {
@@ -37,17 +37,21 @@ public class LoggableEvent {
 
 	}
 	
-	public LoggableEvent(Contest contest, Team team, String message, int contestTime, EventImportance importance, Map<String,String> supplements) {
+	public LoggableEvent(Contest contest, Team team, int contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = team;
-		this.time = contestTime;
+		this.contestTimeMillis = contestTimeMillis;
 		this.message = message;
 		this.icatMessage = message;
 		this.importance = importance;
 		this.supplements = supplements;
 		this.submission = null;
 		this.problem = null;
+	}
+
+	public int contestTimeMinutes() {
+		return contestTimeMillis / 60000;
 	}
 
 	private static String replaceMarkup(String source, String tag, String replacement) {

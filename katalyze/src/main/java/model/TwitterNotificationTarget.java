@@ -27,7 +27,7 @@ public class TwitterNotificationTarget implements NotificationTarget {
 
 	@Override
 	public void notify(LoggableEvent event) {
-		if (event.time < suppressedMinutes) {
+		if (event.contestTimeMinutes() < suppressedMinutes) {
 			return;
 		}
 

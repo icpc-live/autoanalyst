@@ -78,7 +78,7 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 		if (event.team != null) {
 			eventMessage.put("team", event.team.getTeamId());
 		}
-		eventMessage.put("time", Integer.toString(event.time));
+		eventMessage.put("time", Integer.toString(event.contestTimeMinutes()));
         eventMessage.put("priority", Integer.toString(getEventImportanceNumber(event.importance)));
 		if (event.submission != null) {
 			InitialSubmission submission = event.submission;

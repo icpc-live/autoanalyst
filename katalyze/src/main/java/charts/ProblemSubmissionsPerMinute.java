@@ -27,7 +27,7 @@ public class ProblemSubmissionsPerMinute extends ContestTimeGraph {
         	int accepted = 0;
         	
         	for (Submission s : submissions) {
-        		if (s.getMinutesFromStart() == time) {
+        		if (s.getInitialSubmission().minutesFromStart == time) {
         			total++;
         			if (s.isAccepted()) {
         				accepted++;

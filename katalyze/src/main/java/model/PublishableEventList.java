@@ -55,7 +55,7 @@ public class PublishableEventList {
 	private JSONObject getJsonObject(LoggableEvent event) {
 		JSONObject eventInfo = new JSONObject()
 		.element("id", Integer.toString(event.id))
-		.element("time", Integer.toString(event.time))
+		.element("time", Integer.toString(event.contestTimeMinutes()))
 		.element("message", event.message)
 		.element("importance", event.importance.ordinal());
 

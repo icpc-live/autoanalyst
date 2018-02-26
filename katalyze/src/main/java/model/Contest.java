@@ -72,7 +72,7 @@ public class Contest {
 	public int getSubmissionsAtTime(int minutes) {
 		int count = 0;
 		for (Submission s : submissions) {
-			if (s.getMinutesFromStart()>minutes) {
+			if (s.getInitialSubmission().minutesFromStart>minutes) {
 				break;
 			}
 			count++;
@@ -101,7 +101,7 @@ public class Contest {
 		Standings after = getStandings();
 
 		analyzer.processRules(before, after, newSubmission);
-		analyzer.notifyHooks(newSubmission.minutesFromStart);
+		analyzer.notifyHooks(newSubmission.getJudgementTimeMillis()/60000);
 	}
 	
 	public void addProblem(Problem newProblem) {

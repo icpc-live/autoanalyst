@@ -12,7 +12,6 @@ public class JsonEvent {
     private String id;
     private String type;
     private String op;
-    private String time;
     private JSONObject data;
     private static TimeConverter converter = new TimeConverter();
 
@@ -21,7 +20,6 @@ public class JsonEvent {
         target.id = src.getString("id");
         target.type = src.getString("type");
         target.op = src.getString("op");
-        target.time = src.getString("time");
         target.data =src.getJSONObject("data");
 
         if (target.data == null || target.data.isNullObject()) {
@@ -43,8 +41,6 @@ public class JsonEvent {
         return data.getBoolean(key);
     }
 
-
-
     public long getTimespan(String key) {
         String timeString = data.getString(key);
         return converter.parseContestTimeMillis(timeString);
@@ -60,10 +56,6 @@ public class JsonEvent {
 
     public String getOp() {
         return op;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public String toString() {

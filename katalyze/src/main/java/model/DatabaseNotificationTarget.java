@@ -26,7 +26,7 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 			
 	@Override
 	public void notify(LoggableEvent event) {
-		if (event.time < suppressedMinutes) {
+		if (event.contestTimeMinutes() < suppressedMinutes) {
 			logger.info("skipping message (due to restart): " + event.icatMessage);
 			return;
 		}
@@ -42,7 +42,7 @@ public class DatabaseNotificationTarget implements NotificationTarget {
 		try {
 			PreparedStatement s;
 			s = conn.prepareStatement("insert into entries (contest_time, user, text, priority, submission_id) values (?, ?, ?, ?, ?)");
-			s.setInt(1, event.time);
+			s.setInt(1, event.contestTimeMinutes());
 			s.setString(2, "katalyzer");
 			s.setString(3, event.icatMessage);
 			s.setInt(4, event.importance.ordinal());

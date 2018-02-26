@@ -14,7 +14,7 @@ public class StandingsAtSubmission {
 	}
 	
 	public LoggableEvent createEvent(String message, EventImportance importance) {
-		return analyzer.createEvent(submission, message, importance);
+		return analyzer.createEvent(submission, submission.contestTimeMilliseconds, message, importance);
 	}
 	
 	

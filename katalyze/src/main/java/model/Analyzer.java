@@ -70,8 +70,8 @@ public class Analyzer implements NotificationTarget {
         LoggableEvent newEvent = new LoggableEvent(
 				contest,
 				firstTeam,
+				msg.contestTime*60000,
 				message,
-				msg.contestTime,
 				importance, supplements);
 
 		return newEvent;
@@ -153,12 +153,12 @@ public class Analyzer implements NotificationTarget {
 	}
 	
 	
-	public LoggableEvent createEvent(InitialSubmission submission, String message, EventImportance importance) {
-		return new LoggableEvent(contest, message, importance, submission, null);		
+	public LoggableEvent createEvent(InitialSubmission submission, int contestTimeMillis, String message, EventImportance importance) {
+		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, null);
 	}
 	
-	public LoggableEvent createEvent(InitialSubmission submission, String message, EventImportance importance, Map<String,String> supplements) {
-		return new LoggableEvent(contest, message, importance, submission, supplements);
+	public LoggableEvent createEvent(InitialSubmission submission, int contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
+		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, supplements);
 	}
 	
 

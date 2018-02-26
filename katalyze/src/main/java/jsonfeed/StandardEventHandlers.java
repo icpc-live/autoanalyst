@@ -40,8 +40,9 @@ public class StandardEventHandlers {
             Problem problem = contest.getProblem(problemId);
             Team team = contest.getTeam(teamId);
 
-            int contestTime = (int) (src.getTimespan("contest_time") / 60000);
-            team.freshSubmission(new InitialSubmission(submissionId, contestTime, team, problem, src.getString("language_id")));
+            int contestTimeMilliseconds = (int) (src.getTimespan("contest_time"));
+            team.freshSubmission(new InitialSubmission(submissionId, team, problem, src.getString("language_id"),
+                    contestTimeMilliseconds));
         });
         handlers.put("judgements", (contest, src) -> {
 
@@ -63,9 +64,9 @@ public class StandardEventHandlers {
                 if (submission == null) {
                     log.error(String.format("Lost judgement '%s' due to missing submission %s", judgementId, submissionId));
                 } else {
-                    int contestTime = submission.minutesFromStart;
+                    int judgementContestTime = (int) (src.getTimespan("end_contest_time"));
                     // Only submit if there is a verdict.
-                    submission.team.submit(submission, judgementId, submission.problem, contestTime, verdict.getId(), verdict.isAccepted(), verdict.hasPenalty());
+                    submission.team.submit(submission, judgementContestTime, judgementId, submission.problem, verdict.getId(), verdict.isAccepted(), verdict.hasPenalty());
                 }
             }
 

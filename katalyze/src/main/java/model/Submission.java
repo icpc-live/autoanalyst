@@ -9,18 +9,18 @@ public class Submission {
 	final InitialSubmission initialSubmission;
 	final String judgementId;
 	final Team team;
-	final int minutesFromStart;
+	final int judgementTimeMillis;
 	final boolean accepted;
 	final boolean penalty;
 	final String outcome;
 	final Problem problem;
 	final TestCaseExecution failingCase;
 
-	public Submission(InitialSubmission initialSubmission, String judgementId, Team team, int minutesFromStart, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
+	public Submission(InitialSubmission initialSubmission, int judgementTimeMillis, String judgementId, Team team, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
 		this.initialSubmission = initialSubmission;
 		this.judgementId = judgementId;
 		this.team = team;
-		this.minutesFromStart = minutesFromStart;
+		this.judgementTimeMillis = judgementTimeMillis;
 		this.accepted = accepted;
 		this.penalty = penalty;
 		this.outcome = outcome;
@@ -28,7 +28,9 @@ public class Submission {
         this.failingCase = failingCase;
 	}
 
-	public static final Comparator<Submission> compareBySubmissionTime = (o1, o2) -> Integer.compare(o1.minutesFromStart, o2.minutesFromStart);
+	public static final Comparator<Submission> compareBySubmissionTime = (o1, o2) -> Integer.compare(
+			o1.initialSubmission.contestTimeMilliseconds,
+			o2.initialSubmission.contestTimeMilliseconds);
 	
 	public boolean isAccepted() {
 		return accepted;
@@ -61,8 +63,9 @@ public class Submission {
 		return team;
 	}
 
-	public int getMinutesFromStart() {
-		return minutesFromStart;
+
+	public int getJudgementTimeMillis() {
+		return judgementTimeMillis;
 	}
 	
 
@@ -72,7 +75,7 @@ public class Submission {
 	
 	public int cost() {
 		if (accepted) {
-			return minutesFromStart;
+			return initialSubmission.minutesFromStart;
 		} else {
 			if (penalty) {
 				return CostOfFailedSubmission;
@@ -82,8 +85,5 @@ public class Submission {
 		}
 	}
 	
-	public boolean isNotOlderThan(Submission other) {
-		return (minutesFromStart >= other.minutesFromStart);
-	}
-	
+
 }

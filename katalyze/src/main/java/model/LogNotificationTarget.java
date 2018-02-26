@@ -18,7 +18,7 @@ public class LogNotificationTarget implements NotificationTarget {
 		InitialSubmission submission = event.submission;
 		String submissionId = (submission != null) ? submission.id : "-";
 
-		String fullMessage = String.format("[%d][%s] %s", event.time, submissionId, messageText);
+		String fullMessage = String.format("[%d][%s] %s", event.contestTimeMinutes(), submissionId, messageText);
 		if (event.importance.ordinal() <= EventImportance.Normal.ordinal()) {
 			logger.info(fullMessage);
 		} else {

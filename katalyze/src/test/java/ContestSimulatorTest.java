@@ -31,19 +31,24 @@ public abstract class ContestSimulatorTest {
 	public static void Accepted(Team team, Problem problem, int minutesFromStart) {
 		String subId =Integer.toString(submissionId++);
 
-		InitialSubmission newSubmission = new InitialSubmission(subId,minutesFromStart, team, problem, "Fortran");
+		int contestTime =  minutesFromStart*60000;
+
+		InitialSubmission newSubmission = new InitialSubmission(subId, team, problem, "Fortran", contestTime);
 		team.freshSubmission(newSubmission);
 
-		team.submit(newSubmission, subId, problem, minutesFromStart, "AC", true, false);
+		team.submit(newSubmission, contestTime, subId, problem, "AC", true, false);
 	}
 	
 	public static void WrongAnswer(Team team, Problem problem, int minutesFromStart) {
 		String subId =Integer.toString(submissionId++);
-		InitialSubmission newSubmission = new InitialSubmission(subId,minutesFromStart, team, problem, "Fortran");
+
+		int contestTime =  minutesFromStart*60000;
+
+		InitialSubmission newSubmission = new InitialSubmission(subId,team, problem, "Fortran", contestTime);
 
 		team.freshSubmission(newSubmission);
 
-		team.submit(newSubmission, subId, problem, minutesFromStart, "WA", false, true);
+		team.submit(newSubmission, contestTime, subId, problem,"WA", false, true);
 	}	
 
 }

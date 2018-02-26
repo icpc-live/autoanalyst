@@ -30,7 +30,7 @@ public class LoggableEventSerializer implements EventSerializer<LoggableEvent> {
 		innerInfo = innerInfo
                 .element("priority", event.importance.ordinal())
                 .element("text", event.message)
-                .element("contest_time", timeConverter.toContestTime(event.time*60000));
+                .element("contest_time", timeConverter.toContestTime(event.contestTimeMillis));
 
 
         JSONObject feedEntry = new JSONObject()

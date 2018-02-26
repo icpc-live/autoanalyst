@@ -20,7 +20,8 @@ public class StandingsTransition {
 	}
 	
 	public LoggableEvent createEvent(String message, EventImportance importance) {
-		return analyzer.createEvent(submission.getInitialSubmission(), message, importance);
+		return analyzer.createEvent(submission.getInitialSubmission(), submission.getJudgementTimeMillis(),
+				message, importance);
 	}
 	
 	

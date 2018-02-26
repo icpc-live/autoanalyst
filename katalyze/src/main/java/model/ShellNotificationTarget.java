@@ -23,7 +23,7 @@ public class ShellNotificationTarget implements NotificationTarget {
 	
 	@Override
 	public void notify(LoggableEvent event) {
-		if (event.time < suppressedMinutes) {
+		if (event.contestTimeMinutes() < suppressedMinutes) {
 			return;
 		}
 		
@@ -62,7 +62,7 @@ public class ShellNotificationTarget implements NotificationTarget {
 			output = output.replace("{teamName}", escape(event.team.getName()));
 		}
 		
-		output = output.replace("{time}", Integer.toString(event.time));
+		output = output.replace("{time}", Integer.toString(event.contestTimeMinutes()));
 		if (event.supplements != null) {
 			for (String key : event.supplements.keySet()) {
 				String value = event.supplements.get(key);

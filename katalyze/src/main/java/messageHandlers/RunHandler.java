@@ -33,15 +33,15 @@ public class RunHandler extends SingleMessageHandler {
 			return;
 		}
 		
-		InitialSubmission newSubmission = new InitialSubmission(submissionId, minutesFromStart, team, problem, language);
+		InitialSubmission newSubmission = new InitialSubmission(submissionId, team, problem, language,minutesFromStart * 60000);
 		
 		team.freshSubmission(newSubmission);
 	}
 	
 	private void processFinalizedSubmission(SimpleMessage message) {
 		double secondsFromStart = message.getDouble("time");
+		int millisFromStart = (int) (secondsFromStart * 1000);
 		
-		int minutesFromStart = (int) (secondsFromStart / 60.0);
 		String submissionId = message.get("id");
 		String problemId = message.get("problem");
 		String judgement = message.get("result");
@@ -63,7 +63,7 @@ public class RunHandler extends SingleMessageHandler {
 		
 		if (isJudged) {
 			InitialSubmission submission = contest.getAnalyzer().submissionById(submissionId);
-			team.submit(submission, submissionId, problem, minutesFromStart, judgement, solved, penalty);
+			team.submit(submission, millisFromStart, submissionId, problem, judgement, solved, penalty);
 		} else {
 			Log.info(String.format("%s submission of %s has been judged. Outcome is not disclosed",
 					team, problem));

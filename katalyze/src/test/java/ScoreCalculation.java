@@ -29,18 +29,18 @@ public class ScoreCalculation {
 	}
 
 	private void fail(Problem problem, int time) {
-		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
-		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "WA", false, true);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), teamA, problem, language, time*60000);
+		teamA.submit(fakeInitialSubmission, time*60000,"judgement_"+fakeInitialSubmission.id, problem,"WA", false, true);
 	}
 	
 	private void compilationError(Problem problem, int time) {
-		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
-		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "CE", false, false);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), teamA, problem, language, time*60000);
+		teamA.submit(fakeInitialSubmission, time*60000,"judgement_"+fakeInitialSubmission.id, problem,"CE", false, false);
 	}
 	
 	private void solve(Problem problem, int time) {
-		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), time, teamA, problem, language);
-		teamA.submit(fakeInitialSubmission, "judgement_"+fakeInitialSubmission.id, problem, time, "AC", true, false);
+		InitialSubmission fakeInitialSubmission = new InitialSubmission(makeSubmissionId(), teamA, problem, language, time*60000);
+		teamA.submit(fakeInitialSubmission, time*60000,"judgement_"+fakeInitialSubmission.id, problem,"AC", true, false);
 	}
 	
 	private void assertScore(int score, Problem... problems) {
