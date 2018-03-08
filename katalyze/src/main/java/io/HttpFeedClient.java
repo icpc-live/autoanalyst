@@ -1,6 +1,13 @@
 package io;
 
+import jsonfeed.ContestEntry;
 import jsonfeed.DummyTrustManager;
+import model.ContestProperties;
+import net.sf.json.JSON;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -8,24 +15,21 @@ import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.ArrayList;
 
-public class HttpFeedClient implements InputStreamProvider {
+public class HttpFeedClient {
     private static Logger log = LogManager.getLogger(HttpFeedClient.class);
 
 
     private String user = null;
     private String password = null;
     private boolean bypassCertificateErrors = false;
-    private final URL url;
-    private HttpURLConnection connection;
 
 
-    public HttpFeedClient(String url) throws MalformedURLException{
-        this.url = new URL(url);
-    }
+    public HttpFeedClient() { }
 
     public void setCredentials(String user, String password) {
         this.user = user;
@@ -39,8 +43,73 @@ public class HttpFeedClient implements InputStreamProvider {
         }
     }
 
+    public JSON getJson(String urlString) throws IOException {
+        InputStream is = getInputStream(urlString);
 
-    public InputStream getInputStream() throws IOException {
+        String jsonString = IOUtils.toString(is, "UTF-8");
+
+        JSON json = (JSON) JSONSerializer.toJSON( jsonString );
+        return json;
+    }
+
+
+    public InputStream getInputStream(String urlString) throws IOException {
+        HttpURLConnection connection = createConnection(urlString);
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new IOException("Got unexpected response code: "+Integer.toString(200));
+        }
+
+        InputStream is = connection.getInputStream();
+        return is;
+    }
+
+
+    public ArrayList<ContestEntry> probeContests(String baseUrl) throws IOException {
+        ArrayList<ContestEntry> target = new ArrayList<>();
+
+        JSON response = getJson(baseUrl);
+        if (response.isArray()) {
+            // We got an array of contests;
+            JSONArray responseArray = (JSONArray) response;
+            responseArray.forEach(src -> {
+                if (src instanceof JSONObject) {
+                    ContestProperties props = ContestProperties.fromJSON((JSONObject) src);
+                    ContestEntry newEntry = new ContestEntry(props, baseUrl+"/"+props.getId());
+                    target.add(newEntry);
+                }
+            });
+        } else {
+            // Url pointed directly at one particular contest
+            ContestProperties props = ContestProperties.fromJSON((JSONObject) response);
+            target.add(new ContestEntry(props, baseUrl));
+        }
+
+        return target;
+    }
+
+    public ContestEntry guessContest(String baseUrl) throws IOException {
+        ArrayList<ContestEntry> contests = probeContests(baseUrl);
+
+        long now = Instant.now().toEpochMilli();
+
+        ContestEntry bestMatch = null;
+        for (ContestEntry current : contests) {
+            long timeToStart = current.getStartTime() - now;
+            if (bestMatch == null
+                    || current.isActive(now)
+                    || (timeToStart > 0 && (timeToStart < bestMatch.getStartTime() - now)))  {
+                bestMatch = current;
+            }
+        }
+
+        return bestMatch;
+    }
+
+
+    private HttpURLConnection createConnection(String urlString) throws IOException {
+        URL url = new URL(urlString);
         log.info(String.format("Connecting to %s", url));
         if (bypassCertificateErrors) {
             try {
@@ -55,7 +124,7 @@ public class HttpFeedClient implements InputStreamProvider {
         }
 
 
-        connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setUseCaches(false);
 
@@ -72,13 +141,6 @@ public class HttpFeedClient implements InputStreamProvider {
 
         connection.setDoInput(true);
         connection.setRequestProperty("User-Agent", "Katalyzer");
-
-        int responseCode = connection.getResponseCode();
-        if (responseCode != 200) {
-            throw new IOException("Got unexpected response code: "+Integer.toString(200));
-        }
-
-        InputStream is = connection.getInputStream();
-        return is;
+        return connection;
     }
 }

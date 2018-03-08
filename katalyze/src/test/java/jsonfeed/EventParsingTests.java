@@ -77,6 +77,12 @@ public class EventParsingTests {
     }
 
     @Test
+    public void testIsoTimeParsing() {
+        long result = new TimeConverter().parseTimestampMillis("2018-03-07T17:00:00.000+08:00");
+        Assert.assertEquals(1520413200000L, result);
+    }
+
+    @Test
     public void testContestTimeGenerating() {
         String result = new TimeConverter().toContestTime(2*60000+46331);
         Assert.assertEquals("0:02:46.331", result);

@@ -3,6 +3,7 @@ package jsonfeed;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -15,7 +16,16 @@ public class TimeConverter {
         utc = TimeZone.getTimeZone("UTC");
         timespanFormat = new SimpleDateFormat("H:mm:ss.SSS");
         timespanFormat.setTimeZone(utc);
+
+
     }
+
+    public long parseTimestampMillis(String timeString) {
+        ZonedDateTime instant = ZonedDateTime.parse(timeString);
+        long millis = instant.toEpochSecond()*1000+(instant.getNano()/1000000);
+        return millis;
+    }
+
 
     public long parseContestTimeMillis(String timeString) {
         try {
