@@ -22,6 +22,10 @@ public class ContestEntry {
         return contest.getStartTimeMillis();
     }
 
+    public long getEndTime() {
+        return contest.getEndTimeMillis();
+    }
+
 
 
     public ContestEntry(ContestProperties contest, String url) {

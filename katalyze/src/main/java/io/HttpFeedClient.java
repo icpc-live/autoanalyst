@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -92,10 +93,16 @@ public class HttpFeedClient {
     public ContestEntry guessContest(String baseUrl) throws IOException {
         ArrayList<ContestEntry> contests = probeContests(baseUrl);
 
+        StringWriter candidates = new StringWriter();
+
         long now = Instant.now().toEpochMilli();
 
         ContestEntry bestMatch = null;
         for (ContestEntry current : contests) {
+
+            boolean isActiveNow = current.isActive(now);
+
+            candidates.write(String.format("%s [%s - %s] active:%s\n", current, current.getStartTime(), current.getEndTime(), Boolean.toString(isActiveNow)));
             long timeToStart = current.getStartTime() - now;
             if (bestMatch == null
                     || current.isActive(now)
@@ -103,6 +110,8 @@ public class HttpFeedClient {
                 bestMatch = current;
             }
         }
+
+        log.info(String.format("Contest candidates:\n%s", candidates.toString()));
 
         return bestMatch;
     }
