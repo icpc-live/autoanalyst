@@ -83,4 +83,8 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 		notify(event);
 	}
 
+	public String toString() {
+		return String.format("NewLeader (breaking <= %d, normal <= %d)", breakingPrioRanks, normalPrioRanks);
+	}
+
 }

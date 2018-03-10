@@ -17,7 +17,7 @@ public class TeamOutlook {
 		// many minutes this must be done.
 		
 		int teamSolvedProblemCount = teamScore.solvedProblemCount();
-		int timeLeft = contest.lengthInMinutes - contestTime;
+		int timeLeft = contest.getLengthInMinutes() - contestTime;
 		
 		assert teamSolvedProblemCount <= bestScore.solvedProblemCount();
 		

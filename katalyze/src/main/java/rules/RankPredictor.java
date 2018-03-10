@@ -63,5 +63,9 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		
 	}
 
+	public String toString() {
+		return String.format("Rank Predictor (rank <= %d)", rankThreshold);
+	}
+
 
 }

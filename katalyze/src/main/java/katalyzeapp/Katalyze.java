@@ -13,6 +13,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Instant;
 
 public class Katalyze {
 	
@@ -26,8 +27,11 @@ public class Katalyze {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+
+		System.setProperty("StartTime", Long.toString(Instant.now().toEpochMilli()/1000L));
 		DOMConfigurator.configure("log4j.xml");
-		logger.info("Katalyze started");
+
+		logger.info("Katalyzer started");
 
 		String fileName = null;
 		String configFileName = null;

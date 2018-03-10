@@ -13,11 +13,9 @@ public class Contest {
 	final List<Submission> submissions;
 	final List<Language> languages;
 	final LanguageStats stats;
+	private ContestProperties properties;
 	double contestTime = 0;
-	int lengthInMinutes = 300;
-	private String name;
-	private int penaltyTime = 20;
-	
+
 	public Contest() {
 		this.problems = new TreeMap<>();
 		this.judgementTypes = new HashMap<>();
@@ -26,15 +24,17 @@ public class Contest {
 		this.languages = new ArrayList<Language>();
 		this.submissions = new ArrayList<Submission>();
 		this.stats = new LanguageStats();
-		this.name = name;
-		this.penaltyTime = penaltyTime;
+		this.properties = new ContestProperties("Uninitialized Contest", 20, 3600000);
 		
 		analyzer.addRule(stats.submissionsPerLanguage);
 	}
 
-	public void init(String name, int penaltyTime) {
-		this.name = name;
-		this.penaltyTime = penaltyTime;
+	public void init(String name, int penaltyTime, long freezeMillis) {
+		this.properties = new ContestProperties(name, penaltyTime, freezeMillis);
+	}
+
+	public void init(ContestProperties properties) {
+		this.properties = properties;
 	}
 	
 	public Team registerTeam(String teamId, String teamName) {
@@ -85,7 +85,7 @@ public class Contest {
 	}
 	
 	public int getLengthInMinutes() {
-		return this.lengthInMinutes;
+		return (int) (this.properties.getDurationMillis() / 60000);
 	}
 	
 	public Analyzer getAnalyzer() {

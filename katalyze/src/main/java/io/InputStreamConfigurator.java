@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.function.Predicate;
 
 public class InputStreamConfigurator {
     private static Logger log = LogManager.getLogger(InputStreamConfigurator.class);
@@ -46,10 +47,24 @@ public class InputStreamConfigurator {
 
 
 
+    private Predicate<ContestEntry> filterByPrefix(String prefix) {
+        if (prefix == null) {
+            return x -> true;
+        } else {
+            String lowercasePrefix = prefix.toLowerCase();
+            return x -> x.getLowercaseId().startsWith(lowercasePrefix);
+        }
+    }
+
+
     public InputStreamProvider createHttpReader() throws IOException {
+        String contestIdPrefix = config.getString("CDS.contestIdPrefix");
+
+
         HttpFeedClient feedClient = createFeedClient();
 
-        ContestEntry entry = feedClient.guessContest(getApiBase());
+
+        ContestEntry entry = feedClient.guessContest(getApiBase(), filterByPrefix(contestIdPrefix));
         if (entry == null) {
             log.error(String.format("Unable to locate a contest whose feed to read at %s", getApiBase()));
             return null;

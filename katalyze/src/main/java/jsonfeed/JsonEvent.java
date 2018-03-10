@@ -58,6 +58,10 @@ public class JsonEvent {
         return op;
     }
 
+    public JSONObject getRawData() {
+        return data;
+    }
+
     public String toString() {
         return String.format("[%s:%s]", type, id);
     }

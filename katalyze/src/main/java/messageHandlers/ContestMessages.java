@@ -11,7 +11,7 @@ public class ContestMessages {
 	static Logger logger = Logger.getLogger(ContestMessages.class);
 	
 	ArrayList<MessageHandler> handlers = new ArrayList<MessageHandler>();
-	Contest contest = new Contest();
+	Contest contest;
 	boolean standardHandlersAdded = false;
 	
 	public void add(MessageHandler handler) throws Exception {

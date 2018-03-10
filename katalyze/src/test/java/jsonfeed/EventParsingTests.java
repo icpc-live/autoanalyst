@@ -73,13 +73,23 @@ public class EventParsingTests {
     public void testContestTimeParsing() {
 
         long result = new TimeConverter().parseContestTimeMillis("0:00:46.331");
-        Assert.assertEquals(46331, result);
+        Assert.assertEquals("with milliseconds", 46331, result);
+
+        long result2 = new TimeConverter().parseContestTimeMillis("0:00:46");
+        Assert.assertEquals("without milliseconds", 46000, result2);
+
+
     }
 
     @Test
     public void testIsoTimeParsing() {
         long result = new TimeConverter().parseTimestampMillis("2018-03-07T17:00:00.000+08:00");
         Assert.assertEquals(1520413200000L, result);
+
+        long result2 = new TimeConverter().parseTimestampMillis("2018-03-07T17:00:00.000+08");
+        Assert.assertEquals(1520413200000L, result2);
+
+
     }
 
     @Test

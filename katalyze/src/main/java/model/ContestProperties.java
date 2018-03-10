@@ -16,9 +16,6 @@ public class ContestProperties {
     private long durationMillis;
     private long scoreboardFreezeMillis;
     private int penaltyTime;
-    private String externalId;
-    private String shortName;
-    private long endTimeMillis;
 
     public static ContestProperties fromJSON(JSONObject src) {
         ContestProperties target = new ContestProperties();
@@ -27,14 +24,20 @@ public class ContestProperties {
         target.formalName = src.getString("formal_name");
         target.startTimeMillis = converter.parseTimestampMillis(src.getString("start_time"));
         target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));
-        target.endTimeMillis = converter.parseTimestampMillis(src.getString("end_time"));
         target.penaltyTime = src.getInt("penalty_time");
-        target.shortName = src.getString("shortname");
-        target.externalId = src.getString("external_id");
         return target;
     }
 
-    public long getPenaltyTime() {
+    private ContestProperties() {}
+
+    public ContestProperties(String name, int penaltyTime, long scoreboardFreezeMillis) {
+        this.name = name;
+        this.formalName = name;
+        this.penaltyTime = penaltyTime;
+        this.scoreboardFreezeMillis = scoreboardFreezeMillis;
+    }
+
+    public int getPenaltyTime() {
         return penaltyTime;
     }
 
@@ -43,8 +46,10 @@ public class ContestProperties {
     }
 
     public long getEndTimeMillis() {
-        return endTimeMillis;
+        return startTimeMillis+durationMillis;
     }
+
+    public long getDurationMillis() { return durationMillis; }
 
     public String getId() {
         return id;

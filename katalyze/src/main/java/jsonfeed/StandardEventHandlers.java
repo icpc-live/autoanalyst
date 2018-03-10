@@ -25,7 +25,10 @@ public class StandardEventHandlers {
     public StandardEventHandlers() {
 
         handlers.put("teams", (contest, src) -> contest.registerTeam(src.getString("id"), src.getString("name")));
-        handlers.put("contests", (contest, src)  -> contest.init(src.getString("name"), src.getInt("penalty_time")));
+        handlers.put("contests", (contest, src)  -> {
+            ContestProperties properties = ContestProperties.fromJSON(src.getRawData());
+            contest.init(properties);
+        });
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
         handlers.put("problems", (contest, src) -> contest.addProblem(
                 new Problem(src.getString("id"), src.getString("name"), src.getString("label"))));

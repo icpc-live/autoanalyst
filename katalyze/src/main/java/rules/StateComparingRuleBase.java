@@ -24,6 +24,11 @@ public abstract class StateComparingRuleBase {
 			}
 		}
 	}
+
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
 	
 
 }

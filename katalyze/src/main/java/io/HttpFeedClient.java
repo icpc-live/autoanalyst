@@ -20,6 +20,8 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.function.Predicate;
 
 public class HttpFeedClient {
     private static Logger log = LogManager.getLogger(HttpFeedClient.class);
@@ -90,7 +92,7 @@ public class HttpFeedClient {
         return target;
     }
 
-    public ContestEntry guessContest(String baseUrl) throws IOException {
+    public ContestEntry guessContest(String baseUrl, Predicate<ContestEntry> filter) throws IOException {
         ArrayList<ContestEntry> contests = probeContests(baseUrl);
 
         StringWriter candidates = new StringWriter();
@@ -98,16 +100,23 @@ public class HttpFeedClient {
         long now = Instant.now().toEpochMilli();
 
         ContestEntry bestMatch = null;
+        contests.sort(Comparator.comparingLong(x -> x.getStartTime()));
+
         for (ContestEntry current : contests) {
 
             boolean isActiveNow = current.isActive(now);
+            boolean isCandidate = filter.test(current);
 
-            candidates.write(String.format("%s [%s - %s] active:%s\n", current, current.getStartTime(), current.getEndTime(), Boolean.toString(isActiveNow)));
-            long timeToStart = current.getStartTime() - now;
-            if (bestMatch == null
-                    || current.isActive(now)
-                    || (timeToStart > 0 && (timeToStart < bestMatch.getStartTime() - now)))  {
-                bestMatch = current;
+            candidates.write(String.format("%s [%s - %s] active:%s isCandidate:%s\n", current, current.getStartTime(),
+                    current.getEndTime(), Boolean.toString(isActiveNow), Boolean.toString(isCandidate)));
+
+            if (isCandidate) {
+                long timeToStart = current.getStartTime() - now;
+                if (bestMatch == null
+                        || current.isActiveWithinAnHour(now)
+                        || (timeToStart < 0 && (current.getStartTime() > bestMatch.getStartTime()))) {
+                    bestMatch = current;
+                }
             }
         }
 
