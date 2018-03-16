@@ -33,6 +33,8 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 			return String.format("%d problems", nProblems);
 		}
 	}
+
+
 	
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
@@ -63,7 +65,7 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 		
 		LoggableEvent event = null;
 		
-		
+
 		if (solvedProblemCount == 1) {
 			event = transition.createEvent(String.format("{team} solves its first problem: {problem}"), importance);
 		} else if (rankAfter == 1 && rankBefore == 1) {
@@ -72,10 +74,10 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 			if (rankAfter == 1) {
 				event = transition.createEvent(String.format("{team} now leads the competition after solving {problem}. It has now solved %s", solvedProblemsText),  importance);
 			} else {
-				event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s and is at rank %d (%d)", solvedProblemsText, rankAfter, rankBefore), importance);
+				event = transition.createEvent(String.format("{team} solves {problem}. It has solved %s and is %s", solvedProblemsText, rankString(rankAfter, rankBefore)), importance);
 			}
 		} else if (rankAfter == rankBefore) {
-			event = transition.createEvent(String.format("{team} solves {problem}. It has now solved %s, but is still at rank %d", solvedProblemsText, rankAfter), importance);
+			event = transition.createEvent(String.format("{team} solves {problem}. It is %s and has %s solved", rankString(rankAfter, rankBefore), solvedProblemsText), importance);
 		} else {
 			assert rankAfter <= rankBefore;
 		}
