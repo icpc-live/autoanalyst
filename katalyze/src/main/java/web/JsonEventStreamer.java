@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -45,7 +47,7 @@ public class JsonEventStreamer<T> implements WebHandler {
         exchange.sendResponseHeaders(200, 0);
 
         OutputStream responseBody = exchange.getResponseBody();
-        Writer writer = new OutputStreamWriter(responseBody);
+        Writer writer = new OutputStreamWriter(responseBody, StandardCharsets.UTF_8);
 
         Iterator<LoggableEvent> iterator = entries.iterator();
         boolean eof = false;
