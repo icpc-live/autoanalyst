@@ -20,7 +20,7 @@ public abstract class ContestSimulatorTest {
 		}
 		
 		for (int i=0; i<nTeams; i++) {
-			contest.registerTeam(Integer.toString(i), String.format("Team %d", i));
+			contest.registerTeam(Integer.toString(i), String.format("Team %d", i), null);
 		}
 		
 		teams = contest.getTeams();

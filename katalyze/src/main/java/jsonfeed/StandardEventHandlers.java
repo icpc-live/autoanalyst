@@ -24,12 +24,21 @@ public class StandardEventHandlers {
 
     public StandardEventHandlers() {
 
-        handlers.put("teams", (contest, src) -> contest.registerTeam(src.getString("id"), src.getString("name")));
+        handlers.put("teams", (contest, src) -> {
+            String organizationId = src.getString("organization_id");
+            Organization org = (organizationId != null) ? (contest.getOrganization(organizationId)) : null;
+            contest.registerTeam(src.getString("id"), src.getString("name"), org);
+        });
         handlers.put("contests", (contest, src)  -> {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());
             contest.init(properties);
         });
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
+        handlers.put("organizations", (contest,src) -> {
+            contest.addOrganization(
+                    new Organization(src.getString("id"), src.getString("name"), src.getStringOrNull("twitter_hashtag"))
+            );
+        });
         handlers.put("problems", (contest, src) -> contest.addProblem(
                 new Problem(src.getString("id"), src.getString("name"), src.getString("label"))));
         handlers.put("judgement-types", (contest, src) -> {

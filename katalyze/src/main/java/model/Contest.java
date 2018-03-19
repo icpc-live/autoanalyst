@@ -8,6 +8,7 @@ import java.util.*;
 public class Contest {
 	final Map<String, Problem> problems;
 	final Map<String, JudgementType> judgementTypes;
+	final EntityMap<Organization> organizations = new EntityMap<>();
 	final List<Team> teams;
 	final Analyzer analyzer;
 	final List<Submission> submissions;
@@ -37,8 +38,8 @@ public class Contest {
 		this.properties = properties;
 	}
 	
-	public Team registerTeam(String teamId, String teamName) {
-		Team newTeam = new Team(this,teamId, teamName, teamName);
+	public Team registerTeam(String teamId, String teamName, Organization org) {
+		Team newTeam = new Team(this,teamId, teamName, teamName, org);
 		teams.add(newTeam);
 		return newTeam;
 	}
@@ -123,6 +124,15 @@ public class Contest {
 
 	public Collection<Problem> getProblems() {
 		return problems.values();
+	}
+
+
+	public void addOrganization(Organization newOrganization) {
+		this.organizations.add(newOrganization);
+	}
+
+	public Organization getOrganization(String id) {
+		return organizations.get(id);
 	}
 
 	public void addTeam(Team newTeam) {

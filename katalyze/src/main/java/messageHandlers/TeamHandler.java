@@ -27,7 +27,7 @@ public class TeamHandler extends SingleMessageHandler {
 		if (StringUtils.isEmpty(shortName)) {
 			shortName = teamName;
 		}
-		Team newTeam = new Team(contest, teamNumber, teamName, shortName);
+		Team newTeam = new Team(contest, teamNumber, teamName, shortName, null);
 		contest.addTeam(newTeam);
 	}
 

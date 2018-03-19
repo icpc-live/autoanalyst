@@ -6,14 +6,16 @@ public class Team {
 	private final TeamProgress progress;
 	private final Contest contest;
 	private final String shortName;
+	private final Organization organization;
 
 
-	public Team(Contest contest, String teamId, String name, String shortName) {
+	public Team(Contest contest, String teamId, String name, String shortName, Organization organization) {
 		this.contest = contest;
 		this.teamId = teamId;
 		this.name = name;
 		this.shortName = shortName;
 		this.progress = new TeamProgress(this);
+		this.organization = organization;
 	}
 	
 	public String getTeamId() {
@@ -69,4 +71,6 @@ public class Team {
 	public String getShortName() {
 		return this.shortName;
 	}
+
+	public Organization getOrganization() { return this.organization; }
 }

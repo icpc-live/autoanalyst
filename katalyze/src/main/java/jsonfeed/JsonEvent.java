@@ -33,6 +33,10 @@ public class JsonEvent {
         return data.getString(key);
     }
 
+    public String getStringOrNull(String key) {
+        return data.has(key) ? data.getString(key) : null;
+    }
+
     public int getInt(String key) {
         return data.getInt(key);
     }
