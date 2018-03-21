@@ -92,13 +92,14 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 		Organization org = team.getOrganization();
 		if (op == EntityOperation.CREATE) {
 			PreparedStatement s;
-			s = conn.prepareStatement("insert into teams (team_id, team_name, institution_id, school_name, school_short, country) values (?,?,?,?,?,?)");
+			s = conn.prepareStatement("insert into teams (id, team_id, team_name, institution_id, school_name, school_short, country) values (?,?,?,?,?,?,?)");
 			s.setString(1, team.getId());
-			s.setString(2, team.getName());
-			s.setString(3, org.getId());
-			s.setString(4, org.getFullName());
-			s.setString(5, org.getDisplayName());
-			s.setString(6, org.getCountry());
+			s.setString(2, team.getId());
+			s.setString(3, team.getName());
+			s.setString(4, org.getId());
+			s.setString(5, org.getFullName());
+			s.setString(6, org.getDisplayName());
+			s.setString(7, org.getCountry());
 			s.executeUpdate();
 		}
 	}
