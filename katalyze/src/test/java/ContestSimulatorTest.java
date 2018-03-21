@@ -15,7 +15,7 @@ public abstract class ContestSimulatorTest {
 		
 		contest = new Contest();
 		for (int i=0; i<nProblems; i++) {
-			Problem p = new Problem(Integer.toString(i+1), String.format("Problem %n", i), String.format("P%n",i));
+			Problem p = new Problem(Integer.toString(i+1), String.format("Problem %n", i), String.format("P%n",i), null);
 			contest.addProblem(p);
 		}
 		

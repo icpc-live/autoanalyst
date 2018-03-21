@@ -53,12 +53,12 @@ public class ShellNotificationTarget implements NotificationTarget {
 		String output = template;
 		
 		if (event.team != null) {
-			output = output.replace("{teamId}", event.team.getTeamId());
+			output = output.replace("{teamId}", event.team.getId());
 		}
 		
 		if (event.submission != null) {
 			output = output.replace("{runId}", event.submission.id);
-			output = output.replace("{problemLetter}", event.submission.problem.getLetter());
+			output = output.replace("{problemLetter}", event.submission.problem.getLabel());
 			output = output.replace("{teamName}", escape(event.team.getName()));
 		}
 		

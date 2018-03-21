@@ -27,7 +27,7 @@ public class ProblemHandler extends SingleMessageHandler {
 
 		String problemName = message.get("name").trim();
 	    logger.info("addProblem(" + message.get("id") + ", " + id + ", " + abbrev + ", " + problemName + ")");
-	    Problem newProblem = new Problem(id, problemName, abbrev);
+	    Problem newProblem = new Problem(id, problemName, abbrev, null);
 		contest.addProblem(newProblem);
 	}
 

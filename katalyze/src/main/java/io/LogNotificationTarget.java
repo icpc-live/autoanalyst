@@ -1,5 +1,9 @@
-package model;
+package io;
 
+import model.EventImportance;
+import model.InitialSubmission;
+import model.LoggableEvent;
+import model.NotificationTarget;
 import org.apache.log4j.Logger;
 
 public class LogNotificationTarget implements NotificationTarget {

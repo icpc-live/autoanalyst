@@ -84,7 +84,7 @@ public class YAMLConfiguration extends AbstractHierarchicalFileConfiguration
     {
         super(c);
         clearReferences(getRootNode());
-        //setRootElementName(getRootNode().getName());
+        //setRootElementName(getRootNode().getNameAndLabel());
         setLogger(LogFactory.getLog(YAMLConfiguration.class));
     }
 

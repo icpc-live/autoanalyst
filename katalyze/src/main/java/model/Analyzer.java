@@ -1,7 +1,7 @@
 package model;
 
+import io.EntityOperation;
 import rules.*;
-import model.StandingsPublisher;
 import icat.AnalystMessage;
 import icat.AnalystMessageSource;
 
@@ -10,12 +10,13 @@ import java.util.*;
 import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 
-public class Analyzer implements NotificationTarget {
+public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	final Contest contest;
 	static Logger logger = Logger.getLogger(Analyzer.class);
-	List<StandingsUpdatedEvent> stateRules = new ArrayList<StandingsUpdatedEvent>();
-	List<SolutionSubmittedEvent> submissionRules = new ArrayList<SolutionSubmittedEvent>();
+	List<StandingsUpdatedEvent> stateRules = new ArrayList<>();
+	List<SolutionSubmittedEvent> submissionRules = new ArrayList<>();
+	List<EntityChangedHandler> entityChangedHandlers = new ArrayList<>();
 	AnalystMessageSource analystMsgSource = null;
 	
 	List<NotificationTarget> targets = new ArrayList<NotificationTarget>();
@@ -56,7 +57,7 @@ public class Analyzer implements NotificationTarget {
 		for (String problemTag : problemsInMessage) {
 			Problem problem = hashtagFinder.getProblem(contest, problemTag);
 			if (problem != null) {
-				message = message.replace(problemTag, problem.getName());
+				message = message.replace(problemTag, problem.getNameAndLabel());
 			}
 		}
 
@@ -115,6 +116,10 @@ public class Analyzer implements NotificationTarget {
 	
 	public void setAnalystMsgSource(AnalystMessageSource newSource) {
 		this.analystMsgSource = newSource;
+	}
+
+	public void addEntityChangedHandler(EntityChangedHandler handler) {
+		this.entityChangedHandlers.add(handler);
 	}
 	
 	public void addNotifier(NotificationTarget newNotifier) {
@@ -226,8 +231,20 @@ public class Analyzer implements NotificationTarget {
 	public List<OutputHook> getOutputHooks() {
 		return new ArrayList<OutputHook>(outputHooks);
 	}
-	
 
+
+	@Override
+	public void entityChanged(ApiEntity entity, EntityOperation op) {
+		for (EntityChangedHandler handler : entityChangedHandlers) {
+			try {
+				handler.entityChanged(entity, op);
+			}
+			catch (Exception e) {
+				logger.warn(String.format("Entity changed handler %s failed for entity %s, operation %s: %s", handler, entity, op.toString(), e));
+			}
+		}
+
+	}
 }
 
 	

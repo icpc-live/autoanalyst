@@ -76,7 +76,7 @@ public class PassthroughHandler implements MessageHandler, NotificationTarget {
 		SimpleMessage eventMessage = new SimpleMessage("analystmsg");
 		eventMessage.put("id", Integer.toString(event.id));
 		if (event.team != null) {
-			eventMessage.put("team", event.team.getTeamId());
+			eventMessage.put("team", event.team.getId());
 		}
 		eventMessage.put("time", Integer.toString(event.contestTimeMinutes()));
         eventMessage.put("priority", Integer.toString(getEventImportanceNumber(event.importance)));

@@ -2,15 +2,11 @@ package model;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import web.EventSerializer;
 import web.EventVector;
 import web.Publisher;
 import web.StaticWebDocument;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PublishableEventList {
 
@@ -60,7 +56,7 @@ public class PublishableEventList {
 		.element("importance", event.importance.ordinal());
 
 		if (event.team != null) {
-			eventInfo =  eventInfo.element("team", event.team.getTeamId());
+			eventInfo =  eventInfo.element("team", event.team.getId());
 		}
 
 		if (event.submission != null) {

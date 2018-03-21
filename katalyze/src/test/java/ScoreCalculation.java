@@ -15,8 +15,8 @@ public class ScoreCalculation {
 	String language = "java";
 	
 	@Before public void Setup() {
-		problemA = new Problem("1", "Problem A", "A");
-		problemB = new Problem("2", "Problem B", "B");
+		problemA = new Problem("1", "Problem A", "A", "#FF0000");
+		problemB = new Problem("2", "Problem B", "B", "#0000FF");
 
 		contest = new Contest();
 		contest.addProblem(problemA);

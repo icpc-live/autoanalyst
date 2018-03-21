@@ -5,6 +5,9 @@ import clics.ExtendedScoreDump;
 import config.TwitterConfig;
 import config.YAMLConfiguration;
 import icat.AnalystMessageSource;
+import io.DatabaseNotificationTarget;
+import io.TwitterNotificationTarget;
+import io.WebNotificationTarget;
 import legacyfeed.EventFeedFile;
 import messageHandlers.ContestMessages;
 import messageHandlers.PassthroughHandler;
@@ -72,10 +75,12 @@ public class ConfigReader {
 			if (config.getBoolean("katalyzer.db.exportMessages",true)) {
 				DatabaseNotificationTarget notifier = new DatabaseNotificationTarget(dbConfig);
 				notifier.suppressUntil(config.getInt("katalyzer.notifications.suppressUntil", 0));
-			
-				StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
+
 				analyzer.addNotifier(notifier);
-				analyzer.addRule(rule);				
+				analyzer.addEntityChangedHandler(notifier);
+
+				StandingsUpdatedEvent rule = new AllSubmissions(dbConfig);
+				analyzer.addRule(rule);
 			}
 			
 			AnalystMessageSource msgSource = new AnalystMessageSource(dbConfig);

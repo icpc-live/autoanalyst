@@ -1,11 +1,12 @@
 package model;
 
-public class Problem {
+public class Problem implements ApiEntity {
 	final String id;
 	final String abbreviation;
 	final String name;
+	final String color;
 	
-	public Problem(String id, String name, String label) {
+	public Problem(String id, String name, String label, String color) {
 		this.id = id;
 		if (label == null || label.isEmpty()) {
 			String fakeLabel;
@@ -21,6 +22,7 @@ public class Problem {
 			this.abbreviation = label;
 		}
 		this.name = name.trim();
+		this.color = color;
 	}
 	
 	@Override
@@ -32,11 +34,17 @@ public class Problem {
 		return id;
 	}
 	
-	public String getLetter() {
+	public String getLabel() {
 		return abbreviation;
 	}
 
-	public String getName() {
+	public String getColor() {
+		return color;
+	}
+
+	public String getName() { return name; }
+
+	public String getNameAndLabel() {
 		String prefix = abbreviation + " - ";
 		if (name.startsWith(prefix)) {
 			return name;

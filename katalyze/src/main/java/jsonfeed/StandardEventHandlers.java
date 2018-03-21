@@ -36,11 +36,11 @@ public class StandardEventHandlers {
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
         handlers.put("organizations", (contest,src) -> {
             contest.addOrganization(
-                    new Organization(src.getString("id"), src.getString("name"), src.getStringOrNull("twitter_hashtag"))
+                    new Organization(src.getString("id"), src.getString("name"), src.getStringOrNull("formal_name"), src.getStringOrNull("country"), src.getStringOrNull("twitter_hashtag"))
             );
         });
         handlers.put("problems", (contest, src) -> contest.addProblem(
-                new Problem(src.getString("id"), src.getString("name"), src.getString("label"))));
+                new Problem(src.getString("id"), src.getString("name"), src.getString("label"), src.getStringOrNull("rgb"))));
         handlers.put("judgement-types", (contest, src) -> {
             JudgementType newJudgementType = new JudgementType(src.getString("id"), src.getBoolean("solved"), src.getBoolean("penalty"));
             contest.addJudgementType(newJudgementType);

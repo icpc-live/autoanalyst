@@ -23,7 +23,7 @@ public class ModelDumperHook implements OutputHook {
 		for (Problem p : contest.getProblems()) {
 			JSONObject obj = new JSONObject();
 			obj.put("problem", p.getId());
-			obj.put("name", p.getName());
+			obj.put("name", p.getNameAndLabel());
 			target.add(obj);
 		}
 		return target;

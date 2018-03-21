@@ -61,7 +61,7 @@ public class LoggableEvent {
 	
 	private String getCleartextMessage(String message) {
 		if (problem != null) {
-			message = replaceMarkup(message, "problem", problem.getName());
+			message = replaceMarkup(message, "problem", problem.getNameAndLabel());
 		}
 		if (team != null) {
 			message = replaceMarkup(message, "team", teamNameExtractor.apply(team));

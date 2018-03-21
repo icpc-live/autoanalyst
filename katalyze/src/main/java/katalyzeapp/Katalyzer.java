@@ -9,7 +9,7 @@ import jsonfeed.StandardEventHandlers;
 import messageHandlers.ContestMessages;
 import model.Analyzer;
 import model.Contest;
-import model.LogNotificationTarget;
+import io.LogNotificationTarget;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 

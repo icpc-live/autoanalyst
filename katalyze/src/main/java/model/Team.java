@@ -1,6 +1,6 @@
 package model;
 
-public class Team {
+public class Team implements ApiEntity {
 	private final String name;
 	private final String teamId;
 	private final TeamProgress progress;
@@ -17,8 +17,9 @@ public class Team {
 		this.progress = new TeamProgress(this);
 		this.organization = organization;
 	}
-	
-	public String getTeamId() {
+
+	@Override
+	public String getId() {
 		return teamId;
 	}
 	

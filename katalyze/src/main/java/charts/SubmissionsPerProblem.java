@@ -37,8 +37,8 @@ public class SubmissionsPerProblem implements ContestChart {
 					total++;
 				}
 			}
-			target.addValue(total, totalSeries, p.getLetter());
-			target.addValue(accepted, acceptedSeries, p.getLetter());
+			target.addValue(total, totalSeries, p.getLabel());
+			target.addValue(accepted, acceptedSeries, p.getLabel());
 		}
 		return target;
 	}

@@ -1,5 +1,6 @@
 package model;
 
+import io.EntityOperation;
 import stats.LanguageStats;
 
 import java.security.InvalidKeyException;
@@ -41,6 +42,7 @@ public class Contest {
 	public Team registerTeam(String teamId, String teamName, Organization org) {
 		Team newTeam = new Team(this,teamId, teamName, teamName, org);
 		teams.add(newTeam);
+		analyzer.entityChanged(newTeam, EntityOperation.CREATE);
 		return newTeam;
 	}
 	
@@ -107,6 +109,7 @@ public class Contest {
 	
 	public void addProblem(Problem newProblem) {
 		problems.put(newProblem.getId(), newProblem);
+		analyzer.entityChanged(newProblem, EntityOperation.CREATE);
 	}
 
 	public void addJudgementType(JudgementType judgementType) {
@@ -141,7 +144,7 @@ public class Contest {
 	
 	public Team getTeam(String teamNumber) throws InvalidKeyException {
 		for (Team candidate : teams) {
-			if (teamNumber.equals(candidate.getTeamId())) {
+			if (teamNumber.equals(candidate.getId())) {
 				return candidate;
 			}
 		}
@@ -158,7 +161,7 @@ public class Contest {
 
 	public Problem getProblemByAbbreviation(String abbrev) throws InvalidKeyException {
 		for (Map.Entry<String, Problem> problem : problems.entrySet()) {
-			if (abbrev.equalsIgnoreCase(problem.getValue().getLetter())) {
+			if (abbrev.equalsIgnoreCase(problem.getValue().getLabel())) {
 				return problem.getValue();
 			}
 		}

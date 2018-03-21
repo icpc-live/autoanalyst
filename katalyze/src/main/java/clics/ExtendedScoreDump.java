@@ -50,7 +50,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 			for (Problem p : contest.getProblems()) {
 				boolean isSolved = score.isSolved(p);
 				JSONObject problemInfo = new JSONObject()
-					.element("label", p.getLetter())
+					.element("label", p.getLabel())
 					.element("num_judged", score.submissionCount(p))
 // FIXME:			.element("num_pending", score.submissionCount(p))
 					.element("solved", isSolved)
@@ -77,7 +77,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			JSONObject target = new JSONObject()
 				.element("rank", standings.rankOf(team))
-				.element("team", team.getTeamId())
+				.element("team", team.getId())
 				.element("main_lang", team.getMainLanguage())
 				.element("score", new JSONObject()
 					.element("num_solved", score.getNumberOfSolvedProblems())
@@ -92,8 +92,8 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			for (Problem p : contest.getProblems()) {
 				JSONObject problemInfo = new JSONObject()
-					.element("tag", p.getLetter())
-					.element("name", p.getName());
+					.element("tag", p.getLabel())
+					.element("name", p.getNameAndLabel());
 				result.add(problemInfo);
 			}
 
@@ -164,7 +164,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 	private JSONObject teamAsJson(Team team) {
 		JSONObject target = new JSONObject();
-		target.put("id", team.getTeamId());
+		target.put("id", team.getId());
 		target.put("name", team.getName());
 
 		return target;

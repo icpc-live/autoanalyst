@@ -16,7 +16,7 @@ public class LoggableEventSerializer implements EventSerializer<LoggableEvent> {
                 .element("id", Integer.toString(event.id));
 
         if (event.team != null) {
-            innerInfo = innerInfo.element("team_id", event.team.getTeamId());
+            innerInfo = innerInfo.element("team_id", event.team.getId());
         }
 
         if (event.problem != null) {
