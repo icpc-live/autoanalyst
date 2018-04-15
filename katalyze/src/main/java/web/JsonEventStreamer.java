@@ -1,6 +1,5 @@
 package web;
 
-import jdk.nashorn.internal.runtime.logging.Loggable;
 import legacyfeed.EventFeedFile;
 
 import java.io.IOException;

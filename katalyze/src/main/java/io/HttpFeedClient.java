@@ -20,6 +20,7 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -153,7 +154,7 @@ public class HttpFeedClient {
 
         if (user != null && password != null) {
             String userPassword = user + ":" + password;
-            String encoding = new sun.misc.BASE64Encoder().encode(userPassword.getBytes());
+            String encoding = Base64.getEncoder().encodeToString(userPassword.getBytes());
             connection.setRequestProperty("Authorization", "Basic " + encoding);
         }
 
