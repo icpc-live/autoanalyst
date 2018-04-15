@@ -1,8 +1,12 @@
 package model;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.util.*;
 
 public class ProblemSubmissions implements Iterable<Submission>{
+    private static Logger log = LogManager.getLogger(ProblemSubmissions.class);
 
 	private final Problem problem;
 
@@ -74,9 +78,19 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		return 0;
 	}
 
-	public void add(Submission submission) {
-		assert submission.getProblem() == problem;
-		submissions.add(submission);
+	public void add(Submission newSubmission) {
+		assert newSubmission.getProblem() == problem;
+		String submissionId = newSubmission.initialSubmission.getId();
+
+		int countBefore = submissions.size();
+		submissions.removeIf(x -> x.initialSubmission.id.equals(submissionId));
+
+		int countAfter = submissions.size();
+		if (countAfter != countBefore) {
+		    log.info(String.format("Apparently a new judgment '%s' for submission id %s", newSubmission.judgementId,
+                    submissionId));
+        }
+		submissions.add(newSubmission);
 	}
 
 
