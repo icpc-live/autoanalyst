@@ -83,14 +83,19 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		String submissionId = newSubmission.initialSubmission.getId();
 
 		int countBefore = submissions.size();
-		submissions.removeIf(x -> x.initialSubmission.id.equals(submissionId));
+		for (Submission existingSubmission : submissions) {
+		    InitialSubmission existing = existingSubmission.initialSubmission;
 
-		int countAfter = submissions.size();
-		if (countAfter != countBefore) {
-		    log.info(String.format("Apparently a new judgment '%s' for submission id %s", newSubmission.judgementId,
-                    submissionId));
+		    if (existing != null && submissionId.equals(existing.getId())) {
+                log.info(String.format("Apparently a new judgment '%s' for submission id %s. %s -> %s", newSubmission.judgementId,
+                        submissionId, existingSubmission.outcome, newSubmission.outcome));
+                submissions.remove(existingSubmission);
+                break;
+            }
+
         }
-		submissions.add(newSubmission);
+
+        submissions.add(newSubmission);
 	}
 
 
