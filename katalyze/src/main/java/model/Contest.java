@@ -8,6 +8,8 @@ import java.util.*;
 
 public class Contest {
 	final Map<String, Problem> problems;
+	final TreeSet<Problem> problemsByLabel;
+
 	final Map<String, JudgementType> judgementTypes;
 	final EntityMap<Organization> organizations = new EntityMap<>();
 	final List<Team> teams;
@@ -20,6 +22,8 @@ public class Contest {
 
 	public Contest() {
 		this.problems = new TreeMap<>();
+		this.problemsByLabel = new TreeSet<Problem>(Comparator.comparing(x -> x.label));
+
 		this.judgementTypes = new HashMap<>();
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
@@ -109,6 +113,8 @@ public class Contest {
 	
 	public void addProblem(Problem newProblem) {
 		problems.put(newProblem.getId(), newProblem);
+		problemsByLabel.add(newProblem);
+
 		analyzer.entityChanged(newProblem, EntityOperation.CREATE);
 	}
 
@@ -126,7 +132,7 @@ public class Contest {
 	}
 
 	public Collection<Problem> getProblems() {
-		return problems.values();
+		return problemsByLabel;
 	}
 
 

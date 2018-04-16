@@ -2,7 +2,7 @@ package model;
 
 public class Problem implements ApiEntity {
 	final String id;
-	final String abbreviation;
+	final String label;
 	final String name;
 	final String color;
 	
@@ -17,9 +17,9 @@ public class Problem implements ApiEntity {
 			catch (NumberFormatException e) {
 				fakeLabel = id;
 			}
-			abbreviation = fakeLabel;
+			this.label = fakeLabel;
 		} else {
-			this.abbreviation = label;
+			this.label = label;
 		}
 		this.name = name.trim();
 		this.color = color;
@@ -27,7 +27,7 @@ public class Problem implements ApiEntity {
 	
 	@Override
 	public String toString() {
-		return String.format("#p%s", abbreviation);
+		return String.format("#p%s", label);
 	}
 
 	public String getId() {
@@ -35,7 +35,7 @@ public class Problem implements ApiEntity {
 	}
 	
 	public String getLabel() {
-		return abbreviation;
+		return label;
 	}
 
 	public String getColor() {
@@ -45,7 +45,7 @@ public class Problem implements ApiEntity {
 	public String getName() { return name; }
 
 	public String getNameAndLabel() {
-		String prefix = abbreviation + " - ";
+		String prefix = label + " - ";
 		if (name.startsWith(prefix)) {
 			return name;
 		} else {
