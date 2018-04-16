@@ -50,6 +50,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 			for (Problem p : contest.getProblems()) {
 				boolean isSolved = score.isSolved(p);
 				JSONObject problemInfo = new JSONObject()
+					.element("problem_id", p.getId())
 					.element("label", p.getLabel())
 					.element("num_judged", score.submissionCount(p))
 // FIXME:			.element("num_pending", score.submissionCount(p))
@@ -77,7 +78,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 
 			JSONObject target = new JSONObject()
 				.element("rank", standings.rankOf(team))
-				.element("team", team.getId())
+				.element("team_id", team.getId())
 				.element("main_lang", team.getMainLanguage())
 				.element("score", new JSONObject()
 					.element("num_solved", score.getNumberOfSolvedProblems())

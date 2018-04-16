@@ -206,11 +206,11 @@
 				});
 			}
 
-			var teamInfo = teams[data.team];
-			var teamName = (teamInfo) ? teamInfo.name : "Team "+data.team;
+			var teamInfo = teams[data.team_id];
+			var teamName = (teamInfo) ? teamInfo.name : "Team "+data.team_id;
 
-            var name = "<a href='team.php?team_id=" + data.team + "'>" + escapeHtml(teamName) + "</a>";
-            var padded_id = "" + data.team;
+            var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
+            var padded_id = "" + data.team_id;
             while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
             var videoLinks = "<a href='vlc://192.168.1.207/video/webcam/" + padded_id + "'>Camera</a>, " +
                              "<a href='vlc://192.168.1.207/video/desktop/" + padded_id + "'>Screen</a>";
