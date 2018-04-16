@@ -2,6 +2,7 @@ package clics;
 
 import java.util.ArrayList;
 
+import model.*;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -10,17 +11,6 @@ import org.apache.log4j.Logger;
 
 import web.StaticWebDocument;
 import web.WebPublisher;
-
-import model.Contest;
-import model.FakeScore;
-import model.OutputHook;
-import model.Problem;
-import model.Score;
-import model.ScoreTableComparer;
-import model.ScoreTableEntry;
-import model.Standings;
-import model.StandingsPublisher;
-import model.Team;
 
 public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 	static final Logger log = Logger.getLogger(ExtendedScoreDump.class);
@@ -168,6 +158,11 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		target.put("id", team.getId());
 		target.put("name", team.getName());
 
+		Organization org = team.getOrganization();
+		if (org != null) {
+            target.put("organization", org.getFullName());
+            target.put("displayname", org.getDisplayName());
+        }
 		return target;
 	}
 

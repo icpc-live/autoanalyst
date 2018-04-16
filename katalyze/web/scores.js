@@ -207,7 +207,11 @@
 			}
 
 			var teamInfo = teams[data.team_id];
-			var teamName = (teamInfo) ? teamInfo.name : "Team "+data.team_id;
+			var teamName = "Team "+data.team_id;
+
+			if (teamInfo) {
+			    teamName = (teamInfo.organization) ? teamInfo.organization : teamInfo.name
+			}
 
             var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
             var padded_id = "" + data.team_id;
