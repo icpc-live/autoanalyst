@@ -6,7 +6,7 @@ import net.sf.json.JSONObject;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-public class ContestProperties {
+public class ContestProperties implements ApiEntity {
     private final static TimeConverter converter = new TimeConverter();
 
     private String id;
@@ -22,8 +22,13 @@ public class ContestProperties {
         target.id = src.getString("id");
         target.name = src.getString("name");
         target.formalName = src.getString("formal_name");
-        target.startTimeMillis = converter.parseTimestampMillis(src.getString("start_time"));
+
+        String startTime = src.getString("start_time");
+        if (!startTime.equals("null")) {
+            target.startTimeMillis = converter.parseTimestampMillis(startTime);
+        }
         target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));
+        target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getString("scoreboard_freeze_duration"));
         target.penaltyTime = src.getInt("penalty_time");
         return target;
     }
@@ -45,11 +50,17 @@ public class ContestProperties {
         return startTimeMillis;
     }
 
+    public long getStartTimeEpochSeconds() {
+        return (startTimeMillis / 1000);
+    }
+
     public long getEndTimeMillis() {
         return startTimeMillis+durationMillis;
     }
 
     public long getDurationMillis() { return durationMillis; }
+
+    public long getScoreboardFreezeMillis() {return scoreboardFreezeMillis; }
 
     public String getId() {
         return id;

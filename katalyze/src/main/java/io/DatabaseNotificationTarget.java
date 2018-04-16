@@ -4,6 +4,7 @@ import model.*;
 import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import katalyzeapp.DatabaseNotificationConfig;
 
@@ -74,6 +75,8 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 				teamChanged((Team) entity, op);
 			} else if (entity instanceof Problem) {
 				problemChanged((Problem) entity, op);
+			} else if (entity instanceof ContestProperties) {
+				contestChanged((ContestProperties) entity, op);
 			}
 		}  catch (Exception e) {
 			String errorMessage = e.getMessage();
@@ -102,6 +105,28 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 			s.setString(7, org.getCountry());
 			s.executeUpdate();
 		}
+	}
+/*
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `contest_name` varchar(150) NOT NULL,
+  `start_time` int(11) DEFAULT NULL COMMENT 'Contest start time as Unix Epoch seconds.',
+  `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
+  `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
+*/
+
+	private void contestChanged(ContestProperties properties, EntityOperation op) throws Exception {
+
+ 		PreparedStatement s = conn.prepareStatement(
+				"replace into contests(id, contest_name, start_time, length, freeze) values (?,?,?,?,?)");
+ 		s.setInt(1,1);
+ 		s.setString(2, properties.getName());
+ 		s.setInt(3, (int) properties.getStartTimeEpochSeconds());
+ 		s.setInt(4, (int) (properties.getDurationMillis() / 1000));
+
+ 		long freezeContestTime = (properties.getDurationMillis() - properties.getScoreboardFreezeMillis());
+ 		s.setInt(5, (int) (freezeContestTime/1000));
+ 		s.executeUpdate();
+
 	}
 
 	/*

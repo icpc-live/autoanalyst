@@ -36,11 +36,13 @@ public class Contest {
 	}
 
 	public void init(String name, int penaltyTime, long freezeMillis) {
-		this.properties = new ContestProperties(name, penaltyTime, freezeMillis);
+	    init(new ContestProperties(name, penaltyTime, freezeMillis));
 	}
 
 	public void init(ContestProperties properties) {
+        EntityOperation op = (properties==null) ? EntityOperation.CREATE : EntityOperation.UPDATE;
 		this.properties = properties;
+        analyzer.entityChanged(properties, op);
 	}
 	
 	public Team registerTeam(String teamId, String teamName, Organization org) {
