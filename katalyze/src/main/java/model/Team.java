@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Team implements ApiEntity {
 	private final String name;
 	private final String teamId;
@@ -28,7 +30,7 @@ public class Team implements ApiEntity {
 		return String.format("#t%s", teamId);
 	}
 	
-	public Judgement submit(InitialSubmission initialSubmission, int judgementContestTime, String judgementId, Problem problem, String judgement, Boolean accepted, Boolean penalty) {
+	public Judgement submit(InitialSubmission initialSubmission, long judgementContestTime, String judgementId, Problem problem, String judgement, Boolean accepted, Boolean penalty) {
 		
 		Analyzer analyzer = contest.getAnalyzer();
 		TestCaseExecution judgeOutcome = analyzer.getFailureInfo(initialSubmission);
@@ -65,6 +67,10 @@ public class Team implements ApiEntity {
 		return progress.getMainLanguage();
 	}
 
+	public ArrayList<InitialSubmission> openSubmissions(Problem problem) {
+	    return progress.getOpenSubmissions(problem);
+    }
+
 	public String getName() {
 		return this.name;
 	}
@@ -73,5 +79,7 @@ public class Team implements ApiEntity {
 		return this.shortName;
 	}
 
-	public Organization getOrganization() { return this.organization; }
+	public Organization getOrganization() {
+		return organization == null ? Organization.NullObject : this.organization;
+	}
 }

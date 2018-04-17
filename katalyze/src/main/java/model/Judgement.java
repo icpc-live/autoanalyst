@@ -9,14 +9,14 @@ public class Judgement {
 	final InitialSubmission initialSubmission;
 	final String judgementId;
 	final Team team;
-	final int judgementTimeMillis;
+	final long judgementTimeMillis;
 	final boolean accepted;
 	final boolean penalty;
 	final String outcome;
 	final Problem problem;
 	final TestCaseExecution failingCase;
 
-	public Judgement(InitialSubmission initialSubmission, int judgementTimeMillis, String judgementId, Team team, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
+	public Judgement(InitialSubmission initialSubmission, long judgementTimeMillis, String judgementId, Team team, Problem problem, String outcome, boolean accepted, boolean penalty, TestCaseExecution failingCase) {
 		this.initialSubmission = initialSubmission;
 		this.judgementId = judgementId;
 		this.team = team;
@@ -28,7 +28,7 @@ public class Judgement {
         this.failingCase = failingCase;
 	}
 
-	public static final Comparator<Judgement> compareBySubmissionTime = (o1, o2) -> Integer.compare(
+	public static final Comparator<Judgement> compareBySubmissionTime = (o1, o2) -> Long.compare(
 			o1.initialSubmission.contestTimeMilliseconds,
 			o2.initialSubmission.contestTimeMilliseconds);
 	
@@ -66,7 +66,7 @@ public class Judgement {
 	}
 
 
-	public int getJudgementTimeMillis() {
+	public long getJudgementTimeMillis() {
 		return judgementTimeMillis;
 	}
 	

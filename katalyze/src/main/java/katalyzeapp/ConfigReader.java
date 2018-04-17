@@ -15,13 +15,9 @@ import model.*;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
-import rules.AllSubmissions;
-import rules.NewLeader;
-import rules.ProblemFirstSolved;
-import rules.RankPredictor;
-import rules.RejectedSubmission;
-import rules.StandingsUpdatedEvent;
-import rules.StateComparingRuleBase;
+import rules.*;
+import rules.Criteria.AllProblemsSolved;
+import rules.Criteria.AllTeamsSolvedOneProblem;
 import web.*;
 
 import java.io.File;
@@ -116,7 +112,7 @@ public class ConfigReader {
 	}
 	
 	private boolean ruleEnabled(String ruleName) {
-		return (config.getBoolean("katalyzer.rule."+ruleName+".enable", false));
+		return (config.getBoolean("katalyzer.rule."+ruleName+".enable", true));
 	}
 	
 	private boolean featureEnabled(String featureName) {
@@ -144,6 +140,8 @@ public class ConfigReader {
 		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("katalyzer.rule.newLeader.breakingRanks",4), config.getInt("katalyzer.rule.newLeader.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("katalyzer.rule.RejectedSubmission.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("katalyzer.rule.rankPredictor.ranks", 10)));
+		addRuleIfEnabled(analyzer, "allProblemsSolved", new CriterionRule(new AllProblemsSolved()));
+		addRuleIfEnabled(analyzer, "allTeamsSolvedOneProblem", new CriterionRule(new AllTeamsSolvedOneProblem()));
 	}
 	
 	private void setupCharts(Contest contest, Analyzer analyzer) {

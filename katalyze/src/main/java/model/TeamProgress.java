@@ -1,10 +1,15 @@
 package model;
 
+import org.apache.log4j.Logger;
+
 import java.util.*;
 
 public class TeamProgress {
-	private final Map<Problem, ProblemJudgements> submissions = new HashMap<Problem, ProblemJudgements>();
+    static Logger logger = Logger.getLogger(TeamProgress.class);
+
+	private final Map<Problem, ProblemJudgements> judgements = new HashMap<Problem, ProblemJudgements>();
 	private final Map<Problem,String> languages = new HashMap<Problem, String>();
+	private final Map<String, InitialSubmission> openSubmissions = new HashMap<>();
 	private final Team team;
 	private String mainLanguage = null;
 	
@@ -17,24 +22,24 @@ public class TeamProgress {
 		
 		int timeIncludingPenalty = 0;
 		
-		for (Problem p : submissions.keySet()) {
-			ProblemJudgements submissionsForProblem = submissions.get(p);
+		for (Problem p : judgements.keySet()) {
+			ProblemJudgements submissionsForProblem = judgements.get(p);
 			if (submissionsForProblem.isSolved()) {
 				solvedProblems.add(p);				
 				timeIncludingPenalty += submissionsForProblem.scoreContribution();
 			}
 		}
 		
-		return new Score(team, timeIncludingPenalty, solvedProblems, submissions);
+		return new Score(team, timeIncludingPenalty, solvedProblems, judgements);
 	}
 	
-	private ProblemJudgements getSubmissionsFor(Problem problem) {
+	private ProblemJudgements getJudgementsFor(Problem problem) {
 		
-		if (submissions.containsKey(problem)) {
-			return submissions.get(problem);
+		if (judgements.containsKey(problem)) {
+			return judgements.get(problem);
 		} else {
 			ProblemJudgements submissionsForProblem = new ProblemJudgements(problem);
-			submissions.put(problem, submissionsForProblem);
+			judgements.put(problem, submissionsForProblem);
 			return submissionsForProblem;
 		}
 	}
@@ -83,14 +88,30 @@ public class TeamProgress {
 	public void registerInitialSubmission(InitialSubmission initialSubmission) {
 		languages.put(initialSubmission.getProblem(), initialSubmission.language);
 		mainLanguage = calculateMainLanguage();
+		openSubmissions.put(initialSubmission.id, initialSubmission);
 	}
 
 
-	public boolean register(Judgement newSubmission) {
-		ProblemJudgements submissions = getSubmissionsFor(newSubmission.getProblem());
-		return submissions.add(newSubmission);
+	public boolean register(Judgement newJudgement) {
+		InitialSubmission submission = openSubmissions.remove(newJudgement.initialSubmission.id);
+		if (submission == null) {
+			logger.debug(String.format("Judgement %s registered for team %s although submission was already judged",
+                    newJudgement.getJudgementId(), TeamNameAsOrganization.instance.apply(team)));
+		}
+		ProblemJudgements judgementsForProblem = getJudgementsFor(newJudgement.getProblem());
+		return judgementsForProblem.add(newJudgement);
 	}
-	
+
+	public ArrayList<InitialSubmission> getOpenSubmissions(Problem problem) {
+	    ArrayList<InitialSubmission> matches = new ArrayList<>();
+	    openSubmissions.forEach((id, submission) -> {
+	        if (submission.problem == problem) {
+	            matches.add(submission);
+            }
+        });
+	    return matches;
+
+    }
 	
 
 }

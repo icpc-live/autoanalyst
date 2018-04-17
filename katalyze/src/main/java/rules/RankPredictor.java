@@ -11,6 +11,9 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 	
 	final private int rankThreshold;
 
+
+
+
 	public RankPredictor(int rankThreshold) {
 		this.rankThreshold = rankThreshold;
 	}
@@ -26,7 +29,13 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		}
 		
 		Team team = submission.team;
-		
+		ArrayList<InitialSubmission> submissionsForProblem = team.openSubmissions(submission.problem);
+		if (submissionsForProblem.size()>1) {
+		    logger.info(String.format("Skipping rank prediction for team %s as it has %d outstanding submissions on problem %s",
+                    TeamNameAsOrganization.instance.apply(team), submissionsForProblem.size(), submission.getProblem().getLabel()));
+		     return;
+        }
+
 		Score teamScore = standingsBefore.scoreOf(team);
 		if (teamScore.isSolved(submission.getProblem())) {
 			String message = "Despite already having solved it, {team} submitted a solution for {problem}";

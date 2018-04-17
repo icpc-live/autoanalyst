@@ -160,11 +160,11 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	}
 	
 	
-	public LoggableEvent createEvent(InitialSubmission submission, int contestTimeMillis, String message, EventImportance importance) {
+	public LoggableEvent createEvent(InitialSubmission submission, long contestTimeMillis, String message, EventImportance importance) {
 		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, null);
 	}
 	
-	public LoggableEvent createEvent(InitialSubmission submission, int contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
+	public LoggableEvent createEvent(InitialSubmission submission, long contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
 		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, supplements);
 	}
 	
@@ -192,7 +192,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				rule.onSolutionSubmitted(standings);
 			}
 			catch (Exception e) {
-				logger.error(String.format("Error %s while processing rule %s for judgement %d", e, rule, submission));
+				logger.error(String.format("Error %s while processing rule %s for judgement %s", e, rule, submission));
 			}
 		}
 		notifyHooks(submission.minutesFromStart);

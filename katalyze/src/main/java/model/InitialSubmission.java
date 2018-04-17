@@ -4,13 +4,13 @@ public class InitialSubmission {
 	public final String id;
 	public final Team team;
 	public final Problem problem;
-	public final int contestTimeMilliseconds;
+	public final long contestTimeMilliseconds;
 	public final int minutesFromStart;
 	public final String language;
 	
-	public InitialSubmission(String id, Team team, Problem problem, String language, int contestTimeMilliseconds) {
+	public InitialSubmission(String id, Team team, Problem problem, String language, long contestTimeMilliseconds) {
 		this.id = id;
-		this.minutesFromStart = contestTimeMilliseconds/60000;
+		this.minutesFromStart = (int) (contestTimeMilliseconds/60000);
 		this.contestTimeMilliseconds = contestTimeMilliseconds;
 		this.team = team;
 		this.problem = problem;

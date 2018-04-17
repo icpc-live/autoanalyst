@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import model.*;
 
 public abstract class StateComparingRuleBase {
-	static Logger logger = Logger.getLogger(DatabaseNotificationConfig.class);
+	static Logger logger = Logger.getLogger(StateComparingRuleBase.class);
 	
 	private final ArrayList<NotificationTarget> targets = new ArrayList<NotificationTarget>();
 	

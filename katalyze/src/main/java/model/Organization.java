@@ -1,6 +1,8 @@
 package model;
 
 public class Organization implements ApiEntity{
+    public static final Organization NullObject = new Organization(null, null, null, null, null);
+
     private String id;
     private String name;
     private String fullName;
@@ -14,6 +16,10 @@ public class Organization implements ApiEntity{
         this.fullName = fullName;
         this.country = country;
         this.twitterHashTag = twitterHashTag;
+    }
+
+    public static boolean isNull(Organization src) {
+        return src == null || src.id == null;
     }
 
     public String getId() {

@@ -6,6 +6,7 @@ public class Standings implements Iterable<Score> {
 	static Comparator<ScoreTableEntry> comparator = new ScoreTableComparer();
 	
 	private Contest contest;
+	private long contestTimeMillis;
 	private List<Score> scores;
 
 	@Override
@@ -13,9 +14,10 @@ public class Standings implements Iterable<Score> {
 		return scores.iterator();
 	}
 	
-	public Standings(Contest contest, Collection<Score> teamScores) {
+	public Standings(Contest contest, Collection<Score> teamScores, long contestTimeMillis) {
 		this.contest = contest;
-		scores = new ArrayList<Score>(teamScores);
+		this.scores = new ArrayList<Score>(teamScores);
+		this.contestTimeMillis = contestTimeMillis;
 		Collections.sort(scores, comparator);
 	}
 	
@@ -26,6 +28,10 @@ public class Standings implements Iterable<Score> {
 			}
 		}
 		throw new AssertionError(String.format("%s is not a known team", team));
+	}
+
+	public long getContestTimeMillis() {
+		return contestTimeMillis;
 	}
 
 	public Contest getContest() {

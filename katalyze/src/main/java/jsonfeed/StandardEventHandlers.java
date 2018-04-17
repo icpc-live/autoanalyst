@@ -52,7 +52,7 @@ public class StandardEventHandlers {
             Problem problem = contest.getProblem(problemId);
             Team team = contest.getTeam(teamId);
 
-            int contestTimeMilliseconds = (int) (src.getTimespan("contest_time"));
+            long contestTimeMilliseconds = (long) (src.getTimespan("contest_time"));
             contest.updateTime(contestTimeMilliseconds);
             team.freshSubmission(new InitialSubmission(submissionId, team, problem, src.getString("language_id"),
                     contestTimeMilliseconds));
@@ -67,9 +67,8 @@ public class StandardEventHandlers {
             InitialSubmission submission = analyzer.submissionById(submissionId);
 
             if (submission == null) {
-                log.warn(String.format("Judgment '%s' that references an non-existing judgement '%s'",judgementId, submissionId));
+                log.warn(String.format("Judgment '%s' that references an non-existing submission '%s'",judgementId, submissionId));
             }
-
 
             String verdictId = src.getString("judgement_type_id");
             JudgementType verdict = contest.getJudgementType(verdictId);
@@ -77,7 +76,7 @@ public class StandardEventHandlers {
                 if (submission == null) {
                     log.error(String.format("Lost judgement '%s' due to missing judgement %s", judgementId, submissionId));
                 } else {
-                    int judgementContestTime = (int) (src.getTimespan("end_contest_time"));
+                    long judgementContestTime = src.getTimespan("end_contest_time");
                     contest.updateTime(judgementContestTime);
                     if (judgementContestTime == -1) {
                         // Apparently server didn't send a time. For now, use the submission time

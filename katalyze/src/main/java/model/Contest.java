@@ -40,8 +40,12 @@ public class Contest {
 	}
 
 	public boolean isFrozen(long contestTimeMillis) {
-		long freezeMillis = (properties == null) ? 3600*1000*4 : properties.getScoreboardFreezeMillis();
-		return (contestTimeMillis < freezeMillis);
+	    if (properties == null) {
+	        return contestTimeMillis > 3600000*4;
+        } else {
+	        long freezeTime = properties.getDurationMillis() - properties.getScoreboardFreezeMillis();
+	        return (contestTimeMillis > freezeTime);
+        }
 	}
 
 	public void init(ContestProperties properties) {
@@ -66,7 +70,7 @@ public class Contest {
 		for (Team team : teams) {
 			teamScores.add(team.getCurrentScore());
 		}
-		return new Standings(this, teamScores);
+		return new Standings(this, teamScores, this.contestTimeMillis);
 	}
 	
 	public int getSubmissionCount() {
@@ -112,12 +116,15 @@ public class Contest {
 
 		Team team = newJudgement.getTeam();
 
-		boolean wasAlreadyRegistered = team.registerJudgement(newJudgement);
+		boolean judegementMadeNoDifference = team.registerJudgement(newJudgement);
 		submissions.add(newJudgement);
-		Standings after = getStandings();
 
-		analyzer.processRules(before, after, newJudgement);
-		analyzer.notifyHooks(newJudgement.getJudgementTimeMillis()/60000);
+		if (!judegementMadeNoDifference) {
+		    // Don't process rules again if judgement didn't affect the state of the contest
+            Standings after = getStandings();
+            analyzer.processRules(before, after, newJudgement);
+        }
+		analyzer.notifyHooks((int)(newJudgement.getJudgementTimeMillis()/60000));
 	}
 	
 	public void addProblem(Problem newProblem) {
