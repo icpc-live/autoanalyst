@@ -66,6 +66,10 @@ public class ConfigReader {
 
 		connection += config.getString("database.password");
 
+		if (!config.getBoolean("database.useSSL", true)) {
+			connection = connection+"&useSSL=false";
+		}
+
 		dbConfig = new DatabaseNotificationConfig(
 				"com.mysql.jdbc.Driver", connection);
 		
