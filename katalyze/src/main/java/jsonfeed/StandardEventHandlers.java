@@ -77,6 +77,10 @@ public class StandardEventHandlers {
                     log.error(String.format("Lost judgement '%s' due to missing judgement %s", judgementId, submissionId));
                 } else {
                     int judgementContestTime = (int) (src.getTimespan("end_contest_time"));
+                    if (judgementContestTime == -1) {
+                        // Apparently server didn't send a time. For now, use the submission time
+                        judgementContestTime = submission.contestTimeMilliseconds;
+                    }
                     // Only submit if there is a verdict.
                     submission.team.submit(submission, judgementContestTime, judgementId, submission.problem, verdict.getId(), verdict.isAccepted(), verdict.hasPenalty());
                 }

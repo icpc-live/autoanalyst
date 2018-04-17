@@ -40,8 +40,8 @@ public class Team implements ApiEntity {
 	}
 
 
-	public void registerJudgement(Judgement judgement) {
-		progress.register(judgement);
+	public boolean registerJudgement(Judgement judgement) {
+		return progress.register(judgement);
 	}
 	
 	public void freshSubmission(InitialSubmission submission) {

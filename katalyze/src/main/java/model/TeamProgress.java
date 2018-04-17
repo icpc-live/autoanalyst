@@ -86,9 +86,9 @@ public class TeamProgress {
 	}
 
 
-	public void register(Judgement newSubmission) {
+	public boolean register(Judgement newSubmission) {
 		ProblemJudgements submissions = getSubmissionsFor(newSubmission.getProblem());
-		submissions.add(newSubmission);
+		return submissions.add(newSubmission);
 	}
 	
 	

@@ -7,9 +7,9 @@ import java.util.Map;
 import model.*;
 
 public class RankPredictor extends StateComparingRuleBase implements SolutionSubmittedEvent{
-	final static ScoreTableComparer comparator = new ScoreTableComparer();
+	final private static ScoreTableComparer comparator = new ScoreTableComparer();
 	
-	final int rankThreshold;
+	final private int rankThreshold;
 
 	public RankPredictor(int rankThreshold) {
 		this.rankThreshold = rankThreshold;
@@ -17,8 +17,13 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 	
 	public void onSolutionSubmitted(StandingsAtSubmission standingsAtSubmission) {
 		Contest contest = standingsAtSubmission.before.getContest();
+
 		Standings standingsBefore = standingsAtSubmission.before;
 		InitialSubmission submission = standingsAtSubmission.submission;
+		if (contest.isFrozen(submission.contestTimeMilliseconds)) {
+			// Don't make predictions when the scoreboard is frozen.
+			return;
+		}
 		
 		Team team = submission.team;
 		

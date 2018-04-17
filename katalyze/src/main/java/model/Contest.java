@@ -39,6 +39,11 @@ public class Contest {
 	    init(new ContestProperties(name, penaltyTime, freezeMillis));
 	}
 
+	public boolean isFrozen(long contestTimeMillis) {
+		long freezeMillis = (properties == null) ? 3600*1000*4 : properties.getScoreboardFreezeMillis();
+		return (contestTimeMillis < freezeMillis);
+	}
+
 	public void init(ContestProperties properties) {
         EntityOperation op = (properties==null) ? EntityOperation.CREATE : EntityOperation.UPDATE;
 		this.properties = properties;
@@ -101,16 +106,18 @@ public class Contest {
 		return this.analyzer;
 	}
 
-	public void processSubmission(Judgement newSubmission) {
+	public void processSubmission(Judgement newJudgement) {
 
 		Standings before = getStandings();
 
-		newSubmission.getTeam().registerJudgement(newSubmission);
-		submissions.add(newSubmission);
+		Team team = newJudgement.getTeam();
+
+		boolean wasAlreadyRegistered = team.registerJudgement(newJudgement);
+		submissions.add(newJudgement);
 		Standings after = getStandings();
 
-		analyzer.processRules(before, after, newSubmission);
-		analyzer.notifyHooks(newSubmission.getJudgementTimeMillis()/60000);
+		analyzer.processRules(before, after, newJudgement);
+		analyzer.notifyHooks(newJudgement.getJudgementTimeMillis()/60000);
 	}
 	
 	public void addProblem(Problem newProblem) {

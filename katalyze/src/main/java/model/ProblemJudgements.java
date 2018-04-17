@@ -90,17 +90,19 @@ public class ProblemJudgements implements Iterable<Judgement>{
 	}
 
 
-	public void add(Judgement newJudgement) {
+	public boolean add(Judgement newJudgement) {
 		assert newJudgement.getProblem() == problem;
 		String submissionId = newJudgement.initialSubmission.getId();
+        boolean hadNoEffect = false;
 
 		Judgement existingJudgement = findExistingJudgement(submissionId);
 
 		if (existingJudgement != null) {
             boolean outcomesAreIdentical = Objects.equals(existingJudgement.getOutcome(), newJudgement.getOutcome());
+            boolean judgementIdsIdentical = Objects.equals(existingJudgement.getJudgementId(), newJudgement.getJudgementId());
 
             if (!outcomesAreIdentical) {
-                if (Objects.equals(existingJudgement.getJudgementId(), newJudgement.getJudgementId())) {
+                if (judgementIdsIdentical) {
                     log.warn("Whoa!! Once set, a judgement should not change its outcome!");
                 }
 
@@ -111,12 +113,13 @@ public class ProblemJudgements implements Iterable<Judgement>{
 
                 log.info(String.format("New %sjudgement '%s' for %s changed outcome for judgement id %s. %s -> %s", redundant, newJudgement.judgementId,
                         teamNameMapper.apply(newJudgement.initialSubmission.getTeam()), submissionId, existingJudgement.outcome, newJudgement.outcome));
-
+            } else {
+                // Judgement
+                hadNoEffect = judgementIdsIdentical;
             }
-
-
         }
         judgements.add(newJudgement);
+		return hadNoEffect;
 	}
 
 
