@@ -212,12 +212,12 @@ class GitHomes:
         h.disable_ssl_certificate_validation=True
 
         for teamIdx in range( 1, self.lastTeam + 1 ):
-            str = "Polling %s/backups/%d... " % ( self.CDSRoot, teamIdx )
+            str = "Polling %s/teams/%d/backup ... " % ( self.CDSRoot, teamIdx )
             sys.stdout.write(str)
 
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
-            (responseHeader, result) = h.request( "%s/backups/%d" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
+            (responseHeader, result) = h.request( "%s/teams/%d/backup" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
             print(responseHeader)
             #print(responseHeader.status)
             #print(responseHeader["status"])
@@ -236,7 +236,7 @@ class GitHomes:
                 if os.path.exists( teamDir ):
                     shutil.rmtree( teamDir )
                 os.makedirs( teamDir )
-                subprocess.call( [ "tar", "xf", f.name, "--exclude-vcs", "-C", teamDir ] )
+                subprocess.call( [ "unzip", f.name, "-d", teamDir ] )
                 os.unlink( f.name )
 
                 print("done.")
