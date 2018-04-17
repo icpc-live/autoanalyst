@@ -60,7 +60,7 @@ public class PublishableEventList {
 		}
 
 		if (event.submission != null) {
-			eventInfo = eventInfo.element("submission", event.submission.id);
+			eventInfo = eventInfo.element("judgement", event.submission.id);
 		}
 		return eventInfo;
 	}

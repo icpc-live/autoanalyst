@@ -65,7 +65,7 @@ public class RunHandler extends SingleMessageHandler {
 			InitialSubmission submission = contest.getAnalyzer().submissionById(submissionId);
 			team.submit(submission, millisFromStart, submissionId, problem, judgement, solved, penalty);
 		} else {
-			Log.info(String.format("%s submission of %s has been judged. Outcome is not disclosed",
+			Log.info(String.format("%s judgement of %s has been judged. Outcome is not disclosed",
 					team, problem));
 		}	
 		

@@ -192,7 +192,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				rule.onSolutionSubmitted(standings);
 			}
 			catch (Exception e) {
-				logger.error(String.format("Error %s while processing rule %s for submission %d", e, rule, submission));
+				logger.error(String.format("Error %s while processing rule %s for judgement %d", e, rule, submission));
 			}
 		}
 		notifyHooks(submission.minutesFromStart);

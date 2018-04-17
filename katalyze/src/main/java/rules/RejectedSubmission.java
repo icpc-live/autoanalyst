@@ -14,7 +14,7 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		// This rule doesn't bother about accepted solutions
-		Judgement submission = transition.submission;
+		Judgement submission = transition.judgement;
 		
 		if (submission.isAccepted()) {
 			return;

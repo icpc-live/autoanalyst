@@ -39,26 +39,22 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		
-		Judgement submission = transition.submission;
-		
-		if (!submission.isAccepted()) {
-			return;
-		}
-		
+		Judgement submission = transition.judgement;
+
 		Team team = submission.getTeam();
 
 		Score scoreBefore = transition.before.scoreOf(team);
-		if (scoreBefore.isSolved(submission.getProblem())) {
-			// Problem was already solved. No need to send new notifications
+		Score scoreAfter = transition.after.scoreOf(team);
+		if (scoreBefore.isSolved(submission.getProblem())==scoreAfter.isSolved(submission.getProblem())) {
+			// No problem solution status was changed.
 			return;
 		}
 				
 		
 		int rankBefore = transition.before.rankOf(team);
 		int rankAfter = transition.after.rankOf(team);
-		Score score = transition.after.scoreOf(team);
-		
-		int solvedProblemCount = score.solvedProblemCount();
+
+		int solvedProblemCount = scoreAfter.solvedProblemCount();
 		EventImportance importance = fromRank(rankAfter);
 
 		String solvedProblemsText = problemsAsText(solvedProblemCount);
@@ -79,9 +75,14 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 		} else if (rankAfter == rankBefore) {
 			event = transition.createEvent(String.format("{team} solves {problem}. It is %s and has %s solved", rankString(rankAfter, rankBefore), solvedProblemsText), importance);
 		} else {
-			assert rankAfter <= rankBefore;
+			if (rankAfter > rankBefore) {
+				event = transition.createEvent(String.format("{team} is now %s after {problem} was rejudged.", rankString(rankAfter, rankBefore)), EventImportance.Breaking);
+			} else {
+				logger.error("Wierd! why did we end up here?");
+			}
+
 		}
-		
+
 		notify(event);
 	}
 

@@ -1,4 +1,4 @@
-package tests;
+package test;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,7 @@ import rules.StandingsCriterion;
 import rules.Criteria.*;
 
 
-public class StandingsCriteria extends ContestSimulatorTest {
+public class StandingsCriteria extends tests.ContestSimulatorTest {
 	
 
 	private void assertFulfilled(boolean expected, StandingsCriterion criterion) {

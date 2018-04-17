@@ -7,17 +7,18 @@ import java.util.*;
 
 public class ProblemJudgements implements Iterable<Judgement>{
     private static Logger log = LogManager.getLogger(ProblemJudgements.class);
+    private static TeamNameAsOrganization teamNameMapper = new TeamNameAsOrganization();
 
 	private final Problem problem;
 
-	private TreeSet<Judgement> submissions = new TreeSet<>(Judgement.compareBySubmissionTime);
+	private TreeSet<Judgement> judgements = new TreeSet<>(Judgement.compareBySubmissionTime);
 
 	ProblemJudgements(Problem problem) {
 		this.problem = problem;
 	}
 	
 	public boolean isSolved() {
-		for(Judgement s : submissions) {
+		for(Judgement s : judgements) {
 			if (s.isAccepted()) {
 				return true;
 			}
@@ -27,12 +28,12 @@ public class ProblemJudgements implements Iterable<Judgement>{
 	
 
 	public Judgement[] toArray() {
-		return submissions.toArray(new Judgement[0]);
+		return judgements.toArray(new Judgement[0]);
 	}
 	
 	public int getSubmissionCount() {
 		int count = 0;
-		for (Judgement s : submissions) {
+		for (Judgement s : judgements) {
 			count++;
 			if (s.isAccepted()) {
 				break;
@@ -42,7 +43,7 @@ public class ProblemJudgements implements Iterable<Judgement>{
 	}
 	
 	public int getSolutionTime() {
-		for (Judgement s : submissions) {
+		for (Judgement s : judgements) {
 			if (s.isAccepted()) {
 				return s.initialSubmission.minutesFromStart;
 			}
@@ -53,7 +54,7 @@ public class ProblemJudgements implements Iterable<Judgement>{
 	public int penalty() {
 		int cumulativeScore = 0;
 		
-		for (Judgement s : submissions) {
+		for (Judgement s : judgements) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
@@ -67,7 +68,7 @@ public class ProblemJudgements implements Iterable<Judgement>{
 		
 		int cumulativeScore = 0;
 		
-		for (Judgement s : submissions) {
+		for (Judgement s : judgements) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
@@ -78,29 +79,49 @@ public class ProblemJudgements implements Iterable<Judgement>{
 		return 0;
 	}
 
-	public void add(Judgement newSubmission) {
-		assert newSubmission.getProblem() == problem;
-		String submissionId = newSubmission.initialSubmission.getId();
+	private Judgement findExistingJudgement(String submissionId) {
+		for (Judgement existingJudgement: judgements) {
+			InitialSubmission existing = existingJudgement.initialSubmission;
+			if (existing.getId().equals(submissionId)) {
+				return existingJudgement;
+			}
+		}
+		return null;
+	}
 
-		int countBefore = submissions.size();
-		for (Judgement existingSubmission : submissions) {
-		    InitialSubmission existing = existingSubmission.initialSubmission;
 
-		    if (existing != null && submissionId.equals(existing.getId())) {
-                log.info(String.format("Apparently a new judgment '%s' for submission id %s. %s -> %s", newSubmission.judgementId,
-                        submissionId, existingSubmission.outcome, newSubmission.outcome));
-                submissions.remove(existingSubmission);
-                break;
+	public void add(Judgement newJudgement) {
+		assert newJudgement.getProblem() == problem;
+		String submissionId = newJudgement.initialSubmission.getId();
+
+		Judgement existingJudgement = findExistingJudgement(submissionId);
+
+		if (existingJudgement != null) {
+            boolean outcomesAreIdentical = Objects.equals(existingJudgement.getOutcome(), newJudgement.getOutcome());
+
+            if (!outcomesAreIdentical) {
+                if (Objects.equals(existingJudgement.getJudgementId(), newJudgement.getJudgementId())) {
+                    log.warn("Whoa!! Once set, a judgement should not change its outcome!");
+                }
+
+                judgements.removeIf(x -> submissionId.equals(x.getInitialSubmission().getId()));
+                boolean resolvedRegardless = isSolved();
+
+                String redundant = (resolvedRegardless) ? "redundant " : "";
+
+                log.info(String.format("New %sjudgement '%s' for %s changed outcome for judgement id %s. %s -> %s", redundant, newJudgement.judgementId,
+                        teamNameMapper.apply(newJudgement.initialSubmission.getTeam()), submissionId, existingJudgement.outcome, newJudgement.outcome));
+
             }
 
-        }
 
-        submissions.add(newSubmission);
+        }
+        judgements.add(newJudgement);
 	}
 
 
     @Override
     public Iterator<Judgement> iterator() {
-        return submissions.iterator();
+        return judgements.iterator();
     }
 }

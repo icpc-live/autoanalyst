@@ -23,7 +23,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
 	}
 
     public void onStandingsUpdated(StandingsTransition transition) {
-        Judgement submission = transition.submission;
+        Judgement submission = transition.judgement;
         InitialSubmission initialSubmission = submission.getInitialSubmission();
 
         try {
@@ -42,7 +42,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
             logger.debug("inserted into db: " + s);
         } catch (Exception e) {
         	String message = e.getMessage();
-        	String logMessage = "Error adding submission to database: "+message;
+        	String logMessage = "Error adding judgement to database: "+message;
         	
         	if (message.contains("Duplicate entry")) {
         		logger.debug(logMessage);

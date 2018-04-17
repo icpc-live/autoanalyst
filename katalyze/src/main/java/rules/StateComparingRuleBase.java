@@ -15,12 +15,13 @@ public abstract class StateComparingRuleBase {
 	}
 	
 	void notify(LoggableEvent event) {
-		for (NotificationTarget target : targets) {
-			try {
-				target.notify(event);
-			}
-			catch (Exception e) {
-				logger.error(String.format("Error notifying %s: %s", target, e));
+		if (event != null) {
+			for (NotificationTarget target : targets) {
+				try {
+					target.notify(event);
+				} catch (Exception e) {
+					logger.error(String.format("Error notifying %s: %s", target, e));
+				}
 			}
 		}
 	}

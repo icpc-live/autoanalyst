@@ -41,7 +41,7 @@ public class TestCaseHandler extends SingleMessageHandler {
 		Analyzer analyzer = contest.getAnalyzer();
 		InitialSubmission submission = analyzer.submissionById(submissionId);
 		if (submission == null) {
-			logger.error(String.format("Unable to find submission %n, which seems to be executed test cases on. Ignoring outcome!", submissionId));
+			logger.error(String.format("Unable to find judgement %n, which seems to be executed test cases on. Ignoring outcome!", submissionId));
 		}
 		TestCaseExecution outcome = new TestCaseExecution(submission, caseNumber, totalCaseCount, time, solved, result);
 		

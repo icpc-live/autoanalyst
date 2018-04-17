@@ -66,7 +66,7 @@ public class StandardEventHandlers {
             InitialSubmission submission = analyzer.submissionById(submissionId);
 
             if (submission == null) {
-                log.warn(String.format("Judgment '%s' that references an non-existing submission '%s'",judgementId, submissionId));
+                log.warn(String.format("Judgment '%s' that references an non-existing judgement '%s'",judgementId, submissionId));
             }
 
 
@@ -74,7 +74,7 @@ public class StandardEventHandlers {
             JudgementType verdict = contest.getJudgementType(verdictId);
             if (verdict != null) {
                 if (submission == null) {
-                    log.error(String.format("Lost judgement '%s' due to missing submission %s", judgementId, submissionId));
+                    log.error(String.format("Lost judgement '%s' due to missing judgement %s", judgementId, submissionId));
                 } else {
                     int judgementContestTime = (int) (src.getTimespan("end_contest_time"));
                     // Only submit if there is a verdict.
