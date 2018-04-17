@@ -53,6 +53,7 @@ public class StandardEventHandlers {
             Team team = contest.getTeam(teamId);
 
             int contestTimeMilliseconds = (int) (src.getTimespan("contest_time"));
+            contest.updateTime(contestTimeMilliseconds);
             team.freshSubmission(new InitialSubmission(submissionId, team, problem, src.getString("language_id"),
                     contestTimeMilliseconds));
         });
@@ -77,6 +78,7 @@ public class StandardEventHandlers {
                     log.error(String.format("Lost judgement '%s' due to missing judgement %s", judgementId, submissionId));
                 } else {
                     int judgementContestTime = (int) (src.getTimespan("end_contest_time"));
+                    contest.updateTime(judgementContestTime);
                     if (judgementContestTime == -1) {
                         // Apparently server didn't send a time. For now, use the submission time
                         judgementContestTime = submission.contestTimeMilliseconds;

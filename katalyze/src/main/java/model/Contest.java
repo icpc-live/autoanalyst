@@ -18,7 +18,7 @@ public class Contest {
 	final List<Language> languages;
 	final LanguageStats stats;
 	private ContestProperties properties;
-	double contestTime = 0;
+	private long contestTimeMillis = 0;
 
 	public Contest() {
 		this.problems = new TreeMap<>();
@@ -73,14 +73,14 @@ public class Contest {
 		return submissions.size();
 	}
 	
-	public void updateTime(double contestTime) {
-		if (contestTime > this.contestTime) {
-			this.contestTime = contestTime;
+	public void updateTime(long contestTimeMillis) {
+		if (contestTimeMillis > this.contestTimeMillis) {
+			this.contestTimeMillis = contestTimeMillis;
 		}
 	}
 	
 	public int getMinutesFromStart() {
-		return (int) (contestTime / 60.0);
+		return (int) (contestTimeMillis / 60000);
 	}
 	
 	public int getSubmissionsAtTime(int minutes) {

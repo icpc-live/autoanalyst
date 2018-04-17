@@ -65,7 +65,7 @@ public class Katalyzer {
 			if (message != null) {
 				double contestTime = message.tryGetDouble("time", Double.NaN);
 				if (!Double.isNaN(contestTime)) {
-					contest.updateTime(contestTime);
+					contest.updateTime((long) Math.floor(contestTime*1000));
 				}
 				handlers.process(message);
 			}
