@@ -17,6 +17,8 @@ public class Contest {
 	final List<Judgement> submissions;
 	final List<Language> languages;
 	final LanguageStats stats;
+
+	private ContestState state = ContestState.BeforeStart;
 	private ContestProperties properties;
 	private long contestTimeMillis = 0;
 
@@ -86,18 +88,13 @@ public class Contest {
 	public int getMinutesFromStart() {
 		return (int) (contestTimeMillis / 60000);
 	}
-	
-	public int getSubmissionsAtTime(int minutes) {
-		int count = 0;
-		for (Judgement s : submissions) {
-			if (s.getInitialSubmission().minutesFromStart>minutes) {
-				break;
-			}
-			count++;
-		}
-		return count;
-	}
-	
+
+	public void updateState(ContestState newState) {
+	    ContestState oldState = state;
+	    state = newState;
+	    analyzer.contestStateChanged(oldState, newState);
+    }
+
 	public List<Judgement> getSubmissions() {
 		return submissions;
 	}

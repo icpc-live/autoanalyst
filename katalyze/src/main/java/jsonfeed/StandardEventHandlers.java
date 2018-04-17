@@ -33,6 +33,17 @@ public class StandardEventHandlers {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());
             contest.init(properties);
         });
+        handlers.put("state", (contest, src) -> {
+            ContestState newState = new ContestState(
+                    src.getTimestamp("started"),
+                    src.getTimestamp("ended"),
+                    src.getTimestamp("frozen"),
+                    src.getTimestamp("finalized"),
+                    src.getTimestamp("thawed")
+            );
+            contest.updateState(newState);
+        });
+
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
         handlers.put("organizations", (contest,src) -> {
             contest.addOrganization(

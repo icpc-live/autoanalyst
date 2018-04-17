@@ -13,7 +13,7 @@ public class Standings implements Iterable<Score> {
 	public Iterator<Score> iterator() {
 		return scores.iterator();
 	}
-	
+
 	public Standings(Contest contest, Collection<Score> teamScores, long contestTimeMillis) {
 		this.contest = contest;
 		this.scores = new ArrayList<Score>(teamScores);
@@ -28,6 +28,10 @@ public class Standings implements Iterable<Score> {
 			}
 		}
 		throw new AssertionError(String.format("%s is not a known team", team));
+	}
+
+	public boolean isNothingSolved() {
+		return scores.get(0).solvedProblemCount() == 0;
 	}
 
 	public long getContestTimeMillis() {

@@ -50,6 +50,11 @@ public class JsonEvent {
         return converter.parseContestTimeMillis(timeString);
     }
 
+    public long getTimestamp(String key) {
+        String timeStampString = data.optString(key, null);
+        return converter.parseTimestampMillis(timeStampString);
+    }
+
     public String getId() {
         return id;
     }

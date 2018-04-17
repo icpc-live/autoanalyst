@@ -178,6 +178,19 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		}
 	}
 
+	public void contestStateChanged(ContestState oldState, ContestState newState) {
+	    if (oldState.notStartedYet() && newState.isRunning()) {
+	        notify(createEvent(null, 0, "Contest has started", EventImportance.Breaking));
+        }
+
+        if (oldState.isRunning() && newState.isRunning() && newState.isFrozen()) {
+	        notify(createEvent(null, newState.frozenMillis-newState.startedMillis, "Scoreboard is now frozen until the end of the contest", EventImportance.Breaking));
+        }
+
+        if (oldState.isRunning() && newState.isEnded()) {
+	        notify(createEvent(null, newState.endedMillis-newState.startedMillis, "Contest is now over", EventImportance.Breaking));
+        }
+    }
 
 	public InitialSubmission submissionById(String id) {
 		return judgingOutcomes.getSubmission(id);

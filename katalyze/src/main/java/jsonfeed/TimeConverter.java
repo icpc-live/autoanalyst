@@ -27,6 +27,11 @@ public class TimeConverter {
 
     public long parseTimestampMillis(String timeString) {
 
+        // Parse "null" as 0;
+        if (timeString == null || timeString.equals("null")) {
+            return 0L;
+        }
+
         // Awful hack to get around Java's lack of full ISO-8601 support
         int plusIndex = timeString.indexOf("+");
         if (plusIndex >= timeString.length()-3) {

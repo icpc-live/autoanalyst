@@ -67,7 +67,7 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		if (potentialRank <= rankThreshold) {
 
 			String message = String.format("{team} submitted solution for {problem}. If correct, they will %s",
-					futureRankString(potentialRank, currentRank));
+					futureRankString(potentialRank, currentRank, standingsBefore.isNothingSolved()));
 			Map<String, String> supplements = new HashMap<String, String>();
 			supplements.put("currentRank", Integer.toString(currentRank));
 			supplements.put("potentialRank", Integer.toString(potentialRank));

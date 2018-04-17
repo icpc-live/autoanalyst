@@ -45,10 +45,14 @@ public abstract class StateComparingRuleBase {
 		}
 	}
 
-	protected String futureRankString(int current, int previous) {
+	protected String futureRankString(int current, int previous, boolean isInitialState) {
 		if (current == 1) {
 			if (previous == 1) {
-				return "further extend their lead";
+				if (isInitialState) {
+					return "solve the first problem and take the lead";
+				} else {
+					return "further extend their lead";
+				}
 			} else {
 				return "lead the competition";
 			}

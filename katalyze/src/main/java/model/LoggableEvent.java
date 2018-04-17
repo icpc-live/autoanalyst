@@ -22,7 +22,7 @@ public class LoggableEvent {
 	public LoggableEvent(Contest contest, long contestTimeMillis, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
-		this.team = submission.getTeam();
+		this.team = (submission != null) ? submission.getTeam() : null;
 		this.contestTimeMillis = contestTimeMillis;
 		this.importance = importance;
 		this.submission = submission;
