@@ -1,8 +1,6 @@
 package io;
 
 import jsonfeed.ContestEntry;
-import model.ContestProperties;
-import net.sf.json.JSON;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.LogManager;
@@ -12,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
 public class InputStreamConfigurator {
@@ -60,7 +60,6 @@ public class InputStreamConfigurator {
     public InputStreamProvider createHttpReader() throws IOException {
         String contestIdPrefix = config.getString("CDS.contestIdPrefix");
 
-
         HttpFeedClient feedClient = createFeedClient();
 
 
@@ -72,21 +71,22 @@ public class InputStreamConfigurator {
             log.info(String.format("Will read from contest %s", entry));
         }
 
-
-
-        return () -> feedClient.getInputStream(entry.url+"/event-feed");
+        return (resumePoint) -> {
+            String url = entry.url+"/event-feed";
+            String resumeQuery = (resumePoint != null) ? "?since_id="+URLEncoder.encode(resumePoint, StandardCharsets.UTF_8.name()) : "";
+            return feedClient.getInputStream(url+resumeQuery);
+        };
     }
-
 
 
     public InputStreamProvider createFileReader(String file) throws FileNotFoundException {
         FileInputStream inputFile = new FileInputStream(file);
 
-        return () -> inputFile;
+        return (resumePoint) -> inputFile;
     }
 
     public InputStreamProvider createConsoleReader() {
-        return () -> System.in;
+        return (resumePoint) -> System.in;
     }
 
     public InputStreamProvider getInputFromConfig() throws ConfigurationException, IOException  {

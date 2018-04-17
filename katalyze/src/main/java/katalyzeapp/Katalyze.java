@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -77,9 +78,27 @@ public class Katalyze {
 
 			if (config.getString("CDS.protocol", "contestapi").equalsIgnoreCase("contestapi")) {
 				JsonEventReader reader = new JsonEventReader();
-				reader.processStream(new InputStreamReader(isp.getInputStream(), StandardCharsets.UTF_8), katalyzer::processEvent);
+				boolean isFirst = true;
+                while (!katalyzer.isStopped()) {
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        logger.info(String.format("Waiting 10 seconds before reconnecting to the source and resuming after %s",
+                                reader.getLastProcessedId()));
+                        Thread.sleep(10000);
+                    }
+
+
+                    try {
+                        InputStream input = isp.getInputStream(reader.getLastProcessedId());
+                        reader.processStream(new InputStreamReader(input, StandardCharsets.UTF_8), katalyzer::processEvent);
+                    }
+                    catch (IOException e) {
+                        logger.info(String.format("Error while reading from source: %s", e));
+                    }
+                }
 			} else {
-				katalyzer.processLegacyFeed(isp.getInputStream());
+				katalyzer.processLegacyFeed(isp.getInputStream(null));
 			}
 
 			logger.info("Katalyzer stream finished");

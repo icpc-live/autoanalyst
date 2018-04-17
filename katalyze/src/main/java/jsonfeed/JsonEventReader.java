@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class JsonEventReader {
     private static Logger log = LogManager.getLogger(JsonEventReader.class);
+    private String lastProcessedId = null;
 
     public ArrayList<JsonEvent> parse(Reader input) throws IOException {
 
@@ -19,6 +20,9 @@ public class JsonEventReader {
         return target;
     }
 
+    public String getLastProcessedId() {
+        return lastProcessedId;
+    }
 
     public void processLine(String eventLine, Sink<JsonEvent> target) {
         String trimmedLine = eventLine.trim();
@@ -26,6 +30,7 @@ public class JsonEventReader {
             try {
                 JSONObject json = JSONObject.fromObject(trimmedLine);
                 JsonEvent event = JsonEvent.from(json);
+                lastProcessedId = event.getId();
                 target.send(event);
             }
             catch (Exception e) {
@@ -38,9 +43,24 @@ public class JsonEventReader {
     public void processStream(Reader input, Sink<JsonEvent> target) throws IOException{
         BufferedReader reader = new BufferedReader(input);
         String eventLine;
-        while ((eventLine = reader.readLine()) != null) {
-            processLine(eventLine, target);
+
+        boolean scoreboardsFlushed = false;
+        while (true) {
+
+            if (reader.ready() || scoreboardsFlushed) {
+                eventLine = reader.readLine();
+                if (eventLine != null) {
+                    processLine(eventLine, target);
+                    scoreboardsFlushed = false;
+                } else {
+                    break;
+                }
+            } else {
+                target.send(null);
+                scoreboardsFlushed = true;
+            }
         }
+
     }
 
     public ArrayList<JsonEvent> parse(String data) throws IOException {

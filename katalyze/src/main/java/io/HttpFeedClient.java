@@ -62,7 +62,7 @@ public class HttpFeedClient {
 
         int responseCode = connection.getResponseCode();
         if (responseCode != 200) {
-            throw new IOException("Got unexpected response code: "+Integer.toString(200));
+            throw new IOException("Got unexpected response code: "+Integer.toString(responseCode));
         }
 
         InputStream is = connection.getInputStream();

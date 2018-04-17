@@ -25,6 +25,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	JudgingOutcomes judgingOutcomes = new JudgingOutcomes();
 	HashtagFinder hashtagFinder = new HashtagFinder();
+	boolean stopped = false;
 
 	
 	int lastHookTime = -1;
@@ -149,6 +150,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				logger.error(String.format("Error while stopping %s: %s", target, e));
 			}
 		}
+		stopped = true;
 	}
 	
 	public void notify(LoggableEvent event) {
@@ -243,8 +245,11 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				logger.warn(String.format("Entity changed handler %s failed for entity %s, operation %s: %s", handler, entity, op.toString(), e));
 			}
 		}
-
 	}
+
+	public boolean isStopped() {
+	    return stopped;
+    }
 }
 
 	

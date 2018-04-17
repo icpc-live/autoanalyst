@@ -42,6 +42,9 @@ public class Katalyzer {
 	
 	
 	private void updateScoreboards(boolean force) {
+	    if (force) {
+	        logger.info("Forced scoreboard update");
+        }
 		long currentTime = System.currentTimeMillis();
 		if (force || currentTime - lastUpdate > updateInterval) {
 			contest.getAnalyzer().publishStandings();
@@ -56,8 +59,6 @@ public class Katalyzer {
 		TokenFeeder feeder = new TokenFeeder(stream);
 		
 		TokenQueue tokenQueue = new TokenQueue(feeder.getQueue());
-
-		
 		
 		while (tokenQueue.isOpen()) {
 			SimpleMessage message = tokenQueue.pop(500);
@@ -76,13 +77,18 @@ public class Katalyzer {
 	}
 
 	public void processEvent(JsonEvent event)  {
-		JsonEventHandler eventHandler = eventHandlers.getHandlerFor(event);
-		try {
-			eventHandler.process(contest, event);
-		}
-		catch (Exception e) {
-			logger.error(String.format("Error %s while processing event %s",e, event), e);
-		}
+	    if (event != null) {
+            JsonEventHandler eventHandler = eventHandlers.getHandlerFor(event);
+            try {
+                eventHandler.process(contest, event);
+            } catch (Exception e) {
+                logger.error(String.format("Error %s while processing event %s", e, event), e);
+            }
+            updateScoreboards(false);
+        } else {
+	        updateScoreboards(true);
+        }
+
 	}
 	
 	public Contest getContest() {
@@ -96,6 +102,10 @@ public class Katalyzer {
 	
 	public void stop() {
 		contest.getAnalyzer().stop();
+	}
+
+	public boolean isStopped() {
+		return contest.getAnalyzer().isStopped();
 	}
 
 
