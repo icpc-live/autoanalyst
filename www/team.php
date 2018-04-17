@@ -126,8 +126,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <div id="video_container">
     <?php $padded_team_id = sprintf("%03d", $team_id); ?>
-    <a href="vlc://192.168.1.207/video/camera/<?php echo $padded_team_id; ?>">Camera</a>
-    <a href="vlc://192.168.1.207/video/screen/<?php echo $padded_team_id; ?>">Screen</a>
+    <a href="vlc://192.168.1.207/video/webcam/<?php echo $padded_team_id; ?>">Camera</a>
+    <a href="vlc://192.168.1.207/video/desktop/<?php echo $padded_team_id; ?>">Screen</a>
     <a href="activity.php?team_id=<?php echo $team_id; ?>">Team activity</a>
     <?php
         $result = mysqli_query($db, "select submission_id, contest_time from submissions where team_id = $team_id order by submission_id");
@@ -147,7 +147,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <!-- Dynamic content (things that change during the contest) -->
 
 <div id='team_scoreboard_container'>
-<div class='teamscore' data-source='/icat/api' data-filter="score.team=='<?php echo $team_id; ?>'"></div>
+<div class='teamscore' data-source='/icat/api' data-filter="score.team_id=='<?php echo $team_id; ?>'"></div>
 </div>
 <div id='team_submission_info'>
     Number of submissions by <a href="language.php?team_id=<?php echo $team_id; ?>">language</a>:
