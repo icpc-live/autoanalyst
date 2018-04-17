@@ -5,19 +5,19 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
-public class ProblemSubmissions implements Iterable<Submission>{
-    private static Logger log = LogManager.getLogger(ProblemSubmissions.class);
+public class ProblemJudgements implements Iterable<Judgement>{
+    private static Logger log = LogManager.getLogger(ProblemJudgements.class);
 
 	private final Problem problem;
 
-	private TreeSet<Submission> submissions = new TreeSet<>(Submission.compareBySubmissionTime);
+	private TreeSet<Judgement> submissions = new TreeSet<>(Judgement.compareBySubmissionTime);
 
-	ProblemSubmissions(Problem problem) {
+	ProblemJudgements(Problem problem) {
 		this.problem = problem;
 	}
 	
 	public boolean isSolved() {
-		for(Submission s : submissions) {
+		for(Judgement s : submissions) {
 			if (s.isAccepted()) {
 				return true;
 			}
@@ -26,13 +26,13 @@ public class ProblemSubmissions implements Iterable<Submission>{
 	}
 	
 
-	public Submission[] toArray() {
-		return submissions.toArray(new Submission[0]);
+	public Judgement[] toArray() {
+		return submissions.toArray(new Judgement[0]);
 	}
 	
 	public int getSubmissionCount() {
 		int count = 0;
-		for (Submission s : submissions) {
+		for (Judgement s : submissions) {
 			count++;
 			if (s.isAccepted()) {
 				break;
@@ -42,7 +42,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 	}
 	
 	public int getSolutionTime() {
-		for (Submission s : submissions) {
+		for (Judgement s : submissions) {
 			if (s.isAccepted()) {
 				return s.initialSubmission.minutesFromStart;
 			}
@@ -53,7 +53,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 	public int penalty() {
 		int cumulativeScore = 0;
 		
-		for (Submission s : submissions) {
+		for (Judgement s : submissions) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
@@ -67,7 +67,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		
 		int cumulativeScore = 0;
 		
-		for (Submission s : submissions) {
+		for (Judgement s : submissions) {
 				cumulativeScore += s.cost();
 				if (s.isAccepted()) {
 					return cumulativeScore;
@@ -78,12 +78,12 @@ public class ProblemSubmissions implements Iterable<Submission>{
 		return 0;
 	}
 
-	public void add(Submission newSubmission) {
+	public void add(Judgement newSubmission) {
 		assert newSubmission.getProblem() == problem;
 		String submissionId = newSubmission.initialSubmission.getId();
 
 		int countBefore = submissions.size();
-		for (Submission existingSubmission : submissions) {
+		for (Judgement existingSubmission : submissions) {
 		    InitialSubmission existing = existingSubmission.initialSubmission;
 
 		    if (existing != null && submissionId.equals(existing.getId())) {
@@ -100,7 +100,7 @@ public class ProblemSubmissions implements Iterable<Submission>{
 
 
     @Override
-    public Iterator<Submission> iterator() {
+    public Iterator<Judgement> iterator() {
         return submissions.iterator();
     }
 }

@@ -171,7 +171,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 
 	
 	
-	public void processRules(Standings before, Standings after, Submission submission) {
+	public void processRules(Standings before, Standings after, Judgement submission) {
 		StandingsTransition transition = new StandingsTransition(this, before, after, submission);
 		for (StandingsUpdatedEvent rule : stateRules) {
 			rule.onStandingsUpdated(transition);

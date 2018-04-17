@@ -3,7 +3,7 @@ package stats;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import model.Submission;
+import model.Judgement;
 
 
 public class CategoryStats<T> implements CategoryCounter<T>{
@@ -62,7 +62,7 @@ public class CategoryStats<T> implements CategoryCounter<T>{
 		return n;
 	}
 	
-	public int get(Filter<Submission> category) {
+	public int get(Filter<Judgement> category) {
 		CategoryCount counter = categoryMap.get(category);
 		if (counter == null) {
 			return 0;

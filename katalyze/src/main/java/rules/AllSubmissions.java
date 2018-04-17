@@ -2,7 +2,7 @@ package rules;
 
 import model.InitialSubmission;
 import org.apache.log4j.Logger;
-import model.Submission;
+import model.Judgement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
@@ -23,7 +23,7 @@ public class AllSubmissions implements StandingsUpdatedEvent {
 	}
 
     public void onStandingsUpdated(StandingsTransition transition) {
-        Submission submission = transition.submission;
+        Judgement submission = transition.submission;
         InitialSubmission initialSubmission = submission.getInitialSubmission();
 
         try {

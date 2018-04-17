@@ -6,10 +6,10 @@ public class Score implements ScoreTableEntry {
 	final Team team;
 	final int points;
 	final Set<Problem> solvedProblems;
-	final Map<Problem,ProblemSubmissions> submissions;
+	final Map<Problem, ProblemJudgements> submissions;
 	int lastAcceptedSubmission = Integer.MIN_VALUE;
 
-	public Score(Team team, int points, Set<Problem> solvedProblems, Map<Problem,ProblemSubmissions> submissions) {
+	public Score(Team team, int points, Set<Problem> solvedProblems, Map<Problem, ProblemJudgements> submissions) {
 		this.team = team;
 		this.points = points;
 		this.solvedProblems = new HashSet<Problem>(solvedProblems);
@@ -24,7 +24,7 @@ public class Score implements ScoreTableEntry {
 		if (lastAcceptedSubmission == Integer.MIN_VALUE) {
 			int lastTime = 0;
 			for (Problem p : solvedProblems) {
-				ProblemSubmissions subsForProblem = submissions.get(p);
+				ProblemJudgements subsForProblem = submissions.get(p);
 				int solutionTime = subsForProblem.getSolutionTime();
 				if (solutionTime > lastTime) {
 					lastTime = solutionTime;
@@ -88,50 +88,50 @@ public class Score implements ScoreTableEntry {
 		if (!submissions.containsKey(problem)) {
 			return 0;
 		}
-		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.getSubmissionCount();
+		ProblemJudgements problemJudgements = submissions.get(problem);
+		return problemJudgements.getSubmissionCount();
 	}
 	
 	public int solutionTime(Problem problem) {
 		if (!submissions.containsKey(problem)) {
 			return 0;
 		}
-		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.getSolutionTime();
+		ProblemJudgements problemJudgements = submissions.get(problem);
+		return problemJudgements.getSolutionTime();
 	}
 	
 	public int scoreContribution(Problem problem) {
 		if (!submissions.containsKey(problem)) {
 			return 0;
 		}
-		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.scoreContribution();
+		ProblemJudgements problemJudgements = submissions.get(problem);
+		return problemJudgements.scoreContribution();
 	}
 	
 	public int penaltyIfSolved(Problem problem) {
 		if (!submissions.containsKey(problem)) {
 			return 0;
 		}
-		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.penalty();
+		ProblemJudgements problemJudgements = submissions.get(problem);
+		return problemJudgements.penalty();
 	}
 	
-	public Submission[] submissionsFor(Problem problem) {
+	public Judgement[] submissionsFor(Problem problem) {
 		if (!submissions.containsKey(problem)) {
-			return new Submission[0];
+			return new Judgement[0];
 		}
 		
-		ProblemSubmissions problemSubmissions = submissions.get(problem);
-		return problemSubmissions.toArray();
+		ProblemJudgements problemJudgements = submissions.get(problem);
+		return problemJudgements.toArray();
 	}
 
     public int lastSubmissionTime(Problem problem) {
         int lastRelevantTime = 0;
 
-        ProblemSubmissions problemSubmissions = submissions.get(problem);
-        if (problemSubmissions != null) {
+        ProblemJudgements problemJudgements = submissions.get(problem);
+        if (problemJudgements != null) {
 
-            for (Submission s : problemSubmissions) {
+            for (Judgement s : problemJudgements) {
             	InitialSubmission initialSubmission = s.getInitialSubmission();
                 if (s.isAccepted()) {
                     return initialSubmission.minutesFromStart;

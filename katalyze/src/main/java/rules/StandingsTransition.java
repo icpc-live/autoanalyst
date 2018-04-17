@@ -4,15 +4,15 @@ import model.Analyzer;
 import model.EventImportance;
 import model.LoggableEvent;
 import model.Standings;
-import model.Submission;
+import model.Judgement;
 
 public class StandingsTransition {
 	public final Standings before;
 	public final Standings after;
-	public final Submission submission;
+	public final Judgement submission;
 	private final Analyzer analyzer;
 	
-	public StandingsTransition(Analyzer analyzer, Standings before, Standings after, Submission submission) {
+	public StandingsTransition(Analyzer analyzer, Standings before, Standings after, Judgement submission) {
 		this.analyzer = analyzer;
 		this.before = before;
 		this.after = after;

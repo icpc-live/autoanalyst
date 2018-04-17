@@ -3,7 +3,7 @@ package rules;
 import model.EventImportance;
 import model.LoggableEvent;
 import model.Score;
-import model.Submission;
+import model.Judgement;
 import model.Team;
 
 public class NewLeader extends StateComparingRuleBase implements StandingsUpdatedEvent {
@@ -39,7 +39,7 @@ public class NewLeader extends StateComparingRuleBase implements StandingsUpdate
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		
-		Submission submission = transition.submission;
+		Judgement submission = transition.submission;
 		
 		if (!submission.isAccepted()) {
 			return;

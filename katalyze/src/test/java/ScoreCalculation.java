@@ -81,7 +81,7 @@ public class ScoreCalculation {
 		solve(problemA, 70);
 		solve(problemB, 90);
 		
-		assertScore(2*Submission.CostOfFailedSubmission+70+90, problemA, problemB);
+		assertScore(2* Judgement.CostOfFailedSubmission+70+90, problemA, problemB);
 	}
 	
 	@Test public void failuresAfterSolutionDontCount() {

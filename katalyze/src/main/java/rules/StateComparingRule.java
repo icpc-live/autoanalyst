@@ -11,7 +11,7 @@ public abstract class StateComparingRule {
 		notificationTargets.add(notificationTarget);
 	}
 	
-	protected void notify(Submission submission, String message, EventImportance importance) {
+	protected void notify(Judgement submission, String message, EventImportance importance) {
 		Team team = submission.getTeam();
 		LoggableEvent event = new LoggableEvent(team.getContest(), submission.getJudgementTimeMillis(), message, importance, submission.getInitialSubmission(), null);
 
@@ -20,6 +20,6 @@ public abstract class StateComparingRule {
 		}
 	}
 	
-	public abstract void process(Standings before, Standings after, Submission submission);
+	public abstract void process(Standings before, Standings after, Judgement submission);
 
 }

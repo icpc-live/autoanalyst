@@ -14,7 +14,7 @@ public class Contest {
 	final EntityMap<Organization> organizations = new EntityMap<>();
 	final List<Team> teams;
 	final Analyzer analyzer;
-	final List<Submission> submissions;
+	final List<Judgement> submissions;
 	final List<Language> languages;
 	final LanguageStats stats;
 	private ContestProperties properties;
@@ -28,7 +28,7 @@ public class Contest {
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
 		this.languages = new ArrayList<Language>();
-		this.submissions = new ArrayList<Submission>();
+		this.submissions = new ArrayList<Judgement>();
 		this.stats = new LanguageStats();
 		this.properties = new ContestProperties("Uninitialized Contest", 20, 3600000);
 		
@@ -80,7 +80,7 @@ public class Contest {
 	
 	public int getSubmissionsAtTime(int minutes) {
 		int count = 0;
-		for (Submission s : submissions) {
+		for (Judgement s : submissions) {
 			if (s.getInitialSubmission().minutesFromStart>minutes) {
 				break;
 			}
@@ -89,7 +89,7 @@ public class Contest {
 		return count;
 	}
 	
-	public List<Submission> getSubmissions() {
+	public List<Judgement> getSubmissions() {
 		return submissions;
 	}
 	
@@ -101,7 +101,7 @@ public class Contest {
 		return this.analyzer;
 	}
 
-	public void processSubmission(Submission newSubmission) {
+	public void processSubmission(Judgement newSubmission) {
 
 		Standings before = getStandings();
 

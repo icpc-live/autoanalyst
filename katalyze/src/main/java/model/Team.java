@@ -28,19 +28,19 @@ public class Team implements ApiEntity {
 		return String.format("#t%s", teamId);
 	}
 	
-	public Submission submit(InitialSubmission initialSubmission, int judgementContestTime, String judgementId, Problem problem, String judgement, Boolean accepted, Boolean penalty) {
+	public Judgement submit(InitialSubmission initialSubmission, int judgementContestTime, String judgementId, Problem problem, String judgement, Boolean accepted, Boolean penalty) {
 		
 		Analyzer analyzer = contest.getAnalyzer();
 		TestCaseExecution judgeOutcome = analyzer.getFailureInfo(initialSubmission);
 		
-		Submission newSubmission = new Submission(initialSubmission, judgementContestTime, judgementId, this, problem, judgement, accepted, penalty, judgeOutcome);
+		Judgement newSubmission = new Judgement(initialSubmission, judgementContestTime, judgementId, this, problem, judgement, accepted, penalty, judgeOutcome);
 		contest.processSubmission(newSubmission);
 		
 		return newSubmission;
 	}
 
 
-	public void registerJudgement(Submission judgement) {
+	public void registerJudgement(Judgement judgement) {
 		progress.register(judgement);
 	}
 	

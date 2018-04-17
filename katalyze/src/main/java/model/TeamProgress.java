@@ -3,7 +3,7 @@ package model;
 import java.util.*;
 
 public class TeamProgress {
-	private final Map<Problem,ProblemSubmissions> submissions = new HashMap<Problem, ProblemSubmissions>();
+	private final Map<Problem, ProblemJudgements> submissions = new HashMap<Problem, ProblemJudgements>();
 	private final Map<Problem,String> languages = new HashMap<Problem, String>();
 	private final Team team;
 	private String mainLanguage = null;
@@ -18,7 +18,7 @@ public class TeamProgress {
 		int timeIncludingPenalty = 0;
 		
 		for (Problem p : submissions.keySet()) {
-			ProblemSubmissions submissionsForProblem = submissions.get(p);
+			ProblemJudgements submissionsForProblem = submissions.get(p);
 			if (submissionsForProblem.isSolved()) {
 				solvedProblems.add(p);				
 				timeIncludingPenalty += submissionsForProblem.scoreContribution();
@@ -28,12 +28,12 @@ public class TeamProgress {
 		return new Score(team, timeIncludingPenalty, solvedProblems, submissions);
 	}
 	
-	private ProblemSubmissions getSubmissionsFor(Problem problem) {
+	private ProblemJudgements getSubmissionsFor(Problem problem) {
 		
 		if (submissions.containsKey(problem)) {
 			return submissions.get(problem);
 		} else {
-			ProblemSubmissions submissionsForProblem = new ProblemSubmissions(problem);
+			ProblemJudgements submissionsForProblem = new ProblemJudgements(problem);
 			submissions.put(problem, submissionsForProblem);
 			return submissionsForProblem;
 		}
@@ -86,8 +86,8 @@ public class TeamProgress {
 	}
 
 
-	public void register(Submission newSubmission) {
-		ProblemSubmissions submissions = getSubmissionsFor(newSubmission.getProblem());
+	public void register(Judgement newSubmission) {
+		ProblemJudgements submissions = getSubmissionsFor(newSubmission.getProblem());
 		submissions.add(newSubmission);
 	}
 	

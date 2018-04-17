@@ -23,7 +23,7 @@ public class ScoreOrdering extends tests.ContestSimulatorTest {
 	public void mostSolvedWins() {
 		ScoreTableComparer comparator = new ScoreTableComparer();
 		InitContest(3,2);
-		Map<Problem, ProblemSubmissions> noSubmissions = new HashMap<Problem, ProblemSubmissions>();
+		Map<Problem, ProblemJudgements> noSubmissions = new HashMap<Problem, ProblemJudgements>();
 		
 		Score scoreA = new Score(teams[0], 100, problems(problems[0]), noSubmissions);
 		Score scoreB = new Score(teams[1], 130, problems(problems[0], problems[1]), noSubmissions);

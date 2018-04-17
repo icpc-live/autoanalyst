@@ -6,7 +6,7 @@ import java.util.List;
 import model.Contest;
 import model.InitialSubmission;
 import model.Problem;
-import model.Submission;
+import model.Judgement;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -24,11 +24,11 @@ public class SubmissionsPerProblem implements ContestChart {
 		int cutoff=30;
 		
 		DefaultCategoryDataset target = new DefaultCategoryDataset();
-		List<Submission> submissions = contest.getSubmissions();
+		List<Judgement> submissions = contest.getSubmissions();
 		for (Problem p : contest.getProblems()) {
 			int total = 0;
 			int accepted = 0;
-			for (Submission s : submissions) {
+			for (Judgement s : submissions) {
 				InitialSubmission initialSubmission = s.getInitialSubmission();
 				if (s.getProblem() == p && initialSubmission.minutesFromStart+cutoff > currentTime && initialSubmission.minutesFromStart<=currentTime) {
 					if (s.isAccepted()) {

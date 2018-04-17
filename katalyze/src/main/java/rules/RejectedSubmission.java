@@ -14,7 +14,7 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		// This rule doesn't bother about accepted solutions
-		Submission submission = transition.submission;
+		Judgement submission = transition.submission;
 		
 		if (submission.isAccepted()) {
 			return;
@@ -24,7 +24,7 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 		EventImportance defaultImportance = (rankAfter < numberOfPositionsToMonitor) ? EventImportance.Normal : EventImportance.Whatever;
 		
 		Score teamScore = transition.before.scoreOf(submission.getTeam());
-		Submission[] previousSubmissions = teamScore.submissionsFor(submission.getProblem());
+		Judgement[] previousSubmissions = teamScore.submissionsFor(submission.getProblem());
 
 		if (teamScore.isSolved(submission.getProblem())) {
 			return;
@@ -37,7 +37,7 @@ public class RejectedSubmission extends StateComparingRuleBase implements Standi
 		} else {
 			String previousAttempts = "";
 			boolean first = true;
-			for (Submission s : previousSubmissions) {
+			for (Judgement s : previousSubmissions) {
 				if (first) {
 					first = false;
 				} else {

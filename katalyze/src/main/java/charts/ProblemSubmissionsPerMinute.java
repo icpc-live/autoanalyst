@@ -3,7 +3,7 @@ package charts;
 import java.util.List;
 
 import model.Contest;
-import model.Submission;
+import model.Judgement;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -21,12 +21,12 @@ public class ProblemSubmissionsPerMinute extends ContestTimeGraph {
 
         XYSeries sTotal = new XYSeries("Total submissions per minute");
         XYSeries sAccepted = new XYSeries("Accepted submissions per minute");
-        List<Submission> submissions = contest.getSubmissions();
+        List<Judgement> submissions = contest.getSubmissions();
         for (int time=0; time<=currentTime; time++) {
         	int total = 0;
         	int accepted = 0;
         	
-        	for (Submission s : submissions) {
+        	for (Judgement s : submissions) {
         		if (s.getInitialSubmission().minutesFromStart == time) {
         			total++;
         			if (s.isAccepted()) {
