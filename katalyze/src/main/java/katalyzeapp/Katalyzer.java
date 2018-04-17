@@ -43,7 +43,7 @@ public class Katalyzer {
 	
 	private void updateScoreboards(boolean force) {
 	    if (force) {
-	        logger.info("Forced scoreboard update");
+	        logger.debug("Forced scoreboard update");
         }
 		long currentTime = System.currentTimeMillis();
 		if (force || currentTime - lastUpdate > updateInterval) {
