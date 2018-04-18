@@ -112,6 +112,7 @@ class Analyzer:
             'cpp': "C++",
             'c': "C",
             'java': "Java",
+            'kt': "Kotlin",
             'py': "Python" # FIXME: do we want to discern between Python 2/3?
             }
 
