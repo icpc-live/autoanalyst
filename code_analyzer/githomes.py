@@ -236,7 +236,7 @@ class GitHomes:
                 if os.path.exists( teamDir ):
                     shutil.rmtree( teamDir )
                 os.makedirs( teamDir )
-                subprocess.call( [ "unzip", f.name, "-d", teamDir ] )
+                subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", teamDir ] )
                 os.unlink( f.name )
 
                 print("done.")
@@ -303,3 +303,4 @@ class GitHomes:
 if __name__ == '__main__':
     gitHomes = GitHomes()
     gitHomes.poll()
+
