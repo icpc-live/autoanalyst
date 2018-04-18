@@ -19,6 +19,9 @@ class GitHomes:
         # interval for updating team backups.
         self.interval = config[ "teambackup" ][ "interval" ]
 
+	# number of tries to request team backups
+	self.request_tries = config[ "teambackup" ][ "request_tries" ]
+
         # location for the repository of team backup snapshots
         self.gitdir = config[ "teambackup" ][ "gitdir" ]
 
@@ -217,10 +220,21 @@ class GitHomes:
 
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
-            (responseHeader, result) = h.request( "%s/teams/%d/backup" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
-            print(responseHeader)
-            #print(responseHeader.status)
-            #print(responseHeader["status"])
+
+            result = None
+            for _ in range( self.request_tries ):
+                  try:
+                        (responseHeader, result) = h.request( "%s/teams/%d/backup" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
+                        break
+                  except Exception e:
+                        print('The httplib thrown an exception:')
+                        import traceback
+                        print(traceback.format_exc())
+
+            # If we were not able to get result for our attemtps we continue with the following team.
+            if result is None:
+                print('Unable to fetch backups for team %s. The team is skipped' % teamIdx)
+                continue
 
             if responseHeader["status"] == "200":
                 sys.stdout.write("updated, commit to git... ")

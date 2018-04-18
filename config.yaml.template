@@ -46,6 +46,7 @@ teambackup:
     # Interval between retrieving backups, in seconds:
     interval:  120
     lastTeam:  119
+    request_tries: 3
 
 # Configuration for the Katalyzer
 katalyzer:
