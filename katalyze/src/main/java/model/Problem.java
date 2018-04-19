@@ -53,4 +53,18 @@ public class Problem implements ApiEntity {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Problem)) {
+			return false;
+		}
+		Problem other = (Problem) o;
+		return id.equals(other.id);
+	}
+
 }
