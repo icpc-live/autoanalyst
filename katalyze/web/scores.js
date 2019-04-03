@@ -214,10 +214,8 @@
 			}
 
             var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
-            var padded_id = "" + data.team_id;
-            while (padded_id.length < 3) { padded_id = "0" + padded_id; } // there's got to be a better way to do this
-            var videoLinks = "<a href='vlc://192.168.1.207/video/webcam/" + padded_id + "'>Camera</a>, " +
-                             "<a href='vlc://192.168.1.207/video/desktop/" + padded_id + "'>Screen</a>";
+            var videoLinks = "<a href='vlc://192.168.1.207/video/webcam/" + data.team_id + "'>Camera</a>, " +
+                             "<a href='vlc://192.168.1.207/video/desktop/" + data.team_id + "'>Screen</a>";
 			addCells([data.rank, name, data.score.num_solved, data.score.total_time, videoLinks, data.main_lang]);
 			
 			 $.each(data.problems, function(i, problemData) {
