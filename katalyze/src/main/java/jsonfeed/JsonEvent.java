@@ -1,5 +1,6 @@
 package jsonfeed;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
@@ -29,8 +30,22 @@ public class JsonEvent {
 
     }
 
+
     public String getString(String key) {
         return data.getString(key);
+    }
+
+    public String[] getStringArray(String key) {
+        JSONArray entries = data.getJSONArray(key);
+        if (entries == null) {
+            return new String[0];
+        }
+
+        String[] target = new String[entries.size()];
+        for (int i = 0; i<entries.size(); i++) {
+            target[i] = entries.getString(i);
+        }
+        return target;
     }
 
     public String getStringOrNull(String key) {

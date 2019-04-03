@@ -1,6 +1,7 @@
 package messageHandlers;
 
 import legacyfeed.SimpleMessage;
+import model.Group;
 import model.Team;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -27,7 +28,7 @@ public class TeamHandler extends SingleMessageHandler {
 		if (StringUtils.isEmpty(shortName)) {
 			shortName = teamName;
 		}
-		Team newTeam = new Team(contest, teamNumber, teamName, shortName, null);
+		Team newTeam = new Team(contest, teamNumber, teamName, shortName, null, new Group[0]);
 		contest.addTeam(newTeam);
 	}
 

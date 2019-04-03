@@ -104,8 +104,30 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 			s.setString(6, org.getDisplayName());
 			s.setString(7, org.getCountry());
 			s.executeUpdate();
+
+			for(Group g : team.getGroups()) {
+				s = conn.prepareStatement("insert into team_regions(region_id, team_id, region_name, super_region_name, super_region_id) values(?,?,?,?,?)");
+				s.setString(1, g.getId());
+				s.setString(2, team.getId());
+				s.setString(3, g.getName());
+				s.setString(4, g.getName());
+				s.setString(5, g.getId());
+				s.executeUpdate();
+			}
 		}
 	}
+
+	/*CREATE TABLE IF NOT EXISTS `team_regions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `region_id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `region_name` varchar(100) NOT NULL,
+  `super_region_name` varchar(100) NOT NULL,
+  `super_region_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;*/
+
+
 /*
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contest_name` varchar(150) NOT NULL,

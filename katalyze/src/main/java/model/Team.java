@@ -9,15 +9,17 @@ public class Team implements ApiEntity {
 	private final Contest contest;
 	private final String shortName;
 	private final Organization organization;
+	private final Group[] groups;
 
 
-	public Team(Contest contest, String teamId, String name, String shortName, Organization organization) {
+	public Team(Contest contest, String teamId, String name, String shortName, Organization organization, Group[] groups) {
 		this.contest = contest;
 		this.teamId = teamId;
 		this.name = name;
 		this.shortName = shortName;
 		this.progress = new TeamProgress(this);
 		this.organization = organization;
+		this.groups = groups;
 	}
 
 	@Override
@@ -40,6 +42,10 @@ public class Team implements ApiEntity {
 		
 		return newSubmission;
 	}
+
+	public Group[] getGroups() {
+	    return groups.clone();
+    }
 
 
 	public boolean registerJudgement(Judgement judgement) {

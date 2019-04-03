@@ -4,6 +4,7 @@ import model.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +28,16 @@ public class StandardEventHandlers {
         handlers.put("teams", (contest, src) -> {
             String organizationId = src.getString("organization_id");
             Organization org = (organizationId != null) ? (contest.getOrganization(organizationId)) : null;
-            contest.registerTeam(src.getString("id"), src.getString("name"), org);
+            String[] group_ids = src.getStringArray("group_ids");
+            ArrayList<Group> groups = new ArrayList<>();
+            for (String group_id : group_ids) {
+                Group group = contest.getGroup(group_id);
+                if (group != null) {
+                    groups.add(group);
+                }
+            }
+
+            contest.registerTeam(src.getString("id"), src.getString("name"), org, groups.toArray(new Group[groups.size()]));
         });
         handlers.put("contests", (contest, src)  -> {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());
@@ -68,6 +78,12 @@ public class StandardEventHandlers {
             team.freshSubmission(new InitialSubmission(submissionId, team, problem, src.getString("language_id"),
                     contestTimeMilliseconds));
         });
+        handlers.put("groups", (contest, src) -> {
+            String groupId = src.getString("id");
+            String groupName = src.getString("name");
+            contest.registerGroup(groupId, groupName);
+        });
+
         handlers.put("judgements", (contest, src) -> {
 
             Analyzer analyzer = contest.getAnalyzer();

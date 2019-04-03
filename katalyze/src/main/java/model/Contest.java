@@ -10,6 +10,7 @@ public class Contest {
 	final Map<String, Problem> problems;
 	final TreeSet<Problem> problemsByLabel;
 
+	final Map<String, Group> groups;
 	final Map<String, JudgementType> judgementTypes;
 	final EntityMap<Organization> organizations = new EntityMap<>();
 	final List<Team> teams;
@@ -26,6 +27,7 @@ public class Contest {
 		this.problems = new TreeMap<>();
 		this.problemsByLabel = new TreeSet<Problem>(Comparator.comparing(x -> x.label));
 
+		this.groups = new HashMap<>();
 		this.judgementTypes = new HashMap<>();
 		this.teams = new ArrayList<Team>();
 		this.analyzer = new Analyzer(this, 0);
@@ -56,12 +58,22 @@ public class Contest {
         analyzer.entityChanged(properties, op);
 	}
 	
-	public Team registerTeam(String teamId, String teamName, Organization org) {
-		Team newTeam = new Team(this,teamId, teamName, teamName, org);
+	public Team registerTeam(String teamId, String teamName, Organization org, Group[] groups) {
+		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups);
 		teams.add(newTeam);
 		analyzer.entityChanged(newTeam, EntityOperation.CREATE);
 		return newTeam;
 	}
+
+	public Group registerGroup(String groupId, String groupName) {
+		Group newGroup = new Group(groupId, groupName);
+		groups.put(groupId, newGroup);
+		return newGroup;
+	}
+
+	public Group getGroup(String groupId) {
+	    return groups.get(groupId);
+    }
 	
 	public Team[] getTeams() {
 		return teams.toArray(new Team[0]);

@@ -1,11 +1,9 @@
 package tests;
 
-import model.Contest;
-import model.InitialSubmission;
-import model.Problem;
-import model.Team;
+import model.*;
 
 public abstract class ContestSimulatorTest {
+	private final Group[] noGroups = new Group[0];
 	protected Contest contest;
 	protected Problem[] problems;
 	protected Team[] teams;
@@ -20,7 +18,7 @@ public abstract class ContestSimulatorTest {
 		}
 		
 		for (int i=0; i<nTeams; i++) {
-			contest.registerTeam(Integer.toString(i), String.format("Team %d", i), null);
+			contest.registerTeam(Integer.toString(i), String.format("Team %d", i), null, noGroups);
 		}
 		
 		teams = contest.getTeams();

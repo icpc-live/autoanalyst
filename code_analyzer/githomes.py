@@ -226,7 +226,7 @@ class GitHomes:
                   try:
                         (responseHeader, result) = h.request( "%s/teams/%d/backup" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
                         break
-                  except Exception e:
+                  except:
                         print('The httplib thrown an exception:')
                         import traceback
                         print(traceback.format_exc())
