@@ -2,11 +2,7 @@
 
 $query = "";
 $function = 'all_superregions';
-if (isset($_GET["region_id"]) && $_GET["region_id"] != "") {
-    $query = "region_id = " . intval($_GET["region_id"]);
-    $name_field = "region_name";
-    $function = 'single_region_or_superregion';
-} else if (isset($_GET["super_region_id"]) && $_GET["super_region_id"] != "") {
+if (isset($_GET["super_region_id"]) && $_GET["super_region_id"] != "") {
     $query = "super_region_id = " . intval($_GET["super_region_id"]);
     $name_field = "super_region_name";
     $function = 'single_region_or_superregion';
@@ -84,21 +80,15 @@ function all_superregions() {
 ?>
     <body>
     <?php navigation_container(); ?>
-    <h1>Choose a super-region or region to view:</h1>
+    <h1>Choose a super-region to view:</h1>
 
     <ul>
     <?php
-    $result = mysqli_query($db, "select super_region_name, super_region_id, count(*) as team_count from team_regions group by super_region_id order by super_region_name");
+    $result = mysqli_query($db, "select distinct super_region_name, super_region_id from team_regions");
 
     while ($result && $row = mysqli_fetch_assoc($result)) {
-        printf("<li><a href='region.php?super_region_id=%d'>%s</a> (%s teams)\n", $row["super_region_id"], $row["super_region_name"], $row["team_count"]);
-        printf("<ul>\n");
-        $region_result = mysqli_query($db, sprintf("select region_name, region_id, count(*) as team_count from team_regions where super_region_id=%d group by region_id order by region_name", $row["super_region_id"]));
-        while ($region_result && $region_row = mysqli_fetch_assoc($region_result)) {
-            printf("<li><a href='region.php?region_id=%d'>%s</a> (%s teams)\n", $region_row["region_id"], $region_row["region_name"], $region_row["team_count"]);
-        }
-        print("</ul>\n");
-    }
+        printf("<li><a href='region.php?super_region_id=%d'>%s</a> \n", $row["super_region_id"], $row["super_region_name"]);
+     }
     ?>
     </ul>
 
@@ -172,7 +162,7 @@ function single_region_or_superregion($db, $team_ids, $name) {
     </div>
 
     <?php
-    printf("<div class='teamscore' data-source='' data-filter=\"score.team.id in {%s}\"></div>", 
+    printf("<div class='teamscore' data-source='/icat/api' data-filter=\"score.team_id in {%s}\"></div>", 
         implode(",", array_map(function($id) { return "$id:1"; }, $team_ids ))
     );
     ?>
