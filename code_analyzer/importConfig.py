@@ -4,7 +4,7 @@
 # This is was originally created under the code analyzer, but it probably doesn't belong
 # there.
 
-import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib, sys
+import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, urllib.parse, urllib.error, sys
 from common import dbConn, config
 from datetime import datetime, timedelta
 import httplib2
@@ -35,9 +35,9 @@ class ConfigImporter:
         if responseHeader["status"] == "200":
             for line in result.split('\n'):
                 if line:
-		    callback(json.loads(line))
+                    callback(json.loads(line))
         else:
-            print("error %s" % responseHeader)
+            print(("error %s" % responseHeader))
 
         shutil.rmtree(d)
 
@@ -75,7 +75,7 @@ class ConfigImporter:
         freeze_time = duration - freeze_duration
 
         query = "INSERT INTO contests (contest_name, start_time, length, freeze ) VALUES (%s,%s,%s,%s)"
-	params = (info[ "info" ][ "name" ],  start_time, duration, freeze_time)
+        params = (info[ "info" ][ "name" ],  start_time, duration, freeze_time)
         cursor = dbConn.cursor()
         cursor.execute(query, params)
 
@@ -91,9 +91,9 @@ class ConfigImporter:
         p = problem["problem"]
         query = "INSERT INTO problems (id, problem_id, problem_name, color) VALUES (%s,%s,%s,%s)"
         params =  (int(p["id"]), dbConn.escape_string(p["label"]), dbConn.escape_string(p["name"]), dbConn.escape_string(p["rgb"]))
-	cursor = dbConn.cursor()
+        cursor = dbConn.cursor()
         cursor.execute(query, params)
-	
+        
     def importPerson(self, person):
         p = person["person"]
         if p["role"] == "Contestant":        
@@ -104,7 +104,7 @@ class ConfigImporter:
             params = (self.contestants, "%s %s" % (p["first-name"], p["last-name"]), int(p["team-id"]))
             cursor = dbConn.cursor()
             cursor.execute(query, params)
-	elif p["role"] == "Coach":
+        elif p["role"] == "Coach":
             t = int(p["team-id"])
             query = "UPDATE teams SET coach_name = %s WHERE team_id = %s"
             params = ("%s %s" % (p["first-name"], p["last-name"]), int(p["team-id"]))

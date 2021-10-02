@@ -15,7 +15,7 @@ from analyzer import Analyzer
 import re
 
 def usage():
-    print "Usage: ignoreFile.py <abs_path>"
+    print("Usage: ignoreFile.py <abs_path>")
     exit( 1 )
 
 if len( sys.argv ) != 2:
@@ -25,14 +25,14 @@ path = sys.argv[ 1 ]
 
 prefix = "%s/team" % BACKUP_TOP
 if not path.startswith( prefix ):
-    print "Bad path format"
+    print("Bad path format")
     usage()
 
 # Strip off the front, and extract the team id.
 path = path[len(prefix):]
 mg = re.match( "^([0-9]+)", path )
 if ( mg == None ):
-    print "Bad path format, no team id"
+    print("Bad path format, no team id")
     usage()
 
 team = mg.group( 1 )

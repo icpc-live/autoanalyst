@@ -15,7 +15,7 @@ from analyzer import Analyzer
 import re
 
 def usage():
-    print "Usage: forceFile.py <abs_path> <problem_id>"
+    print("Usage: forceFile.py <abs_path> <problem_id>")
     exit( 1 )
 
 if len( sys.argv ) != 3:
@@ -26,14 +26,14 @@ prob = sys.argv[ 2 ].upper()
 
 prefix = "%s/team" % BACKUP_TOP
 if not path.startswith( prefix ):
-    print "Bad path format"
+    print("Bad path format")
     usage()
 
 # Strip off the front, and extract the team id.
 path = path[len(prefix):]
 mg = re.match( "^([0-9]+)", path )
 if ( mg == None ):
-    print "Bad path format, no team id"
+    print("Bad path format, no team id")
     usage()
 
 team = mg.group( 1 )
@@ -44,7 +44,7 @@ cursor = dbConn.cursor()
 
 # Make sure this is a legal problem_id.
 if prob not in problems:
-    print "Bad problem id: %s" % prob
+    print("Bad problem id: %s" % prob)
     usage()
 
 # Just to get the extension map.

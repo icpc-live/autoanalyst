@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib, sys
+import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, urllib.parse, urllib.error, sys
 from common import dbConn, config
 from datetime import datetime, timedelta
 import httplib2
@@ -19,8 +19,8 @@ class GitHomes:
         # interval for updating team backups.
         self.interval = config[ "teambackup" ][ "interval" ]
 
-	# number of tries to request team backups
-	self.request_tries = config[ "teambackup" ][ "request_tries" ]
+        # number of tries to request team backups
+        self.request_tries = config[ "teambackup" ][ "request_tries" ]
 
         # location for the repository of team backup snapshots
         self.gitdir = config[ "teambackup" ][ "gitdir" ]
@@ -193,7 +193,7 @@ class GitHomes:
         os.chdir( self.sourceRepo )
 
         timestr = when.strftime( '%Y-%m-%d %H:%M:%S' ) + " " + self.sourceRepoTzone
-        print 'git checkout $(git rev-list -n 1 --before="%s" master)' % timestr;
+        print('git checkout $(git rev-list -n 1 --before="%s" master)' % timestr);
         os.system('git checkout $(git rev-list -n 1 --before="%s" master)' % timestr )
 
         # Copy everything over to the repo we're checking things into.
@@ -229,11 +229,11 @@ class GitHomes:
                   except:
                         print('The httplib thrown an exception:')
                         import traceback
-                        print(traceback.format_exc())
+                        print((traceback.format_exc()))
 
             # If we were not able to get result for our attemtps we continue with the following team.
             if result is None:
-                print('Unable to fetch backups for team %s. The team is skipped' % teamIdx)
+                print(('Unable to fetch backups for team %s. The team is skipped' % teamIdx))
                 continue
 
             if responseHeader["status"] == "200":
@@ -257,7 +257,7 @@ class GitHomes:
             elif responseHeader["status"] == "304":
                 print("no change, done.")
             else:
-                print("error %s" % responseHeader)
+                print(("error %s" % responseHeader))
 
         shutil.rmtree(d)
         os.chdir( self.origin )
@@ -265,7 +265,7 @@ class GitHomes:
     # Repeatedly download and commit fresh team backups.
     def poll( self ):
         if not os.path.exists( self.gitdir + "/.git" ):
-            print "Repository doesn't exist.  Did you run prephomes first?"
+            print("Repository doesn't exist.  Did you run prephomes first?")
             exit( 1 )
         
         while ( True ):
@@ -281,7 +281,7 @@ class GitHomes:
                 delta = timedelta( seconds = ( elapsed * self.simulationRate ) )
                 self.pullBackupsSimulate( self.sourceRepoStart + delta )
             else:
-                print "Unknown method '" + self.pullmethod + "' to acquire backups."
+                print("Unknown method '" + self.pullmethod + "' to acquire backups.")
                 exit( 1 )
 
             os.chdir( self.gitdir )
@@ -300,7 +300,7 @@ class GitHomes:
 
             os.chdir( self.origin )
                 
-            print "Checking in %s at %s" % ( tag, datetime.now().strftime( "%a %b %d %H:%M:%S %Y") )
+            print("Checking in %s at %s" % ( tag, datetime.now().strftime( "%a %b %d %H:%M:%S %Y") ))
             subprocess.call( [ "python", self.analystTop + "/code_analyzer/analyzer.py", tag ] )
 
             # Rest up to the end of the minute (or whatever the interval is), or zero if it's too late.
@@ -311,7 +311,7 @@ class GitHomes:
             if sleeptime < 0:
                 sleeptime = 0;
 
-            print "Sleeping: until next pull %f" % ( sleeptime )
+            print("Sleeping: until next pull %f" % ( sleeptime ))
             time.sleep( sleeptime )
 
 if __name__ == '__main__':

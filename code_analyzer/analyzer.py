@@ -305,7 +305,7 @@ class Analyzer:
         # at the ones that are less likely
 
         # First, consider just the filename against all problem keywords.
-        for problem_id, keywords in self.probKeywords.iteritems():
+        for problem_id, keywords in self.probKeywords.items():
             for keyword in keywords:
                 # tsp.cpp -> a
                 if shortName == keyword:
@@ -325,7 +325,7 @@ class Analyzer:
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
 
-                for problem_id, keywords in self.probKeywords.iteritems():
+                for problem_id, keywords in self.probKeywords.items():
                     for keyword in keywords:
                         # tsp/sol.java -> a
                         if shortDirName == keyword:
@@ -338,7 +338,7 @@ class Analyzer:
 
 
         # Then, take matches that occur anywhere in the problem name
-        for problem_id, keywords in self.probKeywords.iteritems():
+        for problem_id, keywords in self.probKeywords.items():
             for keyword in keywords:
                 if ( keyword in baseName ):
                     return problem_id
@@ -368,7 +368,7 @@ class Analyzer:
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
 
-                for problem_id, keywords in self.probKeywords.iteritems():
+                for problem_id, keywords in self.probKeywords.items():
                     for keyword in keywords:
                         # retry_b/sol.java -> b
                         if keyword in shortDirName:
@@ -376,7 +376,7 @@ class Analyzer:
 
         # Then, try an approximate match against a keyword, willing to miss
         # a fraction of the total characters.
-        for problem_id, keywords in self.probKeywords.iteritems():
+        for problem_id, keywords in self.probKeywords.items():
             for keyword in keywords:
                 if ( len( keyword ) > 3 and
                      editDist( keyword, shortName ) <= len( keyword ) * 0.25 ):
@@ -388,7 +388,7 @@ class Analyzer:
             dirList = dirName.split( '/' )
             for dir in dirList:
                 shortDirName = self.stripDecoration( strips, dir )
-                for problem_id, keywords in self.probKeywords.iteritems():
+                for problem_id, keywords in self.probKeywords.items():
                     for keyword in keywords:
                         if ( len( keyword ) > 3 and
                              editDist( keyword, shortDirName ) <= len( keyword ) * 0.25 ):
@@ -490,7 +490,7 @@ class Analyzer:
 
                     # If the file looks like it changed in the future, ignore it unless git agrees it's changing.
                     if fobj.time > scriptStartTime + self.backupInterval:
-                        print "Future Modification: ", fobj.path, " changed ", fobj.linesChanged, " lines, ", (fobj.time - scriptStartTime), " seconds in the future"
+                        print("Future Modification: ", fobj.path, " changed ", fobj.linesChanged, " lines, ", (fobj.time - scriptStartTime), " seconds in the future")
                         if fobj.linesChanged > 0:
                             fobj.time = scriptStartTime
                         else:
@@ -513,7 +513,7 @@ class Analyzer:
 
         # Write out any new mappings
         cursor = dbConn.cursor()
-        for k, v in self.fileMappings.iteritems():
+        for k, v in self.fileMappings.items():
             if v.new_problem_id != None:
                 if v.db_id == None:
                     update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( '%s', '%s', '%s', '%s', '0' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), v.new_problem_id, v.lang_id )
@@ -522,11 +522,11 @@ class Analyzer:
                 else:
                     update = "UPDATE file_to_problem SET problem_id='%s' WHERE id='%d'" % ( v.new_problem_id, v[ 0 ] )
                     cursor.execute( update )
-                print "( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v.new_problem_id )
+                print("( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v.new_problem_id ))
 
         # Write out fresh edit times to file_modtime and new records to edit_activity
         cursor = dbConn.cursor()
-        for k, v in self.lastEditTimes.iteritems():
+        for k, v in self.lastEditTimes.items():
             if v[ 2 ] != None:
                 t = v[ 2 ].time
                 if v[ 0 ] == None:
@@ -561,7 +561,7 @@ class Analyzer:
             modLatest[ ( row[ 1 ], row[ 2 ] ) ] = [ row[ 0 ], row[ 3 ], 0 ]
             row = cursor.fetchone()
 
-        for k, v in self.fileMappings.iteritems():
+        for k, v in self.fileMappings.items():
             prob = v.problem_id
             if v.new_problem_id != None:
                 prob = v.new_problem_id
@@ -581,7 +581,7 @@ class Analyzer:
                     else:
                         modLatest[ ( k[ 0 ], prob ) ] = [ None, t, 1 ]
 
-        for k, v in modLatest.iteritems():
+        for k, v in modLatest.items():
             t = v[ 1 ]
             if v[ 0 ] == None:
                 update = "INSERT INTO edit_latest (team_id, problem_id, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], k[ 1 ], t )
@@ -623,7 +623,7 @@ class Analyzer:
                         mappingRec = self.fileMappings[ ( team, fname ) ]
                         if mappingRec.override:
                             prob = mappingRec.problem_id
-                            print "%s <= %s" % ( prob, f )
+                            print("%s <= %s" % ( prob, f ))
 
                     # if it's not a forced mapping, try to guess and report that.
                     if prob == None:
@@ -632,9 +632,9 @@ class Analyzer:
 
                         # report the file and the problem its assigned to.
                         if prob == None:
-                            print "unknown <- %s" % ( f )
+                            print("unknown <- %s" % ( f ))
                         else:
-                            print "%s <- %s" % ( prob, f )
+                            print("%s <- %s" % ( prob, f ))
 
 
 if __name__ == '__main__':

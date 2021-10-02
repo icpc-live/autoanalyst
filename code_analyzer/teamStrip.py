@@ -13,7 +13,7 @@ from common import dbConn, BACKUP_TOP
 from analyzer import Analyzer
 
 def usage():
-    print "Usage: teamStrip.py <team_id> <string>"
+    print("Usage: teamStrip.py <team_id> <string>")
     exit( 1 )
 
 if len( sys.argv ) != 3:
@@ -27,7 +27,7 @@ analyzer = Analyzer( BACKUP_TOP )
 analyzer.loadConfiguration()
 
 if ( team < 1 or team > analyzer.lastTeam ):
-    print "Invalid teeam id: %d" % (team)
+    print("Invalid teeam id: %d" % (team))
     usage()
 
 cursor = dbConn.cursor()

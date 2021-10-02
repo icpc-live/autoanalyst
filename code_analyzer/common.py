@@ -17,10 +17,10 @@ try:
                               user   = config['database']['user'],
                               passwd = config['database']['password'],
                               db     = config['database']['name'],
-			      charset = 'utf8' )
+                              charset = 'utf8' )
 
-except MySQLdb.Error, e:
-    print "Error %d: %s" % ( e.args[ 0 ], e.args[ 1 ])
+except MySQLdb.Error as e:
+    print("Error %d: %s" % ( e.args[ 0 ], e.args[ 1 ]))
     sys.exit( 1 )
 
 # Get list of problems from database.
