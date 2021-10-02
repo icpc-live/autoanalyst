@@ -37,7 +37,11 @@ public class StandardEventHandlers {
                 }
             }
 
-            contest.registerTeam(src.getString("id"), src.getString("name"), org, groups.toArray(new Group[groups.size()]));
+            String[] desktops = src.getUrlArray("desktop");
+            String[] webcams = src.getUrlArray("webcam");
+
+            contest.registerTeam(src.getString("id"), src.getString("name"), org, groups.toArray(new Group[groups.size()]),
+                    webcams, desktops);
         });
         handlers.put("contests", (contest, src)  -> {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());

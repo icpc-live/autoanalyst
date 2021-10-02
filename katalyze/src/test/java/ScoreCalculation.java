@@ -21,7 +21,7 @@ public class ScoreCalculation {
 		contest = new Contest();
 		contest.addProblem(problemA);
 		contest.addProblem(problemB);
-		teamA = contest.registerTeam("1", "Foo", null, new Group[0]);
+		teamA = contest.registerTeam("1", "Foo", null, new Group[0], new String[0], new String[0]);
 	}
 
 	private String makeSubmissionId() {

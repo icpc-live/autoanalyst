@@ -47,6 +47,23 @@ public class JsonEvent {
         return target;
     }
 
+    public String[] getUrlArray(String key) {
+        JSONArray entries = data.getJSONArray(key);
+        if (entries == null) {
+            return new String[0];
+        }
+
+        String[] target = new String[entries.size()];
+        for (int i = 0; i<entries.size(); i++) {
+            JSONObject urlObject = entries.getJSONObject(i);
+            target[i] = urlObject.getString("href");
+        }
+        return target;
+
+
+
+    }
+
     public String getStringOrNull(String key) {
         return data.has(key) ? data.getString(key) : null;
     }

@@ -214,8 +214,18 @@
 			}
 
             var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
-            var videoLinks = "<a href='vlc://192.168.1.207/video/webcam/" + data.team_id + "'>Camera</a>, " +
-                             "<a href='vlc://192.168.1.207/video/desktop/" + data.team_id + "'>Screen</a>";
+            var videoLinks = "";
+            for (var entry in teamInfo.desktops) {
+                var link = teamInfo.desktops[entry];
+                videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?url=" + encodeURIComponent(link)+"'> &#128187;</a>";
+            }
+
+            for (var entry in teamInfo.webcams) {
+                var link = teamInfo.webcams[entry];
+                videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?url=" + encodeURIComponent(link)+"'> &#128247;</a>";
+            }
+//            var videoLinks = "<a href='vlc://192.168.1.207/video/webcam/" + data.team_id + "'>Camera</a>, " +
+//                             "<a href='vlc://192.168.1.207/video/desktop/" + data.team_id + "'>Screen</a>";
 			addCells([data.rank, name, data.score.num_solved, data.score.total_time, videoLinks, data.main_lang]);
 			
 			 $.each(data.problems, function(i, problemData) {

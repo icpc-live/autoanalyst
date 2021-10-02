@@ -58,8 +58,9 @@ public class Contest {
         analyzer.entityChanged(properties, op);
 	}
 	
-	public Team registerTeam(String teamId, String teamName, Organization org, Group[] groups) {
-		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups);
+	public Team registerTeam(String teamId, String teamName, Organization org, Group[] groups,
+							 String[] webcams, String[] desktops) {
+		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups, webcams, desktops);
 		teams.add(newTeam);
 		analyzer.entityChanged(newTeam, EntityOperation.CREATE);
 		return newTeam;
