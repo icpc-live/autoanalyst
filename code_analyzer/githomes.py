@@ -1,13 +1,26 @@
 #!/usr/bin/python
-
+import json
 import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, urllib.parse, urllib.error, sys
 from common import dbConn, config
 from datetime import datetime, timedelta
 import httplib2
 import re
 
+
+class Backup():
+    def __init__(self, href, team, path, modTime):
+        self.href = href
+        self.team = team
+        self.path = path
+        self.modTime = modTime
+
+    def __repr__(self) -> str:
+        return self.__dict__.__repr__()
+
+
 # Just an object wrapping up the githomes functioanlity.
 class GitHomes:
+
     def __init__( self ):
         # Find the top-level directory for the analyzer
         self.analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( inspect.currentframe()))))
@@ -99,17 +112,26 @@ class GitHomes:
 
         # figure out a start time in the format we will get from the CDS.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT start_time FROM contests ORDER BY id DESC LIMIT 1" )
+        cursor.execute( "SELECT contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
         row = cursor.fetchone()
         if ( row == None ):
             print("Error: no contest found in the database.")
             exit(1)
 
         startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
-        self.teamLastModified = {};
-        for teamIdx in range( 1, self.lastTeam + 1 ):
-            self.teamLastModified[ teamIdx ] = startTime;
-
+        self.backups = []
+        self.http = httplib2.Http()
+        self.http.add_credentials(self.CDSUser, self.CDSPass)
+        self.http.disable_ssl_certificate_validation=True
+        r = self.http.request("%s/%s/teams" % (self.CDSRoot, row[0]))
+        teamData = json.loads(r[1].decode("utf-8"))
+        for team in teamData:
+            for index, backup in enumerate(team["backup"]):
+                # we have /contest in both CDSRoot and href
+                # probably we don't need to have one in CFSRoot, but it's too hard to change it now
+                url = (self.CDSRoot + "/" + backup["href"]).replace("/contests/contests", "/contests")
+                self.backups.append(Backup(url, team["id"], "" if len(team["backup"]) == 1 else f"/backup_{index+1}", startTime))
+        print(self.backups)
 
     # The copy of team directories obtained from the CDS preserves modification
     # times, but git doesn't.  Here, we generate two listing files (long and short)
@@ -204,18 +226,8 @@ class GitHomes:
     def pullBackupsCDS( self ):
         os.chdir( self.gitdir )
 
-        # right now, we're making a new cache directory every time
-        # we pull down a batch of team backups. This doesn't seem to
-        # make sense.  I'm not sure we want a cache, and, if we do, 
-        # don't we want it to persist across all connections?
-        d = tempfile.mkdtemp(prefix='githomes')
-        # is it a problem to make this object over and over?
-        h = httplib2.Http(os.path.join(d,".cache"))
-        h.add_credentials( self.CDSUser, self.CDSPass )
-        h.disable_ssl_certificate_validation=True
-
-        for teamIdx in range( 1, self.lastTeam + 1 ):
-            str = "Polling %s/teams/%d/backup ... " % ( self.CDSRoot, teamIdx )
+        for backup in self.backups:
+            str = "Polling %s ... " % ( backup.href )
             sys.stdout.write(str)
 
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
@@ -224,7 +236,7 @@ class GitHomes:
             result = None
             for _ in range( self.request_tries ):
                   try:
-                        (responseHeader, result) = h.request( "%s/teams/%d/backup" % ( self.CDSRoot, teamIdx ), "GET", headers={"If-Modified-Since" : self.teamLastModified[ teamIdx ]} )
+                        (responseHeader, result) = self.http.request( backup.href, "GET", headers={"If-Modified-Since" : backup.modTime} )
                         break
                   except:
                         print('The httplib thrown an exception:')
@@ -233,24 +245,24 @@ class GitHomes:
 
             # If we were not able to get result for our attemtps we continue with the following team.
             if result is None:
-                print(('Unable to fetch backups for team %s. The team is skipped' % teamIdx))
+                print(f'Unable to fetch backups for team {backup.team}{backup.path}. The team is skipped')
                 continue
 
             if responseHeader["status"] == "200":
                 sys.stdout.write("updated, commit to git... ")
 
-                self.teamLastModified[ teamIdx ] = responseHeader["last-modified"]
+                backup.modTime = responseHeader["last-modified"]
                 f = tempfile.NamedTemporaryFile( delete=False )
                 f.write( result )
                 f.close()
-                teamDir = "team%d" % teamIdx
+                backupDir = f"team{backup.team}{backup.path}"
                 # Delete a team dir if it existed to make sure that
                 # files that get deleted on the team backup also get
                 # deleted in the git repository.
-                if os.path.exists( teamDir ):
-                    shutil.rmtree( teamDir )
-                os.makedirs( teamDir )
-                subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", teamDir ] )
+                if os.path.exists( backupDir ):
+                    shutil.rmtree( backupDir )
+                os.makedirs( backupDir )
+                subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
                 os.unlink( f.name )
 
                 print("done.")
@@ -259,7 +271,6 @@ class GitHomes:
             else:
                 print(("error %s" % responseHeader))
 
-        shutil.rmtree(d)
         os.chdir( self.origin )
 
     # Repeatedly download and commit fresh team backups.
