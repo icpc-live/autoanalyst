@@ -2,7 +2,6 @@ package jsonfeed;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import java.io.InvalidObjectException;
 import java.text.ParseException;
