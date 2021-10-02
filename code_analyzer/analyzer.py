@@ -221,7 +221,7 @@ class Analyzer:
         result = {}
         statFile.seek( 0 )
         for line in statFile:
-            fields = line.rstrip().split( "\t" )
+            fields = line.rstrip().decode("utf-8").split( "\t" )
             # Git still tracks binary files, but it doesn't report lines
             # changed.  Looks like it just reports a dash instead, but
             # we ignore anything that's not an int.
@@ -516,12 +516,12 @@ class Analyzer:
         for k, v in self.fileMappings.items():
             if v.new_problem_id != None:
                 if v.db_id == None:
-                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( '%s', '%s', '%s', '%s', '0' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), v.new_problem_id, v.lang_id )
+                    update = "INSERT INTO file_to_problem (team_id, path, problem_id, lang_id, override ) VALUES ( %s, %s, %s, %s, %s )"
 
-                    cursor.execute( update )
+                    cursor.execute( update, ( k[ 0 ], k[ 1 ], v.new_problem_id, v.lang_id, 0 ) )
                 else:
-                    update = "UPDATE file_to_problem SET problem_id='%s' WHERE id='%d'" % ( v.new_problem_id, v[ 0 ] )
-                    cursor.execute( update )
+                    update = "UPDATE file_to_problem SET problem_id=%s WHERE id=%s"
+                    cursor.execute( update, ( v.new_problem_id, v[ 0 ] ) )
                 print("( %s, %s ) -> %s" % ( k[ 0 ], k[ 1 ], v.new_problem_id ))
 
         # Write out fresh edit times to file_modtime and new records to edit_activity
@@ -530,19 +530,18 @@ class Analyzer:
             if v[ 2 ] != None:
                 t = v[ 2 ].time
                 if v[ 0 ] == None:
-                    update = "INSERT INTO file_modtime (team_id, path, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), t )
-
-                    cursor.execute( update )
+                    update = "INSERT INTO file_modtime (team_id, path, modify_timestamp ) VALUES ( %s, %s, %s )"
+                    cursor.execute( update, ( k[ 0 ], k[ 1 ], t ))
                 else:
-                    update = "UPDATE file_modtime SET modify_timestamp='%d' WHERE id='%d'" % ( t, v[ 0 ] )
-                    cursor.execute( update )
+                    update = "UPDATE file_modtime SET modify_timestamp=%s WHERE id=%s"
+                    cursor.execute( update, ( t, v[ 0 ] ) )
 
                 # Compute time since start of contest.
                 cmin = ( v[ 2 ].time - self.contestStart ) / 60
 
-                update = "INSERT INTO edit_activity (team_id, path, modify_timestamp, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%s' )" % ( k[ 0 ], dbConn.escape_string( k[ 1 ] ), t, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag )
+                update = "INSERT INTO edit_activity (team_id, path, modify_timestamp, modify_time, file_size_bytes, line_count, lines_changed, git_tag ) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s )"
 
-                cursor.execute( update )
+                cursor.execute( update, ( k[ 0 ], k[ 1 ] , t, cmin, v[ 2 ].size, v[ 2 ].lineCount, v[ 2 ].linesChanged, tag ) )
 
 
         # Create and write the summary of edit activity by problem, edit_latest
@@ -584,15 +583,15 @@ class Analyzer:
         for k, v in modLatest.items():
             t = v[ 1 ]
             if v[ 0 ] == None:
-                update = "INSERT INTO edit_latest (team_id, problem_id, modify_timestamp ) VALUES ( '%s', '%s', '%d' )" % ( k[ 0 ], k[ 1 ], t )
+                update = "INSERT INTO edit_latest (team_id, problem_id, modify_timestamp ) VALUES ( %s, %s, %s )"
 
-                cursor.execute( update )
+                cursor.execute( update, ( k[ 0 ], k[ 1 ], t ) )
             elif v[ 2 ]:
-                update = "UPDATE edit_latest SET modify_timestamp='%d' WHERE id='%d'" % ( t, v[ 0 ] )
-                cursor.execute( update )
+                update = "UPDATE edit_latest SET modify_timestamp=%s WHERE id=%s"
+                cursor.execute( update, ( t, v[ 0 ] ))
             else:
-                update = "DELETE FROM edit_latest WHERE id='%d'" % ( v[ 0 ] )
-                cursor.execute( update )
+                update = "DELETE FROM edit_latest WHERE id=%s"
+                cursor.execute( update, ( v[ 0 ], ) )
 
 
     def reportUnclassified( self, bdir ):
