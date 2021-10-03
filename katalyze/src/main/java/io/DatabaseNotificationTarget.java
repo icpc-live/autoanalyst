@@ -77,6 +77,8 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 				problemChanged((Problem) entity, op);
 			} else if (entity instanceof ContestProperties) {
 				contestChanged((ContestProperties) entity, op);
+			} else if (entity instanceof TeamMember) {
+				teamMemberChanged((TeamMember) entity, op);
 			}
 		}  catch (Exception e) {
 			String errorMessage = e.getMessage();
@@ -148,8 +150,21 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
  		long freezeContestTime = (properties.getDurationMillis() - properties.getScoreboardFreezeMillis());
  		s.setInt(5, (int) (freezeContestTime/1000));
  		s.executeUpdate();
-
 	}
+
+
+	private void teamMemberChanged(TeamMember teamMember, EntityOperation op) throws Exception {
+
+		PreparedStatement s = conn.prepareStatement(
+				"replace into teammembers(id, team_id, full_name, role) values (?,?,?,?)");
+		s.setInt(1, Integer.parseInt(teamMember.getId()));
+		s.setInt(2, Integer.parseInt(teamMember.teamId));
+		s.setString(3, teamMember.name);
+		s.setString(4, teamMember.role);
+		s.executeUpdate();
+	}
+
+
 
 	/*
 	  `id` int(11) NOT NULL AUTO_INCREMENT,

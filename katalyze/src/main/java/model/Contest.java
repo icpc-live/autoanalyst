@@ -13,6 +13,7 @@ public class Contest {
 	final Map<String, Group> groups;
 	final Map<String, JudgementType> judgementTypes;
 	final EntityMap<Organization> organizations = new EntityMap<>();
+	final EntityMap<TeamMember> teamMembers = new EntityMap<>();
 	final EntityMap<Team> teams;
 	final Analyzer analyzer;
 	final List<Judgement> submissions;
@@ -72,6 +73,12 @@ public class Contest {
 		Group newGroup = new Group(groupId, groupName);
 		groups.put(groupId, newGroup);
 		return newGroup;
+	}
+
+	public void registerTeamMember(TeamMember newMember, EntityOperation op) {
+		teamMembers.upsert(op, newMember);
+		analyzer.entityChanged(newMember, op);
+
 	}
 
 	public Group getGroup(String groupId) {

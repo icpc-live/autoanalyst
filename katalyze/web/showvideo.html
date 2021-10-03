@@ -9,7 +9,9 @@
     <script type='text/javascript' src='jquery-1.6.1.js'></script>
     <script type='text/javascript' src="mpegts.js"></script>
 
-    <video id="videoElement"></video>
+    <div style="max-width: 1800px; max-height: 960px">
+      <video id="videoElement" playsinline muted controls></video>
+    </div>
     <script>
      var queries = {};
         $.each(document.location.search.substr(1).split('&'),function(c,q){
