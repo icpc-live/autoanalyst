@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # Read configuration information from the CDS, and update what's in our database.
 # This is was originally created under the code analyzer, but it probably doesn't belong

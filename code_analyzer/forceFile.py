@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # force a particular file to be a particular problem for a particular team.
 
