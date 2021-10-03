@@ -1,25 +1,40 @@
 package jsonfeed;
 
+import io.EntityOperation;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.io.InvalidObjectException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class JsonEvent {
     private String id;
     private String type;
-    private String op;
+    private String op_str;
+    private EntityOperation op;
     private JSONObject data;
     private static TimeConverter converter = new TimeConverter();
+
+    private static EntityOperation opFromStr(String str) {
+        switch (str) {
+            case "create":
+                return EntityOperation.CREATE;
+            case "update":
+                return EntityOperation.UPDATE;
+            case "delete":
+                return EntityOperation.DELETE;
+            default:
+                return EntityOperation.UNDEFINED;
+
+        }
+    }
 
     public static JsonEvent from(JSONObject src) throws InvalidObjectException {
         JsonEvent target = new JsonEvent();
         target.id = src.getString("id");
         target.type = src.getString("type");
-        target.op = src.getString("op");
+        target.op_str = src.getString("op");
+        target.op = opFromStr(target.op_str);
+
         target.data =src.getJSONObject("data");
 
         if (target.data == null || target.data.isNullObject()) {
@@ -45,6 +60,24 @@ public class JsonEvent {
             target[i] = entries.getString(i);
         }
         return target;
+    }
+
+
+    public String[] getUrlArray(String key) {
+        JSONArray entries = data.getJSONArray(key);
+        if (entries == null) {
+            return new String[0];
+        }
+
+        String[] target = new String[entries.size()];
+        for (int i = 0; i<entries.size(); i++) {
+            JSONObject urlObject = entries.getJSONObject(i);
+            target[i] = urlObject.getString("href");
+        }
+        return target;
+
+
+
     }
 
     public String getStringOrNull(String key) {
@@ -77,8 +110,12 @@ public class JsonEvent {
         return type;
     }
 
-    public String getOp() {
+    public EntityOperation getOp() {
         return op;
+    }
+
+    public String getOpStr() {
+        return op_str;
     }
 
     public JSONObject getRawData() {

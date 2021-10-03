@@ -1,5 +1,6 @@
 package jsonfeed;
 
+import io.EntityOperation;
 import model.Contest;
 
 @FunctionalInterface
