@@ -13,7 +13,7 @@ public class Contest {
 	final Map<String, Group> groups;
 	final Map<String, JudgementType> judgementTypes;
 	final EntityMap<Organization> organizations = new EntityMap<>();
-	final List<Team> teams;
+	final EntityMap<Team> teams;
 	final Analyzer analyzer;
 	final List<Judgement> submissions;
 	final List<Language> languages;
@@ -29,7 +29,7 @@ public class Contest {
 
 		this.groups = new HashMap<>();
 		this.judgementTypes = new HashMap<>();
-		this.teams = new ArrayList<Team>();
+		this.teams = new EntityMap<Team>();
 		this.analyzer = new Analyzer(this, 0);
 		this.languages = new ArrayList<Language>();
 		this.submissions = new ArrayList<Judgement>();
@@ -59,10 +59,12 @@ public class Contest {
 	}
 	
 	public Team registerTeam(String teamId, String teamName, Organization org, Group[] groups,
-							 String[] webcams, String[] desktops) {
+							 String[] webcams, String[] desktops, EntityOperation op) {
 		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups, webcams, desktops);
-		teams.add(newTeam);
-		analyzer.entityChanged(newTeam, EntityOperation.CREATE);
+
+		teams.upsert(op, newTeam);
+
+		analyzer.entityChanged(newTeam, op);
 		return newTeam;
 	}
 
@@ -77,12 +79,12 @@ public class Contest {
     }
 	
 	public Team[] getTeams() {
-		return teams.toArray(new Team[0]);
+		return teams.getAll().toArray(new Team[0]);
 	}
 
 	public Standings getStandings() {
 		List<Score> teamScores = new ArrayList<Score>();
-		for (Team team : teams) {
+		for (Team team : teams.getAll()) {
 			teamScores.add(team.getCurrentScore());
 		}
 		return new Standings(this, teamScores, this.contestTimeMillis);
@@ -175,10 +177,9 @@ public class Contest {
 	}
 	
 	public Team getTeam(String teamNumber) throws InvalidKeyException {
-		for (Team candidate : teams) {
-			if (teamNumber.equals(candidate.getId())) {
-				return candidate;
-			}
+		Team foundTeam = teams.get(teamNumber);
+		if (foundTeam != null) {
+			return foundTeam;
 		}
 		throw new InvalidKeyException(String.format("%s is not a known team", teamNumber));
 	}

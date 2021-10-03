@@ -1,5 +1,6 @@
 package jsonfeed;
 
+import io.EntityOperation;
 import model.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class StandardEventHandlers {
             String[] webcams = src.getUrlArray("webcam");
 
             contest.registerTeam(src.getString("id"), src.getString("name"), org, groups.toArray(new Group[groups.size()]),
-                    webcams, desktops);
+                    webcams, desktops, src.getOp());
         });
         handlers.put("contests", (contest, src)  -> {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());

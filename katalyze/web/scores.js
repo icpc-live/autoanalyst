@@ -219,6 +219,7 @@
                 var link = teamInfo.desktops[entry];
                 videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?url=" + encodeURIComponent(link)+"'> &#128187;</a>";
             }
+            videoLinks = videoLinks+"<br>";
 
             for (var entry in teamInfo.webcams) {
                 var link = teamInfo.webcams[entry];
