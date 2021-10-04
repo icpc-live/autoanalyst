@@ -178,28 +178,21 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div id="members">
         <div id="contestants">
             <table border>
-                <tr><th>Title</th><th>Name</th><th>Times in WF</th><th>TC Name</th><th>TC Ranking</th></tr>
+                <tr><th>Title</th><th>Name</th></tr>
                 <?php
-                    $tc_sql = "SELECT * FROM top_coder WHERE university_name LIKE '${school_name}%'";
-                    $tc_row = array(); $tc_url = "";
-                    if ($result = mysqli_query($db, $tc_sql)) {
-                        $tc_row = mysqli_fetch_array($result);
-                        $tc_url = "<a href='http://www.topcoder.com/tc?module=MemberProfile&tab=alg&cr=%s'>%s</a>";
-                    }
-                    $members = array("coach", "contestant1", "contestant2", "contestant3");
-                    foreach ($members as $m) { ?>
-                        <tr>
-                            <td><?php echo $m;?> </td>
-                            <td><?php echo $team_row["{$m}_name"];?> </td>
-                            <td><?php echo get_times_in_wf($db, $team_row["{$m}_id"]); ?></td>
-                            <td><?php printf($tc_url, $tc_row["{$m}_tcid"], $tc_row["{$m}_tcname"]); ?> </td>
-                            <td><?php echo $tc_row["{$m}_rank"]; ?></td>
-                        </tr>
-              <?php } ?>
+
+
+                  $rows = mysqli_query($db, "select full_name, role from teammembers where team_id = $team_id order by role, id");
+		    if ($rows) {
+		      foreach ($rows as $teammember_row) {
+		        printf("<tr><td>%s</td><td>%s</td></tr>", $teammember_row["full_name"], $teammember_row["role"]);
+		      }
+		    }
+              ?>
             </table>
        </div>
     </div>
-
+<!--
     <div id="past_wf_performance">
         <table border>
             <tr> <th>Year</th> <th>Place in WF</th> <th>Solved</th> <th>Time</th> </tr>
@@ -227,10 +220,11 @@ while ($row = mysqli_fetch_assoc($result)) {
         ?>
         </table>
     </div>
-
     <div id="fun_facts">Fun facts:
     <?php gen_facts($db, $team_id, "fun"); ?>
     </div>
+-->
+    
 </div>
 
 <script type='text/javascript' src='katalyze/web/scores.js'></script>

@@ -89,6 +89,17 @@ public class StandardEventHandlers {
             contest.registerGroup(groupId, groupName);
         });
 
+        handlers.put("team-members", (contest, src) -> {
+            String teamMemberId = src.getString("id");
+            String teamId = src.getString("team_id");
+            String firstName = src.getString("first_name");
+            String lastName = src.getString("last_name");
+            String role = src.getString("role");
+
+            TeamMember newMember = new TeamMember(teamMemberId, teamId, firstName +" "+lastName, role);
+            contest.registerTeamMember(newMember, src.getOp());
+        });
+
         handlers.put("judgements", (contest, src) -> {
 
             Analyzer analyzer = contest.getAnalyzer();

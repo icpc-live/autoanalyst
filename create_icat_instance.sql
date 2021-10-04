@@ -268,6 +268,17 @@ CREATE TABLE IF NOT EXISTS `teams` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
+
+DROP TABLE IF EXISTS 'teammembers';
+CREATE TABLE teammembers(
+  id int(11) NOT NULL,
+  team_id int(11) NOT NULL,
+  full_name varchar(50) DEFAULT NULL,
+  role varchar(30) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+
+
 --
 -- Table structure for table `team_regions`
 --
