@@ -5,11 +5,11 @@ const streamIds = params['streams'].split(',');
 
 var N = streamIds.length;
 
-$("#headerRow").html('<td colspan="'+ N +'"><video width="100%" id="videoElement0" playsinline muted ></video></td>');
+$("#headerRow").html('<td colspan="'+ N +'"><video width="100%" id="videoElement0" playsinline autoplay muted ></video></td>');
 if (N > 1) {
     var bottomRow = $("#bottomRow");
     for (var i=1; i<N; i++) {
-        var cell = $('<td><video width="100%" id="videoElement'+i+'" playsinline muted ></video></td>');
+        var cell = $('<td><video width="100%" id="videoElement'+i+'" playsinline autoplay muted ></video></td>');
         bottomRow.append(cell);
     }
 }
@@ -22,8 +22,10 @@ if (mpegts.getFeatureList().mseLivePlayback) {
         const streamURL = baseUrl + id;
         var videoElement = document.getElementById('videoElement' + index);
         
-        videoElement.onclick = function() {
-            if (streamIds[0] == id) {
+        videoElement.onclick = function(event) {
+              event.preventDefault();
+              videoElement.requestFullscreen();
+/*            if (streamIds[0] == id) {
                 // [id] is already a main screen, do nothing
                 return;
             }
@@ -33,7 +35,7 @@ if (mpegts.getFeatureList().mseLivePlayback) {
                 rotatedStreams.push(rotatedStreams.shift());
             }     
             const newLink = location.protocol + '//' + location.host + location.pathname + "?url=" + params['url'] + "&streams=" + rotatedStreams.toString();
-            window.location.href = newLink;
+            window.location.href = newLink;*/
         };
         
         var player = mpegts.createPlayer({
