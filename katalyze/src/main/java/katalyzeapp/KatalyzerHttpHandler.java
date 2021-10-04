@@ -54,8 +54,9 @@ class KatalyzerHttpHandler implements HttpHandler, LifeCycleAware {
 	    publisher.publish("/scoreboard", new DynamicFileWebDocument("text/html","scoreboard.html"));
 	    
 	    publisher.publish("/web/scores.js", new DynamicFileWebDocument("text/javascript","web/scores.js"));
-		publisher.publish("/web/mpegts.js", new DynamicFileWebDocument("text/javascript","web/mpegts.js"));
-		publisher.publish("/web/showvideo.html", new DynamicFileWebDocument("text/html","web/showvideo.html"));
+	    publisher.publish("/web/mpegts.js", new DynamicFileWebDocument("text/javascript","web/mpegts.js"));
+	    publisher.publish("/web/showvideo.html", new DynamicFileWebDocument("text/html","web/showvideo.html"));
+	    publisher.publish("/web/showvideo.js", new DynamicFileWebDocument("text/javascript","web/showvideo.js"));
 	    publisher.publish("/web/jquery-1.6.1.js", StaticWebDocument.FromResource("text/javascript", this, "web/jquery-1.6.1.js"));
 	    publisher.publish("/web/jquery-ui-1.8.13.custom.js", StaticWebDocument.FromResource("text/javascript", this, "web/jquery-ui-1.8.13.custom.js"));
 	    publisher.publish("/css/katalyze.css", new DynamicFileWebDocument("text/css","css/katalyze.css"));
