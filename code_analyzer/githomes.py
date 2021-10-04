@@ -262,7 +262,10 @@ class GitHomes:
                 if os.path.exists( backupDir ):
                     shutil.rmtree( backupDir )
                 os.makedirs( backupDir )
-                subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                try:
+                    subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                except:
+                    print(f"Failed to unzip {f.name} for {backupDir}")
                 os.unlink( f.name )
 
                 print("done.")
@@ -312,7 +315,7 @@ class GitHomes:
             os.chdir( self.origin )
                 
             print("Checking in %s at %s" % ( tag, datetime.now().strftime( "%a %b %d %H:%M:%S %Y") ))
-            subprocess.call( [ "python33", self.analystTop + "/code_analyzer/analyzer.py", tag ] )
+            subprocess.call( [ "python3", self.analystTop + "/code_analyzer/analyzer.py", tag ] )
 
             # Rest up to the end of the minute (or whatever the interval is), or zero if it's too late.
             afterTime = datetime.now()

@@ -40,7 +40,7 @@ DUMP THE ICAT DATABASE
 --------------------------------------------------------
 TRUNCATING ALL THE RELEVANT TABLES
 <?php
-$to_truncate = array('entries', 'submissions', 'teams', 'problems', 'team_regions');
+$to_truncate = array('entries', 'submissions', 'teams', 'teammembers', 'problems', 'team_regions');
 foreach ($to_truncate as $table) {
    $sql = "DELETE FROM $table;\n";
    print("CLEARING TABLE $table;\n");
