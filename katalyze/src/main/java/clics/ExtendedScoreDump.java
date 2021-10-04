@@ -152,11 +152,21 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		this.publisherTarget = target;
 	}
 
+	private JSONArray stringsAsJson(String[] input) {
+		JSONArray target = new JSONArray();
+		for (String desktopUrl : input) {
+			target.add(desktopUrl);
+		}
+		return target;
+	}
 
 	private JSONObject teamAsJson(Team team) {
 		JSONObject target = new JSONObject();
 		target.put("id", team.getId());
 		target.put("name", team.getName());
+
+		target.put("webcams", team.getVideoLinks());
+		target.put("desktops", team.getDesktopLinks());
 
 		Organization org = team.getOrganization();
 		if (org != null) {

@@ -1,5 +1,6 @@
 package tests;
 
+import io.EntityOperation;
 import model.*;
 
 public abstract class ContestSimulatorTest {
@@ -18,7 +19,8 @@ public abstract class ContestSimulatorTest {
 		}
 		
 		for (int i=0; i<nTeams; i++) {
-			contest.registerTeam(Integer.toString(i), String.format("Team %d", i), null, noGroups);
+			contest.registerTeam(Integer.toString(i), String.format("Team %d", i), null, noGroups, new String[0], new String[0],
+					EntityOperation.CREATE);
 		}
 		
 		teams = contest.getTeams();

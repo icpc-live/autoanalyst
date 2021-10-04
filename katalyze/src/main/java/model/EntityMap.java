@@ -1,6 +1,10 @@
 package model;
 
+import io.EntityOperation;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EntityMap<T extends ApiEntity> {
@@ -18,8 +22,26 @@ public class EntityMap<T extends ApiEntity> {
         data.remove(id);
     }
 
+    public void upsert(EntityOperation op, T entry) {
+        switch (op) {
+            case CREATE:
+                add(entry);
+                break;
+            case UPDATE:
+                add(entry);
+                break;
+            case DELETE:
+                delete(entry.getId());
+                break;
+        }
+    }
+
     public int size() {
         return data.size();
+    }
+
+    public ArrayList<T> getAll() {
+        return new ArrayList<T>(data.values());
     }
 
 }

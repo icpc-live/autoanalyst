@@ -10,9 +10,11 @@ public class Team implements ApiEntity {
 	private final String shortName;
 	private final Organization organization;
 	private final Group[] groups;
+	private final String[] webcams;
+	private final String[] desktops;
 
 
-	public Team(Contest contest, String teamId, String name, String shortName, Organization organization, Group[] groups) {
+	public Team(Contest contest, String teamId, String name, String shortName, Organization organization, Group[] groups, String[] webcams, String[] desktops) {
 		this.contest = contest;
 		this.teamId = teamId;
 		this.name = name;
@@ -20,6 +22,8 @@ public class Team implements ApiEntity {
 		this.progress = new TeamProgress(this);
 		this.organization = organization;
 		this.groups = groups;
+		this.webcams = webcams;
+		this.desktops = desktops;
 	}
 
 	@Override
@@ -84,6 +88,10 @@ public class Team implements ApiEntity {
 	public String getShortName() {
 		return this.shortName;
 	}
+
+	public String[] getVideoLinks() { return this.webcams; }
+
+	public String[] getDesktopLinks() { return this.desktops; }
 
 	public Organization getOrganization() {
 		return organization == null ? Organization.NullObject : this.organization;

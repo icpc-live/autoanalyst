@@ -213,22 +213,17 @@
 			    teamName = (teamInfo.organization) ? teamInfo.organization : teamInfo.name
 			}
 
-            var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
-            var videoLinks = "";
-            var videoLinkArray = [];
+		    var name = "<a href='team.php?team_id=" + data.team_id + "'>" + escapeHtml(teamName) + "</a>";
+		    var videoLinks = "";
 
-            for (var entry in teamInfo.desktops) {
-                var link = teamInfo.desktops[entry];
-                videoLinkArray.push(link);
-            }
+		    var desktopLinksArray = teamInfo.desktops.join();
+		    videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?streams=" + encodeURIComponent(desktopLinksArray)+"'> &#128187;</a>";
 
-            var desktopLinksArray = teamInfo.desktops.join();
-            videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?streams=" + encodeURIComponent(desktopLinksArray)+"'> &#128187;</a>";
+		    var webcamLinksArray = teamInfo.webcams.join();
+		    videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?streams=" + encodeURIComponent(webcamLinksArray)+"'> &#128247;</a>";
 
-            webcamLinksArray = teamInfo.webcams.join();
-            videoLinks = videoLinks + "<a href='"+dataSourceUrl+"/web/showvideo.html?streams=" + encodeURIComponent(webcamLinksArray)+"'> &#128247;</a>";
-			addCells([data.rank, name, data.score.num_solved, data.score.total_time, videoLinks, data.main_lang]);
-			
+		    addCells([data.rank, name, data.score.num_solved, data.score.total_time, videoLinks, data.main_lang]);
+		    
 			 $.each(data.problems, function(i, problemData) {
 				 rowToAdd.append(scoreCell(problemData));
 			 });
