@@ -20,7 +20,7 @@ if (mpegts.getFeatureList().mseLivePlayback) {
         const id = streamIds[index];
         var baseUrl = params['url'] ?? "";
         const streamURL = baseUrl + id;
-        var videoElement = document.getElementById('videoElement' + index);
+        let videoElement = document.getElementById('videoElement' + index);
         
         videoElement.onclick = function(event) {
               event.preventDefault();
