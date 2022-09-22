@@ -13,8 +13,10 @@ public class Team implements ApiEntity {
 	private final String[] webcams;
 	private final String[] desktops;
 
+	private final boolean hidden;
 
-	public Team(Contest contest, String teamId, String name, String shortName, Organization organization, Group[] groups, String[] webcams, String[] desktops) {
+
+	public Team(Contest contest, String teamId, String name, String shortName, Organization organization, Group[] groups, String[] webcams, String[] desktops, boolean hidden) {
 		this.contest = contest;
 		this.teamId = teamId;
 		this.name = name;
@@ -24,6 +26,7 @@ public class Team implements ApiEntity {
 		this.groups = groups;
 		this.webcams = webcams;
 		this.desktops = desktops;
+		this.hidden = hidden;
 	}
 
 	@Override
@@ -51,6 +54,17 @@ public class Team implements ApiEntity {
 	    return groups.clone();
     }
 
+	public boolean isHidden() {
+		if (hidden) {
+			return true;
+		}
+		for (Group group : groups) {
+			if (group.isHidden()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean registerJudgement(Judgement judgement) {
 		return progress.register(judgement);

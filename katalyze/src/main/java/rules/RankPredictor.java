@@ -23,6 +23,10 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 
 		Standings standingsBefore = standingsAtSubmission.before;
 		InitialSubmission submission = standingsAtSubmission.submission;
+		if (submission.team.isHidden()) {
+			// Don't generate any events for hidden teams
+			return;
+		}
 		if (contest.isFrozen(submission.contestTimeMilliseconds)) {
 			// Don't make predictions when the scoreboard is frozen.
 			return;

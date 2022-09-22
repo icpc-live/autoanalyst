@@ -32,7 +32,7 @@ public class JsonEvent {
         JsonEvent target = new JsonEvent();
         target.id = src.getString("id");
         target.type = src.getString("type");
-        target.op_str = src.getString("op");
+        target.op_str = src.optString("op", "create");
         target.op = opFromStr(target.op_str);
 
         target.data =src.getJSONObject("data");
@@ -64,6 +64,9 @@ public class JsonEvent {
 
 
     public String[] getUrlArray(String key) {
+        if (!data.has(key)) {
+            return new String[0];
+        }
         JSONArray entries = data.getJSONArray(key);
         if (entries == null) {
             return new String[0];
@@ -90,6 +93,14 @@ public class JsonEvent {
 
     public boolean getBoolean(String key) {
         return data.getBoolean(key);
+    }
+
+    public boolean tryGetBoolean(String key, boolean defaultValue) {
+        if (data.has(key)) {
+            return data.getBoolean(key);
+        } else {
+            return defaultValue;
+        }
     }
 
     public long getTimespan(String key) {

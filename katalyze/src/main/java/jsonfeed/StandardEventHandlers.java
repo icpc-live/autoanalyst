@@ -40,14 +40,20 @@ public class StandardEventHandlers {
 
             String[] desktops = src.getUrlArray("desktop");
             String[] webcams = src.getUrlArray("webcam");
+            boolean hidden = src.tryGetBoolean("hidden", false);
 
             contest.registerTeam(src.getString("id"), src.getString("name"), org, groups.toArray(new Group[groups.size()]),
-                    webcams, desktops, src.getOp());
+                    webcams, desktops, hidden, src.getOp());
         });
-        handlers.put("contests", (contest, src)  -> {
+
+        JsonEventHandler contestEventHandler = (contest, src)  -> {
             ContestProperties properties = ContestProperties.fromJSON(src.getRawData());
             contest.init(properties);
-        });
+        };
+
+        handlers.put("contests", contestEventHandler);
+        handlers.put("contest", contestEventHandler); // Add compatibility for 2022.07 revision
+
         handlers.put("state", (contest, src) -> {
             ContestState newState = new ContestState(
                     src.getTimestamp("started"),
@@ -86,7 +92,8 @@ public class StandardEventHandlers {
         handlers.put("groups", (contest, src) -> {
             String groupId = src.getString("id");
             String groupName = src.getString("name");
-            contest.registerGroup(groupId, groupName);
+            boolean hidden = src.tryGetBoolean("hidden", false);
+            contest.registerGroup(groupId, groupName, hidden);
         });
 
         handlers.put("team-members", (contest, src) -> {

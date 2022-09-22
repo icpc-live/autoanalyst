@@ -173,8 +173,10 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	public void processRules(Standings before, Standings after, Judgement submission) {
 		StandingsTransition transition = new StandingsTransition(this, before, after, submission);
-		for (StandingsUpdatedEvent rule : stateRules) {
-			rule.onStandingsUpdated(transition);
+		if (!submission.getTeam().isHidden()) {
+			for (StandingsUpdatedEvent rule : stateRules) {
+				rule.onStandingsUpdated(transition);
+			}
 		}
 	}
 
@@ -197,7 +199,13 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	}
 	
 	public void freshSubmission(InitialSubmission submission) {
+
 		judgingOutcomes.newSubmission(submission);
+
+		if (submission.getTeam().isHidden()) {
+			return;
+		}
+
 		Standings before = contest.getStandings();
 		StandingsAtSubmission standings = new StandingsAtSubmission(this, before, submission);
 		for (SolutionSubmittedEvent rule : submissionRules) {

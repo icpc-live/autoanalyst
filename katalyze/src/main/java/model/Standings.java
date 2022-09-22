@@ -22,6 +22,12 @@ public class Standings implements Iterable<Score> {
 	}
 	
 	public Score scoreOf(Team team) {
+		// If team is hidden, score will always be zero
+		if (team.isHidden()) {
+			return new Score(team, 0, new HashSet<>(), new HashMap<>());
+		}
+
+
 		for (Score s : scores) {
 			if (s.getTeam() == team) {
 				return s;
@@ -43,6 +49,10 @@ public class Standings implements Iterable<Score> {
 	}
 
 	public int rankOf(Team team) {
+		if (team.isHidden()) {
+			return Integer.MAX_VALUE;
+		}
+
 		ScoreTableEntry previousScore = null;
 		int rank = 0;
 		
