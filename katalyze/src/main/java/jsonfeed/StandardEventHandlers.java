@@ -120,7 +120,7 @@ public class StandardEventHandlers {
                 log.warn(String.format("Judgment '%s' that references an non-existing submission '%s'",judgementId, submissionId));
             }
 
-            String verdictId = src.getString("judgement_type_id");
+            String verdictId = src.getStringOrNull("judgement_type_id");
             JudgementType verdict = contest.getJudgementType(verdictId);
             if (verdict != null) {
                 if (submission == null) {

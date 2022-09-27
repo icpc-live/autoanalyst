@@ -2,6 +2,10 @@
 # ICPC-live autoanalyst software package.
 # Copy this file to config.yaml and edit to your needs.
 
+
+# Read the input feed from the CDS using the contest API event fieed
+source: CDS  
+
 database:
     host:     localhost
     name:     icat

@@ -23,8 +23,8 @@ public class ContestProperties implements ApiEntity {
         target.name = src.getString("name");
         target.formalName = src.getString("formal_name");
 
-        String startTime = src.getString("start_time");
-        if (!startTime.equals("null")) {
+        String startTime = src.optString("start_time", null);
+        if (startTime != null && !startTime.equals("null")) {
             target.startTimeMillis = converter.parseTimestampMillis(startTime);
         }
         target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));

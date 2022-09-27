@@ -30,12 +30,16 @@ public class JsonEvent {
 
     public static JsonEvent from(JSONObject src) throws InvalidObjectException {
         JsonEvent target = new JsonEvent();
-        target.id = src.getString("id");
+        target.id = src.optString("id");
         target.type = src.getString("type");
         target.op_str = src.optString("op", "create");
         target.op = opFromStr(target.op_str);
 
         target.data =src.getJSONObject("data");
+
+        if (target.id == null && target.type != "state") {
+            throw new InvalidObjectException(String.format("Events of type %s must contain an ID field", target.type));
+        }
 
         if (target.data == null || target.data.isNullObject()) {
             throw new InvalidObjectException(String.format("Event %s does not contain a data element", src));
