@@ -71,9 +71,11 @@ public class InputStreamConfigurator {
             log.info(String.format("Will read from contest %s", entry));
         }
 
-        return (resumePoint) -> {
+        return (resumePoint, isStreamToken) -> {
             String url = entry.url+"/event-feed";
-            String resumeQuery = (resumePoint != null) ? "?since_id="+URLEncoder.encode(resumePoint, StandardCharsets.UTF_8.name()) : "";
+            String argumentName = (isStreamToken) ? "since_token" : "since_id";
+
+            String resumeQuery = (resumePoint != null) ? "?"+argumentName+"="+URLEncoder.encode(resumePoint, StandardCharsets.UTF_8.name()) : "";
             return feedClient.getInputStream(url+resumeQuery);
         };
     }
@@ -82,11 +84,11 @@ public class InputStreamConfigurator {
     public InputStreamProvider createFileReader(String file) throws FileNotFoundException {
         FileInputStream inputFile = new FileInputStream(file);
 
-        return (resumePoint) -> inputFile;
+        return (resumePoint, isStreamToken) -> inputFile;
     }
 
     public InputStreamProvider createConsoleReader() {
-        return (resumePoint) -> System.in;
+        return (resumePoint, isStreamToken) -> System.in;
     }
 
     public InputStreamProvider getInputFromConfig() throws ConfigurationException, IOException  {

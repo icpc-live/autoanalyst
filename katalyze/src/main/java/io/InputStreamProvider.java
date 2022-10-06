@@ -6,5 +6,5 @@ import java.io.InputStream;
 @FunctionalInterface
 public interface InputStreamProvider {
 
-    InputStream getInputStream(String resumePoint) throws IOException;
+    InputStream getInputStream(String resumePoint, boolean isStreamToken) throws IOException;
 }

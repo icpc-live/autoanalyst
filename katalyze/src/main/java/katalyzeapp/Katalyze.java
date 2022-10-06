@@ -90,7 +90,17 @@ public class Katalyze {
 
 
                     try {
-                        InputStream input = isp.getInputStream(reader.getLastProcessedId());
+						String sinceToken = reader.getLastProcessedToken();
+						boolean isStreamToken;
+						if (sinceToken == null) {
+							sinceToken = reader.getLastProcessedId();
+							isStreamToken = false;
+						} else {
+							isStreamToken = true;
+						}
+
+
+                        InputStream input = isp.getInputStream(sinceToken, isStreamToken);
                         reader.processStream(new InputStreamReader(input, StandardCharsets.UTF_8), katalyzer::processEvent);
                     }
                     catch (IOException e) {
@@ -98,7 +108,7 @@ public class Katalyze {
                     }
                 }
 			} else {
-				katalyzer.processLegacyFeed(isp.getInputStream(null));
+				katalyzer.processLegacyFeed(isp.getInputStream(null, false));
 			}
 
 			logger.info("Katalyzer stream finished");
