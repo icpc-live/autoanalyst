@@ -50,7 +50,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				if (firstTeam == null) {
 					firstTeam = team;
 				}
-				message = message.replace(teamTag, team.getName());
+				message = message.replace(teamTag, team.stringForCommentary());
 			}
 		}
 		
@@ -58,7 +58,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		for (String problemTag : problemsInMessage) {
 			Problem problem = hashtagFinder.getProblem(contest, problemTag);
 			if (problem != null) {
-				message = message.replace(problemTag, problem.getNameAndLabel());
+				message = message.replace(problemTag, problem.stringForCommentary());
 			}
 		}
 

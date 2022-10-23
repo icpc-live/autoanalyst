@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 
 public class LoggableEvent {
 	private static int nextEventId = 0;
-	private static final TeamNameAsOrganization teamNameExtractor = new TeamNameAsOrganization();
 	
 	
 	public final Contest contest;
@@ -61,10 +60,10 @@ public class LoggableEvent {
 	
 	private String getCleartextMessage(String message) {
 		if (problem != null) {
-			message = replaceMarkup(message, "problem", problem.getNameAndLabel());
+			message = replaceMarkup(message, "problem", problem.stringForCommentary());
 		}
 		if (team != null) {
-			message = replaceMarkup(message, "team", teamNameExtractor.apply(team));
+			message = replaceMarkup(message, "team", team.stringForCommentary());
 		}
 		return message;
 	}

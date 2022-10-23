@@ -110,4 +110,11 @@ public class Team implements ApiEntity {
 	public Organization getOrganization() {
 		return organization == null ? Organization.NullObject : this.organization;
 	}
+
+	public String stringForCommentary() {
+		// This is same as "TeamNameAsOrganization.apply" at the moment,
+		// but might change as we adopt 2022-07 notation ("{teams:<team ID>}")
+		Organization org = getOrganization();
+		return Organization.isNull(org) ? getName() : org.getDisplayName();
+	}
 }

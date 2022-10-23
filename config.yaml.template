@@ -109,6 +109,12 @@ katalyzer:
             ranks:    10
 #           exec:     "./capture.sh {teamId} {time} {currentRank} {potentialRank}"
 
+        # SubmissionAfterFreeze - simple notification for submissions during freeze time.
+        # Filters according to team's pre-freeze rank
+        submissionAfterFreeze:
+            enable:   true
+            ranks:    25
+
 codeActivity:
     scoreboardFreezeMinutes:   240
     defaultGranularityMinutes: 5

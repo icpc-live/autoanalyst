@@ -140,6 +140,7 @@ public class ConfigReader {
 		addRuleIfEnabled(analyzer, "newLeader", new NewLeader(config.getInt("katalyzer.rule.newLeader.breakingRanks",4), config.getInt("katalyzer.rule.newLeader.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rejectedSubmission", new RejectedSubmission(config.getInt("katalyzer.rule.RejectedSubmission.ranks", 10)));
 		addRuleIfEnabled(analyzer, "rankPredictor", new RankPredictor(config.getInt("katalyzer.rule.rankPredictor.ranks", 10)));
+		addRuleIfEnabled(analyzer, "submissionAfterFreeze", new SubmissionAfterFreeze(config.getInt("katalyzer.rule.submissionAfterFreeze.ranks", 25)));
 		addRuleIfEnabled(analyzer, "allProblemsSolved", new CriterionRule(new AllProblemsSolved()));
 		addRuleIfEnabled(analyzer, "allTeamsSolvedOneProblem", new CriterionRule(new AllTeamsSolvedOneProblem()));
 	}

@@ -21,7 +21,7 @@ public class ContestProperties implements ApiEntity {
         ContestProperties target = new ContestProperties();
         target.id = src.getString("id");
         target.name = src.getString("name");
-        target.formalName = src.getString("formal_name");
+		target.formalName = src.optString("formal_name", null);
 
         String startTime = src.optString("start_time", null);
         if (startTime != null && !startTime.equals("null")) {
