@@ -67,4 +67,9 @@ public class Problem implements ApiEntity {
 		return id.equals(other.id);
 	}
 
+	public String stringForCommentary() {
+		// This will at some point change into "{problems:<problem ID>}".
+		return getNameAndLabel();
+	}
+
 }

@@ -29,7 +29,7 @@ public class TeamHandler extends SingleMessageHandler {
 			shortName = teamName;
 		}
 		Team newTeam = new Team(contest, teamNumber, teamName, shortName, null, new Group[0],
-				new String[0], new String[0]);
+				new String[0], new String[0], false);
 		contest.addTeam(newTeam);
 	}
 

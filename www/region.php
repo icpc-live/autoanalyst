@@ -12,7 +12,11 @@ require_once 'icat.php';
 $db = init_db();
 
 // get the region/super region names
-$result = mysqli_query($db, "select * from team_regions where $query");
+if ($query == "") {
+    $result = mysqli_query($db, "select * from team_regions");
+} else {
+    $result = mysqli_query($db, "select * from team_regions where $query");
+}
 
 $team_ids = array();
 $name = "(unknown)";

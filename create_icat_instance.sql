@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `teams` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reservation_id` int(11) DEFAULT NULL,
   `team_id` int(11) NOT NULL,
-  `team_name` varchar(150) NOT NULL,
+  `team_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `institution_id` int(11) DEFAULT NULL,
   `site_id` int(11) DEFAULT NULL,
   `school_name` varchar(150) DEFAULT NULL,
@@ -269,12 +269,12 @@ CREATE TABLE IF NOT EXISTS `teams` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
-DROP TABLE IF EXISTS 'teammembers';
+DROP TABLE IF EXISTS `teammembers`;
 CREATE TABLE teammembers(
-  id int(11) NOT NULL,
-  team_id int(11) NOT NULL,
-  full_name varchar(50) DEFAULT NULL,
-  role varchar(30) DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `full_name` varchar(50) DEFAULT NULL,
+  `role` varchar(30) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 

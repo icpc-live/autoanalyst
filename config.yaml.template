@@ -2,6 +2,10 @@
 # ICPC-live autoanalyst software package.
 # Copy this file to config.yaml and edit to your needs.
 
+
+# Read the input feed from the CDS using the contest API event fieed
+source: CDS  
+
 database:
     host:     localhost
     name:     icat
@@ -104,6 +108,12 @@ katalyzer:
             enable:   true
             ranks:    10
 #           exec:     "./capture.sh {teamId} {time} {currentRank} {potentialRank}"
+
+        # SubmissionAfterFreeze - simple notification for submissions during freeze time.
+        # Filters according to team's pre-freeze rank
+        submissionAfterFreeze:
+            enable:   true
+            ranks:    25
 
 codeActivity:
     scoreboardFreezeMinutes:   240

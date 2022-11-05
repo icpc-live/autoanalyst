@@ -60,8 +60,8 @@ public class Contest {
 	}
 	
 	public Team registerTeam(String teamId, String teamName, Organization org, Group[] groups,
-							 String[] webcams, String[] desktops, EntityOperation op) {
-		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups, webcams, desktops);
+							 String[] webcams, String[] desktops, boolean hidden, EntityOperation op) {
+		Team newTeam = new Team(this,teamId, teamName, teamName, org, groups, webcams, desktops, hidden );
 
 		teams.upsert(op, newTeam);
 
@@ -69,8 +69,8 @@ public class Contest {
 		return newTeam;
 	}
 
-	public Group registerGroup(String groupId, String groupName) {
-		Group newGroup = new Group(groupId, groupName);
+	public Group registerGroup(String groupId, String groupName, boolean hidden) {
+		Group newGroup = new Group(groupId, groupName, hidden);
 		groups.put(groupId, newGroup);
 		return newGroup;
 	}
@@ -92,7 +92,9 @@ public class Contest {
 	public Standings getStandings() {
 		List<Score> teamScores = new ArrayList<Score>();
 		for (Team team : teams.getAll()) {
-			teamScores.add(team.getCurrentScore());
+			if (!team.isHidden()) {
+				teamScores.add(team.getCurrentScore());
+			}
 		}
 		return new Standings(this, teamScores, this.contestTimeMillis);
 	}

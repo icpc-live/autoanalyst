@@ -50,7 +50,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				if (firstTeam == null) {
 					firstTeam = team;
 				}
-				message = message.replace(teamTag, team.getName());
+				message = message.replace(teamTag, team.stringForCommentary());
 			}
 		}
 		
@@ -58,7 +58,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		for (String problemTag : problemsInMessage) {
 			Problem problem = hashtagFinder.getProblem(contest, problemTag);
 			if (problem != null) {
-				message = message.replace(problemTag, problem.getNameAndLabel());
+				message = message.replace(problemTag, problem.stringForCommentary());
 			}
 		}
 
@@ -173,8 +173,10 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	public void processRules(Standings before, Standings after, Judgement submission) {
 		StandingsTransition transition = new StandingsTransition(this, before, after, submission);
-		for (StandingsUpdatedEvent rule : stateRules) {
-			rule.onStandingsUpdated(transition);
+		if (!submission.getTeam().isHidden()) {
+			for (StandingsUpdatedEvent rule : stateRules) {
+				rule.onStandingsUpdated(transition);
+			}
 		}
 	}
 
@@ -197,7 +199,13 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	}
 	
 	public void freshSubmission(InitialSubmission submission) {
+
 		judgingOutcomes.newSubmission(submission);
+
+		if (submission.getTeam().isHidden()) {
+			return;
+		}
+
 		Standings before = contest.getStandings();
 		StandingsAtSubmission standings = new StandingsAtSubmission(this, before, submission);
 		for (SolutionSubmittedEvent rule : submissionRules) {

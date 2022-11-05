@@ -7,7 +7,7 @@ public class ProblemFirstSolved extends StateComparingRuleBase implements Standi
 	@Override
 	public void onStandingsUpdated(StandingsTransition transition) {
 		Judgement submission = transition.judgement;
-		
+
 		if (!submission.isAccepted()) {
 			return;
 		}

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class JsonEventReader {
     private static Logger log = LogManager.getLogger(JsonEventReader.class);
     private String lastProcessedId = null;
+    private String lastProcessedToken = null;
 
     public ArrayList<JsonEvent> parse(Reader input) throws IOException {
 
@@ -24,6 +25,10 @@ public class JsonEventReader {
         return lastProcessedId;
     }
 
+    public String getLastProcessedToken() {
+        return lastProcessedToken;
+    }
+
     public void processLine(String eventLine, Sink<JsonEvent> target) {
         String trimmedLine = eventLine.trim();
         if (!trimmedLine.isEmpty()) {
@@ -31,6 +36,7 @@ public class JsonEventReader {
                 JSONObject json = JSONObject.fromObject(trimmedLine);
                 JsonEvent event = JsonEvent.from(json);
                 lastProcessedId = event.getId();
+                lastProcessedToken = json.optString("token", null);
                 target.send(event);
             }
             catch (Exception e) {
