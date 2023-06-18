@@ -26,7 +26,11 @@ $_SESSION['entry_username'] = $user;
 // 2. choose the maximum of contest_time in submissions if present
 // 3. otherwise choose 0
 
-$stmt = mysqli_prepare($db, 'INSERT INTO entries (contest_time, user, priority, text, submission_id) VALUES ((SELECT COALESCE(?, MAX(contest_time), 0) AS last_submission FROM submissions), ?, ?, ?, ?)');
+$stmt = mysqli_prepare($db, 'INSERT INTO entries (contest_time, user, priority, text, submission_id) VALUES (COALESCE(?, (SELECT MAX(contest_time) FROM (select (UNIX_TIMESTAMP() - start_time) as contest_time, length from contests) AS T WHERE contest_time >= 0 and contest_time <= length) / 60, 0), ?, ?, ?, ?)');
+
+if (! $stmt) {
+	print("error: " . $db->error);
+}
 
 mysqli_stmt_bind_param($stmt, 'isisi', $ctime, $user, $priority, $text, $sid);
 

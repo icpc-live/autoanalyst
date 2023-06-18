@@ -43,7 +43,7 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 		Score teamScore = standingsBefore.scoreOf(team);
 		if (teamScore.isSolved(submission.getProblem())) {
 			String message = "Despite already having solved it, {team} submitted a solution for {problem}";
-			LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, message, EventImportance.Whatever, standingsAtSubmission.submission, null);
+			LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, submission.timestamp, message, EventImportance.Whatever, standingsAtSubmission.submission, null);
 			notify(event);
 			return;
 		}
@@ -75,7 +75,7 @@ public class RankPredictor extends StateComparingRuleBase implements SolutionSub
 			Map<String, String> supplements = new HashMap<String, String>();
 			supplements.put("currentRank", Integer.toString(currentRank));
 			supplements.put("potentialRank", Integer.toString(potentialRank));
-			LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, message, EventImportance.Normal, submission, supplements);
+			LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, submission.timestamp, message, EventImportance.Normal, submission, supplements);
 			notify(event);
 		}
 		

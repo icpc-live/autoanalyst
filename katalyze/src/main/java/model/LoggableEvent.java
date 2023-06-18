@@ -2,6 +2,7 @@ package model;
 
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.time.Instant;
 
 public class LoggableEvent {
 	private static int nextEventId = 0;
@@ -12,17 +13,19 @@ public class LoggableEvent {
 	public final Team team;
 	public final Problem problem;
 	public final long contestTimeMillis;
+	public final Instant timestamp;
 	public final String message;
 	public final String icatMessage;
 	public final EventImportance importance;
 	public final InitialSubmission submission;
 	public final Map<String, String> supplements;
 	
-	public LoggableEvent(Contest contest, long contestTimeMillis, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
+	public LoggableEvent(Contest contest, long contestTimeMillis, Instant eventTime, String message, EventImportance importance, InitialSubmission submission, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = (submission != null) ? submission.getTeam() : null;
 		this.contestTimeMillis = contestTimeMillis;
+		this.timestamp = eventTime;
 		this.importance = importance;
 		this.submission = submission;
 		if (this.submission != null) {
@@ -37,11 +40,12 @@ public class LoggableEvent {
 
 	}
 	
-	public LoggableEvent(Contest contest, Team team, int contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
+	public LoggableEvent(Contest contest, Team team, int contestTimeMillis, Instant eventTime, String message, EventImportance importance, Map<String,String> supplements) {
 		this.id = nextEventId++;
 		this.contest = contest;
 		this.team = team;
 		this.contestTimeMillis = contestTimeMillis;
+		this.timestamp = eventTime;
 		this.message = message;
 		this.icatMessage = message;
 		this.importance = importance;

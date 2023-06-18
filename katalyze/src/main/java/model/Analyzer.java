@@ -5,6 +5,7 @@ import rules.*;
 import icat.AnalystMessage;
 import icat.AnalystMessageSource;
 
+import java.time.Instant;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -73,6 +74,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 				contest,
 				firstTeam,
 				msg.contestTime*60000,
+				msg.timestamp,
 				message,
 				importance, supplements);
 
@@ -161,11 +163,11 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	
 	public LoggableEvent createEvent(InitialSubmission submission, long contestTimeMillis, String message, EventImportance importance) {
-		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, null);
+		return new LoggableEvent(contest, contestTimeMillis, (submission == null ? Instant.now() : submission.timestamp), message, importance, submission, null);
 	}
 	
 	public LoggableEvent createEvent(InitialSubmission submission, long contestTimeMillis, String message, EventImportance importance, Map<String,String> supplements) {
-		return new LoggableEvent(contest, contestTimeMillis, message, importance, submission, supplements);
+		return new LoggableEvent(contest, contestTimeMillis, (submission == null ? Instant.now() : submission.timestamp), message, importance, submission, supplements);
 	}
 	
 

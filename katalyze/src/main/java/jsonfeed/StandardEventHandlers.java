@@ -5,6 +5,8 @@ import model.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,6 +69,7 @@ public class StandardEventHandlers {
 
         handlers.put("languages", (contest, src) -> contest.addLanguage(new Language(src.getString("id"), src.getString("name"))));
         handlers.put("organizations", (contest,src) -> {
+	    if (src.getOp() == EntityOperation.DELETE) return; /// HACK
             contest.addOrganization(
                     new Organization(src.getString("id"), src.getString("name"), src.getStringOrNull("formal_name"), src.getStringOrNull("country"), src.getStringOrNull("twitter_hashtag"))
             );
@@ -85,9 +88,10 @@ public class StandardEventHandlers {
             Team team = contest.getTeam(teamId);
 
             long contestTimeMilliseconds = (long) (src.getTimespan("contest_time"));
+            Instant timestamp = OffsetDateTime.parse(src.getString("time")).toInstant();
             contest.updateTime(contestTimeMilliseconds);
             team.freshSubmission(new InitialSubmission(submissionId, team, problem, src.getString("language_id"),
-                    contestTimeMilliseconds));
+                    contestTimeMilliseconds, timestamp));
         });
         handlers.put("groups", (contest, src) -> {
             String groupId = src.getString("id");

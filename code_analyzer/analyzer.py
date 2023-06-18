@@ -236,7 +236,7 @@ class Analyzer:
 
     def countLines(self, p):
         """Given path p, count the number of lines in the file it points to."""
-        f = open( p )
+        f = open( p, 'rb' )
         lineCount = sum( 1 for line in f)
         f.close()
         return lineCount
@@ -506,7 +506,11 @@ class Analyzer:
 
                         # Grab file size and number of lines.
                         fobj.size = os.path.getsize( f )
-                        fobj.lineCount = self.countLines( f )
+                        try:
+                            fobj.lineCount = self.countLines( f )
+                        except:
+                            print(f)
+                            raise
 
                         lastEditRec[ 2 ] = fobj;
 

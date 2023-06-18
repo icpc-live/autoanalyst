@@ -1,21 +1,21 @@
 package icat;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AnalystMessage {
 	public final int id;
-	public final Date date;
+	public final Instant timestamp;
 	public final int contestTime;
 	public final int priority;
 	public final String user;
 	public final int submissionId;
 	public final String text;
 
-	public AnalystMessage(int id, Date date, int contestTime, int priority, String user, int submissionId, String text) {
+	public AnalystMessage(int id, Instant timestamp, int contestTime, int priority, String user, int submissionId, String text) {
 		this.id = id;
-		this.date = date;
+		this.timestamp = timestamp;
 		this.contestTime = contestTime;
 		this.priority = priority;
 		this.user = user;
@@ -30,7 +30,7 @@ public class AnalystMessage {
 		}
 		return new AnalystMessage(
 				s.getInt("id"),
-				s.getDate("date"),
+				s.getTimestamp("date").toInstant(),
 				s.getInt("contest_time"),
 				s.getInt("priority"),
 				s.getString("user"),

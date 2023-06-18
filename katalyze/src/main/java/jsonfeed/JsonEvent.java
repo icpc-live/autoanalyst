@@ -41,11 +41,14 @@ public class JsonEvent {
             throw new InvalidObjectException(String.format("Events of type %s must contain an ID field", target.type));
         }
 
-        if (target.data == null || target.data.isNullObject()) {
+        if (target.data == null) {
             throw new InvalidObjectException(String.format("Event %s does not contain a data element", src));
         }
-        return target;
 
+	if (target.data.isNullObject()) {
+	    target.op = opFromStr("delete");
+	}
+        return target;
     }
 
 

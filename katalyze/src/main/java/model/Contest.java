@@ -4,6 +4,7 @@ import io.EntityOperation;
 import stats.LanguageStats;
 
 import java.security.InvalidKeyException;
+import java.time.Instant;
 import java.util.*;
 
 public class Contest {
@@ -210,6 +211,8 @@ public class Contest {
 		throw new InvalidKeyException(String.format("%s is not a known problem", abbrev));
 	}	
 	
-	
+	public Instant getStartTime() {
+		return Instant.ofEpochMilli(properties.getStartTimeMillis());
+	}
 
 }
