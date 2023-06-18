@@ -43,15 +43,17 @@ public class AnalystMessageSource {
 				if (lowerCaseMessageText.contains(NoExportHashTag)) {
 					continue;
 				}
+
 	
 				if (message.contestTime == 0) {
 					continue;
 				}
 				
 				// Don't replicate any messages when the scoreboard is frozen
-				if (message.contestTime >= 240) {
-					continue;
-				}
+				// ORLY?
+				// if (message.contestTime >= 240) {
+				// 	 continue;
+				// }
 				
 				messages.add(message);
 			}

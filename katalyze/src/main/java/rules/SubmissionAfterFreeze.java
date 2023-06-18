@@ -33,7 +33,7 @@ public class SubmissionAfterFreeze extends StateComparingRuleBase implements Sol
 		}
 
 		String message = "{team} submitted a solution for {problem}.";
-		LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, message, EventImportance.Whatever, standingsAtSubmission.submission, null);
+		LoggableEvent event = new LoggableEvent(contest, submission.contestTimeMilliseconds, submission.timestamp, message, EventImportance.Whatever, standingsAtSubmission.submission, null);
 		notify(event);
 	}
 

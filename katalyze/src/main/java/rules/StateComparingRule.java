@@ -1,5 +1,6 @@
 package rules;
 
+import java.time.Instant;
 import java.util.*;
 import model.*;
 
@@ -13,7 +14,8 @@ public abstract class StateComparingRule {
 	
 	protected void notify(Judgement submission, String message, EventImportance importance) {
 		Team team = submission.getTeam();
-		LoggableEvent event = new LoggableEvent(team.getContest(), submission.getJudgementTimeMillis(), message, importance, submission.getInitialSubmission(), null);
+		Instant timestamp = submission.getTeam().getContest().getStartTime().plusMillis(submission.getJudgementTimeMillis());
+		LoggableEvent event = new LoggableEvent(team.getContest(), submission.getJudgementTimeMillis(), timestamp, message, importance, submission.getInitialSubmission(), null);
 
 		for (NotificationTarget target : notificationTargets) {
 			target.notify(event);

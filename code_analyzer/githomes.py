@@ -3,6 +3,7 @@ import json
 import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, urllib.parse, urllib.error, sys
 from common import dbConn, config
 from datetime import datetime, timedelta
+import base64
 import httplib2
 import re
 
@@ -120,10 +121,23 @@ class GitHomes:
 
         startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
         self.backups = []
+        #httplib2.debuglevel = 100
         self.http = httplib2.Http()
         self.http.add_credentials(self.CDSUser, self.CDSPass)
+        #print((self.CDSUser, self.CDSPass))
         self.http.disable_ssl_certificate_validation=True
-        r = self.http.request("%s/%s/teams" % (self.CDSRoot, row[0]))
+
+        r = self.http.request(self.CDSRoot)
+        contests = json.loads(r[1].decode("utf-8"))
+        for contest in contests:
+            if contest['name'] == row[0]:
+                contest_id = contest['id']
+                break
+        else:
+            print('Error: id not found for contest with name %s.' % row[0])
+            exit(1)
+
+        r = self.http.request("%s/%s/teams" % (self.CDSRoot, contest_id))
         teamData = json.loads(r[1].decode("utf-8"))
         for team in teamData:
             for index, backup in enumerate(team["backup"]):
@@ -236,7 +250,10 @@ class GitHomes:
             result = None
             for _ in range( self.request_tries ):
                   try:
-                        (responseHeader, result) = self.http.request( backup.href, "GET", headers={"If-Modified-Since" : backup.modTime} )
+                        #(responseHeader, result) = self.http.request( backup.href, "GET" )
+                        (responseHeader, result) = self.http.request( backup.href, "GET", headers={
+                            "Authorization": b"Basic " + base64.b64encode("{0}:{1}".format(self.CDSUser, self.CDSPass).encode('ascii')),
+                            "If-Modified-Since" : backup.modTime} )
                         break
                   except:
                         print('The httplib thrown an exception:')
@@ -273,6 +290,7 @@ class GitHomes:
                 print("no change, done.")
             else:
                 print(("error %s" % responseHeader))
+                print(result)
 
         os.chdir( self.origin )
 

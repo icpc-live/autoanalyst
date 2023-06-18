@@ -31,13 +31,14 @@ class ConfigImporter:
         h = httplib2.Http(os.path.join(d,".cache"))
         h.add_credentials( self.CDSUser, self.CDSPass )
         h.disable_ssl_certificate_validation=True
-        (responseHeader, result) = h.request( "%s/contest/%s" % ( self.CDSRoot, path ), "GET" )
+        url = "%s/contest/systest2/%s" % ( self.CDSRoot, path )
+        (responseHeader, result) = h.request(url, "GET" )
         if responseHeader["status"] == "200":
             for line in result.split('\n'):
                 if line:
                     callback(json.loads(line))
         else:
-            print(("error %s" % responseHeader))
+            print("error %s: %s" % (url, responseHeader))
 
         shutil.rmtree(d)
 
