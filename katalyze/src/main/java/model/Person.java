@@ -1,14 +1,14 @@
 package model;
 
-public class TeamMember implements ApiEntity {
+public class Person implements ApiEntity {
     private final String id;
-    public final String teamId;
+    public final String[] teamIds;
     public final String name;
     public final String role;
 
-    public TeamMember(String teamMemberId, String teamId, String name, String role) {
-        this.id = teamMemberId;
-        this.teamId = teamId;
+    public Person(String personId, String[] teamIds, String name, String role) {
+        this.id = personId;
+        this.teamIds = teamIds;
         this.name = name;
         this.role = role;
     }

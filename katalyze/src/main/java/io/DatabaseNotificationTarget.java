@@ -77,8 +77,8 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 				problemChanged((Problem) entity, op);
 			} else if (entity instanceof ContestProperties) {
 				contestChanged((ContestProperties) entity, op);
-			} else if (entity instanceof TeamMember) {
-				teamMemberChanged((TeamMember) entity, op);
+			} else if (entity instanceof Person) {
+				personChanged((Person) entity, op);
 			}
 		}  catch (Exception e) {
 			String errorMessage = e.getMessage();
@@ -153,15 +153,25 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 	}
 
 
-	private void teamMemberChanged(TeamMember teamMember, EntityOperation op) throws Exception {
-
-		PreparedStatement s = conn.prepareStatement(
-				"replace into teammembers(id, team_id, full_name, role) values (?,?,?,?)");
-		s.setInt(1, Integer.parseInt(teamMember.getId()));
-		s.setInt(2, Integer.parseInt(teamMember.teamId));
-		s.setString(3, teamMember.name);
-		s.setString(4, teamMember.role);
+	private void personChanged(Person person, EntityOperation op) throws Exception {
+		PreparedStatement s = null;
+		if (op != EntityOperation.CREATE) {
+			s = conn.prepareStatement("DELETE FROM team_persons WHERE person_id = ?");
+			s.setInt(1, Integer.parseInt(person.getId()));
+			s.executeUpdate();
+		}
+		s = conn.prepareStatement()
+		PreparedStatement s = conn.prepareStatement("replace into persons(id, full_name) values (?,?)");
+		s.setInt(1, Integer.parseInt(person.getId()));
+		s.setString(2, person.name);
 		s.executeUpdate();
+		for (String team_id : person.teamIds) {
+			s = conn.prepareStatement("insert into team_persons (person_id, team_id, role) values (?,?,?)");
+			s.setInt(1, Integer.parseInt(person.getId()));
+			s.setInt(2, Integer.parseInt(person.team_id));
+			s.setString(3, person.role);
+			s.executeUpdate();
+		}
 	}
 
 
