@@ -269,14 +269,29 @@ CREATE TABLE IF NOT EXISTS `teams` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
-DROP TABLE IF EXISTS `teammembers`;
-CREATE TABLE teammembers(
+DROP TABLE IF EXISTS `persons`;
+CREATE TABLE `persons` (
   `id` int(11) NOT NULL,
-  `team_id` int(11) NOT NULL,
-  `full_name` varchar(50) DEFAULT NULL,
-  `role` varchar(30) DEFAULT NULL,
+  `full_name` varchar(60) DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `team_persons`;
+CREATE TABLE `team_persons` (
+  `team_id` int(11) NOT NULL,
+  `person_id` int(11) NOT NULL,
+  `role` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`team_id`, `person_id`)
+)
+
+DROP TABLE IF EXISTS `teammembers`;
+-- CREATE TABLE teammembers(
+--  `id` int(11) NOT NULL,
+--  `team_id` int(11) NOT NULL,
+--  `full_name` varchar(50) DEFAULT NULL,
+-- `role` varchar(30) DEFAULT NULL,
+--  PRIMARY KEY (id)
+--) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
 --

@@ -182,10 +182,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <?php
 
 
-                  $rows = mysqli_query($db, "select full_name, role from teammembers where team_id = $team_id order by role, id");
+                  $rows = mysqli_query($db, "select p.full_name as full_name, tp.role as role from persons p INNER JOIN team_persons tp ON p.id = tp.person_id where tp.team_id = $team_id order by p.role, p.id");
 		    if ($rows) {
-		      foreach ($rows as $teammember_row) {
-		        printf("<tr><td>%s</td><td>%s</td></tr>", $teammember_row["full_name"], $teammember_row["role"]);
+		      foreach ($rows as $person_row) {
+		        printf("<tr><td>%s</td><td>%s</td></tr>", $person_row["full_name"], $person_row["role"]);
 		      }
 		    }
               ?>
