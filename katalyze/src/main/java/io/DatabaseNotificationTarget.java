@@ -160,15 +160,14 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 			s.setInt(1, Integer.parseInt(person.getId()));
 			s.executeUpdate();
 		}
-		s = conn.prepareStatement()
-		PreparedStatement s = conn.prepareStatement("replace into persons(id, full_name) values (?,?)");
+		s = conn.prepareStatement("replace into persons(id, full_name) values (?,?)");
 		s.setInt(1, Integer.parseInt(person.getId()));
 		s.setString(2, person.name);
 		s.executeUpdate();
 		for (String team_id : person.teamIds) {
 			s = conn.prepareStatement("insert into team_persons (person_id, team_id, role) values (?,?,?)");
 			s.setInt(1, Integer.parseInt(person.getId()));
-			s.setInt(2, Integer.parseInt(person.team_id));
+			s.setInt(2, Integer.parseInt(team_id));
 			s.setString(3, person.role);
 			s.executeUpdate();
 		}

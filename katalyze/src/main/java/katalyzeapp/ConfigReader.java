@@ -63,7 +63,7 @@ public class ConfigReader {
 		connection += config.getString("database.password");
 
 		if (!config.getBoolean("database.useSSL", true)) {
-			connection = connection+"&useSSL=false";
+			connection = connection+"&sslMode=disabled";
 		}
 
 		dbConfig = new DatabaseNotificationConfig(
