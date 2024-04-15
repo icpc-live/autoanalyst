@@ -2,7 +2,7 @@ package model;
 
 import jsonfeed.TimeConverter;
 import net.sf.json.JSONObject;
-
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -21,12 +21,17 @@ public class ContestProperties implements ApiEntity {
         ContestProperties target = new ContestProperties();
         target.id = src.getString("id");
         target.name = src.getString("name");
-		target.formalName = src.optString("formal_name", null);
+        target.formalName = src.optString("formal_name", null);
 
         String startTime = src.optString("start_time", null);
         if (startTime != null && !startTime.equals("null")) {
             target.startTimeMillis = converter.parseTimestampMillis(startTime);
-        }
+        } else {
+	    String countdownPauseTime = src.optString("countdown_pause_time", null);
+	    if (countdownPauseTime != null && !countdownPauseTime.equals("null")) {
+		target.startTimeMillis = converter.parseContestTimeMillis(countdownPauseTime) + Instant.now().toEpochMilli();
+	    }
+	}
         target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));
         target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getString("scoreboard_freeze_duration"));
         target.penaltyTime = src.getInt("penalty_time");
