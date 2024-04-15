@@ -223,7 +223,7 @@ function _feed_updateWith(rows) {
             var description = '';
             var row_contest_time = row.contest_time;
             if (row.submission_id) {
-                row_contest_time = "<a href='" + submission_url(row.submission_id,data['config']) + "'>" + row.contest_time + '</a>';
+                row_contest_time = "<a href='" + submission_url(row.submission_id,data['config'],data['contest']) + "'>" + row.contest_time + '</a>';
             }
             if (this.formatter) {
                 description = this.formatter(row);

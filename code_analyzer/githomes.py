@@ -4,7 +4,7 @@ import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, ur
 from common import dbConn, config
 from datetime import datetime, timedelta
 import base64
-import httplib2
+import requests
 import re
 
 
@@ -113,33 +113,25 @@ class GitHomes:
 
         # figure out a start time in the format we will get from the CDS.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
+        cursor.execute( "SELECT id, contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
         row = cursor.fetchone()
+        contest_id = row[0]
         if ( row == None ):
             print("Error: no contest found in the database.")
             exit(1)
 
-        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
         self.backups = []
-        #httplib2.debuglevel = 100
-        self.http = httplib2.Http()
-        self.http.add_credentials(self.CDSUser, self.CDSPass)
+        self.http_session = requests.Session()
+        self.http_session.auth = (self.CDSUser, self.CDSPass)
         #print((self.CDSUser, self.CDSPass))
-        self.http.disable_ssl_certificate_validation=True
+        #self.http.disable_ssl_certificate_validation=True
 
-        r = self.http.request(self.CDSRoot)
-        contests = json.loads(r[1].decode("utf-8"))
-        for contest in contests:
-            if contest['name'] == row[0]:
-                contest_id = contest['id']
-                break
-        else:
-            print('Error: id not found for contest with name %s.' % row[0])
-            exit(1)
+        r = self.http_session.get("%s/%s/teams" % (self.CDSRoot, contest_id))
+        teamData = r.json()
+        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
 
-        r = self.http.request("%s/%s/teams" % (self.CDSRoot, contest_id))
-        teamData = json.loads(r[1].decode("utf-8"))
         for team in teamData:
+            print(team)
             for index, backup in enumerate(team["backup"]):
                 # we have /contest in both CDSRoot and href
                 # probably we don't need to have one in CFSRoot, but it's too hard to change it now

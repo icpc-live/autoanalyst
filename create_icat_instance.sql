@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `analyzer_parameters` (
 -- contests yet, so this table should contain only a single contest.
 DROP TABLE IF EXISTS `contests`;
 CREATE TABLE IF NOT EXISTS `contests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(36) NOT NULL,
   `contest_name` varchar(150) NOT NULL,
   `start_time` int(11) DEFAULT NULL COMMENT 'Contest start time as Unix Epoch seconds.',
   `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',

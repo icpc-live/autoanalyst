@@ -142,7 +142,7 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 
  		PreparedStatement s = conn.prepareStatement(
 				"replace into contests(id, contest_name, start_time, length, freeze) values (?,?,?,?,?)");
- 		s.setInt(1,1);
+ 		s.setString(1,properties.getId());
  		s.setString(2, properties.getName());
  		s.setInt(3, (int) properties.getStartTimeEpochSeconds());
  		s.setInt(4, (int) (properties.getDurationMillis() / 1000));
