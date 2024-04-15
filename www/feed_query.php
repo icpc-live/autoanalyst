@@ -60,7 +60,7 @@ function feed_query($table, $conditions, $id, $limit) {
     if (! isset($conditions)) { return error("Please provide the conditions"); }
     $conditions = $conditions;
     // if magic quotes is turned on, then strip out slashes from the conditions 
-    if (get_magic_quotes_gpc()) { $conditions = stripslashes($conditions); }
+    // if (get_magic_quotes_gpc()) { $conditions = stripslashes($conditions); }
     $conditions = stripslashes($conditions);
     if (isset($id)) { $id = $id; }
     if (isset($limit)) { $limit = $limit; }
