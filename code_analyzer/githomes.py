@@ -239,13 +239,11 @@ class GitHomes:
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
 
-            result = None
+            response = None
             for _ in range( self.request_tries ):
                   try:
                         #(responseHeader, result) = self.http.request( backup.href, "GET" )
-                        (responseHeader, result) = self.http.request( backup.href, "GET", headers={
-                            "Authorization": b"Basic " + base64.b64encode("{0}:{1}".format(self.CDSUser, self.CDSPass).encode('ascii')),
-                            "If-Modified-Since" : backup.modTime} )
+                        response = self.http_session.get( backup.href, headers={"If-Modified-Since" : backup.modTime} )
                         break
                   except:
                         print('The httplib thrown an exception:')
@@ -253,16 +251,16 @@ class GitHomes:
                         print((traceback.format_exc()))
 
             # If we were not able to get result for our attemtps we continue with the following team.
-            if result is None:
+            if response is None:
                 print(f'Unable to fetch backups for team {backup.team}{backup.path}. The team is skipped')
                 continue
 
-            if responseHeader["status"] == "200":
+            if response.status_code == 200:
                 sys.stdout.write("updated, commit to git... ")
 
-                backup.modTime = responseHeader["last-modified"]
+                backup.modTime = response.headers["last-modified"]
                 f = tempfile.NamedTemporaryFile( delete=False )
-                f.write( result )
+                f.write( response.content )
                 f.close()
                 backupDir = f"team{backup.team}{backup.path}"
                 # Delete a team dir if it existed to make sure that
@@ -278,11 +276,11 @@ class GitHomes:
                 os.unlink( f.name )
 
                 print("done.")
-            elif responseHeader["status"] == "304":
+            elif response.status_code == 304:
                 print("no change, done.")
             else:
-                print(("error %s" % responseHeader))
-                print(result)
+                print(("error %s" % response.status_code))
+                print(response.content)
 
         os.chdir( self.origin )
 
