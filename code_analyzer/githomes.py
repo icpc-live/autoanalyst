@@ -255,7 +255,7 @@ class GitHomes:
                 print(f'Unable to fetch backups for team {backup.team}{backup.path}. The team is skipped')
                 continue
 
-            if response.status_code == 200:
+            if response.status_code == requests.codes.ok:
                 sys.stdout.write("updated, commit to git... ")
 
                 backup.modTime = response.headers["last-modified"]
@@ -276,7 +276,7 @@ class GitHomes:
                 os.unlink( f.name )
 
                 print("done.")
-            elif response.status_code == 304:
+            elif response.status_code == requests.codes.not_modified:
                 print("no change, done.")
             else:
                 print(("error %s" % response.status_code))
