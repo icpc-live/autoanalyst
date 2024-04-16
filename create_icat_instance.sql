@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `contests` (
   `id` varchar(36) NOT NULL,
   `contest_name` varchar(150) NOT NULL,
   `start_time` int(11) DEFAULT NULL COMMENT 'Contest start time as Unix Epoch seconds.',
+  `is_countdown_paused` boolean default FALSE COMMENT 'Whether the countdown to the start of the contest is paused.',
   `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
   `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
   PRIMARY KEY (`id`)
