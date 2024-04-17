@@ -127,6 +127,7 @@ class GitHomes:
         #self.http.disable_ssl_certificate_validation=True
 
         r = self.http_session.get("%s/%s/teams" % (self.CDSRoot, contest_id))
+        r.raise_for_status()
         teamData = r.json()
         startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
 
@@ -255,7 +256,9 @@ class GitHomes:
                 print(f'Unable to fetch backups for team {backup.team}{backup.path}. The team is skipped')
                 continue
 
-            if response.status_code == requests.codes.ok:
+            if response.status_code == requests.codes.ok and not response.content:
+                print("Skipping because backup is empty file")
+            elif response.status_code == requests.codes.ok and response.content:
                 sys.stdout.write("updated, commit to git... ")
 
                 backup.modTime = response.headers["last-modified"]
@@ -270,7 +273,9 @@ class GitHomes:
                     shutil.rmtree( backupDir )
                 os.makedirs( backupDir )
                 try:
-                    subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                    retcode = subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                    if retcode != 0:
+                        raise RuntimeError()
                 except:
                     print(f"Failed to unzip {f.name} for {backupDir}")
                 os.unlink( f.name )
