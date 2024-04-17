@@ -26,7 +26,7 @@ div#statistics_activity_container { white-space: nowrap;  }
 
 div#problem_statistics {
     display: inline-block;
-    width: 25em;
+    width: 35em;
 }
 
 div#judgement_proportions {
