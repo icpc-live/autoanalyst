@@ -141,14 +141,15 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 	private void contestChanged(ContestProperties properties, EntityOperation op) throws Exception {
 
  		PreparedStatement s = conn.prepareStatement(
-				"replace into contests(id, contest_name, start_time, length, freeze) values (?,?,?,?,?)");
- 		s.setInt(1,1);
+				"replace into contests(id, contest_name, start_time, is_countdown_paused, length, freeze) values (?,?,?,?,?,?)");
+ 		s.setString(1,properties.getId());
  		s.setString(2, properties.getName());
  		s.setInt(3, (int) properties.getStartTimeEpochSeconds());
- 		s.setInt(4, (int) (properties.getDurationMillis() / 1000));
+		s.setBoolean(4, properties.isCountdownPaused());
+ 		s.setInt(5, (int) (properties.getDurationMillis() / 1000));
 
  		long freezeContestTime = (properties.getDurationMillis() - properties.getScoreboardFreezeMillis());
- 		s.setInt(5, (int) (freezeContestTime/1000));
+ 		s.setInt(6, (int) (freezeContestTime/1000));
  		s.executeUpdate();
 	}
 
@@ -160,15 +161,14 @@ public class DatabaseNotificationTarget implements NotificationTarget, EntityCha
 			s.setInt(1, Integer.parseInt(person.getId()));
 			s.executeUpdate();
 		}
-		s = conn.prepareStatement()
-		PreparedStatement s = conn.prepareStatement("replace into persons(id, full_name) values (?,?)");
+		s = conn.prepareStatement("replace into persons(id, full_name) values (?,?)");
 		s.setInt(1, Integer.parseInt(person.getId()));
 		s.setString(2, person.name);
 		s.executeUpdate();
 		for (String team_id : person.teamIds) {
 			s = conn.prepareStatement("insert into team_persons (person_id, team_id, role) values (?,?,?)");
 			s.setInt(1, Integer.parseInt(person.getId()));
-			s.setInt(2, Integer.parseInt(person.team_id));
+			s.setInt(2, Integer.parseInt(team_id));
 			s.setString(3, person.role);
 			s.executeUpdate();
 		}

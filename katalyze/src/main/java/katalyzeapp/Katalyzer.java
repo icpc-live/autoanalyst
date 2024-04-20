@@ -41,7 +41,7 @@ public class Katalyzer {
 	}
 	
 	
-	private void updateScoreboards(boolean force) {
+	public synchronized void updateScoreboards(boolean force) {
 	    if (force) {
 	        logger.debug("Forced scoreboard update");
         }
@@ -76,7 +76,7 @@ public class Katalyzer {
 		
 	}
 
-	public void processEvent(JsonEvent event)  {
+	public synchronized void processEvent(JsonEvent event)  {
 	    if (event != null) {
             JsonEventHandler eventHandler = eventHandlers.getHandlerFor(event);
             try {

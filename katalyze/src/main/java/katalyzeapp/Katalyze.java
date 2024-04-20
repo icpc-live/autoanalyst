@@ -61,8 +61,7 @@ public class Katalyze {
 			logger.error(String.format("Error while parsing %s: %s.\nCause: %s", configFileName, e.getMessage(), e.getCause()));
 		}
 
-		Katalyzer katalyzer = null;
-		katalyzer = new Katalyzer(config);
+		final Katalyzer katalyzer = new Katalyzer(config);
 		katalyzer.start();
 
 		InputStreamConfigurator configSource = new InputStreamConfigurator(config);
@@ -99,9 +98,28 @@ public class Katalyze {
 							isStreamToken = true;
 						}
 
+						Runnable continuousUpdateTask = () -> { 
+							while (!Thread.currentThread().isInterrupted()) {
+								katalyzer.updateScoreboards(false);
+								try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+              						return;
+								}
+							}
+						};
 
-                        InputStream input = isp.getInputStream(sinceToken, isStreamToken);
-                        reader.processStream(new InputStreamReader(input, StandardCharsets.UTF_8), katalyzer::processEvent);
+						Thread continuousUpdateThread = new Thread(continuousUpdateTask);
+						continuousUpdateThread.start();
+
+						try {
+							InputStream input = isp.getInputStream(sinceToken, isStreamToken);
+                        	reader.processStream(new InputStreamReader(input, StandardCharsets.UTF_8), katalyzer::processEvent);
+						} finally {
+							continuousUpdateThread.interrupt();
+							continuousUpdateThread.join();
+						}
                     }
                     catch (IOException e) {
                         logger.info(String.format("Error while reading from source: %s", e));

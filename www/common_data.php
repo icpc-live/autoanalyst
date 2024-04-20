@@ -35,6 +35,11 @@ while ($row = mysqli_fetch_assoc($result)) {
     $common_data['teams'][$row['id']] = $row;
 }
 
+$result = mysqli_query($db, "SELECT id, contest_name, start_time, length, freeze FROM contests ORDER BY id");
+while ($row = mysqli_fetch_assoc($result)) {
+    $common_data['contest'] = $row;
+}
+
 /*
 If this script was called (executed) from another source, return a JSON
 encoding of the data. Otherwise, assume it was included in another PHP file and

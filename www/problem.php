@@ -26,7 +26,7 @@ div#statistics_activity_container { white-space: nowrap;  }
 
 div#problem_statistics {
     display: inline-block;
-    width: 25em;
+    width: 35em;
 }
 
 div#judgement_proportions {
@@ -152,20 +152,24 @@ Statistics about the problem:
 
         
         #########################################
-        $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
-            . " where problem_id = '$problem_id' and contest_time = $first_submission_time order by team_id");
-        $first_teams_to_submit = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $first_teams_to_submit[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+        if ($first_submission_time) {
+            $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
+                . " where problem_id = '$problem_id' and contest_time = $first_submission_time order by team_id");
+            $first_teams_to_submit = array();
+            while ($row = mysqli_fetch_assoc($result)) {
+                $first_teams_to_submit[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+            }
         }
         $first_teams_to_submit = $first_teams_to_submit ? sprintf("(Team %s)", implode(", ", $first_teams_to_submit)) : "";
 
         #########################################
-        $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
-            . " where problem_id = '$problem_id' and result = 'AC' and contest_time = $first_solution_time order by team_id");
-        $first_teams_to_solve = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $first_teams_to_solve[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+        if ($first_solution_time) {
+            $result = mysqli_query($db, "select distinct team_id as team_id from submissions "
+                . " where problem_id = '$problem_id' and result = 'AC' and contest_time = $first_solution_time order by team_id");
+            $first_teams_to_solve = array();
+            while ($row = mysqli_fetch_assoc($result)) {
+                $first_teams_to_solve[] = sprintf("<a href='team.php?team_id=%d'>%d</a>", $row['team_id'], $row['team_id']);
+            }
         }
         $first_teams_to_solve = $first_teams_to_solve ? sprintf("(Team %s)", implode(", ", $first_teams_to_solve)) : "";
 

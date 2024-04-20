@@ -103,11 +103,10 @@ public class StandardEventHandlers {
         handlers.put("persons", (contest, src) -> {
             String personId = src.getString("id");
             String[] teamIds = src.getStringArray("team_ids");
-            String firstName = src.getString("first_name");
-            String lastName = src.getString("last_name");
+            String name = src.getString("name");
             String role = src.getString("role");
 
-            Person newPerson = new Person(personId, teamIds, firstName +" "+lastName, role);
+            Person newPerson = new Person(personId, teamIds, name, role);
             contest.registerPerson(newPerson, src.getOp());
         });
 
