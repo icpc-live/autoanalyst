@@ -1,7 +1,8 @@
 package io;
 
 import model.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +11,7 @@ import katalyzeapp.DatabaseNotificationConfig;
 
 public class DatabaseNotificationTarget implements NotificationTarget, EntityChangedHandler {
 	
-	static Logger logger = Logger.getLogger(DatabaseNotificationTarget.class);
+	static Logger logger = LogManager.getLogger(DatabaseNotificationTarget.class);
 
 	Connection conn;
 	DatabaseNotificationConfig config;

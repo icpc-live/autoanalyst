@@ -1,8 +1,8 @@
 package tests;
 
 
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import model.*;
 
 import java.util.*;
@@ -28,7 +28,7 @@ public class ScoreOrdering extends tests.ContestSimulatorTest {
 		Score scoreA = new Score(teams[0], 100, problems(problems[0]), noSubmissions);
 		Score scoreB = new Score(teams[1], 130, problems(problems[0], problems[1]), noSubmissions);
 
-		Assert.assertTrue(comparator.compare(scoreA,scoreB) == 1);
+		Assertions.assertEquals(1, comparator.compare(scoreA,scoreB));
 
 	}
 	

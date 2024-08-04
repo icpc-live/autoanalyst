@@ -5,7 +5,7 @@ import java.util.Comparator;
 public class ScoreTableComparer implements Comparator<ScoreTableEntry>{
 
 	private static int compare(int x, int y) {
-		return new Integer(x).compareTo(y); 
+		return Integer.compare(x, y);
 	}
 	
 	@Override

@@ -2,11 +2,9 @@ package katalyzeapp;
 
 import charts.ChartDumperHook;
 import clics.ExtendedScoreDump;
-import config.TwitterConfig;
 import config.YAMLConfiguration;
 import icat.AnalystMessageSource;
 import io.DatabaseNotificationTarget;
-import io.TwitterNotificationTarget;
 import io.WebNotificationTarget;
 import legacyfeed.EventFeedFile;
 import messageHandlers.ContestMessages;
@@ -93,24 +91,6 @@ public class ConfigReader {
 		}		
 	}
 	
-	private void setupTwitterNotifier(Analyzer analyzer) {
-		if (!config.getBoolean("katalyzer.twitter.enable", false)) {
-			return;
-		}
-		
-		logger.info("will export to twitter");
-		
-		TwitterConfig twitterConfig = new TwitterConfig(
-				config.getStringArray("katalyzer.twitter.oAuthConsumer"),
-				config.getStringArray("katalyzer.twitter.accessToken"),
-				config.getString("katalyzer.twitter.hashtag"),
-				config.getInt("katalyzer.notifications.suppressUntil", 0)
-				);
-
-		TwitterNotificationTarget twitterNotifier = new TwitterNotificationTarget(twitterConfig);
-		analyzer.addNotifier(twitterNotifier);
-	}
-	
 	private boolean ruleEnabled(String ruleName) {
 		return (config.getBoolean("katalyzer.rule."+ruleName+".enable", true));
 	}
@@ -162,9 +142,8 @@ public class ConfigReader {
 			
 			File f = new File(target);
 			if(f.exists()) { 
-				f.lastModified();
 				File newFileName = new File(target+"."+Long.toString(f.lastModified()));
-				f.renameTo(newFileName);
+				assert f.renameTo(newFileName);
 			}
 			
 			try {
@@ -197,7 +176,7 @@ public class ConfigReader {
 
 			WebNotificationTarget commentaryMessages = new WebNotificationTarget(webPublisher);
 			PublishableEventList events = commentaryMessages.getAllEvents();
-			httpHandler.addHandler(new JsonEventStreamer(events, new LoggableEventSerializer(), "/commentary-messages"));
+			httpHandler.addHandler(new JsonEventStreamer<>(events, new LoggableEventSerializer(), "/commentary-messages"));
 
 
 			analyzer.addOutputHook(new ExtendedScoreDump(contest, webPublisher));
@@ -207,7 +186,7 @@ public class ConfigReader {
 		}
 	}
 	
-	public void setupFilePublisher(Contest contest, Analyzer analyzer) {
+	public void setupFilePublisher(Analyzer analyzer) {
 		if (featureEnabled("file")) {
 			String targetDirectory = config.getString("katalyzer.file.targetDirectory");
 			
@@ -229,9 +208,8 @@ public class ConfigReader {
 		setupRules(analyzer);
 		setupCharts(contest, analyzer);
 		setupDatabaseNotifier(analyzer);
-		setupTwitterNotifier(analyzer);
 		setupWebPublisher(contest, analyzer, augmentedEventFeed);
-		setupFilePublisher(contest, analyzer);
+		setupFilePublisher(analyzer);
 	}
 
 	public Connection getConnection() throws Exception {

@@ -8,13 +8,14 @@ import icat.AnalystMessageSource;
 import java.time.Instant;
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jfree.util.Log;
 
 public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
 	final Contest contest;
-	static Logger logger = Logger.getLogger(Analyzer.class);
+	static Logger logger = LogManager.getLogger(Analyzer.class);
 	List<StandingsUpdatedEvent> stateRules = new ArrayList<>();
 	List<SolutionSubmittedEvent> submissionRules = new ArrayList<>();
 	List<EntityChangedHandler> entityChangedHandlers = new ArrayList<>();

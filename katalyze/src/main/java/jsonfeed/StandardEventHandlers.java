@@ -29,7 +29,7 @@ public class StandardEventHandlers {
     public StandardEventHandlers() {
 
         handlers.put("teams", (contest, src) -> {
-            String organizationId = src.getString("organization_id");
+            String organizationId = src.getStringOrNull("organization_id");
             Organization org = (organizationId != null) ? (contest.getOrganization(organizationId)) : null;
             String[] group_ids = src.getStringArray("group_ids");
             ArrayList<Group> groups = new ArrayList<>();

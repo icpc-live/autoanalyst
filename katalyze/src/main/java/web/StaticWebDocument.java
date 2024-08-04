@@ -1,8 +1,6 @@
 package web;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.google.gson.JsonElement;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class StaticWebDocument implements WebDocument {
 	final String contentType;
@@ -38,10 +37,10 @@ public class StaticWebDocument implements WebDocument {
 		return new StaticWebDocument(contentType, contents);	
 	}
 
-	public StaticWebDocument(JSON json) {
+	public StaticWebDocument(JsonElement json) {
 		this.contentType = "application/json";
 		String jsonAsString = json.toString();
-		this.contents = jsonAsString.getBytes(Charset.forName("UTF-8"));
+		this.contents = jsonAsString.getBytes(StandardCharsets.UTF_8);
 	}
 
 	public static StaticWebDocument FromResource(String contentType, java.lang.Object mainObject, String fileName) throws IOException{

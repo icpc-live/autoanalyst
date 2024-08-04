@@ -4,11 +4,12 @@ import model.EventImportance;
 import model.InitialSubmission;
 import model.LoggableEvent;
 import model.NotificationTarget;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LogNotificationTarget implements NotificationTarget {
 	
-	static Logger logger = Logger.getLogger(LogNotificationTarget.class);
+	static Logger logger = LogManager.getLogger(LogNotificationTarget.class);
 	final boolean useHashTags;
 	
 	public LogNotificationTarget(boolean useHashTags) {

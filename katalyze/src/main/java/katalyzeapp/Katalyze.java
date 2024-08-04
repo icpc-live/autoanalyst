@@ -1,16 +1,15 @@
 package katalyzeapp;
 
 import config.YAMLConfiguration;
-import io.HttpFeedClient;
 import io.InputStreamConfigurator;
 import io.InputStreamProvider;
 import jsonfeed.JsonEventReader;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,7 +18,7 @@ import java.time.Instant;
 
 public class Katalyze {
 	
-	static Logger logger = Logger.getLogger(Katalyze.class);
+	static Logger logger = LogManager.getLogger(Katalyze.class);
 
 
 
@@ -135,13 +134,9 @@ public class Katalyze {
 
 		} catch (Exception e) {
 			logger.error("Katalyzer fatal error, terminating",e);
-		}
-
-
-		if (katalyzer != null) {
+		} finally {
 			katalyzer.stop();
 		}
-		
 	}
 
 

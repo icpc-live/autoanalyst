@@ -1,7 +1,8 @@
 package model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jsonfeed.TimeConverter;
-import net.sf.json.JSONObject;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -18,26 +19,26 @@ public class ContestProperties implements ApiEntity {
     private int penaltyTime;
     private boolean countdownIsPaused = false;
 
-    public static ContestProperties fromJSON(JSONObject src) {
+    public static ContestProperties fromJSON(JsonObject src) {
         ContestProperties target = new ContestProperties();
-        target.id = src.getString("id");
-        target.name = src.getString("name");
-        target.formalName = src.optString("formal_name", null);
+        target.id = src.getAsJsonPrimitive("id").getAsString();
+        target.name = src.getAsJsonPrimitive("name").getAsString();
+        target.formalName = JsonHelpers.optString(src,"formal_name");
 
-        String startTime = src.optString("start_time", null);
+        String startTime = JsonHelpers.optString(src, "start_time");
         if (startTime != null && !startTime.equals("null")) {
             target.startTimeMillis = converter.parseTimestampMillis(startTime);
         } else {
-            String countdownPauseTime = src.optString("countdown_pause_time", null);
+            String countdownPauseTime = JsonHelpers.optString(src,"countdown_pause_time");
             if (countdownPauseTime != null && !countdownPauseTime.equals("null")) {
                 target.countdownIsPaused = true;
                 target.startTimeMillis = converter.parseContestTimeMillis(countdownPauseTime)
                         + Instant.now().toEpochMilli();
             }
         }
-        target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));
-        target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getString("scoreboard_freeze_duration"));
-        target.penaltyTime = src.getInt("penalty_time");
+        target.durationMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("duration").getAsString());
+        target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("scoreboard_freeze_duration").getAsString());
+        target.penaltyTime = src.getAsJsonPrimitive("penalty_time").getAsInt();
         return target;
     }
 

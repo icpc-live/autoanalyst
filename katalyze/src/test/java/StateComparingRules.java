@@ -2,8 +2,8 @@ package tests;
 
 import model.TestNotifier;
 
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import rules.*;
 import model.*;
 

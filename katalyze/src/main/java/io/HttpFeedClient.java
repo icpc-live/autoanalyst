@@ -1,15 +1,15 @@
 package io;
 
+import com.google.gson.JsonParser;
 import jsonfeed.ContestEntry;
 import jsonfeed.DummyTrustManager;
 import model.ContestProperties;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -47,13 +48,10 @@ public class HttpFeedClient {
         }
     }
 
-    public JSON getJson(String urlString) throws IOException {
+    public JsonElement getJson(String urlString) throws IOException {
         InputStream is = getInputStream(urlString);
-
-        String jsonString = IOUtils.toString(is, "UTF-8");
-
-		JSON json = (JSON) JSONSerializer.toJSON( jsonString );
-		return json;
+        String jsonString = IOUtils.toString(is, StandardCharsets.UTF_8);
+        return JsonParser.parseString(jsonString);
     }
 
 
@@ -73,20 +71,20 @@ public class HttpFeedClient {
     public ArrayList<ContestEntry> probeContests(String baseUrl) throws IOException {
         ArrayList<ContestEntry> target = new ArrayList<>();
 
-        JSON response = getJson(baseUrl);
-        if (response.isArray()) {
+        JsonElement response = getJson(baseUrl);
+        if (response.isJsonArray()) {
             // We got an array of contests;
-            JSONArray responseArray = (JSONArray) response;
+            JsonArray responseArray = response.getAsJsonArray();
             responseArray.forEach(src -> {
-                if (src instanceof JSONObject) {
-                    ContestProperties props = ContestProperties.fromJSON((JSONObject) src);
+                if (src.isJsonObject()) {
+                    ContestProperties props = ContestProperties.fromJSON(src.getAsJsonObject());
                     ContestEntry newEntry = new ContestEntry(props, baseUrl+"/"+props.getId());
                     target.add(newEntry);
                 }
             });
         } else {
             // Url pointed directly at one particular contest
-            ContestProperties props = ContestProperties.fromJSON((JSONObject) response);
+            ContestProperties props = ContestProperties.fromJSON(response.getAsJsonObject());
             target.add(new ContestEntry(props, baseUrl));
         }
 

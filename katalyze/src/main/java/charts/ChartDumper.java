@@ -6,13 +6,14 @@ import java.util.List;
 
 import model.Contest;
 
-import org.apache.log4j.Logger;
-import org.jfree.chart.ChartUtilities;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 
 public class ChartDumper {
 
-	static final Logger logger = Logger.getLogger(ChartDumper.class);
+	static final Logger logger = LogManager.getLogger(ChartDumper.class);
 	
 	Contest contest;
 	ArrayList<ContestChart> charts = new ArrayList<ContestChart>();
@@ -46,7 +47,7 @@ public class ChartDumper {
 				}
 			}
 			logger.debug(String.format("Saving %s", largeChart));
-			ChartUtilities.saveChartAsPNG(largeChart, chartToRender, 768, 400);
+			ChartUtils.saveChartAsPNG(largeChart, chartToRender, 768, 400);
 		}
 		catch (Exception e) {
 			logger.warn(String.format("Error saving chart %s, %s", largeChart, e));

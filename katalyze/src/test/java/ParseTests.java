@@ -6,12 +6,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import io.*;
 
 import legacyfeed.*;
 import org.apache.log4j.BasicConfigurator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ParseTests {
 
@@ -93,8 +93,8 @@ public class ParseTests {
 		SimpleMessage reset = result.get(1);
 		SimpleMessage info = result.get(2);
 		
-		assertEquals("Reset message has no members", 0, reset.size());
-		assertEquals("Info message contains title", title, info.get("title"));
+		assertEquals(0, reset.size(), "Reset message has no members");
+		assertEquals(title, info.get("title"), "Info message contains title");
 	}
 		
 

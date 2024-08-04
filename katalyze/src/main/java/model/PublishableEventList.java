@@ -1,7 +1,8 @@
 package model;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import web.EventVector;
 import web.Publisher;
 import web.StaticWebDocument;
@@ -13,7 +14,7 @@ public class PublishableEventList {
 
 	EventVector data = new EventVector();
 
-	JSONArray jsonEvents = new JSONArray();
+	JsonArray jsonEvents = new JsonArray();
 	final String url;
 	final Publisher publisher;
 	
@@ -24,13 +25,13 @@ public class PublishableEventList {
 	}
 		
 	private void publish() {
-		String jsonString = jsonEvents.toString(2);
+		String jsonString = new GsonBuilder().setPrettyPrinting().create().toJson(jsonEvents);
 		StaticWebDocument doc = new StaticWebDocument("application/json; charset=utf-8", jsonString);
 		publisher.publish(url, doc);
 	}
 	
 	public void clear() {
-		jsonEvents.clear();
+		jsonEvents = new JsonArray();
 		publish();
 	}
 
@@ -41,26 +42,26 @@ public class PublishableEventList {
 	public void add(LoggableEvent event) {
 		data.add(event);
 
-		JSONObject eventInfo = getJsonObject(event);
+		JsonObject eventInfo = getJsonObject(event);
 		
 		jsonEvents.add(eventInfo);
 		publish();
 		
 	}
 
-	private JSONObject getJsonObject(LoggableEvent event) {
-		JSONObject eventInfo = new JSONObject()
-		.element("id", Integer.toString(event.id))
-		.element("time", Integer.toString(event.contestTimeMinutes()))
-		.element("message", event.message)
-		.element("importance", event.importance.ordinal());
+	private JsonObject getJsonObject(LoggableEvent event) {
+		JsonObject eventInfo = new JsonObject();
+		eventInfo.addProperty("id", Integer.toString(event.id));
+		eventInfo.addProperty("time", Integer.toString(event.contestTimeMinutes()));
+		eventInfo.addProperty("message", event.message);
+		eventInfo.addProperty("importance", event.importance.ordinal());
 
 		if (event.team != null) {
-			eventInfo =  eventInfo.element("team", event.team.getId());
+			eventInfo.addProperty("team", event.team.getId());
 		}
 
 		if (event.submission != null) {
-			eventInfo = eventInfo.element("judgement", event.submission.id);
+			eventInfo.addProperty("judgement", event.submission.id);
 		}
 		return eventInfo;
 	}
