@@ -2,7 +2,7 @@ package model;
 
 import jsonfeed.TimeConverter;
 import net.sf.json.JSONObject;
-
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
@@ -16,16 +16,24 @@ public class ContestProperties implements ApiEntity {
     private long durationMillis;
     private long scoreboardFreezeMillis;
     private int penaltyTime;
+    private boolean countdownIsPaused = false;
 
     public static ContestProperties fromJSON(JSONObject src) {
         ContestProperties target = new ContestProperties();
         target.id = src.getString("id");
         target.name = src.getString("name");
-		target.formalName = src.optString("formal_name", null);
+        target.formalName = src.optString("formal_name", null);
 
         String startTime = src.optString("start_time", null);
         if (startTime != null && !startTime.equals("null")) {
             target.startTimeMillis = converter.parseTimestampMillis(startTime);
+        } else {
+            String countdownPauseTime = src.optString("countdown_pause_time", null);
+            if (countdownPauseTime != null && !countdownPauseTime.equals("null")) {
+                target.countdownIsPaused = true;
+                target.startTimeMillis = converter.parseContestTimeMillis(countdownPauseTime)
+                        + Instant.now().toEpochMilli();
+            }
         }
         target.durationMillis = converter.parseContestTimeMillis(src.getString("duration"));
         target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getString("scoreboard_freeze_duration"));
@@ -33,7 +41,8 @@ public class ContestProperties implements ApiEntity {
         return target;
     }
 
-    private ContestProperties() {}
+    private ContestProperties() {
+    }
 
     public ContestProperties(String name, int penaltyTime, long scoreboardFreezeMillis) {
         this.name = name;
@@ -55,12 +64,16 @@ public class ContestProperties implements ApiEntity {
     }
 
     public long getEndTimeMillis() {
-        return startTimeMillis+durationMillis;
+        return startTimeMillis + durationMillis;
     }
 
-    public long getDurationMillis() { return durationMillis; }
+    public long getDurationMillis() {
+        return durationMillis;
+    }
 
-    public long getScoreboardFreezeMillis() {return scoreboardFreezeMillis; }
+    public long getScoreboardFreezeMillis() {
+        return scoreboardFreezeMillis;
+    }
 
     public String getId() {
         return id;
@@ -70,5 +83,8 @@ public class ContestProperties implements ApiEntity {
         return name;
     }
 
+    public boolean isCountdownPaused() {
+        return countdownIsPaused;
+    }
 
 }

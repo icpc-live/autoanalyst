@@ -43,9 +43,10 @@ CREATE TABLE IF NOT EXISTS `analyzer_parameters` (
 -- contests yet, so this table should contain only a single contest.
 DROP TABLE IF EXISTS `contests`;
 CREATE TABLE IF NOT EXISTS `contests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(36) NOT NULL,
   `contest_name` varchar(150) NOT NULL,
   `start_time` int(11) DEFAULT NULL COMMENT 'Contest start time as Unix Epoch seconds.',
+  `is_countdown_paused` boolean default FALSE COMMENT 'Whether the countdown to the start of the contest is paused.',
   `length` int(11) DEFAULT NULL COMMENT 'Contest length in seconds.',
   `freeze` int(11) DEFAULT NULL COMMENT 'Seconds into contest when scoreboard is frozen.',
   PRIMARY KEY (`id`)
@@ -282,7 +283,7 @@ CREATE TABLE `team_persons` (
   `person_id` int(11) NOT NULL,
   `role` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`team_id`, `person_id`)
-)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `teammembers`;
 -- CREATE TABLE teammembers(
@@ -291,7 +292,7 @@ DROP TABLE IF EXISTS `teammembers`;
 --  `full_name` varchar(50) DEFAULT NULL,
 -- `role` varchar(30) DEFAULT NULL,
 --  PRIMARY KEY (id)
---) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
+-- ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 
 --

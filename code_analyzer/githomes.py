@@ -4,7 +4,7 @@ import os, shutil, inspect, subprocess, yaml, tempfile, time, urllib.request, ur
 from common import dbConn, config
 from datetime import datetime, timedelta
 import base64
-import httplib2
+import requests
 import re
 
 
@@ -113,33 +113,26 @@ class GitHomes:
 
         # figure out a start time in the format we will get from the CDS.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
+        cursor.execute( "SELECT id, contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
         row = cursor.fetchone()
+        contest_id = row[0]
         if ( row == None ):
             print("Error: no contest found in the database.")
             exit(1)
 
-        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
         self.backups = []
-        #httplib2.debuglevel = 100
-        self.http = httplib2.Http()
-        self.http.add_credentials(self.CDSUser, self.CDSPass)
+        self.http_session = requests.Session()
+        self.http_session.auth = (self.CDSUser, self.CDSPass)
         #print((self.CDSUser, self.CDSPass))
-        self.http.disable_ssl_certificate_validation=True
+        #self.http.disable_ssl_certificate_validation=True
 
-        r = self.http.request(self.CDSRoot)
-        contests = json.loads(r[1].decode("utf-8"))
-        for contest in contests:
-            if contest['name'] == row[0]:
-                contest_id = contest['id']
-                break
-        else:
-            print('Error: id not found for contest with name %s.' % row[0])
-            exit(1)
+        r = self.http_session.get("%s/%s/teams" % (self.CDSRoot, contest_id))
+        r.raise_for_status()
+        teamData = r.json()
+        startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
 
-        r = self.http.request("%s/%s/teams" % (self.CDSRoot, contest_id))
-        teamData = json.loads(r[1].decode("utf-8"))
         for team in teamData:
+            print(team)
             for index, backup in enumerate(team["backup"]):
                 # we have /contest in both CDSRoot and href
                 # probably we don't need to have one in CFSRoot, but it's too hard to change it now
@@ -247,13 +240,11 @@ class GitHomes:
             #if_modified_since_header = "If-Modified-Since: %s" % (self.teamLastModified[ teamIdx ])
             # pull down the latest backup archive, and unpack it.
 
-            result = None
+            response = None
             for _ in range( self.request_tries ):
                   try:
                         #(responseHeader, result) = self.http.request( backup.href, "GET" )
-                        (responseHeader, result) = self.http.request( backup.href, "GET", headers={
-                            "Authorization": b"Basic " + base64.b64encode("{0}:{1}".format(self.CDSUser, self.CDSPass).encode('ascii')),
-                            "If-Modified-Since" : backup.modTime} )
+                        response = self.http_session.get( backup.href, headers={"If-Modified-Since" : backup.modTime} )
                         break
                   except:
                         print('The httplib thrown an exception:')
@@ -261,16 +252,18 @@ class GitHomes:
                         print((traceback.format_exc()))
 
             # If we were not able to get result for our attemtps we continue with the following team.
-            if result is None:
+            if response is None:
                 print(f'Unable to fetch backups for team {backup.team}{backup.path}. The team is skipped')
                 continue
 
-            if responseHeader["status"] == "200":
+            if response.status_code == requests.codes.ok and not response.content:
+                print("Skipping because backup is empty file")
+            elif response.status_code == requests.codes.ok and response.content:
                 sys.stdout.write("updated, commit to git... ")
 
-                backup.modTime = responseHeader["last-modified"]
+                backup.modTime = response.headers["last-modified"]
                 f = tempfile.NamedTemporaryFile( delete=False )
-                f.write( result )
+                f.write( response.content )
                 f.close()
                 backupDir = f"team{backup.team}{backup.path}"
                 # Delete a team dir if it existed to make sure that
@@ -280,17 +273,19 @@ class GitHomes:
                     shutil.rmtree( backupDir )
                 os.makedirs( backupDir )
                 try:
-                    subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                    retcode = subprocess.call( [ "unzip", "-q", f.name, "-x",".git","-x",".git/*", "-d", backupDir ] )
+                    if retcode != 0:
+                        raise RuntimeError()
                 except:
                     print(f"Failed to unzip {f.name} for {backupDir}")
                 os.unlink( f.name )
 
                 print("done.")
-            elif responseHeader["status"] == "304":
+            elif response.status_code == requests.codes.not_modified:
                 print("no change, done.")
             else:
-                print(("error %s" % responseHeader))
-                print(result)
+                print(("error %s" % response.status_code))
+                print(response.content)
 
         os.chdir( self.origin )
 

@@ -52,8 +52,8 @@ public class HttpFeedClient {
 
         String jsonString = IOUtils.toString(is, "UTF-8");
 
-        JSON json = (JSON) JSONSerializer.toJSON( jsonString );
-        return json;
+		JSON json = (JSON) JSONSerializer.toJSON( jsonString );
+		return json;
     }
 
 
