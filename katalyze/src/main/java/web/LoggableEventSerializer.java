@@ -1,9 +1,10 @@
 package web;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jsonfeed.TimeConverter;
 import model.LoggableEvent;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -12,49 +13,48 @@ public class LoggableEventSerializer implements EventSerializer<LoggableEvent> {
     TimeConverter timeConverter = new TimeConverter();
 
 
-    private JSONObject getJsonObject(LoggableEvent event) {
-        JSONObject innerInfo = new JSONObject()
-                .element("id", Integer.toString(event.id));
+    private JsonObject getJsonObject(LoggableEvent event) {
+        JsonObject innerInfo = new JsonObject();
+        innerInfo.addProperty("id", Integer.toString(event.id));
 
-        JSONArray team_ids = new JSONArray();
+        JsonArray team_ids = new JsonArray();
         if (event.team != null) {
             team_ids.add(event.team.getId());
         }
-        innerInfo = innerInfo.element("team_ids", team_ids);
+        innerInfo.add("team_ids", team_ids);
 
-        JSONArray problem_ids = new JSONArray();
+        JsonArray problem_ids = new JsonArray();
         if (event.problem != null) {
-		problem_ids.add(event.problem.getId());
+		    problem_ids.add(event.problem.getId());
         }
-        innerInfo = innerInfo.element("problem_ids", problem_ids);
+        innerInfo.add("problem_ids", problem_ids);
 
-        JSONArray submission_ids = new JSONArray();
+        JsonArray submission_ids = new JsonArray();
         if (event.submission != null) {
-		submission_ids.add(event.submission.getId());
+		    submission_ids.add(event.submission.getId());
         }
-        innerInfo = innerInfo.element("submission_ids", submission_ids);
+        innerInfo.add("submission_ids", submission_ids);
 
-		innerInfo = innerInfo
-				.element("id", Integer.toString(event.id))
-                .element("priority", event.importance.ordinal())
-                .element("message", event.message)
-                .element("contest_time", timeConverter.toContestTime(event.contestTimeMillis))
-                .element("time", event.timestamp.toString());
+		innerInfo.addProperty("id", Integer.toString(event.id));
+        innerInfo.addProperty("priority", event.importance.ordinal());
+        innerInfo.addProperty("message", event.message);
+        innerInfo.addProperty("contest_time", timeConverter.toContestTime(event.contestTimeMillis));
+        innerInfo.addProperty("time", event.timestamp.toString());
 
 
-        JSONObject feedEntry = new JSONObject()
-                .element("id", Integer.toString(event.id))
-                .element("type", "commentary")
-                .element("op", "create")
-                .element("data", innerInfo);
+        JsonObject feedEntry = new JsonObject();
+        feedEntry.addProperty("id", Integer.toString(event.id));
+        feedEntry.addProperty("type", "commentary");
+        feedEntry.addProperty("op", "create");
+        feedEntry.add("data", innerInfo);
 
         return feedEntry;
     }
 
 
     public void write(LoggableEvent data, Writer output) throws IOException {
-        JSONObject json = getJsonObject(data);
-        json.write(output);
+        JsonObject json = getJsonObject(data);
+        new Gson().toJson(json, output);
         output.write("\n");
     }
 }

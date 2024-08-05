@@ -18,7 +18,7 @@ installed:
 sudo apt-get install \
        git gitk gitweb apache2 apache2-utils phpmyadmin mariadb-server \
        mariadb-client php5-cli ntp rsync make curl python-yaml \
-       openjdk-7-jdk openjdk-7-jre python-httplib2 python-mysqldb
+       openjdk-21-jdk openjdk-21-jre python-httplib2 python-mysqldb
 ```
 
 Create a user and database `icat` in MySQL/MariaDB.
@@ -45,7 +45,8 @@ $EDITOR config.yaml
 
 Build the Katalyzer code:
 ```
-make -C katalyze
+cd katalyze
+./gradelew installDist
 ```
 
 Create some symlinks:

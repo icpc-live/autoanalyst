@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class DatabaseNotificationConfig {
-	static Logger logger = Logger.getLogger(DatabaseNotificationConfig.class);
+	static Logger logger = LogManager.getLogger(DatabaseNotificationConfig.class);
 	
 	String driver;
 	String connectionString;
@@ -20,15 +21,15 @@ public class DatabaseNotificationConfig {
 	
 	public Connection createConnection() throws Exception {
 		try {
-			Class.forName(driver).newInstance();
+			Class.forName(driver).getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			logger.error("error creating jdbc driver: " + e);
+            logger.error("error creating jdbc driver: {}", e);
 			throw e;
 		}
 		try {
 			return DriverManager.getConnection(connectionString);
 		} catch (SQLException e) {
-			logger.error("error creating database connection: " + e);
+            logger.error("error creating database connection: {}", e);
 			throw e;
 		}
 	}

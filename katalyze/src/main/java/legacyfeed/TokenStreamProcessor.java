@@ -1,7 +1,8 @@
 package legacyfeed;
 
 import io.Sink;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.text.ParseException;
 import java.util.Iterator;
@@ -12,7 +13,7 @@ public class TokenStreamProcessor {
 	
 	enum StreamState {Start, Middle, End};
 	
-	static Logger logger = Logger.getLogger(TokenStreamProcessor.class);
+	static Logger logger = LogManager.getLogger(TokenStreamProcessor.class);
 
 
 	Stack<Token> tokenStack;

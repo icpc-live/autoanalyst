@@ -1,11 +1,12 @@
 package model;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
 public class TeamProgress {
-    static Logger logger = Logger.getLogger(TeamProgress.class);
+    static Logger logger = LogManager.getLogger(TeamProgress.class);
 
 	private final Map<Problem, ProblemJudgements> judgements = new HashMap<Problem, ProblemJudgements>();
 	private final Map<Problem,String> languages = new HashMap<Problem, String>();

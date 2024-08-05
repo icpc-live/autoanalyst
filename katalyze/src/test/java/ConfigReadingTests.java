@@ -2,12 +2,12 @@ package tests;
 
 import java.io.StringReader;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import model.Analyzer;
 import model.Contest;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import katalyzeapp.ConfigReader;
 

@@ -3,8 +3,8 @@ package tests;
 import io.EntityOperation;
 import model.*;
 
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScoreCalculation {
 	
@@ -15,7 +15,7 @@ public class ScoreCalculation {
 	int submissionId = 0;
 	String language = "java";
 	
-	@Before public void Setup() {
+	@BeforeEach public void Setup() {
 		problemA = new Problem("1", "Problem A", "A", "#FF0000");
 		problemB = new Problem("2", "Problem B", "B", "#0000FF");
 

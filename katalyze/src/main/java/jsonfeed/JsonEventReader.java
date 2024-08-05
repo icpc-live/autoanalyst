@@ -1,8 +1,12 @@
 package jsonfeed;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.Sink;
-import net.sf.json.JSONObject;
+import model.JsonHelpers;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -33,10 +37,10 @@ public class JsonEventReader {
         String trimmedLine = eventLine.trim();
         if (!trimmedLine.isEmpty()) {
             try {
-                JSONObject json = JSONObject.fromObject(trimmedLine);
+                JsonObject json = JsonParser.parseString(trimmedLine).getAsJsonObject();
                 JsonEvent event = JsonEvent.from(json);
                 lastProcessedId = event.getId();
-                lastProcessedToken = json.optString("token", null);
+                lastProcessedToken = JsonHelpers.optString(json, "token");
                 target.send(event);
             }
             catch (Exception e) {

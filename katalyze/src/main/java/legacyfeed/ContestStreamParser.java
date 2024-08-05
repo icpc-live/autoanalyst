@@ -8,7 +8,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import io.Sink;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -16,7 +17,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 public class ContestStreamParser {
-	static final Logger logger = Logger.getLogger(ContestStreamParser.class);
+	static final Logger logger = LogManager.getLogger(ContestStreamParser.class);
 	
 	SAXParser parser;
 	Sink<Token> output;

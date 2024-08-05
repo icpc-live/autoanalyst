@@ -2,10 +2,8 @@ package clics;
 
 import java.util.ArrayList;
 
+import com.google.gson.*;
 import model.*;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -30,99 +28,98 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 			this.minutesFromStart = minutesFromStart;
 		}
 
-		public JSONObject dumpScore(Score score) {
+		public JsonObject dumpScore(Score score) {
 
 			Team team = score.getTeam();
 
-			JSONArray problems = new JSONArray();
+			JsonArray problems = new JsonArray();
 
 			int place = scoresAbove.size();
 			for (Problem p : contest.getProblems()) {
 				boolean isSolved = score.isSolved(p);
-				JSONObject problemInfo = new JSONObject()
-					.element("problem_id", p.getId())
-					.element("label", p.getLabel())
-					.element("num_judged", score.submissionCount(p))
-// FIXME:			.element("num_pending", score.submissionCount(p))
-					.element("solved", isSolved)
-					.element("time", score.scoreContribution(p));
+				JsonObject problemInfo = new JsonObject();
+				problemInfo.addProperty("problem_id", p.getId());
+				problemInfo.addProperty("label", p.getLabel());
+				problemInfo.addProperty("num_judged", score.submissionCount(p));
+// FIXME:		problemInfo.addProperty("num_pending", score.submissionCount(p))
+				problemInfo.addProperty("solved", isSolved);
+				problemInfo.addProperty("time", score.scoreContribution(p));
 
                 int lastSubmissionTime = score.lastSubmissionTime(p);
                 if (lastSubmissionTime != 0) {
-                    problemInfo = problemInfo.element("lastUpd", lastSubmissionTime);
+                    problemInfo.addProperty("lastUpd", lastSubmissionTime);
                 }
 
 				if (!isSolved) {
 					ScoreTableEntry fake = FakeScore.PretendProblemSolved(score, p, minutesFromStart);
-					JSONObject potential = new JSONObject();
+					JsonObject potential = new JsonObject();
 					place = calcFictiousRank(scoresAbove, fake, place, potential);
-					problemInfo = problemInfo.element("potential", potential);
+					problemInfo.add("potential", potential);
 				}
 				String language = team.languageFor(p);
 				if (language != null) {
-					problemInfo = problemInfo.element("lang", language);
+					problemInfo.addProperty("lang", language);
 				}
 				problems.add(problemInfo);
 			}
 
 
-			JSONObject target = new JSONObject()
-				.element("rank", standings.rankOf(team))
-				.element("team_id", team.getId())
-				.element("main_lang", team.getMainLanguage())
-				.element("score", new JSONObject()
-					.element("num_solved", score.getNumberOfSolvedProblems())
-					.element("total_time", score.getTimeIncludingPenalty()))
-				.element("problems", problems);
+			JsonObject target = new JsonObject();
+			target.addProperty("rank", standings.rankOf(team));
+			target.addProperty("team_id", team.getId());
+			target.addProperty("main_lang", team.getMainLanguage());
+			JsonObject json_score = new JsonObject();
+			json_score.addProperty("num_solved", score.getNumberOfSolvedProblems());
+			json_score.addProperty("total_time", score.getTimeIncludingPenalty());
+			target.add("score", json_score);
+			target.add("problems", problems);
 
 			return target;
 		}
 
-		private JSONArray getProblems(Contest contest) {
-			JSONArray result = new JSONArray();
+		private JsonArray getProblems(Contest contest) {
+			JsonArray result = new JsonArray();
 
 			for (Problem p : contest.getProblems()) {
-				JSONObject problemInfo = new JSONObject()
-					.element("tag", p.getLabel())
-					.element("name", p.getNameAndLabel());
+				JsonObject problemInfo = new JsonObject();
+				problemInfo.addProperty("tag", p.getLabel());
+				problemInfo.addProperty("name", p.getNameAndLabel());
 				result.add(problemInfo);
 			}
 
 			return result;
 		}
 
-		private JSONObject getContestInfo(Contest contest) {
-			return new JSONObject()
-				.element("length", contest.getLengthInMinutes())
-				.element("problems", getProblems(contest))
-				.element("submissions", contest.getSubmissionCount())
-				.element("time", contest.getMinutesFromStart());
+		private JsonObject getContestInfo(Contest contest) {
+			JsonObject result = new JsonObject();
+			result.addProperty("length", contest.getLengthInMinutes());
+			result.add("problems", getProblems(contest));
+			result.addProperty("submissions", contest.getSubmissionCount());
+			result.addProperty("time", contest.getMinutesFromStart());
+			return result;
 		}
 
-		public JSONArray execute() {
+		public JsonArray execute() {
 			scoresAbove.clear();
 			boolean isFirstScore = true;
 
-			JSONArray resultArray = new JSONArray();
-			ArrayList<JSONObject> jsonScores = new ArrayList<JSONObject>();
+			JsonArray resultArray = new JsonArray();
 
 			for (Score score : standings) {
 				scoresAbove.add(score);
-				JSONObject scoreRow = dumpScore(score);
+				JsonObject scoreRow = dumpScore(score);
 				if (isFirstScore) {
-					scoreRow.put("contestTime", contest.getMinutesFromStart());
+					scoreRow.addProperty("contestTime", contest.getMinutesFromStart());
 					isFirstScore = false;
 				}
-				jsonScores.add(scoreRow);
+				resultArray.add(scoreRow);
 			}
-
-			resultArray.addAll(jsonScores);
 
 			return resultArray;
 		}
 
 		private int calcFictiousRank(ArrayList<Score> scoresAbove,
-									 ScoreTableEntry fake, int startFrom, JSONObject result) {
+									 ScoreTableEntry fake, int startFrom, JsonObject result) {
 
 			int fakeIndex = startFrom;
 
@@ -133,12 +130,12 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 				fakeIndex++;
 			}
 			int margin = -1;
-			result.element("rank", fakeIndex + 1);
+			result.addProperty("rank", fakeIndex + 1);
 			if (fakeIndex < scoresAbove.size()) {
 				ScoreTableEntry next = scoresAbove.get(fakeIndex);
 				if (next.getNumberOfSolvedProblems() == fake.getNumberOfSolvedProblems()) {
 					margin = next.getTimeIncludingPenalty() - fake.getTimeIncludingPenalty();
-					result.element("before", margin);
+					result.addProperty("before", margin);
 				}
 			}
 			return fakeIndex;
@@ -152,32 +149,32 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		this.publisherTarget = target;
 	}
 
-	private JSONArray stringsAsJson(String[] input) {
-		JSONArray target = new JSONArray();
+	private JsonArray stringsAsJson(String[] input) {
+		JsonArray target = new JsonArray();
 		for (String desktopUrl : input) {
 			target.add(desktopUrl);
 		}
 		return target;
 	}
 
-	private JSONObject teamAsJson(Team team) {
-		JSONObject target = new JSONObject();
-		target.put("id", team.getId());
-		target.put("name", team.getName());
+	private JsonObject teamAsJson(Team team) {
+		JsonObject target = new JsonObject();
+		target.addProperty("id", team.getId());
+		target.addProperty("name", team.getName());
 
-		target.put("webcams", team.getVideoLinks());
-		target.put("desktops", team.getDesktopLinks());
+		target.add("webcams", JsonHelpers.toJsonArray(team.getVideoLinks()));
+		target.add("desktops", JsonHelpers.toJsonArray(team.getDesktopLinks()));
 
 		Organization org = team.getOrganization();
 		if (org != null) {
-            target.put("organization", org.getFullName());
-            target.put("displayname", org.getDisplayName());
+            target.addProperty("organization", org.getFullName());
+            target.addProperty("displayname", org.getDisplayName());
         }
 		return target;
 	}
 
-	public JSONArray getAllTeams() {
-		JSONArray target = new JSONArray();
+	public JsonArray getAllTeams() {
+		JsonArray target = new JsonArray();
 		Team[] allTeams = contest.getTeams();
 		for (Team team : allTeams) {
 			target.add(teamAsJson(team));
@@ -195,7 +192,7 @@ public class ExtendedScoreDump implements OutputHook, StandingsPublisher {
 		log.debug("preparing Standings... ");
 
 		ScoreDumper scoreDumper = new ScoreDumper(contest.getStandings(), minutesFromStart);
-		JSON scoreTable = scoreDumper.execute();
+		JsonElement scoreTable = scoreDumper.execute();
 
 		log.debug("publishing Standings... ");
 

@@ -1,8 +1,9 @@
 package jsonfeed;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import io.EntityOperation;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import model.JsonHelpers;
 
 import java.io.InvalidObjectException;
 
@@ -11,7 +12,7 @@ public class JsonEvent {
     private String type;
     private String op_str;
     private EntityOperation op;
-    private JSONObject data;
+    private JsonObject data;
     private static TimeConverter converter = new TimeConverter();
 
     private static EntityOperation opFromStr(String str) {
@@ -28,14 +29,14 @@ public class JsonEvent {
         }
     }
 
-    public static JsonEvent from(JSONObject src) throws InvalidObjectException {
+    public static JsonEvent from(JsonObject src) throws InvalidObjectException {
         JsonEvent target = new JsonEvent();
-        target.id = src.optString("id");
-        target.type = src.getString("type");
-        target.op_str = src.optString("op", "create");
+        target.id = JsonHelpers.optString(src, "id");
+        target.type = src.getAsJsonPrimitive("type").getAsString();
+        target.op_str = JsonHelpers.optString(src, "op", "create");
         target.op = opFromStr(target.op_str);
 
-        target.data =src.getJSONObject("data");
+        target.data =src.getAsJsonObject("data");
 
         if (target.id == null && target.type != "state") {
             throw new InvalidObjectException(String.format("Events of type %s must contain an ID field", target.type));
@@ -45,7 +46,7 @@ public class JsonEvent {
             throw new InvalidObjectException(String.format("Event %s does not contain a data element", src));
         }
 
-	if (target.data.isNullObject()) {
+	if (target.data.isJsonNull()) {
 	    target.op = opFromStr("delete");
 	}
         return target;
@@ -53,18 +54,18 @@ public class JsonEvent {
 
 
     public String getString(String key) {
-        return data.getString(key);
+        return data.getAsJsonPrimitive(key).getAsString();
     }
 
     public String[] getStringArray(String key) {
-        JSONArray entries = data.getJSONArray(key);
+        JsonArray entries = data.getAsJsonArray(key);
         if (entries == null) {
             return new String[0];
         }
 
         String[] target = new String[entries.size()];
         for (int i = 0; i<entries.size(); i++) {
-            target[i] = entries.getString(i);
+            target[i] = entries.get(i).getAsString();
         }
         return target;
     }
@@ -74,15 +75,15 @@ public class JsonEvent {
         if (!data.has(key)) {
             return new String[0];
         }
-        JSONArray entries = data.getJSONArray(key);
+        JsonArray entries = data.getAsJsonArray(key);
         if (entries == null) {
             return new String[0];
         }
 
         String[] target = new String[entries.size()];
         for (int i = 0; i<entries.size(); i++) {
-            JSONObject urlObject = entries.getJSONObject(i);
-            target[i] = urlObject.getString("href");
+            JsonObject urlObject = entries.get(i).getAsJsonObject();
+            target[i] = urlObject.getAsJsonPrimitive("href").getAsString();
         }
         return target;
 
@@ -91,32 +92,32 @@ public class JsonEvent {
     }
 
     public String getStringOrNull(String key) {
-        return data.has(key) ? data.getString(key) : null;
+        return JsonHelpers.optString(data, key);
     }
 
     public int getInt(String key) {
-        return data.getInt(key);
+        return data.getAsJsonPrimitive(key).getAsInt();
     }
 
     public boolean getBoolean(String key) {
-        return data.getBoolean(key);
+        return data.getAsJsonPrimitive(key).isBoolean();
     }
 
     public boolean tryGetBoolean(String key, boolean defaultValue) {
         if (data.has(key)) {
-            return data.getBoolean(key);
+            return getBoolean(key);
         } else {
             return defaultValue;
         }
     }
 
     public long getTimespan(String key) {
-        String timeString = data.getString(key);
+        String timeString = getString(key);
         return converter.parseContestTimeMillis(timeString);
     }
 
     public long getTimestamp(String key) {
-        String timeStampString = data.optString(key, null);
+        String timeStampString = getStringOrNull(key);
         return converter.parseTimestampMillis(timeStampString);
     }
 
@@ -136,7 +137,7 @@ public class JsonEvent {
         return op_str;
     }
 
-    public JSONObject getRawData() {
+    public JsonObject getRawData() {
         return data;
     }
 

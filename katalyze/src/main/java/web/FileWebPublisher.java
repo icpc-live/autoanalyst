@@ -2,11 +2,12 @@ package web;
 
 import java.io.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class FileWebPublisher implements Publisher {
 	
-	static final Logger logger = Logger.getLogger(FileWebPublisher.class);
+	static final Logger logger = LogManager.getLogger(FileWebPublisher.class);
 	
 	String basePath;
 	

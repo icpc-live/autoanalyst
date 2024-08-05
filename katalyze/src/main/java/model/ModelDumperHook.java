@@ -4,12 +4,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
 import org.apache.log4j.Logger;
 
 import charts.ChartDumperHook;
 import charts.ChartInfo;
-
-import net.sf.json.*;
 
 public class ModelDumperHook implements OutputHook {
 	
@@ -18,40 +20,40 @@ public class ModelDumperHook implements OutputHook {
 	
 	static Logger logger = Logger.getLogger(ModelDumperHook.class);
 
-	JSONArray getProblems() {
-		JSONArray target = new JSONArray();
+	JsonArray getProblems() {
+		JsonArray target = new JsonArray();
 		for (Problem p : contest.getProblems()) {
-			JSONObject obj = new JSONObject();
-			obj.put("problem", p.getId());
-			obj.put("name", p.getNameAndLabel());
+			JsonObject obj = new JsonObject();
+			obj.addProperty("problem", p.getId());
+			obj.addProperty("name", p.getNameAndLabel());
 			target.add(obj);
 		}
 		return target;
 	}
 	
 	
-	JSONArray getGraphs() {
-		JSONArray target = new JSONArray();
+	JsonArray getGraphs() {
+		JsonArray target = new JsonArray();
 		
 		List<ChartInfo> chartInfo = chartDumperHook.getChartInfo();
 		
 		for (ChartInfo chart : chartInfo) {
-			JSONObject obj = new JSONObject();
-			obj.put("description", chart.description);
-			obj.put("path", chart.path);
+			JsonObject obj = new JsonObject();
+			obj.addProperty("description", chart.description);
+			obj.addProperty("path", chart.path);
 			target.add(obj);
 		}
 		
 		return target;
 	}
 
-	JSONObject getJson(int minutesFromStart) {
-		JSONObject obj = new JSONObject();
+	JsonObject getJson(int minutesFromStart) {
+		JsonObject obj = new JsonObject();
 		// TODO Auto-generated method stub
-		obj.put("problems", getProblems());
-		obj.put("graphs", getGraphs());
-		obj.put("contestLength", contest.getLengthInMinutes());
-		obj.put("contestTime", minutesFromStart);
+		obj.add("problems", getProblems());
+		obj.add("graphs", getGraphs());
+		obj.addProperty("contestLength", contest.getLengthInMinutes());
+		obj.addProperty("contestTime", minutesFromStart);
 		return obj;
 	}
 	
@@ -62,11 +64,11 @@ public class ModelDumperHook implements OutputHook {
 	
 	@Override
 	public void execute(int minutesFromStart) {
-		JSONObject json = getJson(minutesFromStart);
+		JsonObject json = getJson(minutesFromStart);
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter("output/viewmodel.json");
-			json.write(writer);
+			new Gson().toJson(json, writer);
 			writer.close();
 		}
 		catch (IOException e) {
