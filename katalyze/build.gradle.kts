@@ -6,17 +6,29 @@ plugins {
 group = "com.github.icpc.autoanalyst"
 version = "1.0-SNAPSHOT"
 
+configurations.all {
+    resolutionStrategy {
+//        failOnVersionConflict()
+    }
+}
+
 repositories {
     mavenCentral()
     maven("https://jitpack.io") {
         // We recommend limiting jitpack to our lib. But you can remove this line if you don't care.
-        group = "com.github.icpc.live-v3"
+        //group = "com.github.icpc.live-v3"
     }
 }
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.full:3.3.1")
+    //implementation("com.github.icpc.live-v3:org.icpclive.cds.full:3.3.1")
+    //implementation("com.github.icpc:live-v3:1f0aaa0d32")
+    //implementation("com.github.icpc.live-v3:org.icpclive.cds.core:1f0aaa0d32")
+    //implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:1f0aaa0d32")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.core:3.3.2")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:3.3.2")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:3.3.2")
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")
