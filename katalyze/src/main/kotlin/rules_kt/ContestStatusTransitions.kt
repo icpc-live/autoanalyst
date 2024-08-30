@@ -1,6 +1,5 @@
 package rules_kt
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import model.Commentary
 import model.EventImportance
@@ -9,15 +8,16 @@ import org.icpclive.cds.api.ContestStatus
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 import kotlin.time.Duration
 
-class ContestStatusTransitions : RuleInterface {
-    override fun run(contestFlow: Flow<ContestStateWithScoreboard>): Flow<Commentary> = flow {
-        contestFlow.filterContestInfoUpdates().collect {
-            val oldInfo = it.state.infoBeforeEvent
-            val newInfo = it.state.infoAfterEvent
+class ContestStatusTransitions : RuleInterface() {
+    override val filters = listOf(FlowFilters::isContestInfoUpdate)
+    override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow {
+        with(contestStateWithScoreboard) {
+            val oldInfo = state.infoBeforeEvent
+            val newInfo = state.infoAfterEvent
             if (!hasStarted(oldInfo) && hasStarted(newInfo)) {
                 emit(
                     Commentary.fromContestInfoUpdate(
-                        it.state,
+                        state,
                         Duration.ZERO,
                         EventImportance.Breaking,
                         "Contest has started"
@@ -27,7 +27,7 @@ class ContestStatusTransitions : RuleInterface {
             if (!isFrozen(oldInfo) && isFrozen(newInfo)) {
                 emit(
                     Commentary.fromContestInfoUpdate(
-                        it.state,
+                        state,
                         newInfo!!.freezeTime!!,
                         EventImportance.Breaking,
                         "Scoreboard is now frozen until the end of the contest"
@@ -37,7 +37,7 @@ class ContestStatusTransitions : RuleInterface {
             if (!hasFinished(oldInfo) && hasFinished(newInfo)) {
                 emit(
                     Commentary.fromContestInfoUpdate(
-                        it.state,
+                        state,
                         newInfo!!.contestLength,
                         EventImportance.Breaking,
                         "Contest is now over"

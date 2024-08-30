@@ -1,19 +1,19 @@
 package rules_kt
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import model.Commentary
 import model.EventImportance
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 
-class AllProblemsSolved: RuleInterface {
-    override fun run(contestFlow: Flow<ContestStateWithScoreboard>): Flow<Commentary> =
-        contestFlow.filterFirstSolves().filterByTrigger { contestInfo, runs ->
-            runs.filter { it.isAccepted() }.map { it.problemId }.toSet()
-                .containsAll(contestInfo.scoreboardProblems.map { it.id })
-        }.map { it ->
-            Commentary.fromRunUpdateState(
-                it.state, EventImportance.Breaking
-            ) { _, _ -> "All problems have now been solved" }
-        }
+class AllProblemsSolved : RuleInterface() {
+    override val filters = listOf(FlowFilters::isFirstSolve, FlowFilters.byTrigger { contestInfo, runs ->
+        runs.filter { it.isAccepted() }.map { it.problemId }.toSet()
+            .containsAll(contestInfo.scoreboardProblems.map { it.id })
+    })
+
+    override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow{
+        emit(Commentary.fromRunUpdateState(
+            contestStateWithScoreboard.state, EventImportance.Breaking
+        ) { _, _ -> "All problems have now been solved" })
+    }
 }

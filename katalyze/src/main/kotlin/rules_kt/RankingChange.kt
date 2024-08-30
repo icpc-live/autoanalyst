@@ -1,6 +1,5 @@
 package rules_kt
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import model.Commentary
 import model.EventImportance
@@ -9,7 +8,7 @@ import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 
 
-class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRanks: Int) : RuleInterface {
+class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRanks: Int) : RuleInterface() {
 
     private fun problemsAsText(nProblems: Int): String {
         return if (nProblems == 1) {
@@ -19,24 +18,26 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
         }
     }
 
-    override fun run(contestFlow: Flow<ContestStateWithScoreboard>): Flow<Commentary> = flow {
-        contestFlow.collect collect@{ state ->
-            val oldScoreboard = state.rankingBefore
-            val newScoreboard = state.rankingAfter
-            val runUpdate = (state.state.lastEvent as? RunUpdate) ?: return@collect
+    override val filters = listOf(FlowFilters::isICPCJudgement)
+
+    override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow flow@{
+        with(contestStateWithScoreboard) {
+            val oldScoreboard = rankingBefore
+            val newScoreboard = rankingAfter
+            val runUpdate = (state.lastEvent as? RunUpdate) ?: return@flow
             val teamId = runUpdate.newInfo.teamId
             val problemId = runUpdate.newInfo.problemId
-            val oldScoreboardRow = state.scoreboardRowBefore(teamId)
-            val newScoreboardRow = state.scoreboardRowAfter(teamId)
-            val oldProblemResult = oldScoreboardRow.getResultByProblemId(problemId, state.state.infoBeforeEvent!!)!!
-            val newProblemResult = newScoreboardRow.getResultByProblemId(problemId, state.state.infoAfterEvent!!)!!
+            val oldScoreboardRow = scoreboardRowBefore(teamId)
+            val newScoreboardRow = scoreboardRowAfter(teamId)
+            val oldProblemResult = oldScoreboardRow.getResultByProblemId(problemId, state.infoBeforeEvent!!)!!
+            val newProblemResult = newScoreboardRow.getResultByProblemId(problemId, state.infoAfterEvent!!)!!
             check(oldProblemResult != newProblemResult) {
                 "Scoreboard didn't update after a submission update:\n$state"
             }
 
             val wasSolved = oldProblemResult.isSolved
             val isSolved = newProblemResult.isSolved
-            if (wasSolved == isSolved) return@collect
+            if (wasSolved == isSolved) return@flow
 
             val rankBefore = oldScoreboard.getTeamRank(teamId)
             val rankAfter = newScoreboard.getTeamRank(teamId)
@@ -51,12 +52,11 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
             when {
                 oldScoreboardRow.totalScore == 0.0 && newScoreboardRow.totalScore != 0.0 -> {
                     emit(Commentary.fromRunUpdateState(
-                        state.state, importance
+                        state, importance
                     ) { teamRef, problemRef ->
                         "$teamRef solves its first problem: $problemRef, and is ${
                             rankString(
-                                current = rankAfter,
-                                previous = oldScoreboard.ranks.size
+                                current = rankAfter, previous = oldScoreboard.ranks.size
                             )
                         }"
                     })
@@ -65,7 +65,7 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
                 wasSolved -> {
                     check(!isSolved)
                     emit(Commentary.fromRunUpdateState(
-                        state.state, EventImportance.Breaking
+                        state, EventImportance.Breaking
                     ) { teamRef, problemRef ->
                         "$teamRef is now ${
                             rankString(
@@ -76,13 +76,13 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
                 }
 
                 rankAfter == 1 && rankBefore == 1 -> {
-                    emit(Commentary.fromRunUpdateState(state.state, importance) { teamRef, problemRef ->
+                    emit(Commentary.fromRunUpdateState(state, importance) { teamRef, problemRef ->
                         "$teamRef extends its lead by solving $problemRef. It has now solved $solvedProblemsText"
                     })
                 }
 
                 rankAfter <= rankBefore -> {
-                    emit(Commentary.fromRunUpdateState(state.state, importance) { teamRef, problemRef ->
+                    emit(Commentary.fromRunUpdateState(state, importance) { teamRef, problemRef ->
                         "$teamRef solves $problemRef. It has solved $solvedProblemsText and is ${
                             rankString(
                                 current = rankAfter, previous = rankBefore

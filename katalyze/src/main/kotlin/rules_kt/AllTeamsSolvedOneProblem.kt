@@ -1,21 +1,23 @@
 package rules_kt
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import model.Commentary
 import model.EventImportance
-import org.icpclive.cds.api.ContestInfo
-import org.icpclive.cds.api.RunInfo
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 
-class AllTeamsSolvedOneProblem : RuleInterface {
-    override fun run(contestFlow: Flow<ContestStateWithScoreboard>): Flow<Commentary> =
-        contestFlow.filterAcceptedEvents().filterByTrigger { contestInfo: ContestInfo, runs: Iterable<RunInfo> ->
+class AllTeamsSolvedOneProblem : RuleInterface() {
+    override val filters = listOf(
+        FlowFilters::isAccepted,
+        FlowFilters.byTrigger { contestInfo, runs ->
             runs.filter { it.isAccepted() }.map { it.teamId }.toSet()
                 .containsAll(contestInfo.teams.values.filter { !it.isHidden }.map { it.id })
-        }.map {
+        })
+
+    override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow{
+        emit(
             Commentary.fromRunUpdateState(
-                it.state, EventImportance.Breaking
+                contestStateWithScoreboard.state, EventImportance.Breaking
             ) { _, _ -> "All teams have solved at least one problem" }
-        }
+        )
+    }
 }

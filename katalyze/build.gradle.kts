@@ -22,13 +22,23 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    //implementation("com.github.icpc.live-v3:org.icpclive.cds.full:3.3.1")
-    //implementation("com.github.icpc:live-v3:1f0aaa0d32")
-    //implementation("com.github.icpc.live-v3:org.icpclive.cds.core:1f0aaa0d32")
-    //implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:1f0aaa0d32")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.core:3.3.2")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:3.3.2")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:3.3.2")
+
+    val liveVersion: String by project
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.core:$liveVersion")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:$liveVersion")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:$liveVersion")
+
+    val exposedVersion: String by project
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-crypt:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
+
+    implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-money:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:$exposedVersion")
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")
@@ -77,6 +87,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
+
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation("com.h2database:h2:2.3.232")
 
 }
 
