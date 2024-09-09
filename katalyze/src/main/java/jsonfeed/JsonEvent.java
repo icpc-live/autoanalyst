@@ -38,7 +38,7 @@ public class JsonEvent {
 
         target.data =src.getAsJsonObject("data");
 
-        if (target.id == null && target.type != "state") {
+        if (target.id == null && !target.type.equals("state")) {
             throw new InvalidObjectException(String.format("Events of type %s must contain an ID field", target.type));
         }
 
@@ -100,7 +100,7 @@ public class JsonEvent {
     }
 
     public boolean getBoolean(String key) {
-        return data.getAsJsonPrimitive(key).isBoolean();
+        return data.getAsJsonPrimitive(key).getAsBoolean();
     }
 
     public boolean tryGetBoolean(String key, boolean defaultValue) {
