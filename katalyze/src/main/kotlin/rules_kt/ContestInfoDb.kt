@@ -81,6 +81,9 @@ class ContestInfoDb(private val db: Database, private val contestId: String) : R
             Teams.deleteAll()
             TeamRegions.deleteAll()
             entries.forEach { entry ->
+                if (entry.isHidden || entry.isOutOfContest) {
+                    return@forEach
+                }
                 val organization = organizations[entry.organizationId]
                 Teams.insert {
                     it[id] = entry.id.value.toInt()

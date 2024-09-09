@@ -52,7 +52,7 @@ data class RankingChange(private val breakingPrioRanks: Int, private val normalP
             when {
                 oldScoreboardRow.totalScore == 0.0 && newScoreboardRow.totalScore != 0.0 -> {
                     emit(Commentary.fromRunUpdateState(
-                        state, importance
+                        state, importance, acceptedTags
                     ) { teamRef, problemRef ->
                         "$teamRef solves its first problem: $problemRef, and is ${
                             rankString(

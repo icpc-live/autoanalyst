@@ -29,13 +29,18 @@ data class RankPredictor(
             val resultForProblem =
                 scoreboardRowAfter(teamId).getResultByProblemId(problemId, contestInfo) ?: return@flow
             if (resultForProblem.isSolved) {
-                emit(Commentary.fromRunUpdateState(state, EventImportance.Whatever) { teamRef, problemRef ->
-                    "Despite already having solved it, $teamRef submitted a solution for $problemRef"
-                })
+                emit(
+                    Commentary.fromRunUpdateState(
+                        state,
+                        EventImportance.Whatever,
+                        tags = listOf("submission")
+                    ) { teamRef, problemRef ->
+                        "Despite already having solved it, $teamRef submitted a solution for $problemRef"
+                    })
             } else if (runInfo.time > (contestInfo.freezeTime ?: Duration.INFINITE)) {
                 if (rankingBefore.getTeamRank(teamId) <= freezeRankThreshold) {
                     emit(Commentary.fromRunUpdateState(
-                        state, EventImportance.Whatever
+                        state, EventImportance.Whatever, tags = listOf("submission")
                     ) { teamRef, problemRef -> "$teamRef submitted a solution for $problemRef" })
                 }
             } else if (resultForProblem.pendingAttempts > 1) {
@@ -61,13 +66,18 @@ data class RankPredictor(
                 val optimisticRank = optimisticRanking.getTeamRank(teamId)
                 val rankTags = optimisticRanking.rankTags("submission", teamId)
                 if (optimisticRank <= rankThreshold) {
-                    emit(Commentary.fromRunUpdateState(state, EventImportance.Normal, rankTags) { teamRef, problemRef ->
-                        "$teamRef submitted a solution for $problemRef. If correct, they might ${
-                            futureRankString(
-                                optimisticRank, currentRank
-                            )
-                        }"
-                    })
+                    emit(
+                        Commentary.fromRunUpdateState(
+                            state,
+                            EventImportance.Normal,
+                            tags = rankTags
+                        ) { teamRef, problemRef ->
+                            "$teamRef submitted a solution for $problemRef. If correct, they might ${
+                                futureRankString(
+                                    optimisticRank, currentRank
+                                )
+                            }"
+                        })
                 }
             }
         }

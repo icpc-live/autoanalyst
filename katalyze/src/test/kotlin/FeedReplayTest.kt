@@ -49,7 +49,6 @@ class FeedReplayTest : DbTestBase(){
                 RankingChange(5, 10),
                 RankPredictor(rankThreshold = 10, freezeRankThreshold = 25),
                 RejectedSubmissions(10),
-                ScoreboardPublisher(WebPublisher(false)),
             )
             contestFlow.collect {
                 entry ->

@@ -25,6 +25,7 @@ import kotlinx.serialization.json.Json
 import model.dsl.v1.*
 import org.apache.logging.log4j.kotlin.logger
 import org.icpclive.cds.InfoUpdate
+import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.adapters.*
 import org.icpclive.cds.api.ContestInfo
 import org.icpclive.cds.api.OptimismLevel
@@ -83,10 +84,23 @@ class KatalyzeV2{
         val cdsSettings = config.cds.toCDSSettings()
         val contestFlow = cdsSettings.toFlow()
             .applyAdvancedProperties(flowOf(config.katalyzer.advancedProperties))
-            .addFirstToSolves()
             .processHiddenProblems()
             .processHiddenTeamsAndGroups()
-            .contestState().removeFrozenSubmissions()
+            .addFirstToSolves()
+            .contestState()
+            .filter { state->
+                // TODO: create adapter for this
+                val lastEvent = state.lastEvent
+                if (lastEvent is RunUpdate) {
+                    val runInfo = lastEvent.newInfo
+                    if (state.infoAfterEvent!!.teams[runInfo.teamId]?.isHidden == true)
+                        return@filter false
+                    if (state.infoAfterEvent!!.problems[runInfo.problemId]?.isHidden == true)
+                        return@filter false
+                }
+                true
+            }
+            .removeFrozenSubmissions()
             .calculateScoreboard(OptimismLevel.NORMAL)
             .onEach {
                 contestStateTracker.update(it)
@@ -222,12 +236,16 @@ class KatalyzeV2{
                                     login = Credential("login", username),
                                     password = Credential("password", password.value)
                                 )
-                            )
+                            ),
                         ),
                         contestId = contestId,
                     )
                 )
-            )
+            ) {
+                network = NetworkSettings(
+                    allowUnsecureConnections = true,
+                )
+            }
 
             is CdsConfig.LocalPath -> ClicsSettings(
                 feeds = listOf(

@@ -22,18 +22,17 @@ CCS:
     submissionurl: "jury/submission.php?ext_id=@ID@"
 
 # CDS server
-CDSbackup:
-    baseurl: "https://192.168.1.207"
-    contest_id: "wf48_systest1"
+CDS:
+    baseurl: "https://d.kbats.ru/"
+    contest_id: wf47_finals
     user: user
     pass: THISISNOTAPASSWORD
     # Credentials to access the full, unfiltered event feed.
     userfull: user2
     passfull: THISISNOTAPASSWORD
 
-CDS:
-    path: /Users/yakovdlougach/autoanalyst/katalyze/src/test/resources/wf47-event-feed-live.ndjson
-    contest_id: wf47_finals
+    #path: /Users/yakovdlougach/autoanalyst/katalyze/src/test/resources/wf47-event-feed-live.ndjson
+    #contest_id: wf47_finals
 
 # Configuration for the backup/githomes script
 teambackup:
