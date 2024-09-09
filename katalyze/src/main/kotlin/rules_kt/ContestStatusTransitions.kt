@@ -67,4 +67,8 @@ class ContestStatusTransitions : RuleInterface() {
         }
         return (info.status as? ContestStatus.RUNNING)?.frozenAt != null
     }
+
+    override fun toString(): String {
+        return "ContestStatusTransitions()"
+    }
 }

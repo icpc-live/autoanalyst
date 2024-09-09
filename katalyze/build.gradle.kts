@@ -1,5 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    val kotlinVersion = "2.0.20"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
     application
 }
 
@@ -16,7 +18,7 @@ repositories {
     mavenCentral()
     maven("https://jitpack.io") {
         // We recommend limiting jitpack to our lib. But you can remove this line if you don't care.
-        //group = "com.github.icpc.live-v3"
+        group = "com.github.icpc.live-v3"
     }
 }
 
@@ -39,6 +41,16 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-money:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-spring-boot-starter:$exposedVersion")
+
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
+
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    val ktorVersion = "2.3.12"
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-cors:$ktorVersion")
+
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")

@@ -29,7 +29,7 @@ class RejectedSubmissionsTest {
         val fullFlow = contestUpdates.addFirstToSolves()
             .calculateScoreboard(OptimismLevel.NORMAL)
         runBlocking {
-            val commentaries = RejectedSubmissions(normalRankThreashold = 3).run(fullFlow).toList()
+            val commentaries = RejectedSubmissions(normalRankThreshold = 3).run(fullFlow).toList()
             assertEquals(3, commentaries.size)
             with (commentaries[0]) {
                 assertEquals(2.minutes, contestTime)

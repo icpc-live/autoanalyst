@@ -7,8 +7,7 @@ import org.apache.logging.log4j.kotlin.logger
 import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 
-
-class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRanks: Int) : RuleInterface() {
+data class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRanks: Int) : RuleInterface() {
 
     private fun problemsAsText(nProblems: Int): String {
         return if (nProblems == 1) {
@@ -48,6 +47,7 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
             }
 
             val solvedProblemsText = problemsAsText(newScoreboardRow.totalScore.toInt())
+            val acceptedTags = newScoreboard.rankTags("accepted", teamId)
 
             when {
                 oldScoreboardRow.totalScore == 0.0 && newScoreboardRow.totalScore != 0.0 -> {
@@ -76,13 +76,13 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
                 }
 
                 rankAfter == 1 && rankBefore == 1 -> {
-                    emit(Commentary.fromRunUpdateState(state, importance) { teamRef, problemRef ->
+                    emit(Commentary.fromRunUpdateState(state, importance, acceptedTags) { teamRef, problemRef ->
                         "$teamRef extends its lead by solving $problemRef. It has now solved $solvedProblemsText"
                     })
                 }
 
                 rankAfter <= rankBefore -> {
-                    emit(Commentary.fromRunUpdateState(state, importance) { teamRef, problemRef ->
+                    emit(Commentary.fromRunUpdateState(state, importance, acceptedTags) { teamRef, problemRef ->
                         "$teamRef solves $problemRef. It has solved $solvedProblemsText and is ${
                             rankString(
                                 current = rankAfter, previous = rankBefore
@@ -92,9 +92,17 @@ class RankingChange(private val breakingPrioRanks: Int, private val normalPrioRa
                 }
 
                 rankAfter > rankBefore -> {
-                    logger.error("Weird! why did we end up here?")
+                    LOGGER.error("Weird! why did we end up here?")
                 }
             }
         }
+    }
+
+    override fun toString(): String {
+        return "RankingChange(breaking at rank <= $breakingPrioRanks; normal at rank <= $normalPrioRanks)"
+    }
+
+    companion object {
+        private val LOGGER = logger()
     }
 }

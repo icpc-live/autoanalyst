@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.upsert
 import kotlin.time.DurationUnit
 
 
-class JudgementsDb(val db: Database) : RuleInterface() {
+class JudgementsDb(private val db: Database) : RuleInterface() {
 
     override val filters = listOf(FlowFilters::isICPCJudgement)
 
@@ -36,7 +36,12 @@ class JudgementsDb(val db: Database) : RuleInterface() {
             }
 
         } catch (e: Exception) {
-            logger.error("Error adding judgement to database: ${e.message}")
+            LOGGER.error("Error adding judgement to database: ${e.message}")
         }
+    }
+
+    companion object {
+        private val LOGGER = logger()
+
     }
 }

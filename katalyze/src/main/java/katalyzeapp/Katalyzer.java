@@ -10,8 +10,14 @@ import messageHandlers.ContestMessages;
 import model.Analyzer;
 import model.Contest;
 import io.LogNotificationTarget;
+import model.ContestState;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
+import org.icpclive.cds.ContestUpdate;
+import org.icpclive.cds.InfoUpdate;
+import org.icpclive.cds.RunUpdate;
+import org.icpclive.cds.api.ContestInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 
@@ -25,6 +31,7 @@ public class Katalyzer {
 	
 	Contest contest;
 	ContestMessages handlers;
+	ContestInfo contestInfo;
 	
 	public Katalyzer(Configuration config) throws Exception {
 		ConfigReader configReader = new ConfigReader(config);
@@ -109,4 +116,18 @@ public class Katalyzer {
 	}
 
 
+
+	private void processRunUpdate(@NotNull RunUpdate runUpdate) {
+
+	}
+
+	public synchronized void processContestUpdate(@NotNull ContestUpdate contestUpdate) {
+		if (contestUpdate instanceof InfoUpdate) {
+			contest.processInfoUpdate((InfoUpdate) contestUpdate);
+		} else if (contestUpdate instanceof RunUpdate) {
+			processRunUpdate((RunUpdate) contestUpdate);
+		} else {
+			logger.error(String.format("Unknown contest update type: %s", contestUpdate));
+		}
+	}
 }

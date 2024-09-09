@@ -1,6 +1,10 @@
 package model;
 
 import io.EntityOperation;
+import org.icpclive.cds.InfoUpdate;
+import org.icpclive.cds.api.ContestInfo;
+import org.icpclive.cds.api.ContestStatus;
+import org.jetbrains.annotations.NotNull;
 import stats.LanguageStats;
 
 import java.security.InvalidKeyException;
@@ -20,6 +24,8 @@ public class Contest {
 	final List<Judgement> submissions;
 	final List<Language> languages;
 	final LanguageStats stats;
+
+	public ContestInfo info;
 
 	private ContestState state = ContestState.BeforeStart;
 	private ContestProperties properties;
@@ -117,7 +123,6 @@ public class Contest {
 	public void updateState(ContestState newState) {
 	    ContestState oldState = state;
 	    state = newState;
-	    analyzer.contestStateChanged(oldState, newState);
     }
 
 	public List<Judgement> getSubmissions() {
@@ -130,6 +135,14 @@ public class Contest {
 	
 	public Analyzer getAnalyzer() {
 		return this.analyzer;
+	}
+
+	public void processInfoUpdate(@NotNull InfoUpdate infoUpdate) {
+		ContestInfo oldInfo = info;
+		info = infoUpdate.getNewInfo();
+		if (oldInfo != null && info.getStatus() != oldInfo.getStatus()) {
+			analyzer.contestStateChanged(oldInfo.getStatus(), info.getStatus());
+		}
 	}
 
 	public void processSubmission(Judgement newJudgement) {

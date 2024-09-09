@@ -28,6 +28,7 @@ data class Commentary(
         fun fromRunUpdateState(
             state: ContestState,
             importance: EventImportance,
+            tags: List<String> = emptyList(),
             messageCallback: (teamRef: String, problemRef: String) -> String
         ): Commentary {
             val runInfo = (state.lastEvent as RunUpdate).newInfo
@@ -43,7 +44,8 @@ data class Commentary(
                 problemIds = listOf(runInfo.problemId.value),
                 teamIds = listOf(runInfo.teamId.value),
                 submissionIds = listOf(runInfo.id.value),
-                importance = importance
+                importance = importance,
+                tags = tags,
             )
         }
 

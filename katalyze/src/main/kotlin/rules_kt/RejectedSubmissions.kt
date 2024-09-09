@@ -8,21 +8,23 @@ import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.api.RunResult
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 
-class RejectedSubmissions(private val normalRankThreashold: Int) : RuleInterface() {
-    override val filters =
-        listOf(FlowFilters::isICPCJudgement, { !(it.state.lastEvent as RunUpdate).newInfo.isAccepted() })
+data class RejectedSubmissions(private val normalRankThreshold: Int) : RuleInterface() {
+    override val filters = listOf(
+        FlowFilters::isICPCJudgement,
+        { !(it.state.lastEvent as RunUpdate).newInfo.isAccepted() },
+    )
 
     override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow flow@{
         with(contestStateWithScoreboard) {
             val runUpdate = state.lastEvent as RunUpdate
-            val previousSubmissions =
-                state.runsBeforeEvent.values.filter { it.teamId == runUpdate.newInfo.teamId && it.time < runUpdate.newInfo.time }
-                    .sortedBy { it.time }.toImmutableList()
+            val previousSubmissions = state.runsBeforeEvent.values.filter {
+                it.teamId == runUpdate.newInfo.teamId && it.time < runUpdate.newInfo.time
+            }.sortedBy { it.time }.toImmutableList()
             if (previousSubmissions.any { it.isAccepted() }) return@flow
             val rank = rankingAfter.getTeamRank(runUpdate.newInfo.teamId)
-            val importance = if (rank <= normalRankThreashold) EventImportance.Normal else EventImportance.Whatever
+            val importance = if (rank <= normalRankThreshold) EventImportance.Normal else EventImportance.Whatever
 
-            emit(Commentary.fromRunUpdateState(state, importance) { teamRef, problemRef ->
+            emit(Commentary.fromRunUpdateState(state, importance, listOf("rejected")) { teamRef, problemRef ->
                 buildString {
                     append("$teamRef fails ")
                     append(if (previousSubmissions.isEmpty()) "its first attempt" else "again")
@@ -38,6 +40,10 @@ class RejectedSubmissions(private val normalRankThreashold: Int) : RuleInterface
                 }
             })
         }
+    }
+
+    override fun toString(): String {
+        return "RejectedSubmissions(normal at rank <= $normalRankThreshold)"
     }
 
     private fun formatShortOutcome(result: RunResult): String = when (result) {

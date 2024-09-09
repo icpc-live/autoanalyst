@@ -1,3 +1,4 @@
+import katalyzeapp.ScoreboardPublisher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
@@ -13,6 +14,7 @@ import org.icpclive.cds.settings.EmulationSettings
 import org.icpclive.cds.settings.UrlOrLocalPath
 import org.icpclive.cds.settings.toFlow
 import rules_kt.*
+import web.WebPublisher
 import kotlin.io.path.Path
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
@@ -46,7 +48,8 @@ class FeedReplayTest : DbTestBase(){
                 ProblemFirstSolved(),
                 RankingChange(5, 10),
                 RankPredictor(rankThreshold = 10, freezeRankThreshold = 25),
-                RejectedSubmissions(10)
+                RejectedSubmissions(10),
+                ScoreboardPublisher(WebPublisher(false)),
             )
             contestFlow.collect {
                 entry ->
@@ -55,6 +58,9 @@ class FeedReplayTest : DbTestBase(){
                         emitAll(rule.process(entry))
                     }
                 }
+            }
+            rules.forEach { rule ->
+                rule.onStreamEnd()
             }
         }
         runBlocking {

@@ -1,6 +1,8 @@
 package rules_kt
 
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import model.Commentary
 import model.EventImportance
 import org.icpclive.cds.RunUpdate
@@ -26,5 +28,9 @@ class ProblemFirstSolved : RuleInterface() {
                 "$teamRef submission on $problemRef is no longer the first solve"
             })
         }
+    }
+
+    override fun toString(): String {
+        return "ProblemFirstSolved()"
     }
 }

@@ -1,5 +1,7 @@
 package rules_kt
 
+import kotlinx.collections.immutable.toImmutableList
+import model.Contest
 import org.icpclive.cds.api.*
 import org.icpclive.cds.scoreboard.Ranking
 
@@ -42,6 +44,26 @@ fun futureRankString(current: Int, previous: Int): String {
     } else {
         "get rank $current"
     }
+}
+
+fun Ranking.rankTags(prefix: String, teamId: TeamId): List<String> {
+    require(prefix in setOf("submission", "accepted"))
+    val result = mutableListOf(prefix)
+    for (award in awards) {
+        if (teamId in award.teams) {
+            when (award) {
+                is Award.Medal -> {
+                    result.add("$prefix-medal")
+                    award.medalColor?.let { color -> result.add("$prefix-medal-${color.name.lowercase()}") }
+                }
+                is Award.Winner -> {
+                    result.add("$prefix-winner")
+                }
+                else -> {}
+            }
+        }
+    }
+    return result.toImmutableList()
 }
 
 fun ContestInfo.getScoreboardProblemIndex(problemId: ProblemId): Int? {

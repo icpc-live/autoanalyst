@@ -11,9 +11,10 @@ import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
 import org.icpclive.cds.scoreboard.getScoreboardCalculator
 import kotlin.time.Duration
 
-class RankPredictor(private val rankThreshold: Int, private val freezeRankThreshold: Int = rankThreshold) :
-    RuleInterface() {
-
+data class RankPredictor(
+    private val rankThreshold: Int,
+    private val freezeRankThreshold: Int = rankThreshold,
+) : RuleInterface() {
     override val filters = listOf(FlowFilters::isSubmission)
     override suspend fun process(contestStateWithScoreboard: ContestStateWithScoreboard) = flow flow@{
         with(contestStateWithScoreboard) {
@@ -38,7 +39,7 @@ class RankPredictor(private val rankThreshold: Int, private val freezeRankThresh
                     ) { teamRef, problemRef -> "$teamRef submitted a solution for $problemRef" })
                 }
             } else if (resultForProblem.pendingAttempts > 1) {
-                logger.info(
+                LOGGER.info(
                     "Skipping rank prediction for team $teamId as it has ${resultForProblem.pendingAttempts} outstanding submissions on problem $problemId."
                 )
             } else {
@@ -58,8 +59,9 @@ class RankPredictor(private val rankThreshold: Int, private val freezeRankThresh
                     rankingBefore.getTeamRank(teamId)
                 }
                 val optimisticRank = optimisticRanking.getTeamRank(teamId)
+                val rankTags = optimisticRanking.rankTags("submission", teamId)
                 if (optimisticRank <= rankThreshold) {
-                    emit(Commentary.fromRunUpdateState(state, EventImportance.Normal) { teamRef, problemRef ->
+                    emit(Commentary.fromRunUpdateState(state, EventImportance.Normal, rankTags) { teamRef, problemRef ->
                         "$teamRef submitted a solution for $problemRef. If correct, they might ${
                             futureRankString(
                                 optimisticRank, currentRank
@@ -72,6 +74,10 @@ class RankPredictor(private val rankThreshold: Int, private val freezeRankThresh
     }
 
     override fun toString(): String {
-        return String.format("Rank Predictor (rank <= %d)", rankThreshold)
+        return "RankPredictor (optimisticRank <= $rankThreshold; after freeze: rank <= $freezeRankThreshold)"
+    }
+
+    companion object {
+        private val LOGGER = logger()
     }
 }

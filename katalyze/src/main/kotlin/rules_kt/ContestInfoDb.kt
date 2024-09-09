@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection.TRANSACTION_SERIALIZABLE
 import kotlin.time.Duration
 
-class ContestInfoDb(val db: Database, val contestId: String) : RuleInterface() {
+class ContestInfoDb(private val db: Database, private val contestId: String) : RuleInterface() {
 
     data class ContestEntry(
         val id: String,
@@ -85,7 +85,7 @@ class ContestInfoDb(val db: Database, val contestId: String) : RuleInterface() {
                 Teams.insert {
                     it[id] = entry.id.value.toInt()
                     it[teamId] = entry.id.value.toInt()
-                    it[teamName] = entry.displayName
+                    it[teamName] = entry.fullName
                     it[institutionId] = organization?.id?.value?.toInt()
                     it[schoolName] = organization?.fullName
                     it[schoolShort] = organization?.displayName
