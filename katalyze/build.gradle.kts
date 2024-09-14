@@ -44,6 +44,8 @@ dependencies {
 
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
 
+    implementation("com.github.ajalt.clikt:clikt:4.4.0")
+
     // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("com.zaxxer:HikariCP:5.1.0")
 
@@ -101,7 +103,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
 
     // https://mvnrepository.com/artifact/com.h2database/h2
-    testImplementation("com.h2database:h2:2.3.232")
+    implementation("com.h2database:h2:2.3.232")
 
 }
 
@@ -110,7 +112,8 @@ tasks.test {
 }
 
 application {
-    mainClass.set("katalyzeapp.Katalyze")
+    //mainClass.set("katalyzeapp.Katalyze")
+    mainClass.set("katalyzeapp.KatalyzeAppV2Kt")
 }
 
 kotlin {

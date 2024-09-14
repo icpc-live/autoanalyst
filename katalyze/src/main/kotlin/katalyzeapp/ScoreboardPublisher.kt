@@ -20,9 +20,20 @@ class ScoreboardPublisher(private val publisher: Publisher, private val contestS
         job?.cancelAndJoin()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+    private fun publishScoreboard(fullState: ContestStateTracker.FullState) {
+        LOGGER.info("Preparing standings")
+
+        val teamJson = teamsAsJson(fullState.info)
+        val standingsJson = standingsAsJson(fullState)
+
+        LOGGER.info("Publishing standings")
+
+        publisher.publish("/scoreboard", JsonDocument(standingsJson))
+        publisher.publish("/teams", JsonDocument(teamJson))
+    }
+
     fun start() {
-        job = CoroutineScope(newSingleThreadContext("ScoreboardPublisher")).launch {
+        job = CoroutineScope(dispatcher).launch {
             var nextUpdate = ZERO
             while (coroutineContext.isActive) {
                 val fullState = contestStateTracker.state
@@ -36,18 +47,6 @@ class ScoreboardPublisher(private val publisher: Publisher, private val contestS
                 delay(1.seconds)  // Can't sleep longer because we might be in the emulation.
             }
         }
-    }
-
-    private fun publishScoreboard(fullState: ContestStateTracker.FullState) {
-        LOGGER.info("Preparing standings")
-
-        val teamJson = teamsAsJson(fullState.info)
-        val standingsJson = standingsAsJson(fullState)
-
-        LOGGER.info("Publishing standings")
-
-        publisher.publish("/scoreboard", JsonDocument(standingsJson))
-        publisher.publish("/teams", JsonDocument(teamJson))
     }
 
     private fun videoUrl(mediaType: MediaType) = when (mediaType) {
@@ -192,5 +191,7 @@ class ScoreboardPublisher(private val publisher: Publisher, private val contestS
 
     companion object {
         private val LOGGER = logger()
+        @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+        private val dispatcher = newSingleThreadContext("ScoreboardPublisher")
     }
 }

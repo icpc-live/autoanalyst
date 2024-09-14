@@ -18,12 +18,14 @@ data class Commentary(
     override val submissionIds: List<String>? = null,
     override val tags: List<String> = emptyList(),
     override val teamIds: List<String>? = null,
+    val isAutomatic: Boolean = true,
     val importance: EventImportance,
 ) : CommentaryInterface {
 
     companion object {
         private val counter = AtomicInteger(0)
         private fun nextId() = counter.incrementAndGet()
+        val KATALYZER_USER = "katalyzer"
 
         fun fromRunUpdateState(
             state: ContestState,

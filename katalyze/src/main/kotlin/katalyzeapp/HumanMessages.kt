@@ -1,5 +1,6 @@
 package katalyzeapp
 
+import katalyzeapp.CommentaryEntityReferences.asClicsCommentary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -38,7 +39,7 @@ fun getHumanMessagesFromDatabase(
             }
             val newEntries = transaction(db) {
                 val entries =
-                    Entries.selectAll().where(Entries.user.neq("katalyzer")).orderBy(Entries.date).toList()
+                    Entries.selectAll().where(Entries.user.neq(Commentary.KATALYZER_USER)).orderBy(Entries.date).toList()
                 entries.filter { entry ->
                     (entry[Entries.id] !in seenIds).also {
                         if (it) {
@@ -52,29 +53,12 @@ fun getHumanMessagesFromDatabase(
         }
     }
 
-fun commentaryFromDBRow(row: ResultRow, info: ContestInfo): Commentary {
-    val problemPattern = "#p([a-zA-Z])".toRegex();
-    val teamsPattern = "#t(\\d+)".toRegex();
-    val message = row[Entries.text].replace(problemPattern) { matchResult ->
-        val problemLetter = matchResult.groupValues[1]
-        val problem = info.problems.values.find { it.displayName == problemLetter }
-        if (problem != null) {
-            "{problem:${problem.id}}"
-        } else {
-            "problem $problemLetter"
-        }
-    }.replace(teamsPattern) { matchResult ->
-        val teamId = matchResult.groupValues[2]
-        val team = info.teams[teamId.toTeamId()]
-        if (team != null) {
-            "{team:${team.id}}"
-        } else {
-            matchResult.value
-        }
-    }
+private fun commentaryFromDBRow(row: ResultRow, info: ContestInfo): Commentary {
+    val message = info.asClicsCommentary(row[Entries.text])
     return Commentary(
         time = row[Entries.date],
         contestTime = row[Entries.contestTime].minutes,
+        isAutomatic = false,
         message = message,
         problemIds = emptyList(),
         importance = if (row[Entries.priority] == 0) EventImportance.Breaking else EventImportance.AnalystMessage,

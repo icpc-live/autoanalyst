@@ -35,7 +35,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $common_data['teams'][$row['id']] = $row;
 }
 
-$result = mysqli_query($db, "SELECT id, contest_name, start_time, length, freeze FROM contests ORDER BY id");
+$result = mysqli_query($db, "SELECT id, contest_name, start_time, length, freeze FROM contests WHERE id = '{$contestId}'");
 while ($row = mysqli_fetch_assoc($result)) {
     $common_data['contest'] = $row;
 }

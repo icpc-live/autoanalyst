@@ -95,6 +95,8 @@ class Analyzer:
         # path to the top of the backup directory.
         self.basePath = basePath
 
+        self.contestId = config[ "CDS" ][ "contest_id" ]
+
         # index of the last team in the competition.
         self.lastTeam = config[ "teambackup" ][ "lastTeam" ]
 
@@ -125,7 +127,7 @@ class Analyzer:
 
         # Contest start time in Unix seconds from the database.
         cursor = dbConn.cursor()
-        cursor.execute( "SELECT start_time FROM contests ORDER BY id DESC LIMIT 1" )
+        cursor.execute( "SELECT start_time FROM contests WHERE id = %s", (self.contestId, ) )
         row = cursor.fetchone()
         if ( row == None ):
             print("Error: no contest found in the database.")
