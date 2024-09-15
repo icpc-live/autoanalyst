@@ -60,7 +60,8 @@ private fun commentaryFromDBRow(row: ResultRow, info: ContestInfo): Commentary {
         contestTime = row[Entries.contestTime].minutes,
         isAutomatic = false,
         message = message,
-        problemIds = emptyList(),
+        problemIds = emptyList(),  // TODO: fix
+        teamIds = emptyList(),  // TODO: fix
         importance = if (row[Entries.priority] == 0) EventImportance.Breaking else EventImportance.AnalystMessage,
         tags = listOf("human"),
     )
@@ -84,7 +85,7 @@ fun mergeCommentaryChannelsByContestTime(
                     }
                 }
             }
-            onTimeout(10.milliseconds) {
+            onTimeout(500.milliseconds) {
                 initialCommentaries.isEmpty()
             }
         }

@@ -8,8 +8,8 @@ import org.icpclive.cds.api.toTeamId
 object CommentaryEntityReferences {
     private val clicsProblemPattern = "\\{problem:(\\w+)}".toRegex()
     private val clicsTeamsPattern = "\\{team:(\\w+)}".toRegex()
-    val dbProblemPattern = "#p([a-zA-Z])".toRegex();
-    val dbTeamsPattern = "#t(\\d+)".toRegex();
+    private val dbProblemPattern = "#p([a-zA-Z])".toRegex();
+    private val dbTeamsPattern = "#t(\\d+)".toRegex();
 
     fun ContestInfo.asDBCommentary(clicsCommentary: String): String {
         return clicsCommentary.replace(clicsProblemPattern) {
@@ -38,16 +38,16 @@ object CommentaryEntityReferences {
             if (problem != null) {
                 "{problem:${problem.id}}"
             } else {
-                LOGGER.warn("Problem $problemLetter not found")
+                LOGGER.warn("Problem '$problemLetter' not found: ${this.problems}")
                 "problem $problemLetter"
             }
         }.replace(dbTeamsPattern) { matchResult ->
             val teamId = matchResult.groupValues[1]
             val team = teams[teamId.toTeamId()]
             if (team != null) {
-                LOGGER.warn("Team $teamId not found")
                 "{team:${team.id}}"
             } else {
+                LOGGER.warn("Team '$teamId' not found: ${this.teams}")
                 matchResult.value
             }
         }
