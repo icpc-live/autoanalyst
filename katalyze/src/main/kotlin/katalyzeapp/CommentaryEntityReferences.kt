@@ -42,7 +42,7 @@ object CommentaryEntityReferences {
                 "problem $problemLetter"
             }
         }.replace(teamsPattern) { matchResult ->
-            val teamId = matchResult.groupValues[2]
+            val teamId = matchResult.groupValues[1]
             val team = teams[teamId.toTeamId()]
             if (team != null) {
                 "{team:${team.id}}"
