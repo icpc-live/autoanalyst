@@ -30,8 +30,9 @@ data class RankingChange(private val breakingPrioRanks: Int, private val normalP
             val newScoreboardRow = scoreboardRowAfter(teamId)
             val oldProblemResult = oldScoreboardRow.getResultByProblemId(problemId, state.infoBeforeEvent!!)!!
             val newProblemResult = newScoreboardRow.getResultByProblemId(problemId, state.infoAfterEvent!!)!!
-            check(oldProblemResult != newProblemResult) {
-                "Scoreboard didn't update after a submission update:\n$state"
+            if (oldProblemResult == newProblemResult) {
+                LOGGER.info("Scoreboard didn't update after a submission update")
+                return@flow
             }
 
             val wasSolved = oldProblemResult.isSolved
