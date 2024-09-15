@@ -15,6 +15,7 @@ configurations.all {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://jitpack.io") {
         // We recommend limiting jitpack to our lib. But you can remove this line if you don't care.
