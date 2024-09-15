@@ -21,6 +21,7 @@ import kotlinx.serialization.json.encodeToStream
 import model.Commentary
 import org.icpclive.clics.FeedVersion
 import org.icpclive.clics.clicsEventsSerializersModule
+import org.icpclive.clics.events.Event
 import org.icpclive.clics.events.EventToken
 import org.icpclive.clics.v202306.objects.Commentary as ClicsCommentary
 import org.icpclive.clics.v202306.events.CommentaryEvent
@@ -74,7 +75,10 @@ fun Application.commentaryMessagesModule(commentaryFlow: SharedFlow<Commentary>)
                     )
                 ) {
                     jsonFlow.withIndex().collect { (index, item) ->
-                        json.encodeToStream(CommentaryEvent(item.id, EventToken("cds-${index}"), item), this@respondOutputStream)
+                        json.encodeToStream(
+                            CommentaryEvent(item.id, EventToken("cds-${index}"), item) as Event,
+                            this@respondOutputStream
+                        )
                         write("\n".encodeToByteArray())
                         flush()
                     }
