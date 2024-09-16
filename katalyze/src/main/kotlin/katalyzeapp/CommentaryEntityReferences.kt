@@ -6,8 +6,8 @@ import org.icpclive.cds.api.toProblemId
 import org.icpclive.cds.api.toTeamId
 
 object CommentaryEntityReferences {
-    private val clicsProblemPattern = "\\{problem:(\\w+)}".toRegex()
-    private val clicsTeamsPattern = "\\{team:(\\w+)}".toRegex()
+    private val clicsProblemPattern = "\\{problem:([-_0-9a-zA-Z]+)}".toRegex()
+    private val clicsTeamsPattern = "\\{team:([-_0-9a-zA-Z]+)}".toRegex()
     private val dbProblemPattern = "#p([a-zA-Z])".toRegex();
     private val dbTeamsPattern = "#t(\\d+)".toRegex();
 
