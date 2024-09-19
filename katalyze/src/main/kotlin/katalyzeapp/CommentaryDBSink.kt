@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.max
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.upsert
+import org.jetbrains.exposed.sql.deleteWhere
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes
@@ -22,12 +23,13 @@ suspend fun streamCommentaryToDB(
     var startFromTime: Duration? = null
     transaction(db) {
         // select maximum contest time of entries where user is katalyzer
-        val maxContestTime = Entries.contestTime.max()
-        val row = Entries.select(maxContestTime).where(Entries.user eq Commentary.KATALYZER_USER).firstOrNull()
-        startFromTime = row?.get(maxContestTime)?.minutes
-        if (startFromTime != null) {
-            println("Starting from $startFromTime")
-        }
+        Entries.deleteWhere{ user eq Commentary.KATALYZER_USER }
+        //val maxContestTime = Entries.contestTime.max()
+        //val row = Entries.select(maxContestTime).where(Entries.user eq Commentary.KATALYZER_USER).firstOrNull()
+        //startFromTime = row?.get(maxContestTime)?.minutes
+        //if (startFromTime != null) {
+        //    println("Starting from $startFromTime")
+        //}
     }
     commentaryFlow.filter { entry ->
         entry.isAutomatic && entry.contestTime >= (startFromTime?: ZERO)

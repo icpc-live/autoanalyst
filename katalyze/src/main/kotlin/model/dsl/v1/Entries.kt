@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestamp
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
-object Entries: Table() {
+object Entries: Table(name="entries") {
     val id = integer("id").autoIncrement()
     val date = timestamp("date").defaultExpression(CurrentTimestamp)
     val contestTime = integer("contest_time")

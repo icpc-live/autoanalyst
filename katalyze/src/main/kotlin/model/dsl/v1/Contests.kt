@@ -2,7 +2,7 @@ package model.dsl.v1
 
 import org.jetbrains.exposed.sql.Table
 
-object Contests: Table() {
+object Contests: Table(name="contests") {
     val id = varchar("id", 36)
     val contestName = varchar("contest_name", 150)
     val startTime = integer("start_time")  // Contest start time as Unix Epoch seconds

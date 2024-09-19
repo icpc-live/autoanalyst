@@ -4,7 +4,7 @@ import kotlinx.datetime.Clock
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 
-object Submissions : Table() {
+object Submissions : Table(name="submissions") {
     val id = integer("id").autoIncrement()
     val problemId = varchar("problem_id", 10)
     val teamId = integer("team_id")

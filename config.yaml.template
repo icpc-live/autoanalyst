@@ -23,7 +23,7 @@ CCS:
 
 # CDS server
 CDS:
-    baseurl:   "https://192.168.1.207"
+    baseurl:   "https://172.29.1.207"
     user:      user
     pass:      THISISNOTAPASSWORD
     # Credentials to access the full, unfiltered event feed.

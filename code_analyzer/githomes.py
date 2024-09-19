@@ -7,6 +7,9 @@ import base64
 import requests
 import re
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 class Backup():
     def __init__(self, href, team, path, modTime):
@@ -50,7 +53,7 @@ class GitHomes:
 
         # CDS config: base URL and credentials (with full access,
         # needed for backups).
-        self.CDSRoot   = config[ "CDS" ][ "baseurl" ]
+        self.CDSRoot   = config[ "CDS" ][ "baseurl" ].rstrip('/')
         self.CDSUser   = config[ "CDS" ][ "userfull" ]
         self.CDSPass   = config[ "CDS" ][ "passfull" ]
         self.contestId = config[ "CDS" ][ "contest_id" ]
@@ -115,12 +118,18 @@ class GitHomes:
         self.backups = []
         self.http_session = requests.Session()
         self.http_session.auth = (self.CDSUser, self.CDSPass)
+        self.http_session.verify = False
         #print((self.CDSUser, self.CDSPass))
         #self.http.disable_ssl_certificate_validation=True
 
-        r = self.http_session.get("%s/%s/teams" % (self.CDSRoot, self.contestId))
+        print("%s/contests/%s/teams" % (self.CDSRoot, self.contestId))
+        r = self.http_session.get("%s/contests/%s/teams" % (self.CDSRoot, self.contestId))
         r.raise_for_status()
-        teamData = r.json()
+        try:
+            teamData = r.json()
+        except:
+            print(r.text)
+            raise
         startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
 
         for team in teamData:
