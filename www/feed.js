@@ -229,7 +229,7 @@ function _feed_updateWith(rows) {
                 description = this.formatter(row);
             } else if (this.table == 'entries') {
                 var text = escapeHtml(row.text);
-                text = text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>problem $1</a>");
+                text = text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>$1</a>");
                 text = text.replace(/#t([0-9]+)/g,
                     function (match, contents, offset, s) {
                         return generate_team_link(contents, self.teams);
@@ -249,7 +249,7 @@ function _feed_updateWith(rows) {
                 description = row.modify_time + ": <a href='problem.php?problem_id=" + row.problem_id + "'>Problem " + row.problem_id.toUpperCase() + "</a> &mdash; " +
                     "<a href='team.php?team_id=" + row.team_id + "'>" + self.teams[row.team_id]['school_short'] + "</a> (#t" + row.team_id + ") &mdash; " +
                     "<a href='" + gitweb_url + "'>" + row.path + "</a> &mdash; " +
-                    "<span class='feed_timestamp' timestamp='" + d.toLocaleString() + "'></span>";
+                    "<span class='feed_timestamp' timestamp='" + d.toISOString() + "'></span>";
             } else if (this.table == 'submissions') {
                 var is_accepted = (row.result == 'AC') ? 'kattis_result_accepted' : 'kattis_result_not_accepted';
                 var result = "<span class='" + is_accepted + "'>" + self.judgements[row.result].label_long + "</span>";

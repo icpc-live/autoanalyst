@@ -1,1 +1,128 @@
-../config.yaml
+# This is the YAML configuration template for all components of the
+# ICPC-live autoanalyst software package.
+# Copy this file to config.yaml and edit to your needs.
+
+
+# Read the input feed from the CDS using the contest API event fieed
+source: CDS  
+
+database:
+    host:     localhost
+    name:     icat
+    user:     root
+    password: THISISNOTAPASSWORD
+
+timezone: Europe/Moscow
+
+# Contest Control System used by analysts
+CCS:
+    # The base URL, can be a full URL or relative to the autoanalyst webserver:
+    baseurl:   "/domjudge/"
+    # URL to submission page, the string @ID@ is replaced by a submission ID.
+    submissionurl: "jury/submission.php?ext_id=@ID@"
+
+# CDS server
+CDS:
+    baseurl: "https://d.kbats.ru/"
+    contest_id: wf47_finals
+    user: user
+    pass: THISISNOTAPASSWORD
+    # Credentials to access the full, unfiltered event feed.
+    userfull: user2
+    passfull: THISISNOTAPASSWORD
+
+    #path: /Users/yakovdlougach/autoanalyst/katalyze/src/test/resources/wf47-event-feed-live.ndjson
+    #contest_id: wf47_finals
+
+# Configuration for the backup/githomes script
+teambackup:
+    gitdir:    /home/icpclive/githomes
+    backupdir: /home/icpclive/backup
+    # The base gitweb URL including git project name, can be a full
+    # URL or relative to the autoanalyst webserver:
+    gitweburl: "/gitweb/?p=githomes/.git"
+    # Method to retrieve backups, options:
+    # - CDS       import from CDS
+    # - copy      copy from 'backupdir'
+    # - simulate  replay from existing git repository
+    method:    CDS
+
+    # Parameters for method == simulate
+    sourceRepo:    /home/icpclive/history
+    simulationRate: 1
+
+    # Interval between retrieving backups, in seconds:
+    interval:  120
+    lastTeam:  119
+    request_tries: 3
+
+# Configuration for the Katalyzer
+katalyzer:
+    # Database (main configuration is taken from common database config above)
+    db:
+        enable:     true
+
+    # Internal web server
+    web:
+        enable:     true
+        compress:   false
+        port:       8099
+
+    advanced_properties: >
+        {
+            "awardsSettings":{
+                "championTitle": "Champion",
+                "medals": [
+                    {"id": "gold-medal", "citation": "Gold Medal","color": "GOLD", "maxRank": 4},
+                    {"id": "silver-medal", "citation": "Solver Medal","color": "SILVER", "maxRank": 8},
+                    {"id": "bronze-medal", "citation": "Bronze Medal","color": "BRONZE", "maxRank": 12}
+                ]
+            }
+        }
+
+    rules:
+    - AllProblemsSolved
+    - AllTeamsSolvedOneProblem
+    - ContestStatusTransitions
+    - ProblemFirstSolved
+    - RankingChange:
+        enable: true
+        # NewLeader - when a team takes the lead, or gets into the top n positions
+        normal_prio_ranks:    10
+        breaking_prio_ranks: 5
+
+        # RejectedSubmission - when the judges reject a submission from
+        # one of the top n teams
+    - RejectedSubmissions:
+        normal_rank_threshold:    10
+
+    # RankPredictor - when a team submits a solution that would put
+    # the team among the top n teams
+    - RankPredictor:
+        rank_threshold:    10
+        freeze_rank_threshold:    25
+#           exec:     "./capture.sh {teamId} {time} {currentRank} {potentialRank}"
+
+
+
+codeActivity:
+    scoreboardFreezeMinutes:   240
+    defaultGranularityMinutes: 5
+
+# FIXME: not clear whether the judgements data below should be
+# considered configuration, or that it should come from some other
+# source (CDS?). Note that the proposed contest ontology [1] has a
+# 'Judgement Type' that contains the label and label_long data below.
+# [1] https://docs.google.com/document/d/12RVKS_u36WY9kU8iVIMzHtH5Df3WjK-mt-YmJu8j6ZI/edit
+
+judgements:
+    AC:   { label: AC,  label_long: "Accepted"             , color: "#10a010", sortOrder: 1 }
+    WA:   { label: WA,  label_long: "Wrong Answer"         , color: "#333333", sortOrder: 2 }
+    TLE:  { label: TLE, label_long: "Time Limit Exceeded"  , color: "#ff0000", sortOrder: 3 }
+    RTE:  { label: RTE, label_long: "Run Time Error"       , color: "#ffaa00", sortOrder: 4 }
+    (CE): { label: CE,  label_long: "Compile Error"        , color: "#ffff00", sortOrder: 5 }
+    (IF): { label: IF,  label_long: "Illegal Function"     , color: "#0000ff", sortOrder: 6 }
+# The remaining three judgements (MLE, OLE, PE) are not used anymore, I think. (Hamerly 2013)
+    MLE:  { label: MLE, label_long: "Memory Limit Exceeded", color: "#ffffaa", sortOrder: 7 }
+    OLE:  { label: OLE, label_long: "Output Limit Exceeded", color: "#ff00ff", sortOrder: 8 }
+    PE:   { label: PE , label_long: "Presentation Error"   , color: "#aaaaaa", sortOrder: 9 }

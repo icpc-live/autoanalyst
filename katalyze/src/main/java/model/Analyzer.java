@@ -1,6 +1,7 @@
 package model;
 
 import io.EntityOperation;
+import org.icpclive.cds.api.ContestStatus;
 import rules.*;
 import icat.AnalystMessage;
 import icat.AnalystMessageSource;
@@ -31,12 +32,9 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 
 	
 	int lastHookTime = -1;
-	int videoCaptureTreshold;
-	int nextEventId = 0;
 	
 	public Analyzer(Contest contest, int videoCaptureTreshold) {
 		this.contest = contest;
-		this.videoCaptureTreshold = videoCaptureTreshold;
 	}
 	
 	private LoggableEvent buildEventFromAnalystMsg(AnalystMessage msg) {
@@ -183,18 +181,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		}
 	}
 
-	public void contestStateChanged(ContestState oldState, ContestState newState) {
-	    if (oldState.notStartedYet() && newState.isRunning()) {
-	        notify(createEvent(null, 0, "Contest has started", EventImportance.Breaking));
-        }
-
-        if (oldState.isRunning() && newState.isRunning() && newState.isFrozen()) {
-	        notify(createEvent(null, newState.frozenMillis-newState.startedMillis, "Scoreboard is now frozen until the end of the contest", EventImportance.Breaking));
-        }
-
-        if (oldState.isRunning() && newState.isEnded()) {
-	        notify(createEvent(null, newState.endedMillis-newState.startedMillis, "Contest is now over", EventImportance.Breaking));
-        }
+	public void contestStateChanged(ContestStatus oldState, ContestStatus newState) {
     }
 
 	public InitialSubmission submissionById(String id) {

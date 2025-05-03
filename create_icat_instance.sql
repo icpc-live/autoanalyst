@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `entries` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `contest_time` int(11) NOT NULL,
   `priority` int(11) NOT NULL,
-  `user` varchar(10) NOT NULL,
+  `user` varchar(32) NOT NULL,
   `text` text NOT NULL,
   `submission_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),

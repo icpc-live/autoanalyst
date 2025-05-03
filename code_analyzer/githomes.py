@@ -7,6 +7,9 @@ import base64
 import requests
 import re
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 class Backup():
     def __init__(self, href, team, path, modTime):
@@ -50,9 +53,10 @@ class GitHomes:
 
         # CDS config: base URL and credentials (with full access,
         # needed for backups).
-        self.CDSRoot = config[ "CDS" ][ "baseurl" ]
-        self.CDSUser = config[ "CDS" ][ "userfull" ]
-        self.CDSPass = config[ "CDS" ][ "passfull" ]
+        self.CDSRoot   = config[ "CDS" ][ "baseurl" ].rstrip('/')
+        self.CDSUser   = config[ "CDS" ][ "userfull" ]
+        self.CDSPass   = config[ "CDS" ][ "passfull" ]
+        self.contestId = config[ "CDS" ][ "contest_id" ]
 
         # read additional configuration parameters, depending on method.
         if self.pullmethod == 'CDS':
@@ -111,24 +115,21 @@ class GitHomes:
         """Initialization that just needs to be done for runs with backups from the CDS.
         This is getting kind of ugly."""
 
-        # figure out a start time in the format we will get from the CDS.
-        cursor = dbConn.cursor()
-        cursor.execute( "SELECT id, contest_name, start_time FROM contests ORDER BY id DESC LIMIT 1" )
-        row = cursor.fetchone()
-        contest_id = row[0]
-        if ( row == None ):
-            print("Error: no contest found in the database.")
-            exit(1)
-
         self.backups = []
         self.http_session = requests.Session()
         self.http_session.auth = (self.CDSUser, self.CDSPass)
+        self.http_session.verify = False
         #print((self.CDSUser, self.CDSPass))
         #self.http.disable_ssl_certificate_validation=True
 
-        r = self.http_session.get("%s/%s/teams" % (self.CDSRoot, contest_id))
+        print("%s/contests/%s/teams" % (self.CDSRoot, self.contestId))
+        r = self.http_session.get("%s/contests/%s/teams" % (self.CDSRoot, self.contestId))
         r.raise_for_status()
-        teamData = r.json()
+        try:
+            teamData = r.json()
+        except:
+            print(r.text)
+            raise
         startTime = time.strftime( "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(0) )
 
         for team in teamData:

@@ -1,0 +1,92 @@
+/*
+body {
+	font-family: sans-serif;
+	font-size: 80%;
+	padding: 1px 1px 1px 1px;
+	margin: 1px 1px 1px 1px;
+} 
+*/
+
+.scoreRow {
+	vertical-align: top;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #BBBBBB;
+}
+
+.scoreCell {
+	min-width: 40px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #BBBBBB;
+}
+
+.cell1 {
+	width:300px;
+
+}
+
+.scoreTable {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	border-collapse: collapse;
+}
+
+.whatIf {
+	font-size: 75%;
+}
+
+.recentlyChanged {
+    border-color: magenta;
+    border-style: solid;
+}
+
+.problemSolved {
+	background-color: #99FF99;
+}
+
+.problemAttempted {
+	background-color: #FF9999;
+}
+
+#slider {
+	width: 500px;
+	display: inline-block;
+}
+
+#contestTime {
+	display: inline-block;
+	width: 140px;
+}
+
+#smallGraphs {
+	display: inline-block;
+	width: 100px;
+}
+
+.smallInput {
+	width: 50px;
+}
+
+.leftMenu {
+	width: 150px;
+	display: inline-block;
+	min-height: 280px;
+	vertical-align: top;
+	padding: 4px 4px 4px 4px;
+}
+
+.graphArea {
+	display: inline-block;
+	vertical-align:top;
+}
+
+.horizontalBar {
+	width: 100%;
+	border-style:solid;
+	border-color: #BBBBEE;
+	border-width: 1px;
+	padding: 3px 3px 3px 3px;
+	background-color: #DDDDFF;
+}

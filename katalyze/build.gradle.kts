@@ -1,12 +1,21 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    val kotlinVersion = "2.0.20"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
     application
 }
 
 group = "com.github.icpc.autoanalyst"
 version = "1.0-SNAPSHOT"
 
+configurations.all {
+    resolutionStrategy {
+//        failOnVersionConflict()
+    }
+}
+
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://jitpack.io") {
         // We recommend limiting jitpack to our lib. But you can remove this line if you don't care.
@@ -16,7 +25,35 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.full:3.3.1")
+
+    val liveVersion: String by project
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.core:$liveVersion")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:$liveVersion")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:$liveVersion")
+
+    val exposedVersion: String by project
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-crypt:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
+
+    implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-money:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:$exposedVersion")
+
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
+
+    implementation("com.github.ajalt.clikt:clikt:4.4.0")
+
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    val ktorVersion = "2.3.12"
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-cors:$ktorVersion")
+
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")
@@ -66,6 +103,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
 
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    implementation("com.h2database:h2:2.3.232")
+
 }
 
 tasks.test {
@@ -73,7 +113,8 @@ tasks.test {
 }
 
 application {
-    mainClass.set("katalyzeapp.Katalyze")
+    //mainClass.set("katalyzeapp.Katalyze")
+    mainClass.set("katalyzeapp.KatalyzeAppV2Kt")
 }
 
 kotlin {
