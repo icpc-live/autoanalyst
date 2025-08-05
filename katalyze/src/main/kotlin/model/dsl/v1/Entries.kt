@@ -1,12 +1,16 @@
 package model.dsl.v1
 
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestamp
-import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.datetime.CurrentTimestamp
+import kotlin.time.Instant
 
 object Entries: Table(name="entries") {
     val id = integer("id").autoIncrement()
-    val date = timestamp("date").defaultExpression(CurrentTimestamp)
+    // TODO: it looks like exposed is unaware about kotlinx.datetime.Instant migration
+    val date = long("date").transform(
+        { Instant.fromEpochMilliseconds(it) },
+        { it.toEpochMilliseconds() }
+    ).defaultExpression(CurrentTimestamp)
     val contestTime = integer("contest_time")
     val priority = integer("priority")
     val user = varchar("user", 10)

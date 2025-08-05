@@ -9,17 +9,12 @@ import org.icpclive.cds.scoreboard.getScoreboardCalculator
 import web.Publisher
 import web.WebDocument
 import java.io.OutputStream
+import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class ScoreboardPublisher(private val publisher: Publisher, private val contestStateTracker: ContestStateTracker) {
-    private var job: Job? = null
-
-    suspend fun stop() {
-        job?.cancelAndJoin()
-    }
-
     private fun publishScoreboard(fullState: ContestStateTracker.FullState) {
         LOGGER.info("Preparing standings")
 
@@ -32,20 +27,18 @@ class ScoreboardPublisher(private val publisher: Publisher, private val contestS
         publisher.publish("/teams", JsonDocument(teamJson))
     }
 
-    fun start() {
-        job = CoroutineScope(dispatcher).launch {
-            var nextUpdate = ZERO
-            while (coroutineContext.isActive) {
-                val fullState = contestStateTracker.state
-                if (fullState != null) {
-                    val contestTime = fullState.info.currentContestTime
-                    if (contestTime >= nextUpdate) {
-                        nextUpdate = contestTime + 1.minutes
-                        publishScoreboard(fullState)
-                    }
+    suspend fun work() {
+        var nextUpdate = ZERO
+        while (true) {
+            val fullState = contestStateTracker.state
+            if (fullState != null) {
+                val contestTime = fullState.info.currentContestTime
+                if (contestTime >= nextUpdate) {
+                    nextUpdate = contestTime + 1.minutes
+                    publishScoreboard(fullState)
                 }
-                delay(1.seconds)  // Can't sleep longer because we might be in the emulation.
             }
+            delay(1.seconds)  // Can't sleep longer because we might be in the emulation.
         }
     }
 

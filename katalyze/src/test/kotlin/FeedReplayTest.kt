@@ -1,10 +1,7 @@
-import katalyzeapp.ScoreboardPublisher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
-import org.icpclive.cds.adapters.addFirstToSolves
-import org.icpclive.cds.adapters.processHiddenProblems
-import org.icpclive.cds.adapters.processHiddenTeamsAndGroups
+import org.icpclive.cds.adapters.addComputedData
+import kotlin.time.Clock
 import org.icpclive.cds.api.OptimismLevel
 import org.icpclive.cds.plugins.clics.ClicsFeed
 import org.icpclive.cds.plugins.clics.ClicsSettings
@@ -36,7 +33,10 @@ class FeedReplayTest : DbTestBase(){
         ) {
             emulation = EmulationSettings(speed=1000.0, startTime=Clock.System.now() + 2.seconds)
         }
-        val contestFlow = settings.toFlow().addFirstToSolves().processHiddenProblems().processHiddenTeamsAndGroups()
+        val contestFlow = settings.toFlow()
+            .addComputedData {
+                submissionResultsAfterFreeze = true // TODO: left as it was before but looks strange
+            }
             .calculateScoreboard(OptimismLevel.NORMAL)
         val commentaryFLow = flow {
             val rules = listOf(

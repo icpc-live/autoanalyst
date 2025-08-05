@@ -1,6 +1,7 @@
 package katalyzeapp
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.sksamuel.hoplite.ConfigLoaderBuilder
@@ -27,4 +28,6 @@ class KatalyzeAppV2 : CliktCommand() {
 
 }
 
-fun main(args: Array<String>) = KatalyzeAppV2().main(args)
+fun main(args: Array<String>) {
+    KatalyzeAppV2().main(args)
+}

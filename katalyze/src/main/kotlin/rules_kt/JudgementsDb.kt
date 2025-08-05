@@ -7,9 +7,9 @@ import org.apache.logging.log4j.kotlin.logger
 import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.api.RunResult
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.upsert
 import kotlin.time.DurationUnit
 
 

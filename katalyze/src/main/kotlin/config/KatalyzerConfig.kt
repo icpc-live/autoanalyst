@@ -9,7 +9,7 @@ import com.sksamuel.hoplite.fp.invalid
 import com.sksamuel.hoplite.fp.valid
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.icpclive.cds.tunning.AdvancedProperties
+import org.icpclive.cds.tunning.TuningRule
 import rules_kt.RuleInterface
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -18,10 +18,12 @@ import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.typeOf
 
+class TuningRuleList(val rules: List<TuningRule>)
+
 data class KatalyzerConfig(
     val db: DB = DB(),
     val web: Web? = null,
-    val advancedProperties: AdvancedProperties = AdvancedProperties(),
+    val advancedProperties: TuningRuleList = TuningRuleList(emptyList()),
     val rules: List<RuleInterface?>,
 ) {
     @Serializable
@@ -104,18 +106,18 @@ data class KatalyzerConfig(
         }
     }
 
-    class AdvancedPropertiesDecoder: NonNullableLeafDecoder<AdvancedProperties> {
+    class AdvancedPropertiesDecoder: NonNullableLeafDecoder<TuningRuleList> {
         override fun safeLeafDecode(
             node: Node,
             type: KType,
             context: DecoderContext
-        ): ConfigResult<AdvancedProperties> {
+        ): ConfigResult<TuningRuleList> {
             val value = node.valueOrNull() ?: return ConfigFailure.DecodeError(node, type).invalid()
             return runCatching {
-                Json.decodeFromString<AdvancedProperties>(value)
+                TuningRuleList(TuningRule.listFromString(value))
             }.toValidated { ConfigFailure.Generic(it.localizedMessage) }
         }
 
-        override fun supports(type: KType) = type == typeOf<AdvancedProperties>()
+        override fun supports(type: KType) = type.classifier == TuningRule::class
     }
 }

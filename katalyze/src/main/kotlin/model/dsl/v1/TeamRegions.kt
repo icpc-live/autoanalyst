@@ -1,6 +1,7 @@
 package model.dsl.v1
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.v1.core.Table
+
 
 object TeamRegions : Table("team_regions") {
     val id = integer("id").autoIncrement()

@@ -5,15 +5,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import model.Commentary
 import model.dsl.v1.Entries
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.max
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
-import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.upsert
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
-import kotlin.time.Duration.Companion.minutes
 
 suspend fun streamCommentaryToDB(
     db: Database,

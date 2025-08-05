@@ -1,7 +1,7 @@
 package rules_kt
 
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import model.Commentary
 import model.dsl.v1.Contests
 import model.dsl.v1.Problems
@@ -9,8 +9,12 @@ import model.dsl.v1.TeamRegions
 import model.dsl.v1.Teams
 import org.icpclive.cds.api.*
 import org.icpclive.cds.scoreboard.ContestStateWithScoreboard
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.deleteAll
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.upsert
 import java.sql.Connection.TRANSACTION_SERIALIZABLE
 import kotlin.time.Duration
 

@@ -1,6 +1,6 @@
 package model.dsl.v1
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.v1.core.Table
 
 object Contests: Table(name="contests") {
     val id = varchar("id", 36)

@@ -4,12 +4,12 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import config.ApplicationConfig
 import config.DatabaseConfig
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.http.content.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.install
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.staticResources
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
@@ -20,9 +20,9 @@ import org.icpclive.cds.adapters.*
 import org.icpclive.cds.api.OptimismLevel
 import org.icpclive.cds.scoreboard.calculateScoreboard
 import org.icpclive.cds.settings.toFlow
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import rules_kt.ContestInfoDb
 import rules_kt.JudgementsDb
 import rules_kt.RuleInterface
@@ -34,13 +34,8 @@ class KatalyzerV2(private val config: ApplicationConfig) {
 
     private val contestStateTracker = ContestStateTracker()
     private val contestFlow = config.cds.toCDSSettings().toFlow()
-        .applyAdvancedProperties(flowOf(config.katalyzer.advancedProperties))
-        .processHiddenProblems()
-        .processHiddenTeamsAndGroups()
-        .addFirstToSolves()
-        .contestState()
-        .removeHiddenRuns()
-        .removeFrozenSubmissions()
+        .applyTuningRules(flowOf(config.katalyzer.advancedProperties.rules))
+        .addComputedData {}
         .calculateScoreboard(OptimismLevel.NORMAL)
         .onEach {
             contestStateTracker.update(it)
@@ -71,7 +66,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         val fullSharedCommentaryFlow = fullCommentaryFlow(this).shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
         if (config.katalyzer.web?.enable == true) {
             launch {
-                embeddedServer(Netty, port = config.katalyzer.web.port) {
+                val server = embeddedServer(Netty, port = config.katalyzer.web.port) {
                     install(CORS) {
                         anyHost()
                     }
@@ -80,7 +75,9 @@ class KatalyzerV2(private val config: ApplicationConfig) {
                     routing {
                         staticResources("/", "")
                     }
-                }.start(wait = false).stopServerOnCancellation()
+                }
+
+                server.start(wait = true)
             }
         }
         launch {
