@@ -8,7 +8,7 @@ import com.sksamuel.hoplite.fp.flatMap
 import com.sksamuel.hoplite.fp.invalid
 import com.sksamuel.hoplite.fp.valid
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 import org.icpclive.cds.tunning.TuningRule
 import rules_kt.RuleInterface
 import kotlin.reflect.KClass
@@ -18,12 +18,21 @@ import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.typeOf
 
-class TuningRuleList(val rules: List<TuningRule>)
+private fun Node.toJsonElement() : JsonElement = when (this) {
+    is ArrayNode -> JsonArray(elements.map { it.toJsonElement() })
+    is MapNode -> JsonObject(map.mapValues { it.value.toJsonElement() })
+    is BooleanNode -> JsonPrimitive(value)
+    is NullNode -> JsonNull
+    is DoubleNode -> JsonPrimitive(value)
+    is LongNode -> JsonPrimitive(value)
+    is StringNode -> JsonPrimitive(value)
+    Undefined -> error("Unexpected undefined node")
+}
 
 data class KatalyzerConfig(
     val db: DB = DB(),
     val web: Web? = null,
-    val advancedProperties: TuningRuleList = TuningRuleList(emptyList()),
+    @param:ConfigAlias("tuning_rules") val tuningRules: List<TuningRule> = emptyList(),
     val rules: List<RuleInterface?>,
 ) {
     @Serializable
@@ -106,15 +115,14 @@ data class KatalyzerConfig(
         }
     }
 
-    class AdvancedPropertiesDecoder: NonNullableLeafDecoder<TuningRuleList> {
-        override fun safeLeafDecode(
+    class AdvancedPropertiesDecoder: Decoder<TuningRule> {
+        override fun decode(
             node: Node,
             type: KType,
             context: DecoderContext
-        ): ConfigResult<TuningRuleList> {
-            val value = node.valueOrNull() ?: return ConfigFailure.DecodeError(node, type).invalid()
+        ): ConfigResult<TuningRule> {
             return runCatching {
-                TuningRuleList(TuningRule.listFromString(value))
+                Json.decodeFromJsonElement<TuningRule>(node.toJsonElement())
             }.toValidated { ConfigFailure.Generic(it.localizedMessage) }
         }
 

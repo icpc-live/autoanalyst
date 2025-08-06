@@ -68,15 +68,11 @@ katalyzer:
         compress:   false
         port:       8099
 
-    advanced_properties: >
-        [
-            {
-              "type": "addMedals",
-              "gold": 4,
-              "silver": 4,
-              "bronze": 4
-            }
-        ]
+    tuningRules:
+    - type: addMedals
+      gold: 4
+      silver: 4
+      bronze: 4
 
     rules:
     - AllProblemsSolved

@@ -34,7 +34,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
 
     private val contestStateTracker = ContestStateTracker()
     private val contestFlow = config.cds.toCDSSettings().toFlow()
-        .applyTuningRules(flowOf(config.katalyzer.advancedProperties.rules))
+        .applyTuningRules(flowOf(config.katalyzer.tuningRules))
         .addComputedData {}
         .calculateScoreboard(OptimismLevel.NORMAL)
         .onEach {
