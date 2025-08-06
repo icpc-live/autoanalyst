@@ -1,8 +1,8 @@
 package model.dsl.v1
 
 import org.jetbrains.exposed.v1.core.Table
-import kotlin.time.Clock
-import kotlin.time.Instant
+import org.jetbrains.exposed.v1.javatime.timestamp
+import kotlin.time.*
 
 object Submissions : Table(name="submissions") {
     val id = integer("id").autoIncrement()
@@ -10,10 +10,9 @@ object Submissions : Table(name="submissions") {
     val teamId = integer("team_id")
     val langId = varchar("lang_id", 11)
     val result = varchar("result", 10)
-    // TODO: it looks like exposed is unaware about kotlinx.datetime.Instant migration
-    val date = long("date").transform(
-        { Instant.fromEpochMilliseconds(it) },
-        { it.toEpochMilliseconds() }
+    val date = timestamp("date").transform(
+        { it.toKotlinInstant() },
+        { it.toJavaInstant() }
     ).clientDefault { Clock.System.now() }
     val contestTime = integer("contest_time")
     val submissionId = integer("submission_id").uniqueIndex("avoid_dups")
