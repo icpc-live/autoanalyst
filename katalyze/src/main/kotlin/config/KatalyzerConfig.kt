@@ -8,8 +8,8 @@ import com.sksamuel.hoplite.fp.flatMap
 import com.sksamuel.hoplite.fp.invalid
 import com.sksamuel.hoplite.fp.valid
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import org.icpclive.cds.tunning.AdvancedProperties
+import kotlinx.serialization.json.*
+import org.icpclive.cds.tunning.TuningRule
 import rules_kt.RuleInterface
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -18,10 +18,21 @@ import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.typeOf
 
+private fun Node.toJsonElement() : JsonElement = when (this) {
+    is ArrayNode -> JsonArray(elements.map { it.toJsonElement() })
+    is MapNode -> JsonObject(map.mapValues { it.value.toJsonElement() })
+    is BooleanNode -> JsonPrimitive(value)
+    is NullNode -> JsonNull
+    is DoubleNode -> JsonPrimitive(value)
+    is LongNode -> JsonPrimitive(value)
+    is StringNode -> JsonPrimitive(value)
+    Undefined -> error("Unexpected undefined node")
+}
+
 data class KatalyzerConfig(
     val db: DB = DB(),
     val web: Web? = null,
-    val advancedProperties: AdvancedProperties = AdvancedProperties(),
+    @param:ConfigAlias("tuning_rules") val tuningRules: List<TuningRule> = emptyList(),
     val rules: List<RuleInterface?>,
 ) {
     @Serializable
@@ -104,18 +115,17 @@ data class KatalyzerConfig(
         }
     }
 
-    class AdvancedPropertiesDecoder: NonNullableLeafDecoder<AdvancedProperties> {
-        override fun safeLeafDecode(
+    class AdvancedPropertiesDecoder: Decoder<TuningRule> {
+        override fun decode(
             node: Node,
             type: KType,
             context: DecoderContext
-        ): ConfigResult<AdvancedProperties> {
-            val value = node.valueOrNull() ?: return ConfigFailure.DecodeError(node, type).invalid()
+        ): ConfigResult<TuningRule> {
             return runCatching {
-                Json.decodeFromString<AdvancedProperties>(value)
+                Json.decodeFromJsonElement<TuningRule>(node.toJsonElement())
             }.toValidated { ConfigFailure.Generic(it.localizedMessage) }
         }
 
-        override fun supports(type: KType) = type == typeOf<AdvancedProperties>()
+        override fun supports(type: KType) = type.classifier == TuningRule::class
     }
 }

@@ -1,7 +1,8 @@
 package katalyzeapp
 
 import config.CdsConfig
-import kotlinx.datetime.Clock
+import org.icpclive.cds.ktor.NetworkSettings
+import kotlin.time.Clock
 import org.icpclive.cds.plugins.clics.ClicsFeed
 import org.icpclive.cds.plugins.clics.ClicsSettings
 import org.icpclive.cds.plugins.clics.FeedVersion

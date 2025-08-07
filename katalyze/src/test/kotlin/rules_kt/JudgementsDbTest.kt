@@ -9,8 +9,8 @@ import org.icpclive.cds.adapters.addFirstToSolves
 import org.icpclive.cds.api.OptimismLevel
 import org.icpclive.cds.api.Verdict
 import org.icpclive.cds.scoreboard.calculateScoreboard
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes

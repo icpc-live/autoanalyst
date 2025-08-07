@@ -1,26 +1,25 @@
 package model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import org.icpclive.cds.RunUpdate
 import org.icpclive.cds.api.ContestState
 import org.icpclive.cds.api.startTime
-import org.icpclive.clics.objects.Commentary as CommentaryInterface
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
 
 data class Commentary(
-    override val id: String = nextId().toString(),
-    override val time: Instant,
-    override val contestTime: Duration,
-    override val message: String,
-    override val problemIds: List<String>? = null,
-    override val sourceId: String? = null,
-    override val submissionIds: List<String>? = null,
-    override val tags: List<String> = emptyList(),
-    override val teamIds: List<String>? = null,
+    val id: String = nextId().toString(),
+    val time: Instant,
+    val contestTime: Duration,
+    val message: String,
+    val problemIds: List<String>? = null,
+    val sourceId: String? = null,
+    val submissionIds: List<String>? = null,
+    val tags: List<String> = emptyList(),
+    val teamIds: List<String>? = null,
     val isAutomatic: Boolean = true,
     val importance: EventImportance,
-) : CommentaryInterface {
+)  {
 
     companion object {
         private val counter = AtomicInteger(0)

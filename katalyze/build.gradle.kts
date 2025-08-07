@@ -1,5 +1,5 @@
 plugins {
-    val kotlinVersion = "2.0.20"
+    val kotlinVersion = "2.2.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     application
@@ -8,11 +8,6 @@ plugins {
 group = "com.github.icpc.autoanalyst"
 version = "1.0-SNAPSHOT"
 
-configurations.all {
-    resolutionStrategy {
-//        failOnVersionConflict()
-    }
-}
 
 repositories {
     mavenLocal()
@@ -26,10 +21,15 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
+    //TODO: this is really strange, I'll ask stdlib team why it's needed.
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0")
+
     val liveVersion: String by project
     implementation("com.github.icpc.live-v3:org.icpclive.cds.core:$liveVersion")
     implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:$liveVersion")
     implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:$liveVersion")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.ktor:${liveVersion}")
+    implementation("com.github.icpc.live-v3:org.icpclive.cds.cli:${liveVersion}")
 
     val exposedVersion: String by project
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -37,7 +37,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
     implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-money:$exposedVersion")
@@ -50,10 +50,11 @@ dependencies {
     // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("com.zaxxer:HikariCP:5.1.0")
 
-    val ktorVersion = "2.3.12"
+    val ktorVersion = "3.2.1"
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
-
+    implementation("io.ktor:ktor-server-content-negotiation:${ktorVersion}")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")
@@ -119,4 +120,7 @@ application {
 
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        optIn.add("kotlin.time.ExperimentalTime")
+    }
 }
