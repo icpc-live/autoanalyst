@@ -25,11 +25,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0")
 
     val liveVersion: String by project
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.core:$liveVersion")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics:$liveVersion")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.clics-api:$liveVersion")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.ktor:${liveVersion}")
-    implementation("com.github.icpc.live-v3:org.icpclive.cds.cli:${liveVersion}")
+    implementation("com.github.icpc:live-v3:${liveVersion}")
 
     val exposedVersion: String by project
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
