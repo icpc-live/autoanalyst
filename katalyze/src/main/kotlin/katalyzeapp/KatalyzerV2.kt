@@ -11,9 +11,11 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import model.Commentary
 import model.dsl.v1.*
 import org.icpclive.cds.adapters.*
@@ -63,9 +65,11 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         if ((config.database as? DatabaseConfig.TestDBConfig)?.createTables == true) {
             createTables()
         }
-        val fullSharedCommentaryFlow = fullCommentaryFlow(this).shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
+        val fullSharedCommentaryFlow = withContext(Dispatchers.IO) {
+            fullCommentaryFlow().shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
+        }
         if (config.katalyzer.web?.enable == true) {
-            launch {
+            launch(Dispatchers.IO) {
                 val server = embeddedServer(Netty, port = config.katalyzer.web.port) {
                     install(CORS) {
                         anyHost()
@@ -80,13 +84,13 @@ class KatalyzerV2(private val config: ApplicationConfig) {
                 server.start(wait = true)
             }
         }
-        launch {
+        launch(Dispatchers.IO) {
             fullSharedCommentaryFlow.collect {
                 println(it)
             }
         }
         if (db != null) {
-            launch {
+            launch(Dispatchers.IO) {
                 streamCommentaryToDB(db, contestStateTracker, fullSharedCommentaryFlow)
             }
         }
@@ -99,14 +103,14 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         }
     }
 
-    private fun fullCommentaryFlow(scope: CoroutineScope): Flow<Commentary> {
+    private fun CoroutineScope.fullCommentaryFlow(): Flow<Commentary> {
         if (db == null) {
             return autoCommentaryFlow
         }
-        val humanMessagesChannel = getHumanMessagesFromDatabase(scope, db, contestStateTracker)
-        val autoanalystCommentaryChannel = autoCommentaryFlow.produceIn(scope)
+        val humanMessagesChannel = getHumanMessagesFromDatabase(this, db, contestStateTracker)
+        val autoanalystCommentaryChannel = autoCommentaryFlow.produceIn(this)
         return mergeCommentaryChannelsByContestTime(
-            scope,
+            this,
             autoanalystCommentaryChannel,
             humanMessagesChannel
         ).consumeAsFlow()
