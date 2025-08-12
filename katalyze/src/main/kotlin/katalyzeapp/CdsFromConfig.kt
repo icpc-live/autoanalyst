@@ -19,8 +19,8 @@ fun CdsConfig.toCDSSettings(): CDSSettings = when (this) {
                     auth = Authorization(
                         basic = Authorization.BasicAuth(
                             login = Credential("login", username),
-                            password = Credential("password", password.value)
-                        )
+                            password = Credential("password", password.value),
+                        ),
                     ),
                 ),
                 contestId = contestId,
@@ -29,7 +29,7 @@ fun CdsConfig.toCDSSettings(): CDSSettings = when (this) {
     ) {
         network = NetworkSettings(
             allowUnsecureConnections = true,
-            checkedServerName = "ip-172-31-1-220.us-west-1.compute.internal"
+            checkedServerName = checkedServerName,
         )
     }
 
@@ -40,7 +40,7 @@ fun CdsConfig.toCDSSettings(): CDSSettings = when (this) {
                 eventFeedPath = "",
                 eventFeedName = "",
                 contestId = "",
-                feedVersion = FeedVersion.`2023_06`
+                feedVersion = FeedVersion.`2023_06`,
             )
         )
     ) {
