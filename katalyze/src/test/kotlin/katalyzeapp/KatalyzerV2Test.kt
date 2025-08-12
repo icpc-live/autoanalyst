@@ -1,5 +1,6 @@
 package katalyzeapp
 
+import DbTestBase
 import config.ApplicationConfig
 import config.CdsConfig
 import config.DatabaseConfig
@@ -13,13 +14,22 @@ import rules_kt.*
 import kotlin.time.Duration.Companion.seconds
 
 
-class KatalyzerV2Test {
+class KatalyzerV2Test : DbTestBase() {
 
     @Test
     fun run() {
         val config = ApplicationConfig(
-            database = DatabaseConfig.TestDBConfig(useFakeDb = true),
+            database = DatabaseConfig.TestDBConfig(useFakeDb = true, createTables = false),
             cds = CdsConfig.LocalPath(this.javaClass.getResource("/wf47-event-feed-live.ndjson")!!.path, "wf47_finals"),
+            /* Alternatively:
+            cds = CdsConfig.ClicsServer(
+                baseurl = "https://something/api",
+                contestId = "...",
+                username = "...",
+                password = Masked("..."),
+                privilegedPassword = Masked(""),
+                privilegedUsername = "",
+            ), */
             katalyzer = KatalyzerConfig(
                 db = KatalyzerConfig.DB(true),
                 rules = listOf(
@@ -37,7 +47,8 @@ class KatalyzerV2Test {
         val katalyzer = KatalyzerV2(config)
         assertThrows<TimeoutCancellationException> {
             runBlocking {
-                withTimeout(300.seconds) {
+                // Increase timeout if you want to do manual testing.
+                withTimeout(30.seconds) {
                     katalyzer.run()
                 }
             }

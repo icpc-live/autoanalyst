@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import model.Commentary
 import model.dsl.v1.*
 import org.icpclive.cds.adapters.*
@@ -65,9 +64,8 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         if ((config.database as? DatabaseConfig.TestDBConfig)?.createTables == true) {
             createTables()
         }
-        val fullSharedCommentaryFlow = withContext(Dispatchers.IO) {
-            fullCommentaryFlow().shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
-        }
+        val fullSharedCommentaryFlow = fullCommentaryFlow().shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
+
         if (config.katalyzer.web?.enable == true) {
             launch(Dispatchers.IO) {
                 val server = embeddedServer(Netty, port = config.katalyzer.web.port) {
@@ -84,13 +82,13 @@ class KatalyzerV2(private val config: ApplicationConfig) {
                 server.start(wait = true)
             }
         }
-        launch(Dispatchers.IO) {
+        launch {
             fullSharedCommentaryFlow.collect {
                 println(it)
             }
         }
         if (db != null) {
-            launch(Dispatchers.IO) {
+            launch {
                 streamCommentaryToDB(db, contestStateTracker, fullSharedCommentaryFlow)
             }
         }
