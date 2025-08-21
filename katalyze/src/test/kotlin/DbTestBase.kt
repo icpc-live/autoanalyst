@@ -11,7 +11,7 @@ open class DbTestBase {
     protected lateinit var db: Database
         private set
     private lateinit var connection: ExposedConnection<*>
-    private val tables = arrayOf(Contests, Entries, Problems, Submissions, TeamRegions, Teams)
+    private val tables = arrayOf(Contests, Entries, Problems, Submissions, TeamRegions, Teams, SubmissionSources)
 
     @BeforeTest
     fun setUpDb() {

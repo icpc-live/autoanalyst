@@ -27,6 +27,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import rules_kt.ContestInfoDb
 import rules_kt.JudgementsDb
 import rules_kt.RuleInterface
+import rules_kt.SubmissionsSource
 
 class KatalyzerV2(private val config: ApplicationConfig) {
     val db: Database? = if (config.katalyzer.db.enable) {
@@ -47,6 +48,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         if (db != null) {
             add(ContestInfoDb(db, config.cds.contestId))
             add(JudgementsDb(db))
+            add(SubmissionsSource(db, config.cds))
         }
     }
 
@@ -97,7 +99,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
 
     private fun createTables() {
         transaction(db!!) {
-            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams)
+            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams, SubmissionSources)
         }
     }
 

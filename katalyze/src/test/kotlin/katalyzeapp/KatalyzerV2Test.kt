@@ -1,6 +1,8 @@
 package katalyzeapp
 
 import DbTestBase
+import com.sksamuel.hoplite.Masked
+import com.sksamuel.hoplite.Secret
 import config.ApplicationConfig
 import config.CdsConfig
 import config.DatabaseConfig
@@ -18,18 +20,19 @@ class KatalyzerV2Test : DbTestBase() {
 
     @Test
     fun run() {
+        val cdsConfig = CdsConfig.ClicsServer(
+            baseurl = "https://wfcds.icpc-vcss.org:8443/api",
+            contestId = "wf49_practice",
+            username = "analytics",
+            password = Masked("wfpractice-music-magic-fly"),
+            privilegedPassword = Masked(""),
+            privilegedUsername = "",
+        )
         val config = ApplicationConfig(
             database = DatabaseConfig.TestDBConfig(useFakeDb = true, createTables = false),
-            cds = CdsConfig.LocalPath(this.javaClass.getResource("/wf47-event-feed-live.ndjson")!!.path, "wf47_finals"),
-            /* Alternatively:
-            cds = CdsConfig.ClicsServer(
-                baseurl = "https://something/api",
-                contestId = "...",
-                username = "...",
-                password = Masked("..."),
-                privilegedPassword = Masked(""),
-                privilegedUsername = "",
-            ), */
+            //cds = CdsConfig.LocalPath(this.javaClass.getResource("/wf47-event-feed-live.ndjson")!!.path, "wf47_finals"),
+            /* Alternatively: */
+            cds = cdsConfig,
             katalyzer = KatalyzerConfig(
                 db = KatalyzerConfig.DB(true),
                 rules = listOf(
@@ -40,6 +43,7 @@ class KatalyzerV2Test : DbTestBase() {
                     RankingChange(10, 20),
                     RankPredictor(12, 25),
                     RejectedSubmissions(24),
+                    SubmissionsSource(db, cdsConfig)
                 ),
                 web = KatalyzerConfig.Web(true, port = 8099),
             )
