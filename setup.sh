@@ -206,7 +206,8 @@ EOF
             
             # Set permissions
             sudo chown -R www-data:www-data "$(pwd)/www" || true
-            sudo chmod -R 755 "$(pwd)/www"
+            sudo find "$(pwd)/www" -type d -exec chmod 755 {} +
+            sudo find "$(pwd)/www" -type f -exec chmod 644 {} +
             
             # Restart Apache
             sudo systemctl restart apache2
@@ -334,7 +335,11 @@ setup_directories() {
     
     # Set permissions
     sudo chmod 755 backup githomes logs
-    sudo chmod a+x ..
+    dir="$(pwd)"
+    while [ "$dir" != "$HOME" ]; do
+      sudo chmod a+x "$dir"
+      dir="$(dirname "$dir")"
+    done
 
     log_success "Directory structure created"
 }

@@ -63,7 +63,7 @@ autoanalyst/
 ### 1. Katalyzer (Real-time Analysis)
 ```bash
 cd katalyze
-java -jar build/libs/katalyze-1.0-SNAPSHOT.jar
+./run_katalyze.sh
 ```
 
 ### 2. Code Analyzer (Python Tools)
