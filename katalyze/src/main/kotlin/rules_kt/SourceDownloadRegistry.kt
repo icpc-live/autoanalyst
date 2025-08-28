@@ -5,6 +5,8 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import org.icpclive.cds.api.MediaType
 import org.icpclive.cds.api.RunInfo
 import java.util.concurrent.ConcurrentHashMap
@@ -19,6 +21,7 @@ object SourceDownloadRegistry {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val downloads = ConcurrentHashMap<SourceKey, Deferred<SourceLoader?>>()
+    private val downloadSemaphore = Semaphore(16)
 
     fun isInFlight(key: SourceKey): Boolean = downloads[key]?.isActive == true
 
@@ -27,7 +30,9 @@ object SourceDownloadRegistry {
     fun ensureDownload(key: SourceKey, downloadBlock: suspend () -> SourceLoader?): Deferred<SourceLoader?> {
         return downloads.computeIfAbsent(key) {
             scope.async {
-                downloadBlock()
+                downloadSemaphore.withPermit {
+                    downloadBlock()
+                }
             }
         }
     }

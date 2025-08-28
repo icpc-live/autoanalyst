@@ -79,6 +79,7 @@ katalyzer:
     - AllTeamsSolvedOneProblem
     - ContestStatusTransitions
     - ProblemFirstSolved
+    - SmallFixAfterAccepted
     - RankingChange:
         enable: true
         # NewLeader - when a team takes the lead, or gets into the top n positions

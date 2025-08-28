@@ -383,6 +383,20 @@ CREATE TABLE IF NOT EXISTS `submissions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 --
+-- Table structure for table `submission_sources`
+--
+
+DROP TABLE IF EXISTS `submission_sources`;
+CREATE TABLE IF NOT EXISTS `submission_sources` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `run_id` int(11) NOT NULL,
+  `source_urls` text NOT NULL,
+  `content` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `avoid_dups_sources` (`run_id`, `source_urls`(255))
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
+
+--
 -- Create views
 --
 
