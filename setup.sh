@@ -207,7 +207,6 @@ EOF
             # Set permissions
             sudo chown -R www-data:www-data "$(pwd)/www" || true
             sudo find "$(pwd)/www" -type d -exec chmod 755 {} +
-            sudo find "$(pwd)/www" -type f -exec chmod 644 {} +
             
             # Restart Apache
             sudo systemctl restart apache2
@@ -336,7 +335,7 @@ setup_directories() {
     # Set permissions
     sudo chmod 755 backup githomes logs
     dir="$(pwd)"
-    while [ "$dir" != "$HOME" ]; do
+    while [ "$dir" != "/" ]; do
       sudo chmod a+x "$dir"
       dir="$(dirname "$dir")"
     done
