@@ -13,6 +13,7 @@ sealed interface CdsConfig {
         @ConfigAlias("pass") val password: Masked,
         @ConfigAlias("userfull") val privilegedUsername: String,
         @ConfigAlias("passfull") val privilegedPassword: Masked,
+        val checkedServerName: String? = null,
     ) : CdsConfig
     data class LocalPath(
         val path: String,

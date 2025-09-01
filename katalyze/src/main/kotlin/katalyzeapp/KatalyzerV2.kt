@@ -11,6 +11,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import rules_kt.ContestInfoDb
 import rules_kt.JudgementsDb
 import rules_kt.RuleInterface
+import rules_kt.SubmissionsSource
 
 class KatalyzerV2(private val config: ApplicationConfig) {
     val db: Database? = if (config.katalyzer.db.enable) {
@@ -46,6 +48,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         if (db != null) {
             add(ContestInfoDb(db, config.cds.contestId))
             add(JudgementsDb(db))
+            add(SubmissionsSource(db, config.cds))
         }
     }
 
@@ -63,9 +66,10 @@ class KatalyzerV2(private val config: ApplicationConfig) {
         if ((config.database as? DatabaseConfig.TestDBConfig)?.createTables == true) {
             createTables()
         }
-        val fullSharedCommentaryFlow = fullCommentaryFlow(this).shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
+        val fullSharedCommentaryFlow = fullCommentaryFlow().shareIn(this, SharingStarted.Eagerly, Int.MAX_VALUE)
+
         if (config.katalyzer.web?.enable == true) {
-            launch {
+            launch(Dispatchers.IO) {
                 val server = embeddedServer(Netty, port = config.katalyzer.web.port) {
                     install(CORS) {
                         anyHost()
@@ -96,18 +100,18 @@ class KatalyzerV2(private val config: ApplicationConfig) {
 
     private fun createTables() {
         transaction(db!!) {
-            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams, EditActivity)
+            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams, SubmissionSources, EditActivity)
         }
     }
 
-    private fun fullCommentaryFlow(scope: CoroutineScope): Flow<Commentary> {
+    private fun CoroutineScope.fullCommentaryFlow(): Flow<Commentary> {
         if (db == null) {
             return autoCommentaryFlow
         }
-        val humanMessagesChannel = getHumanMessagesFromDatabase(scope, db, contestStateTracker)
-        val autoanalystCommentaryChannel = autoCommentaryFlow.produceIn(scope)
+        val humanMessagesChannel = getHumanMessagesFromDatabase(this, db, contestStateTracker)
+        val autoanalystCommentaryChannel = autoCommentaryFlow.produceIn(this)
         return mergeCommentaryChannelsByContestTime(
-            scope,
+            this,
             autoanalystCommentaryChannel,
             humanMessagesChannel
         ).consumeAsFlow()
