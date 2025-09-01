@@ -9,7 +9,7 @@ analystTop = os.path.dirname(os.path.dirname(os.path.abspath( inspect.getfile( i
 
 # Use top-level directory to load the config file.
 configFile = open( analystTop + "/config.yaml" )
-config = yaml.load( configFile )
+config = yaml.safe_load( configFile )
 configFile.close()
 
 try:
