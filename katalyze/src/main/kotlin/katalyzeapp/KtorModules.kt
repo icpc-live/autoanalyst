@@ -20,6 +20,14 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
 import model.Commentary
+import model.dsl.v1.*
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.neq
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.javatime.*
 import org.icpclive.clics.FeedVersion
 import org.icpclive.clics.clicsEventsSerializersModule
 import org.icpclive.clics.events.Event
@@ -27,7 +35,7 @@ import org.icpclive.clics.events.EventToken
 import org.icpclive.clics.objects.Commentary as ClicsCommentary
 import org.icpclive.clics.events.CommentaryEvent
 import web.WebPublisher
-
+import kotlin.time.*
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Application.commentaryMessagesModule(commentaryFlow: SharedFlow<Commentary>) {
@@ -104,6 +112,41 @@ fun Application.scoreboardPublisherModule(contestStateTracker: ContestStateTrack
                     doc.writeContents(this)
                 }
             }
+        }
+    }
+}
+
+fun Application.editActivityModule(db: Database? = null) {
+    routing {
+        get("/edit_activity/{id}") {
+            if (db == null) {
+                call.respond(HttpStatusCode.InternalServerError, "Database is not configured")
+                return@get
+            }
+            val id = call.parameters["id"]?.toIntOrNull() ?: -1
+            if (id == -1){
+                call.respond(HttpStatusCode.BadRequest, "Invalid or missing id parameter")
+                return@get
+            }
+            val edit_activity_rows = transaction(db) {
+                val activities =
+                    EditActivity.selectAll()
+                    .where{EditActivity.teamId eq id}
+                    .orderBy(EditActivity.modifyTimestamp)
+                    .toList()
+                activities
+            }
+            var last_modify = 0
+            val res = mutableMapOf<String, Int>()
+            edit_activity_rows.forEach{ entry ->
+                if(entry[EditActivity.linesChanged] > 0){
+                    val diff = entry[EditActivity.modifyTime] - last_modify
+                    val cur = res[entry[EditActivity.path]] ?: 0
+                    res[entry[EditActivity.path]] = cur + diff
+                }
+                last_modify = entry[EditActivity.modifyTime]
+            }
+            call.respondText(Json.encodeToString(res), ContentType.Application.Json)
         }
     }
 }

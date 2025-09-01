@@ -39,7 +39,7 @@ data class KatalyzerConfig(
     data class DB(val enable: Boolean = true)
 
     @Serializable
-    data class Web(val enable: Boolean = true, val compress: Boolean = true, val port: Int)
+    data class Web(val enable: Boolean = true, val compress: Boolean = true, val port: Int, val edit_activity_enabled: Boolean = false)
 
     class RuleInterfaceDecoder : Decoder<RuleInterface?> {
         override fun decode(node: Node, type: KType, context: DecoderContext): ConfigResult<RuleInterface?> {

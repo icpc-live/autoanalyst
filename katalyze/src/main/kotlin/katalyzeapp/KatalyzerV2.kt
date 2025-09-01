@@ -76,6 +76,9 @@ class KatalyzerV2(private val config: ApplicationConfig) {
                     }
                     commentaryMessagesModule(fullSharedCommentaryFlow)
                     scoreboardPublisherModule(contestStateTracker)
+                    if(config.katalyzer.web.edit_activity_enabled){
+                        editActivityModule(db)
+                    }
                     routing {
                         staticResources("/", "")
                     }
@@ -99,7 +102,7 @@ class KatalyzerV2(private val config: ApplicationConfig) {
 
     private fun createTables() {
         transaction(db!!) {
-            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams, SubmissionSources)
+            SchemaUtils.createMissingTablesAndColumns(Contests, Entries, Problems, Submissions, TeamRegions, Teams, SubmissionSources, EditActivity)
         }
     }
 

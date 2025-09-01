@@ -67,6 +67,7 @@ katalyzer:
         enable:     true
         compress:   false
         port:       8099
+        edit_activity_enabled: false
 
     tuningRules:
     - type: addMedals
