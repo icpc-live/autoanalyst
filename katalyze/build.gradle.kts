@@ -51,6 +51,8 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:${ktorVersion}")
     implementation("io.ktor:ktor-serialization-kotlinx-json:${ktorVersion}")
+    testImplementation("io.ktor:ktor-server-test-host:${ktorVersion}")
+
 
     // https://mvnrepository.com/artifact/org.jfree/jfreechart
     implementation("org.jfree:jfreechart:1.5.5")
