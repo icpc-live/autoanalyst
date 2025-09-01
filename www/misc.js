@@ -17,7 +17,7 @@ $(document).ready(function () {
         } else {
             user.css("border-color", "")
         }
-        $(this).find("input[type=text]").each(function (idx, item) {
+        $(this).find("input[type=text],input[type=hidden]").each(function (idx, item) {
             if (query_str) { query_str += "&"; }
             query_str += escape($(item).attr("name")) + "=" + encodeURIComponent($(item).val());
         });

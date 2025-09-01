@@ -10,7 +10,7 @@
  *      <div class='feed_controls'>
  *          <span class='feed_pause_control'>Running</span>&nbsp;&nbsp;
  *          <span class='feed_update'>Updated <span class='feed_last_update_seconds'>SECONDS</span> secs. ago</span>
- *          <span class='feed_sort'>Sort: 
+ *          <span class='feed_sort'>Sort:
  *              <select class='feed_sort_key'>
  *                  <option value='id'>id</option>
  *                  ...
@@ -42,7 +42,7 @@
 @import "font-awesome/css/font-awesome.min.css";
 
 /* the root div of a feed has class .feed_container */
-.feed_container { border: thin solid black; } 
+.feed_container { border: thin solid black; }
 
 /* at the top of the feed are two divs placed next to each other: .feed_name and
  * .feed_controls
@@ -69,7 +69,7 @@
     font-size: small;
     text-align: center;
     /* disable user selection of the control text */
-    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;
 }
 .feed_container .feed_controls .feed_pause_control {
     cursor: hand;
@@ -120,10 +120,10 @@
     width: 95%;
     border: thin solid gray;
     color: black;
-    cursor: hand;
+    cursor: pointer; /* hand */
     text-align: center;
     background: #ddd;
-    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; 
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;
 }
 .feed_container .feed_row .feed_row_tweet_control { margin-left: 1%; }
 

@@ -11,7 +11,7 @@
  *      name: 'Displayed name',
  *      conditions: '...', // sql conditions for the where/order by/etc. clauses
  *               // (can be a function which takes the feed object as a parameter)
- *      formatter: function(row) { ... } // code for formatting the content of a returned row
+ *      formatter: function(row, data, feed) { ... } // code for formatting the content of a returned row, common data and feed
  *      // other properties
  *  });
  *
@@ -226,7 +226,7 @@ function _feed_updateWith(rows) {
                 row_contest_time = "<a href='" + submission_url(row.submission_id, data['config'], data['contest']) + "'>" + row.contest_time + '</a>';
             }
             if (this.formatter) {
-                description = this.formatter(row);
+                description = this.formatter(row, data, self);
             } else if (this.table == 'entries') {
                 var text = escapeHtml(row.text);
                 text = text.replace(/#p([A-Za-z])/g, "<a href='problem.php?problem_id=$1'>$1</a>");
