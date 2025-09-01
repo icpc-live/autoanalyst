@@ -45,7 +45,7 @@ class KatalyzerV2Test : DbTestBase() {
                     RejectedSubmissions(24),
                     SubmissionsSource(db, cdsConfig)
                 ),
-                web = KatalyzerConfig.Web(true, port = 8099),
+                web = KatalyzerConfig.Web(true, port = 8099, edit_activity_enabled = false),
             )
         )
         val katalyzer = KatalyzerV2(config)

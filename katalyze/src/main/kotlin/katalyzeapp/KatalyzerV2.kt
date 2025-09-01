@@ -76,7 +76,9 @@ class KatalyzerV2(private val config: ApplicationConfig) {
                     }
                     commentaryMessagesModule(fullSharedCommentaryFlow)
                     scoreboardPublisherModule(contestStateTracker)
-                    editActivityModule(db)
+                    if(config.katalyzer.web.edit_activity_enabled){
+                        editActivityModule(db)
+                    }
                     routing {
                         staticResources("/", "")
                     }
