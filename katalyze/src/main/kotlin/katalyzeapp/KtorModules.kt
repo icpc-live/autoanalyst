@@ -118,7 +118,7 @@ fun Application.scoreboardPublisherModule(contestStateTracker: ContestStateTrack
 
 fun Application.editActivityModule(db: Database? = null) {
     routing {
-        get("/editacticity/{id}") {
+        get("/edit_activity/{id}") {
             if (db == null) {
                 call.respond(HttpStatusCode.InternalServerError, "Database is not configured")
                 return@get
