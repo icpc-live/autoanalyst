@@ -41,8 +41,7 @@ class EditActivityModuleTest : DbTestBase() {
         val response = client.get("/edit_activity/104")
         assertEquals(HttpStatusCode.OK, response.status)
         val decoded: Map<String, Int> = Json.decodeFromString(response.bodyAsText())
-        assertEquals(decoded["Desktop/E.cpp"],69)
-        //println(decoded)
+        assertEquals(decoded["E"],69)
         
         val response2 = client.get("/edit_activity/not_an_id")
         assertEquals(HttpStatusCode.BadRequest, response2.status)

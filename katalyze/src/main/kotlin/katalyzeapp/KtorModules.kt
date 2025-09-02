@@ -116,6 +116,73 @@ fun Application.scoreboardPublisherModule(contestStateTracker: ContestStateTrack
     }
 }
 
+fun inferProblemLetter(path: String): String {
+    // Valid problem letters (A–O)
+    val valid = ('A'..'O').map { it.toString() }.toSet()
+
+    // Split path in an OS-independent way (allow both / and \)
+    val segments = path.split('/', '\\').filter { it.isNotEmpty() }
+    if (segments.isEmpty()) return "unknown"
+
+    val fileName = segments.last()
+    val base = fileName.substringBeforeLast('.', fileName)
+
+    fun String.upperLetterOrNull(): String? {
+        val s = this.uppercase()
+        return if (s in valid) s else null
+    }
+
+    // Regex to catch TaskX / ProblemX patterns (TaskC, Task-C, Problem_E, etc.)
+    val tpRegex = Regex("""\b(?:task|problem)[\s_\-]*([A-Oa-o])\b""", RegexOption.IGNORE_CASE)
+
+    fun matchTaskProblem(text: String): String? {
+        val m = tpRegex.find(text)
+        val ch = m?.groupValues?.getOrNull(1)?.uppercase()
+        return if (ch != null && ch in valid) ch else null
+    }
+
+    // 1) If the base name (without extension) is a single letter A–O
+    base.upperLetterOrNull()?.let { return it }
+
+    // 2) If the file name contains Task/Problem pattern
+    matchTaskProblem(base)?.let { return it }
+
+    // 3) If any directory name is a single letter A–O
+    for (i in 0 until segments.size - 1) {
+        segments[i].upperLetterOrNull()?.let { return it }
+    }
+
+    // 4) If any directory name contains Task/Problem pattern
+    for (i in 0 until segments.size - 1) {
+        matchTaskProblem(segments[i])?.let { return it }
+    }
+
+    // 5) Tokenize by non-alphanumeric separators and check for single-letter A–O tokens
+    val tokenizeRegex = Regex("[^A-Za-z0-9]+")
+    val baseTokens = base.split(tokenizeRegex).filter { it.isNotEmpty() }
+    for (t in baseTokens) {
+        t.upperLetterOrNull()?.let { return it }
+    }
+    for (i in 0 until segments.size - 1) {
+        val tokens = segments[i].split(tokenizeRegex).filter { it.isNotEmpty() }
+        for (t in tokens) {
+            t.upperLetterOrNull()?.let { return it }
+        }
+    }
+
+    // 6) If the base name starts with A–O and the next char is non-alphabet
+    // (examples: "C.cpp", "A_solve", "B-1")
+    if (base.isNotEmpty()) {
+        val first = base[0].uppercaseChar()
+        if (first in 'A'..'O') {
+            val secondIsNonAlpha = base.length == 1 || !base[1].isLetter()
+            if (secondIsNonAlpha) return first.toString()
+        }
+    }
+
+    return "unknown"
+}
+
 fun Application.editActivityModule(db: Database? = null) {
     routing {
         get("/edit_activity/{id}") {
@@ -140,9 +207,13 @@ fun Application.editActivityModule(db: Database? = null) {
             val res = mutableMapOf<String, Int>()
             edit_activity_rows.forEach{ entry ->
                 if(entry[EditActivity.linesChanged] > 0){
+                    var problem = inferProblemLetter(entry[EditActivity.path])
+                    if(problem == "unknown"){
+                        problem = entry[EditActivity.path]
+                    }
                     val diff = entry[EditActivity.modifyTime] - last_modify
-                    val cur = res[entry[EditActivity.path]] ?: 0
-                    res[entry[EditActivity.path]] = cur + diff
+                    val cur = res[problem] ?: 0
+                    res[problem] = cur + diff
                 }
                 last_modify = entry[EditActivity.modifyTime]
             }
