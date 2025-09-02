@@ -9,13 +9,10 @@ object EditActivity: Table(name="edit_activity") {
     val id = integer("id").autoIncrement()
     val teamId = integer("team_id")
     val path = text("path")
-    val modifyTimestamp = timestamp("modify_timestamp").transform(
-        { it.toKotlinInstant() },
-        { it.toJavaInstant() }
-    ).clientDefault { Clock.System.now() }
+    val modifyTimestamp = integer("modify_timestamp")
     val modifyTime = integer("modify_time")
-    val fileSizeBytes = integer("file_size_bytes")
     val lineCount = integer("line_count")
+    val fileSizeBytes = integer("file_size_bytes")
     val linesChanged = integer("lines_changed")
     val gitTag = varchar("git_tag", 30)
 

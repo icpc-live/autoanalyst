@@ -185,6 +185,7 @@ fun inferProblemLetter(path: String): String {
 
 fun Application.editActivityModule(db: Database? = null) {
     routing {
+        println("Edit activity module enabled")
         get("/edit_activity/{id}") {
             if (db == null) {
                 call.respond(HttpStatusCode.InternalServerError, "Database is not configured")
