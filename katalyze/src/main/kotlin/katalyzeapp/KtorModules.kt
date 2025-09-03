@@ -185,7 +185,6 @@ fun inferProblemLetter(path: String): String {
 
 fun Application.editActivityModule(db: Database? = null) {
     routing {
-        println("Edit activity module enabled")
         get("/edit_activity/{id}") {
             if (db == null) {
                 call.respond(HttpStatusCode.InternalServerError, "Database is not configured")
@@ -207,6 +206,9 @@ fun Application.editActivityModule(db: Database? = null) {
             var last_modify = 0
             val res = mutableMapOf<String, Int>()
             edit_activity_rows.forEach{ entry ->
+                if(entry[EditActivity.path].contains("testing_tool")){
+                    return@forEach
+                }
                 if(entry[EditActivity.linesChanged] > 0){
                     var problem = inferProblemLetter(entry[EditActivity.path])
                     if(problem == "unknown"){
