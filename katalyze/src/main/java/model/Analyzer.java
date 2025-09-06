@@ -3,15 +3,12 @@ package model;
 import io.EntityOperation;
 import org.icpclive.cds.api.ContestStatus;
 import rules.*;
-import icat.AnalystMessage;
-import icat.AnalystMessageSource;
 
 import java.time.Instant;
 import java.util.*;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.jfree.util.Log;
 
 public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	
@@ -20,14 +17,12 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	List<StandingsUpdatedEvent> stateRules = new ArrayList<>();
 	List<SolutionSubmittedEvent> submissionRules = new ArrayList<>();
 	List<EntityChangedHandler> entityChangedHandlers = new ArrayList<>();
-	AnalystMessageSource analystMsgSource = null;
-	
+
 	List<NotificationTarget> targets = new ArrayList<NotificationTarget>();
 	List<OutputHook> outputHooks = new ArrayList<OutputHook>();
 	List<LifeCycleAware> lifeCycleAwareObjects = new ArrayList<LifeCycleAware>();
 	
 	JudgingOutcomes judgingOutcomes = new JudgingOutcomes();
-	HashtagFinder hashtagFinder = new HashtagFinder();
 	boolean stopped = false;
 
 	
@@ -36,104 +31,13 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	public Analyzer(Contest contest, int videoCaptureTreshold) {
 		this.contest = contest;
 	}
-	
-	private LoggableEvent buildEventFromAnalystMsg(AnalystMessage msg) {
-		// Find team id
-		
-		String message = msg.text;
-		Team firstTeam = null;
-		
-		List<String> teamsInMessage = hashtagFinder.teams(message);
-		for (String teamTag : teamsInMessage) {
-			Team team = hashtagFinder.getTeam(contest, teamTag);
-			if (team != null) {
-				if (firstTeam == null) {
-					firstTeam = team;
-				}
-				message = message.replace(teamTag, team.stringForCommentary());
-			}
-		}
-		
-		List<String> problemsInMessage = hashtagFinder.problems(message);
-		for (String problemTag : problemsInMessage) {
-			Problem problem = hashtagFinder.getProblem(contest, problemTag);
-			if (problem != null) {
-				message = message.replace(problemTag, problem.stringForCommentary());
-			}
-		}
 
-        Map supplements = new HashMap<String, String>();
-        supplements.put("category", "human");
 
-        // Ensure breaking events get treated as such. Treat all other events that come from here as
-        // being manually entered by an analyst.
-        EventImportance importance = (msg.priority == 0) ? EventImportance.Breaking : EventImportance.AnalystMessage;
-
-        LoggableEvent newEvent = new LoggableEvent(
-				contest,
-				firstTeam,
-				msg.contestTime*60000,
-				msg.timestamp,
-				message,
-				importance, supplements);
-
-		return newEvent;
-	}
-	
-	public void forwardAnalystMessages() {
-		if (analystMsgSource == null) {
-			return;
-		}
-		
-		try {
-			List<AnalystMessage> newMessages = analystMsgSource.getNewMessages(contest.getMinutesFromStart());			
-			for (AnalystMessage msg : newMessages) {
-				notify(buildEventFromAnalystMsg(msg));				
-			}
-			
-		}
-		catch (Exception e) {
-			Log.error(String.format("Failed to get new analyst messages when reading from icat Database: %s",e));
-		}
-		
-	}
-	
 	public void addRule(Object newRule) {
-		if (newRule instanceof StateComparingRuleBase) {
-			((StateComparingRuleBase) newRule).addNotificationTarget(this);
-		}
-		
-		
-		if (newRule instanceof StandingsUpdatedEvent) {
-			stateRules.add((StandingsUpdatedEvent) newRule);
-		} else if (newRule instanceof SolutionSubmittedEvent) {
-			submissionRules.add((SolutionSubmittedEvent) newRule);
-		} else {
-			logger.error(String.format("Rule %s is not known to the Analyzer and will never be invoked", newRule));
-			return;
-		}
-		logger.info(String.format("Rule %s activated", newRule));
-
-	}
-	
-	public void setAnalystMsgSource(AnalystMessageSource newSource) {
-		this.analystMsgSource = newSource;
+        logger.error(String.format("Rule %s is not known to the Analyzer and will never be invoked", newRule));
 	}
 
-	public void addEntityChangedHandler(EntityChangedHandler handler) {
-		this.entityChangedHandlers.add(handler);
-	}
-	
-	public void addNotifier(NotificationTarget newNotifier) {
-		targets.add(newNotifier);
-	}
-	
-	public void manageLifeCycle(LifeCycleAware target) {
-		lifeCycleAwareObjects.add(target);
-	}
-	
-	
-	public void start() {
+    public void start() {
 		for (LifeCycleAware target : lifeCycleAwareObjects) {
 			try {
 				target.start();
@@ -184,10 +88,7 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 	public void contestStateChanged(ContestStatus oldState, ContestStatus newState) {
     }
 
-	public InitialSubmission submissionById(String id) {
-		return judgingOutcomes.getSubmission(id);
-	}
-	
+
 	public void freshSubmission(InitialSubmission submission) {
 
 		judgingOutcomes.newSubmission(submission);
@@ -210,21 +111,11 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		
 	}
 	
-	public void testCaseExecuted(TestCaseExecution outcome) {
-		judgingOutcomes.testCaseRun(outcome);
-	}
-	
+
 	public TestCaseExecution getFailureInfo(InitialSubmission submission) {
 		return judgingOutcomes.getFailureInfo(submission);
 	}
-	
-	public void publishStandings() {
-		for (OutputHook hook : outputHooks) {
-			if (hook instanceof StandingsPublisher) {
-				((StandingsPublisher) hook).publishStandings();
-			}
-		}
-	}
+
 
 	public void notifyHooks(int minutesFromStart) {
 		while (lastHookTime < minutesFromStart) {
@@ -235,14 +126,6 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 			}
 		}
 
-	}
-
-	public void addOutputHook(OutputHook outputHook) {
-		outputHooks.add(outputHook);
-	}
-	
-	public List<OutputHook> getOutputHooks() {
-		return new ArrayList<OutputHook>(outputHooks);
 	}
 
 
@@ -258,9 +141,6 @@ public class Analyzer implements NotificationTarget, EntityChangedHandler {
 		}
 	}
 
-	public boolean isStopped() {
-	    return stopped;
-    }
 }
 
 	

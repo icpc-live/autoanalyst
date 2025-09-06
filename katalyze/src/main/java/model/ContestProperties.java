@@ -1,14 +1,9 @@
 package model;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import jsonfeed.TimeConverter;
-import java.time.Instant;
-import java.util.Comparator;
-import java.util.function.Predicate;
 
 public class ContestProperties implements ApiEntity {
-    private final static TimeConverter converter = new TimeConverter();
+    //private final static TimeConverter converter = new TimeConverter();
 
     private String id;
     private String name;
@@ -27,17 +22,17 @@ public class ContestProperties implements ApiEntity {
 
         String startTime = JsonHelpers.optString(src, "start_time");
         if (startTime != null && !startTime.equals("null")) {
-            target.startTimeMillis = converter.parseTimestampMillis(startTime);
+            //target.startTimeMillis = converter.parseTimestampMillis(startTime);
         } else {
             String countdownPauseTime = JsonHelpers.optString(src,"countdown_pause_time");
             if (countdownPauseTime != null && !countdownPauseTime.equals("null")) {
                 target.countdownIsPaused = true;
-                target.startTimeMillis = converter.parseContestTimeMillis(countdownPauseTime)
-                        + Instant.now().toEpochMilli();
+//                target.startTimeMillis = converter.parseContestTimeMillis(countdownPauseTime)
+//                        + Instant.now().toEpochMilli();
             }
         }
-        target.durationMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("duration").getAsString());
-        target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("scoreboard_freeze_duration").getAsString());
+        //target.durationMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("duration").getAsString());
+        //target.scoreboardFreezeMillis = converter.parseContestTimeMillis(src.getAsJsonPrimitive("scoreboard_freeze_duration").getAsString());
         target.penaltyTime = src.getAsJsonPrimitive("penalty_time").getAsInt();
         return target;
     }

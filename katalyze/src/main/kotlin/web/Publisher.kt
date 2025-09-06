@@ -1,7 +1,5 @@
-package web;
+package web
 
-public interface Publisher {
-
-	void publish(String url, WebDocument doc);
-	
+interface Publisher {
+    fun publish(url: String, doc: WebDocument)
 }
