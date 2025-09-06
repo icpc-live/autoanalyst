@@ -1,7 +1,6 @@
 package rules_kt
 
 import kotlinx.collections.immutable.toImmutableList
-import model.Contest
 import org.icpclive.cds.api.*
 import org.icpclive.cds.scoreboard.Ranking
 
