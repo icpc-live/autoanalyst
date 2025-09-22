@@ -9,7 +9,6 @@ import org.icpclive.cds.scoreboard.getScoreboardCalculator
 import web.Publisher
 import web.WebDocument
 import java.io.OutputStream
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -170,15 +169,14 @@ class ScoreboardPublisher(private val publisher: Publisher, private val contestS
     }
 
     class JsonDocument(private val element: JsonElement) : WebDocument {
-        override fun getContentType() = "application/json"
+        override val contentType = "application/json"
 
         @OptIn(ExperimentalSerializationApi::class)
-        override fun writeContents(target: OutputStream?) {
-            require(target != null)
+        override fun writeContents(target: OutputStream) {
             Json.encodeToStream(element, target)
         }
 
-        override fun isGzipCompressed() = false
+        override val isGzipCompressed = false
 
     }
 

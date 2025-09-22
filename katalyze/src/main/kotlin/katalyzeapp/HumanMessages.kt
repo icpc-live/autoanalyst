@@ -15,12 +15,16 @@ import org.icpclive.cds.api.ContestInfo
 import org.icpclive.cds.api.ContestStatus
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.neq
+import org.jetbrains.exposed.v1.core.SqlExpressionBuilder.like
+import org.jetbrains.exposed.v1.core.not
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun getHumanMessagesFromDatabase(
@@ -29,7 +33,7 @@ fun getHumanMessagesFromDatabase(
     contestStateTracker: ContestStateTracker
 ): ReceiveChannel<Commentary> =
     scope.produce(capacity = UNLIMITED) {
-        val seenIds = mutableSetOf<Int>();
+        val seenIds = mutableSetOf<Int>()
         while (true) {
             var contestInfo = contestStateTracker.state?.info
             if (contestInfo == null || contestInfo.teams.isEmpty()) {
@@ -38,7 +42,14 @@ fun getHumanMessagesFromDatabase(
             }
             val newEntries = transaction(db) {
                 val entries =
-                    Entries.selectAll().where(Entries.user.neq(Commentary.KATALYZER_USER)).orderBy(Entries.date)
+                    Entries.selectAll()
+                        .where(
+                            (Entries.user.neq(Commentary.KATALYZER_USER))
+                                    and not(
+                                Entries.user.like("live-%")
+                            )
+                        )
+                        .orderBy(Entries.date)
                         .toList()
                 entries.filter { entry ->
                     (entry[Entries.id] !in seenIds)
@@ -60,6 +71,7 @@ fun getHumanMessagesFromDatabase(
         }
     }
 
+@OptIn(ExperimentalTime::class)
 private fun commentaryFromDBRow(row: ResultRow, info: ContestInfo): Commentary {
     val message = info.asClicsCommentary(row[Entries.text])
     return Commentary(

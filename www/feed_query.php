@@ -1,14 +1,14 @@
 <?php
 /*
- * Simple backend connection between the database and the javascript on the page powering a 
+ * Simple backend connection between the database and the javascript on the page powering a
  * feed. Expects three parameters:
  *    table: the name of the table to pull rows from
  *    id: the least id to obtain (to avoid pulling old data that has already been sent)
- *    conditions: additional conditions on the sql query specific to the feed, 
- *        such as "team_id = 3". Should NOT be prefixed by "where", as the code 
+ *    conditions: additional conditions on the sql query specific to the feed,
+ *        such as "team_id = 3". Should NOT be prefixed by "where", as the code
  *        adds that in.
  *
- * This script returns a json-encoded object with the rows that are the results 
+ * This script returns a json-encoded object with the rows that are the results
  * of the query.
  *
  * Author: Greg Hamerly (hamerly@cs.baylor.edu)
@@ -33,7 +33,7 @@ function feed_query($table, $conditions, $id, $limit)
 {
     global $db;
 
-    # Only allow certain queries. Add a query here that you would like to use. This 
+    # Only allow certain queries. Add a query here that you would like to use. This
     # table is given as "table" => array(query1, query2, ...), where the query is a
     # regular expression that will be matched to the conditions string.
     $G_ALLOWED_CONDITIONS = array(
@@ -44,6 +44,7 @@ function feed_query($table, $conditions, $id, $limit)
             'text regexp "the first team to solve"',
             'user != "katalyzer"',
             'submission_id is not NULL AND priority <= 2 AND user = "katalyzer"',
+            '(priority <= [0-9]+ OR submission_id is not NULL AND priority <= 2 AND user = "katalyzer")',
             'text regexp "#t\([0-9]+(\|[0-9]+)+\)\[\[:>:\]\]"',
             '1', # to fulfill an empty "where" clause
         ),
@@ -71,7 +72,7 @@ function feed_query($table, $conditions, $id, $limit)
         return error("Please provide the conditions");
     }
     $conditions = $conditions;
-    // if magic quotes is turned on, then strip out slashes from the conditions 
+    // if magic quotes is turned on, then strip out slashes from the conditions
     // if (get_magic_quotes_gpc()) { $conditions = stripslashes($conditions); }
     $conditions = stripslashes($conditions);
     if (isset($id)) {
